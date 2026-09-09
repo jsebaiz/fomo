@@ -3,8 +3,289 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title></title>
+<title>Jesse Baizer</title>
+<meta name="description" content="Portfolio of Jesse Baizer.">
+<link rel="icon" href="fomo-favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#FBF3E7; --cream-dark:#EFE1C8;
+  --amber:#C1793D; --amber-deep:#9C5A28; --rust:#A8462B; --forest:#5A7350;
+  --text:#3E2F22; --text-dim:rgba(62,47,34,0.68); --border:rgba(62,47,34,0.14);
+  --radius:14px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0; height:100%; overflow:hidden;}
+body{font-family:'Nunito','Inter',-apple-system,sans-serif; color:var(--text);}
+h1,h2,h3{font-family:'Lora',serif; font-weight:600;}
+[hidden]{display:none !important;}
+
+.desktop{position:fixed; inset:0; background:url('wallpaper.jpg') center/cover no-repeat; overflow:hidden;}
+.desktop::after{content:''; position:absolute; inset:0; background:linear-gradient(180deg, rgba(120,70,20,0.12), rgba(90,45,20,0.22)); mix-blend-mode:multiply; pointer-events:none;}
+
+/* Menu bar */
+.menubar{position:fixed; top:0; left:0; right:0; height:28px; background:rgba(58,38,22,0.5); backdrop-filter:blur(20px) saturate(1.3); display:flex; align-items:center; justify-content:space-between; padding:0 16px; z-index:20; font-size:0.8rem; color:#FBF3E7; font-weight:700;}
+.menubar .left{display:flex; align-items:center; gap:8px;}
+.menubar .left span.light{opacity:.85; font-weight:600;}
+
+/* Desktop icons */
+.icons-row{position:fixed; top:72px; left:0; right:0; display:flex; justify-content:space-evenly; padding:0 8vw; z-index:5;}
+.desktop-icon{background:none; border:none; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:8px; padding:10px 16px; border-radius:10px; font-family:'Nunito',sans-serif;}
+.desktop-icon:hover{background:rgba(255,255,255,0.14);}
+.desktop-icon:focus{outline:none;}
+.desktop-icon.selected{background:rgba(193,121,61,0.4);}
+.desktop-icon svg{width:58px; height:52px; filter:drop-shadow(0 3px 6px rgba(0,0,0,.35));}
+.desktop-icon span{color:#fff; font-size:0.82rem; font-weight:700; text-shadow:0 1px 4px rgba(0,0,0,.6); padding:2px 8px; border-radius:4px;}
+.desktop-icon.selected span{background:var(--amber-deep);}
+
+/* Window overlay */
+.window-overlay{position:fixed; inset:0; z-index:50; display:flex; align-items:center; justify-content:center; padding:24px;}
+.window-overlay[hidden]{display:none;}
+.window-scrim{position:fixed; inset:0; background:rgba(40,25,12,0.4);}
+
+.mac-window{position:relative; background:var(--cream); border-radius:12px; width:100%; max-width:560px; max-height:82vh; display:flex; flex-direction:column; box-shadow:0 30px 80px rgba(40,20,5,.5); overflow:hidden;}
+.window-titlebar{display:flex; align-items:center; gap:8px; padding:12px 14px; background:linear-gradient(180deg,#F3E7D2,var(--cream-dark)); border-bottom:1px solid #DDC9A3; flex-shrink:0;}
+.traffic{width:12px; height:12px; border-radius:50%; border:1px solid rgba(0,0,0,.12); cursor:pointer;}
+.traffic.red{background:#FF5F57;}
+.traffic.yellow{background:#FEBC2E;}
+.traffic.green{background:#28C840;}
+.window-title{flex:1; text-align:center; font-size:0.84rem; font-weight:700; color:var(--text); margin-right:52px; font-family:'Nunito',sans-serif;}
+.window-body{padding:30px 34px; overflow-y:auto; color:var(--text);}
+.window-body h2{font-size:1.55rem; margin:0 0 14px; letter-spacing:-0.01em;}
+.window-body p{color:var(--text-dim); line-height:1.65; margin:0 0 14px; font-size:0.96rem;}
+
+.win-project{background:#fff; border:1px solid var(--border); border-radius:var(--radius); padding:18px 20px; margin-bottom:14px;}
+.win-project h3{font-size:1.05rem; margin:0 0 6px;}
+.win-project p{font-size:0.88rem; margin:0 0 10px;}
+.win-tag{display:inline-block; font-size:0.66rem; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; padding:3px 9px; border-radius:999px; background:rgba(193,121,61,0.15); color:var(--amber-deep); margin-bottom:8px;}
+.win-link{font-size:0.86rem; font-weight:700; color:var(--amber-deep); text-decoration:none;}
+.win-link:hover{text-decoration:underline;}
+
+.skill-tags{display:flex; flex-wrap:wrap; gap:7px; margin-bottom:16px; align-items:center;}
+.skill-tag{display:inline-flex; align-items:center; gap:5px; font-size:0.78rem; padding:5px 8px 5px 12px; border-radius:999px; background:#fff; border:1px solid var(--border); color:var(--text);}
+.tag-text{outline:none; min-width:8px; cursor:text;}
+.tag-text:focus{color:var(--amber-deep);}
+.tag-del{background:none; border:none; color:var(--text-dim); cursor:pointer; font-size:0.95rem; line-height:1; padding:0 2px; border-radius:50%;}
+.tag-del:hover{color:#fff; background:var(--rust);}
+.tag-add-btn{font-size:0.78rem; padding:5px 14px; border-radius:999px; background:transparent; border:1px dashed var(--border); color:var(--text-dim); cursor:pointer; font-family:'Nunito',sans-serif;}
+.tag-add-btn:hover{border-color:var(--amber-deep); color:var(--amber-deep);}
+
+.contact-btns{display:flex; gap:10px; flex-wrap:wrap; margin-top:6px;}
+
+.btn{display:inline-flex; align-items:center; gap:6px; padding:11px 20px; border-radius:999px; font-weight:700; font-size:0.86rem; cursor:pointer; border:none; text-decoration:none; font-family:'Nunito',sans-serif;}
+.btn-primary{background:linear-gradient(135deg, var(--amber-deep), var(--amber)); color:#fff;}
+.btn-secondary{background:#fff; color:var(--text); border:1px solid var(--border);}
+
+a{color:inherit;}
+
+@media (max-width:640px){
+  .icons-row{padding:0 4vw; top:52px;}
+  .desktop-icon svg{width:48px; height:44px;}
+  .window-body{padding:22px 20px;}
+}
+</style>
 </head>
 <body>
+
+<div class="desktop">
+  <div class="menubar">
+    <div class="left">
+      <span style="font-weight:800;">jesse baizer</span>
+      <span class="light">portfolio</span>
+    </div>
+    <div id="menu-clock"></div>
+  </div>
+
+  <div class="icons-row">
+    <button class="desktop-icon" data-window="about">
+      <svg viewBox="0 0 64 52"><defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E8C285"/><stop offset="1" stop-color="#B5732E"/></linearGradient></defs>
+        <rect x="4" y="10" width="26" height="9" rx="3" fill="url(#g1)"/>
+        <rect x="4" y="14" width="56" height="34" rx="6" fill="url(#g1)"/>
+      </svg>
+      <span>about me</span>
+    </button>
+    <button class="desktop-icon" data-window="fomo">
+      <svg viewBox="0 0 64 52"><defs><linearGradient id="g2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E8C285"/><stop offset="1" stop-color="#9C5A28"/></linearGradient></defs>
+        <rect x="4" y="10" width="26" height="9" rx="3" fill="url(#g2)"/>
+        <rect x="4" y="14" width="56" height="34" rx="6" fill="url(#g2)"/>
+      </svg>
+      <span>fomo</span>
+    </button>
+    <button class="desktop-icon" data-window="contact">
+      <svg viewBox="0 0 64 52"><defs><linearGradient id="g3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E8C285"/><stop offset="1" stop-color="#B5732E"/></linearGradient></defs>
+        <rect x="4" y="10" width="26" height="9" rx="3" fill="url(#g3)"/>
+        <rect x="4" y="14" width="56" height="34" rx="6" fill="url(#g3)"/>
+      </svg>
+      <span>contact</span>
+    </button>
+  </div>
+</div>
+
+<div class="window-overlay" id="window-overlay" hidden>
+  <div class="window-scrim" id="window-scrim"></div>
+
+  <div class="mac-window" id="win-about" hidden>
+    <div class="window-titlebar">
+      <span class="traffic red" data-close></span><span class="traffic yellow"></span><span class="traffic green"></span>
+      <span class="window-title">about me</span>
+    </div>
+    <div class="window-body">
+      <h2>Hi, I'm Jesse.</h2>
+      <p>I dropped out of college at 18; specializing in e-commerce and growth for early stage companies. Currently building and shipping fomo campus; nationwide Greek Wars, ambassador programs, and the internal tools needed for success.</p>
+      <p>I care about the details most people skip — brand voice, conversion rate, and scaling with quality. I'd rather ship something real and passionate than just talk about shipping something.</p>
+      <div class="skill-tags" id="tags-about"></div>
+    </div>
+  </div>
+
+  <div class="mac-window" id="win-fomo" hidden>
+    <div class="window-titlebar">
+      <span class="traffic red" data-close></span><span class="traffic yellow"></span><span class="traffic green"></span>
+      <span class="window-title">fomo</span>
+    </div>
+    <div class="window-body">
+      <h2>Things I've built at fomo.</h2>
+      <div class="win-project" style="margin-bottom:0;">
+        <h3>fomo / campus</h3>
+        <p>I helped build and ship fomo campus from the ground up — onboarding 1,000+ chapters across the top 50 schools nationwide and beyond, and setting up paid internship and ambassador roles for students on campus.</p>
+        <a href="greekwars.html" class="win-link">View the page →</a>
+      </div>
+      <div class="skill-tags" id="tags-fomo"></div>
+    </div>
+  </div>
+
+  <div class="mac-window" id="win-contact" hidden>
+    <div class="window-titlebar">
+      <span class="traffic red" data-close></span><span class="traffic yellow"></span><span class="traffic green"></span>
+      <span class="window-title">contact</span>
+    </div>
+    <div class="window-body">
+      <h2>Let's talk.</h2>
+      <p>Open to opportunities in growth, marketing, and product. The fastest way to reach me is email.</p>
+      <p style="font-weight:700; font-size:1.05rem; color:var(--text);">jessebaizer@gmail.com</p>
+      <div class="contact-btns">
+        <a href="mailto:jessebaizer@gmail.com?subject=Project%20overview%2C%20role%20description%2C%20or%20anything%20else" class="btn btn-primary">Email me</a>
+        <a href="https://www.linkedin.com/in/jesse-baizer-06a3262a1/" target="_blank" rel="noopener" class="btn btn-secondary">LinkedIn</a>
+        <a href="https://www.instagram.com/jessebaizer/" target="_blank" rel="noopener" class="btn btn-secondary">Instagram</a>
+      </div>
+      <div class="skill-tags" id="tags-contact" style="margin-top:16px; margin-bottom:0;"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function updateClock(){
+  document.getElementById('menu-clock').textContent = new Date().toLocaleString(undefined, {
+    weekday:'short', month:'short', day:'numeric', hour:'numeric', minute:'2-digit'
+  });
+}
+updateClock();
+setInterval(updateClock, 1000 * 15);
+
+const overlay = document.getElementById('window-overlay');
+const windows = { about: document.getElementById('win-about'), fomo: document.getElementById('win-fomo'), contact: document.getElementById('win-contact') };
+const icons = document.querySelectorAll('.desktop-icon');
+
+function openWindow(name){
+  Object.values(windows).forEach((w) => w.hidden = true);
+  windows[name].hidden = false;
+  overlay.hidden = false;
+  icons.forEach((i) => i.classList.toggle('selected', i.dataset.window === name));
+}
+function closeWindow(){
+  overlay.hidden = true;
+  icons.forEach((i) => i.classList.remove('selected'));
+}
+
+icons.forEach((icon) => {
+  icon.addEventListener('click', () => openWindow(icon.dataset.window));
+});
+document.getElementById('window-scrim').addEventListener('click', closeWindow);
+document.querySelectorAll('[data-close]').forEach((btn) => btn.addEventListener('click', closeWindow));
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeWindow(); });
+
+// ---- Editable tags ----
+const TAGS_KEY = 'portfolio_tags_v1';
+const DEFAULT_TAGS = {
+  about: ['Brand strategy', 'Campaign design', 'Copywriting', 'HTML/CSS/JS', 'Figma'],
+  fomo: ['Growth', 'Product design', 'Marketing'],
+  contact: ['Open to work', 'Remote friendly'],
+};
+
+function loadAllTags() {
+  try { return JSON.parse(localStorage.getItem(TAGS_KEY)) || {}; } catch (e) { return {}; }
+}
+function saveTagsFor(key, tags) {
+  const all = loadAllTags();
+  all[key] = tags;
+  localStorage.setItem(TAGS_KEY, JSON.stringify(all));
+}
+
+const tagState = {};
+['about', 'fomo', 'contact'].forEach((key) => {
+  const all = loadAllTags();
+  tagState[key] = all[key] || DEFAULT_TAGS[key].slice();
+});
+
+function renderTags(key) {
+  const container = document.getElementById('tags-' + key);
+  if (!container) return;
+  container.innerHTML = '';
+
+  tagState[key].forEach((text, i) => {
+    const pill = document.createElement('span');
+    pill.className = 'skill-tag';
+
+    const label = document.createElement('span');
+    label.className = 'tag-text';
+    label.contentEditable = 'true';
+    label.textContent = text;
+    label.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); label.blur(); }
+    });
+    label.addEventListener('blur', () => {
+      const val = label.textContent.trim();
+      if (!val) { tagState[key].splice(i, 1); saveTagsFor(key, tagState[key]); renderTags(key); return; }
+      tagState[key][i] = val;
+      saveTagsFor(key, tagState[key]);
+    });
+
+    const del = document.createElement('button');
+    del.type = 'button';
+    del.className = 'tag-del';
+    del.setAttribute('aria-label', 'Delete tag');
+    del.textContent = '×';
+    del.addEventListener('click', () => {
+      tagState[key].splice(i, 1);
+      saveTagsFor(key, tagState[key]);
+      renderTags(key);
+    });
+
+    pill.appendChild(label);
+    pill.appendChild(del);
+    container.appendChild(pill);
+  });
+
+  const addBtn = document.createElement('button');
+  addBtn.type = 'button';
+  addBtn.className = 'tag-add-btn';
+  addBtn.textContent = '+ add tag';
+  addBtn.addEventListener('click', () => {
+    tagState[key].push('new tag');
+    saveTagsFor(key, tagState[key]);
+    renderTags(key);
+    const labels = container.querySelectorAll('.tag-text');
+    const last = labels[labels.length - 1];
+    if (last) {
+      last.focus();
+      document.execCommand('selectAll', false, null);
+    }
+  });
+  container.appendChild(addBtn);
+}
+
+['about', 'fomo', 'contact'].forEach(renderTags);
+</script>
 </body>
 </html>
