@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jesse Baizer</title>
 <meta name="description" content="Portfolio of Jesse Baizer.">
-<link rel="icon" href="fomo-favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -15,18 +14,44 @@
   --amber:#C1793D; --amber-deep:#9C5A28; --rust:#A8462B; --forest:#5A7350;
   --text:#3E2F22; --text-dim:rgba(62,47,34,0.68); --border:rgba(62,47,34,0.14);
   --radius:14px;
+
+  /* Season theme (default = fall) */
+  --season-bg: url('wallpaper-fall.jpg');
+  --season-fallback: #7C5A3A;
+  --overlay-a: rgba(120,70,20,0.12); --overlay-b: rgba(90,45,20,0.22);
+  --folder-a: #E8C285; --folder-b: #B5732E;
+  --menubar-tint: rgba(58,38,22,0.5);
 }
+html[data-season="fall"]{
+  --season-bg: url('wallpaper-fall.jpg'); --season-fallback: #7C5A3A;
+  --overlay-a: rgba(120,70,20,0.12); --overlay-b: rgba(90,45,20,0.22);
+  --folder-a: #E8C285; --folder-b: #B5732E;
+  --menubar-tint: rgba(58,38,22,0.5);
+}
+html[data-season="winter"]{
+  --season-bg: url('wallpaper-winter.jpg'); --season-fallback: #3F5872;
+  --overlay-a: rgba(80,120,170,0.14); --overlay-b: rgba(40,70,110,0.28);
+  --folder-a: #E3F2FD; --folder-b: #4A7FB5;
+  --menubar-tint: rgba(35,55,80,0.5);
+}
+html[data-season="spring"]{
+  --season-bg: url('wallpaper-spring.jpg'); --season-fallback: #5C8C56;
+  --overlay-a: rgba(120,170,90,0.10); --overlay-b: rgba(70,120,60,0.20);
+  --folder-a: #DFF5D8; --folder-b: #5FA463;
+  --menubar-tint: rgba(45,70,40,0.45);
+}
+
 *{box-sizing:border-box;}
 html,body{margin:0; height:100%; overflow:hidden;}
 body{font-family:'Nunito','Inter',-apple-system,sans-serif; color:var(--text);}
 h1,h2,h3{font-family:'Lora',serif; font-weight:600;}
 [hidden]{display:none !important;}
 
-.desktop{position:fixed; inset:0; background:url('wallpaper.jpg') center/cover no-repeat; overflow:hidden;}
-.desktop::after{content:''; position:absolute; inset:0; background:linear-gradient(180deg, rgba(120,70,20,0.12), rgba(90,45,20,0.22)); mix-blend-mode:multiply; pointer-events:none;}
+.desktop{position:fixed; inset:0; background-image:var(--season-bg); background-color:var(--season-fallback); background-size:cover; background-position:center; background-repeat:no-repeat; overflow:hidden; transition:background-color .4s ease;}
+.desktop::after{content:''; position:absolute; inset:0; background:linear-gradient(180deg, var(--overlay-a), var(--overlay-b)); mix-blend-mode:multiply; pointer-events:none;}
 
 /* Menu bar */
-.menubar{position:fixed; top:0; left:0; right:0; height:28px; background:rgba(58,38,22,0.5); backdrop-filter:blur(20px) saturate(1.3); display:flex; align-items:center; justify-content:space-between; padding:0 16px; z-index:20; font-size:0.8rem; color:#FBF3E7; font-weight:700;}
+.menubar{position:fixed; top:0; left:0; right:0; height:28px; background:var(--menubar-tint); backdrop-filter:blur(20px) saturate(1.3); display:flex; align-items:center; justify-content:space-between; padding:0 16px; z-index:20; font-size:0.8rem; color:#FBF3E7; font-weight:700;}
 .menubar .left{display:flex; align-items:center; gap:8px;}
 .menubar .left span.light{opacity:.85; font-weight:600;}
 
@@ -74,6 +99,27 @@ h1,h2,h3{font-family:'Lora',serif; font-weight:600;}
 
 .contact-btns{display:flex; gap:10px; flex-wrap:wrap; margin-top:6px;}
 
+/* Mail compose window */
+.mail-titlebar{display:flex; align-items:center; gap:10px; padding:12px 16px;}
+.mail-icon{width:26px; height:26px; border-radius:6px; background:#fff; display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 1px 2px rgba(0,0,0,.15);}
+.mail-icon svg{width:18px; height:18px;}
+.mail-titlebar-text{font-size:0.92rem; color:var(--text);}
+.mail-titlebar-text b{font-weight:700;}
+.mail-titlebar-text .sep{color:var(--text-dim); font-weight:400; margin:0 2px;}
+.mail-actions{margin-left:auto; display:flex; align-items:center; gap:16px; color:var(--text-dim);}
+.mail-actions button, .mail-actions a{background:none; border:none; padding:0; cursor:pointer; color:inherit; display:flex; align-items:center; text-decoration:none;}
+.mail-actions svg{width:16px; height:16px; flex-shrink:0;}
+.mail-send{color:var(--amber-deep) !important;}
+.mail-send:hover{color:var(--rust) !important;}
+.mail-field-row{display:flex; align-items:center; gap:10px; padding:10px 20px; border-bottom:1px solid var(--border); font-size:0.88rem;}
+.mail-field-label{color:var(--text-dim); width:56px; flex-shrink:0;}
+.mail-chip{background:rgba(193,121,61,0.15); color:var(--amber-deep); padding:3px 10px; border-radius:6px; font-weight:600;}
+.mail-body{padding:24px 20px;}
+.mail-body p{margin:0 0 22px; font-size:1rem; color:var(--text);}
+.mail-sig{font-size:0.9rem; color:var(--text-dim);}
+.mail-sig a{color:var(--amber-deep); font-weight:700; text-decoration:none;}
+.mail-sig a:hover{text-decoration:underline;}
+
 .btn{display:inline-flex; align-items:center; gap:6px; padding:11px 20px; border-radius:999px; font-weight:700; font-size:0.86rem; cursor:pointer; border:none; text-decoration:none; font-family:'Nunito',sans-serif;}
 .btn-primary{background:linear-gradient(135deg, var(--amber-deep), var(--amber)); color:#fff;}
 .btn-secondary{background:#fff; color:var(--text); border:1px solid var(--border);}
@@ -100,21 +146,21 @@ a{color:inherit;}
 
   <div class="icons-row">
     <button class="desktop-icon" data-window="about">
-      <svg viewBox="0 0 64 52"><defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E8C285"/><stop offset="1" stop-color="#B5732E"/></linearGradient></defs>
+      <svg viewBox="0 0 64 52"><defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--folder-a)"/><stop offset="1" style="stop-color:var(--folder-b)"/></linearGradient></defs>
         <rect x="4" y="10" width="26" height="9" rx="3" fill="url(#g1)"/>
         <rect x="4" y="14" width="56" height="34" rx="6" fill="url(#g1)"/>
       </svg>
       <span>about me</span>
     </button>
     <button class="desktop-icon" data-window="fomo">
-      <svg viewBox="0 0 64 52"><defs><linearGradient id="g2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E8C285"/><stop offset="1" stop-color="#9C5A28"/></linearGradient></defs>
+      <svg viewBox="0 0 64 52"><defs><linearGradient id="g2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--folder-a)"/><stop offset="1" style="stop-color:var(--folder-b)"/></linearGradient></defs>
         <rect x="4" y="10" width="26" height="9" rx="3" fill="url(#g2)"/>
         <rect x="4" y="14" width="56" height="34" rx="6" fill="url(#g2)"/>
       </svg>
       <span>fomo</span>
     </button>
     <button class="desktop-icon" data-window="contact">
-      <svg viewBox="0 0 64 52"><defs><linearGradient id="g3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E8C285"/><stop offset="1" stop-color="#B5732E"/></linearGradient></defs>
+      <svg viewBox="0 0 64 52"><defs><linearGradient id="g3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--folder-a)"/><stop offset="1" style="stop-color:var(--folder-b)"/></linearGradient></defs>
         <rect x="4" y="10" width="26" height="9" rx="3" fill="url(#g3)"/>
         <rect x="4" y="14" width="56" height="34" rx="6" fill="url(#g3)"/>
       </svg>
@@ -149,32 +195,49 @@ a{color:inherit;}
       <div class="win-project" style="margin-bottom:0;">
         <h3>fomo / campus</h3>
         <p>I helped build and ship fomo campus from the ground up — onboarding 1,000+ chapters across the top 50 schools nationwide and beyond, and setting up paid internship and ambassador roles for students on campus.</p>
-        <a href="greekwars.html" class="win-link">View the page →</a>
       </div>
       <div class="skill-tags" id="tags-fomo"></div>
     </div>
   </div>
 
   <div class="mac-window" id="win-contact" hidden>
-    <div class="window-titlebar">
+    <div class="mail-titlebar">
       <span class="traffic red" data-close></span><span class="traffic yellow"></span><span class="traffic green"></span>
-      <span class="window-title">contact</span>
-    </div>
-    <div class="window-body">
-      <h2>Let's talk.</h2>
-      <p>Open to opportunities in growth, marketing, and product. The fastest way to reach me is email.</p>
-      <p style="font-weight:700; font-size:1.05rem; color:var(--text);">jessebaizer@gmail.com</p>
-      <div class="contact-btns">
-        <a href="mailto:jessebaizer@gmail.com?subject=Project%20overview%2C%20role%20description%2C%20or%20anything%20else" class="btn btn-primary">Email me</a>
-        <a href="https://www.linkedin.com/in/jesse-baizer-06a3262a1/" target="_blank" rel="noopener" class="btn btn-secondary">LinkedIn</a>
-        <a href="https://www.instagram.com/jessebaizer/" target="_blank" rel="noopener" class="btn btn-secondary">Instagram</a>
+      <div class="mail-icon">
+        <svg viewBox="0 0 24 24"><rect x="2" y="4.5" width="20" height="15" rx="1.5" fill="#fff" stroke="#EA4335" stroke-width="1.6"/><path d="M2.8 5.5 12 13 21.2 5.5" fill="none" stroke="#EA4335" stroke-width="1.6"/></svg>
       </div>
-      <div class="skill-tags" id="tags-contact" style="margin-top:16px; margin-bottom:0;"></div>
+      <div class="mail-titlebar-text"><b>Gmail</b><span class="sep">/</span>new message</div>
+      <div class="mail-actions">
+        <a href="mailto:jessebaizer@gmail.com?subject=Project%20overview%2C%20role%20description%2C%20or%20anything%20else" class="mail-send" aria-label="Send email">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7Z"/></svg>
+        </a>
+        <button type="button" aria-label="Attach" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.5 12.5 21a5 5 0 0 1-7-7L14 5.5a3.5 3.5 0 0 1 5 5L10.5 19a2 2 0 0 1-3-3l7-7"/></svg>
+        </button>
+        <button type="button" aria-label="Text format" disabled style="font-size:0.8rem; font-weight:700;">Aa</button>
+      </div>
+    </div>
+    <div class="mail-field-row"><span class="mail-field-label">To:</span><span class="mail-chip">jessebaizer@gmail.com</span></div>
+    <div class="mail-field-row"><span class="mail-field-label">Subject:</span><span>Project overview, role description, or anything else</span></div>
+    <div class="mail-body">
+      <p>Shoot your idea over.</p>
+      <p class="mail-sig">jesse baizer · <a href="https://www.linkedin.com/in/jesse-baizer-06a3262a1/" target="_blank" rel="noopener">LinkedIn</a> · <a href="https://www.instagram.com/jessebaizer/" target="_blank" rel="noopener">Instagram</a></p>
     </div>
   </div>
 </div>
 
 <script>
+// ---- Seasonal theme ----
+// Boundaries: spring Mar 20, summer Jun 21, fall Sep 22, winter Dec 21
+function getSeason(date) {
+  const m = date.getMonth(); // 0 = Jan
+  const d = date.getDate();
+  if ((m === 2 && d >= 20) || m === 3 || m === 4 || (m === 5 && d <= 20)) return 'spring';
+  if ((m === 11 && d >= 21) || m === 0 || m === 1 || (m === 2 && d < 20)) return 'winter';
+  return 'fall'; // Jun 21 – Dec 20 (summer folded into fall)
+}
+document.documentElement.dataset.season = getSeason(new Date());
+
 function updateClock(){
   document.getElementById('menu-clock').textContent = new Date().toLocaleString(undefined, {
     weekday:'short', month:'short', day:'numeric', hour:'numeric', minute:'2-digit'
@@ -210,7 +273,6 @@ const TAGS_KEY = 'portfolio_tags_v1';
 const DEFAULT_TAGS = {
   about: ['Brand strategy', 'Campaign design', 'Copywriting', 'HTML/CSS/JS', 'Figma'],
   fomo: ['Growth', 'Product design', 'Marketing'],
-  contact: ['Open to work', 'Remote friendly'],
 };
 
 function loadAllTags() {
@@ -223,7 +285,7 @@ function saveTagsFor(key, tags) {
 }
 
 const tagState = {};
-['about', 'fomo', 'contact'].forEach((key) => {
+['about', 'fomo'].forEach((key) => {
   const all = loadAllTags();
   tagState[key] = all[key] || DEFAULT_TAGS[key].slice();
 });
@@ -285,7 +347,7 @@ function renderTags(key) {
   container.appendChild(addBtn);
 }
 
-['about', 'fomo', 'contact'].forEach(renderTags);
+['about', 'fomo'].forEach(renderTags);
 </script>
 </body>
 </html>
