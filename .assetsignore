@@ -3,3 +3,7 @@
 .wrangler
 wrangler.jsonc
 .assetsignore
+worker
+.dev.vars*
+.env*
+node_modules

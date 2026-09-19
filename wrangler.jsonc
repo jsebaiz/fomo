@@ -1,11 +1,20 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "project",
+  "main": "worker/index.js",
   "compatibility_date": "2026-08-31",
   "observability": {
     "enabled": true
   },
   "assets": {
-    "directory": "."
-  }
+    "directory": ".",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"]
+  },
+  "kv_namespaces": [
+    {
+      "binding": "FLIGHTS",
+      "id": "e3a2ede85d654c699e34d03961ee8a2c"
+    }
+  ]
 }
