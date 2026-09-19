@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>fomo / test builds</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0B091F; --ink-2:#131029; --ink-3:#1b1740;
+  --border:rgba(234,237,255,0.10); --border-strong:rgba(234,237,255,0.18);
+  --blue:#516AF6; --blue-electric:#4A36FF; --blue-light:#ACB8F9;
+  --text:#EAEDFF; --text-dim:rgba(234,237,255,0.68); --text-faint:rgba(234,237,255,0.42);
+  --green:#7FE3B4; --amber:#F6C85F; --red:#FF8C8C;
+  --radius:18px; --radius-sm:12px;
+}
+*{box-sizing:border-box;}
+[hidden]{display:none !important;}
+html{overflow-x:hidden;}
+body{margin:0; background:var(--ink); color:var(--text); font-family:'Schibsted Grotesk','Inter',-apple-system,sans-serif; line-height:1.5;}
+h1,h2,h3{margin:0 0 .4em; letter-spacing:-0.01em; font-weight:700; line-height:1.15;}
+p{margin:0; color:var(--text-dim);}
+a{color:inherit; text-decoration:none;}
+.halo{position:fixed; top:-20%; left:50%; transform:translateX(-50%); width:1400px; height:900px; max-width:200vw; background:radial-gradient(circle, rgba(74,54,255,0.2) 0%, rgba(74,54,255,0.05) 45%, transparent 70%); pointer-events:none; z-index:0;}
+.container{max-width:920px; margin:0 auto; padding:0 24px; position:relative; z-index:1;}
+
+header{padding:28px 0 8px;}
+.brand{font-weight:700; font-size:1.05rem;}
+.brand .slash{color:var(--blue-light); font-weight:600;}
+
+.intro{padding:40px 0 8px;}
+.intro h1{font-size:clamp(1.8rem,4.5vw,2.6rem);}
+.intro p{max-width:520px;}
+
+.label{font-size:0.76rem; text-transform:uppercase; letter-spacing:0.07em; color:var(--blue-light); font-weight:700; margin:36px 0 14px;}
+
+.pill{display:inline-block; font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; padding:3px 10px; border-radius:999px; background:rgba(234,237,255,0.08); color:var(--text-dim);}
+.pill.stable{background:rgba(127,227,180,0.14); color:var(--green);}
+.pill.beta{background:rgba(246,200,95,0.14); color:var(--amber);}
+.pill.broken{background:rgba(255,140,140,0.14); color:var(--red);}
+.pill.sample{background:rgba(172,184,249,0.14); color:var(--blue-light);}
+
+.latest{background:linear-gradient(160deg, rgba(81,106,246,0.16), rgba(74,54,255,0.05)); border:1px solid rgba(81,106,246,0.35); border-radius:var(--radius); padding:28px; display:flex; gap:24px; justify-content:space-between; align-items:flex-start; flex-wrap:wrap;}
+.latest h2{font-size:1.5rem; margin-bottom:6px;}
+.latest .meta{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;}
+.latest p{max-width:460px; font-size:0.94rem;}
+
+.btn{display:inline-flex; align-items:center; gap:8px; padding:12px 22px; border-radius:999px; font-weight:700; font-size:0.9rem; cursor:pointer; border:1px solid transparent; font-family:inherit; transition:transform .15s ease, filter .15s ease;}
+.btn:hover{transform:translateY(-1px);}
+.btn-primary{background:linear-gradient(135deg, var(--blue-electric), var(--blue)); color:#fff;}
+.btn-ghost{background:transparent; color:var(--text); border-color:var(--border-strong);}
+.btn[aria-disabled="true"]{opacity:.45; pointer-events:none;}
+
+.tabs{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px;}
+.tab{font-family:inherit; font-size:0.84rem; font-weight:600; padding:8px 16px; border-radius:999px; background:transparent; border:1px solid var(--border-strong); color:var(--text-dim); cursor:pointer;}
+.tab.active{background:var(--blue); border-color:var(--blue); color:#fff;}
+
+.build-list{background:var(--ink-2); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden;}
+.build{border-bottom:1px solid var(--border);}
+.build:last-child{border-bottom:none;}
+.build-row{display:grid; grid-template-columns:1.3fr 0.7fr 0.9fr auto; gap:12px; align-items:center; padding:16px 20px; cursor:pointer;}
+.build-row:hover{background:rgba(234,237,255,0.03);}
+.build-ver{font-weight:700;}
+.build-ver span{display:block; font-weight:400; font-size:0.78rem; color:var(--text-faint);}
+.build-date{font-size:0.84rem; color:var(--text-dim);}
+.chev{color:var(--text-faint); transition:transform .2s ease;}
+.build.open .chev{transform:rotate(90deg);}
+.build-detail{padding:0 20px 18px; display:none;}
+.build.open .build-detail{display:block;}
+.build-detail ul{margin:0 0 14px; padding-left:18px; color:var(--text-dim); font-size:0.88rem;}
+.build-detail li{margin-bottom:4px;}
+.detail-actions{display:flex; gap:10px; flex-wrap:wrap;}
+.empty{padding:36px 20px; text-align:center; color:var(--text-faint); font-size:0.9rem;}
+
+.how{background:var(--ink-2); border:1px solid var(--border); border-radius:var(--radius); padding:22px 26px;}
+.how ol{margin:10px 0 0; padding-left:20px; color:var(--text-dim); font-size:0.9rem;}
+.how li{margin-bottom:6px;}
+
+footer{padding:40px 0 56px;}
+footer p{font-size:0.78rem; color:var(--text-faint);}
+
+@media (max-width:640px){
+  .build-row{grid-template-columns:1fr auto; row-gap:6px;}
+  .build-row .build-date{grid-column:1;}
+  .latest{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+
+<div class="halo" aria-hidden="true"></div>
+
+<div class="container">
+  <header><span class="brand">fomo <span class="slash">/ test builds</span></span></header>
+
+  <section class="intro">
+    <h1>test builds.</h1>
+    <p>Every build worth trying, in one place. Grab the latest, check what changed, and tell us what breaks.</p>
+  </section>
+
+  <p class="label">latest build</p>
+  <div class="latest" id="latest"></div>
+
+  <p class="label">all builds</p>
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-filter="all">all</button>
+    <button class="tab" data-filter="ios">ios</button>
+    <button class="tab" data-filter="android">android</button>
+    <button class="tab" data-filter="web">web</button>
+  </div>
+  <div class="build-list" id="build-list"></div>
+
+  <p class="label">how to test</p>
+  <div class="how">
+    <h3 style="font-size:1.05rem; margin:0;">Getting a build running</h3>
+    <ol>
+      <li>Pick a build above and hit <b>install</b>.</li>
+      <li>Use it for real, the way you would trade on fomo day to day.</li>
+      <li>Something off? Open the build's notes and send the details back.</li>
+    </ol>
+  </div>
+
+  <footer><p>fomo test builds are pre-release and may be unstable. Trading involves risk. Nothing here is financial advice.</p></footer>
+</div>
+
+<script>
+// ------------------------------------------------------------------
+// Add real builds here, newest first. Entries flagged `sample: true`
+// are placeholders showing what a build looks like — delete them once
+// you add real ones.
+//   platform: 'ios' | 'android' | 'web'
+//   status:   'stable' | 'beta' | 'broken'
+//   link:     install / TestFlight / download URL ('' shows a disabled button)
+// ------------------------------------------------------------------
+const BUILDS = [
+  {
+    version: 'sample-build-2', build: 'Build 0002', platform: 'ios', status: 'beta', date: '2026-09-18',
+    notes: ['Replace this sample with a real build.', 'Add one line per change so testers know what to look at.'],
+    link: '', sample: true,
+  },
+  {
+    version: 'sample-build-1', build: 'Build 0001', platform: 'web', status: 'stable', date: '2026-09-10',
+    notes: ['Sample entry, shown only to demonstrate the layout.'],
+    link: '', sample: true,
+  },
+];
+
+const PLATFORM_LABEL = { ios: 'iOS', android: 'Android', web: 'Web' };
+let filter = 'all';
+
+function fmtDate(iso) {
+  const [y, m, d] = iso.split('-').map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+}
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+function pills(b) {
+  return `<span class="pill" style="text-transform:none; letter-spacing:0;">${PLATFORM_LABEL[b.platform] || esc(b.platform)}</span>` +
+    `<span class="pill ${esc(b.status)}">${esc(b.status)}</span>` +
+    (b.sample ? '<span class="pill sample">sample</span>' : '');
+}
+function installBtn(b, cls) {
+  return b.link
+    ? `<a class="btn ${cls}" href="${esc(b.link)}" target="_blank" rel="noopener">Install</a>`
+    : `<a class="btn ${cls}" aria-disabled="true">Install</a>`;
+}
+
+function renderLatest() {
+  const el = document.getElementById('latest');
+  const b = BUILDS[0];
+  if (!b) { el.innerHTML = '<p>No builds yet.</p>'; return; }
+  el.innerHTML = `
+    <div>
+      <div class="meta">${pills(b)}</div>
+      <h2>${esc(b.version)}</h2>
+      <p>${esc(b.build)} · ${fmtDate(b.date)}${b.notes[0] ? ' — ' + esc(b.notes[0]) : ''}</p>
+    </div>
+    ${installBtn(b, 'btn-primary')}`;
+}
+
+function renderList() {
+  const list = document.getElementById('build-list');
+  const items = BUILDS.filter((b) => filter === 'all' || b.platform === filter);
+  if (!items.length) { list.innerHTML = '<div class="empty">No builds for this platform yet.</div>'; return; }
+  list.innerHTML = items.map((b, i) => `
+    <div class="build" data-i="${i}">
+      <div class="build-row">
+        <div class="build-ver">${esc(b.version)}<span>${esc(b.build)}</span></div>
+        <div>${pills(b)}</div>
+        <div class="build-date">${fmtDate(b.date)}</div>
+        <span class="chev">›</span>
+      </div>
+      <div class="build-detail">
+        <ul>${b.notes.map((n) => `<li>${esc(n)}</li>`).join('')}</ul>
+        <div class="detail-actions">${installBtn(b, 'btn-primary')}</div>
+      </div>
+    </div>`).join('');
+  list.querySelectorAll('.build-row').forEach((row) => {
+    row.addEventListener('click', () => row.parentElement.classList.toggle('open'));
+  });
+}
+
+document.querySelectorAll('#tabs .tab').forEach((tab) => {
+  tab.addEventListener('click', () => {
+    filter = tab.dataset.filter;
+    document.querySelectorAll('#tabs .tab').forEach((t) => t.classList.toggle('active', t === tab));
+    renderList();
+  });
+});
+
+renderLatest();
+renderList();
+</script>
+</body>
+</html>
