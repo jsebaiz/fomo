@@ -53,16 +53,6 @@ async function guard(request, env) {
   return null;
 }
 
-// Reading needs the viewer password (the admin passcode also works).
-async function guardView(request, env) {
-  const view = await check(request, env, 'x-view-pass', 'VIEW_PASSCODE');
-  if (view === true) return null;
-  const admin = await check(request, env, 'x-passcode', 'ADMIN_PASSCODE');
-  if (admin === true) return null;
-  if (view === 'unconfigured') return json({ error: 'Login is not configured on the server' }, 503);
-  return json({ error: 'Wrong password' }, 401);
-}
-
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -70,14 +60,7 @@ export default {
 
     if (!path.startsWith('/api/')) return env.ASSETS.fetch(request);
 
-    if (path === '/api/login' && request.method === 'POST') {
-      const denied = await guardView(request, env);
-      return denied || empty(204);
-    }
-
     if (path === '/api/flights' && request.method === 'GET') {
-      const denied = await guardView(request, env);
-      if (denied) return denied;
       const flights = await readFlights(env);
       flights.sort((a, b) => (a.date === b.date ? (a.createdAt < b.createdAt ? 1 : -1) : a.date < b.date ? 1 : -1));
       return json({ flights });
@@ -120,7 +103,7 @@ export default {
       return empty(204);
     }
 
-    if (path === '/api/flights' || path === '/api/auth' || path === '/api/login' || del) return json({ error: 'Method not allowed' }, 405);
+    if (path === '/api/flights' || path === '/api/auth' || del) return json({ error: 'Method not allowed' }, 405);
     return json({ error: 'Not found' }, 404);
   },
 };

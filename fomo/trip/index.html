@@ -130,10 +130,7 @@ footer p{font-size:0.8rem; color:var(--text-faint); max-width:560px;}
 .login-box{position:relative; z-index:3; width:100%; max-width:340px; text-align:center;}
 .login-wordmark{display:block; font-size:clamp(4.5rem,14vw,7rem); font-weight:800; letter-spacing:-0.05em; line-height:0.95; color:var(--text); margin-bottom:12px;}
 .login-sub{font-size:1rem; margin-bottom:22px;}
-.login-box input{width:100%; background:rgba(255,255,255,0.06); border:1px solid var(--border-strong); border-radius:12px; padding:15px 16px; color:var(--text); font-size:1rem; font-family:inherit; text-align:center; outline:none; margin-bottom:12px; color-scheme:dark;}
-.login-box input:focus{border-color:var(--blue);}
 .login-box .btn{width:100%;}
-.login-box .msg{text-align:center; margin:0 0 12px;}
 
 /* ---- modal ---- */
 .modal-overlay{position:fixed; inset:0; background:rgba(5,4,15,.78); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; z-index:100; padding:20px;}
@@ -161,7 +158,7 @@ footer p{font-size:0.8rem; color:var(--text-faint); max-width:560px;}
 }
 @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} }
 </style>
-<script>if (sessionStorage.getItem('trip_view')) document.documentElement.classList.add('has-session');</script>
+<script>if (sessionStorage.getItem('trip_entered')) document.documentElement.classList.add('has-session');</script>
 </head>
 
 <body>
@@ -170,13 +167,11 @@ footer p{font-size:0.8rem; color:var(--text-faint); max-width:560px;}
   <div class="stars" id="login-stars" aria-hidden="true"></div>
   <div class="earth" aria-hidden="true"></div>
   <div class="hero-shade" aria-hidden="true"></div>
-  <form class="login-box" id="login-form">
+  <div class="login-box">
     <span class="login-wordmark">fomo</span>
-    <p class="login-sub">enter the password to continue.</p>
-    <input type="password" id="login-pass" placeholder="password" autocomplete="off" required>
-    <p class="msg err" id="login-msg"></p>
-    <button type="submit" class="btn btn-primary btn-lg" id="login-btn">enter</button>
-  </form>
+    <p class="login-sub">where creators take flight.</p>
+    <button type="button" class="btn btn-primary btn-lg" id="login-btn">enter</button>
+  </div>
 </div>
 
 <section class="hero" id="top">
@@ -343,7 +338,6 @@ let flights = [];
 let mode = 'day';   // 'day' | 'week'
 let offset = 0;     // 0 = today / this week, negative = earlier
 let passcode = sessionStorage.getItem('trip_pass') || '';
-let viewPass = sessionStorage.getItem('trip_view') || '';
 
 // ---------- Helpers ----------
 const $ = (id) => document.getElementById(id);
@@ -578,15 +572,10 @@ $('next').addEventListener('click', () => { if (offset < 0) { offset += 1; rende
 // ---------- Data ----------
 async function loadFlights() {
   try {
-    const res = await fetch('/api/flights', { cache: 'no-store', headers: { 'x-view-pass': viewPass } });
-    if (res.status === 401 || res.status === 503) {
-      showLogin(res.status === 503 ? 'this page isn’t set up yet.' : (viewPass ? 'session expired. enter the password again.' : ''));
-      return;
-    }
+    const res = await fetch('/api/flights', { cache: 'no-store' });
     if (!res.ok) throw new Error('bad status');
     flights = (await res.json()).flights || [];
     $('load-error').hidden = true;
-    hideLogin();
   } catch (e) {
     $('load-error').hidden = false;
   }
@@ -594,42 +583,13 @@ async function loadFlights() {
 }
 $('retry-btn').addEventListener('click', loadFlights);
 
-// ---------- Login ----------
-function showLogin(msg) {
-  viewPass = '';
-  sessionStorage.removeItem('trip_view');
-  document.documentElement.classList.remove('has-session');
-  $('login').hidden = false;
-  $('login-msg').textContent = msg || '';
-  $('login-pass').focus();
-}
-function hideLogin() {
-  $('login').hidden = true;
+// ---------- Enter screen ----------
+function enter() {
+  sessionStorage.setItem('trip_entered', '1');
   document.documentElement.classList.add('has-session');
+  $('login').hidden = true;
 }
-$('login-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const attempt = $('login-pass').value;
-  $('login-btn').disabled = true;
-  $('login-msg').textContent = '';
-  try {
-    const res = await fetch('/api/login', { method: 'POST', headers: { 'x-view-pass': attempt } });
-    if (res.status === 204) {
-      viewPass = attempt;
-      sessionStorage.setItem('trip_view', attempt);
-      $('login-pass').value = '';
-      await loadFlights();
-    } else if (res.status === 503) {
-      $('login-msg').textContent = 'this page isn’t set up yet.';
-    } else {
-      $('login-msg').textContent = 'wrong password.';
-      $('login-pass').select();
-    }
-  } catch (err) {
-    $('login-msg').textContent = 'couldn’t reach the server.';
-  }
-  $('login-btn').disabled = false;
-});
+$('login-btn').addEventListener('click', enter);
 
 // ---------- Admin ----------
 function syncAdminUI() {
@@ -750,7 +710,8 @@ fillSelects();
 syncAdminUI();
 setModeUI();
 initMap();
-if (viewPass) loadFlights(); else showLogin();
+loadFlights();
+if (!sessionStorage.getItem('trip_entered')) $('login-btn').focus();
 </script>
 </body>
 </html>
