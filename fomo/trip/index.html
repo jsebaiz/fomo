@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>fomo / test builds</title>
+<title>fomo / trip</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -14,7 +14,7 @@
   --border:rgba(234,237,255,0.10); --border-strong:rgba(234,237,255,0.18);
   --blue:#516AF6; --blue-electric:#4A36FF; --blue-light:#ACB8F9;
   --text:#EAEDFF; --text-dim:rgba(234,237,255,0.68); --text-faint:rgba(234,237,255,0.42);
-  --green:#7FE3B4; --amber:#F6C85F; --red:#FF8C8C;
+  --green:#7FE3B4; --red:#FF8C8C;
   --radius:18px; --radius-sm:12px;
 }
 *{box-sizing:border-box;}
@@ -23,197 +23,616 @@ html{overflow-x:hidden;}
 body{margin:0; background:var(--ink); color:var(--text); font-family:'Schibsted Grotesk','Inter',-apple-system,sans-serif; line-height:1.5;}
 h1,h2,h3{margin:0 0 .4em; letter-spacing:-0.01em; font-weight:700; line-height:1.15;}
 p{margin:0; color:var(--text-dim);}
-a{color:inherit; text-decoration:none;}
+button{font-family:inherit;}
 .halo{position:fixed; top:-20%; left:50%; transform:translateX(-50%); width:1400px; height:900px; max-width:200vw; background:radial-gradient(circle, rgba(74,54,255,0.2) 0%, rgba(74,54,255,0.05) 45%, transparent 70%); pointer-events:none; z-index:0;}
-.container{max-width:920px; margin:0 auto; padding:0 24px; position:relative; z-index:1;}
+.container{max-width:1000px; margin:0 auto; padding:0 24px; position:relative; z-index:1;}
 
-header{padding:28px 0 8px;}
+header{padding:26px 0 6px; display:flex; align-items:center; justify-content:space-between; gap:12px;}
 .brand{font-weight:700; font-size:1.05rem;}
 .brand .slash{color:var(--blue-light); font-weight:600;}
+.head-actions{display:flex; align-items:center; gap:10px;}
+.admin-dot{display:inline-flex; align-items:center; gap:6px; font-size:0.76rem; color:var(--green); font-weight:700;}
+.admin-dot::before{content:''; width:7px; height:7px; border-radius:50%; background:var(--green);}
 
-.intro{padding:40px 0 8px;}
-.intro h1{font-size:clamp(1.8rem,4.5vw,2.6rem);}
-.intro p{max-width:520px;}
-
-.label{font-size:0.76rem; text-transform:uppercase; letter-spacing:0.07em; color:var(--blue-light); font-weight:700; margin:36px 0 14px;}
-
-.pill{display:inline-block; font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; padding:3px 10px; border-radius:999px; background:rgba(234,237,255,0.08); color:var(--text-dim);}
-.pill.stable{background:rgba(127,227,180,0.14); color:var(--green);}
-.pill.beta{background:rgba(246,200,95,0.14); color:var(--amber);}
-.pill.broken{background:rgba(255,140,140,0.14); color:var(--red);}
-.pill.sample{background:rgba(172,184,249,0.14); color:var(--blue-light);}
-
-.latest{background:linear-gradient(160deg, rgba(81,106,246,0.16), rgba(74,54,255,0.05)); border:1px solid rgba(81,106,246,0.35); border-radius:var(--radius); padding:28px; display:flex; gap:24px; justify-content:space-between; align-items:flex-start; flex-wrap:wrap;}
-.latest h2{font-size:1.5rem; margin-bottom:6px;}
-.latest .meta{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;}
-.latest p{max-width:460px; font-size:0.94rem;}
-
-.btn{display:inline-flex; align-items:center; gap:8px; padding:12px 22px; border-radius:999px; font-weight:700; font-size:0.9rem; cursor:pointer; border:1px solid transparent; font-family:inherit; transition:transform .15s ease, filter .15s ease;}
+.btn{display:inline-flex; align-items:center; gap:8px; padding:11px 20px; border-radius:999px; font-weight:700; font-size:0.86rem; cursor:pointer; border:1px solid transparent; transition:transform .15s ease, filter .15s ease;}
 .btn:hover{transform:translateY(-1px);}
 .btn-primary{background:linear-gradient(135deg, var(--blue-electric), var(--blue)); color:#fff;}
 .btn-ghost{background:transparent; color:var(--text); border-color:var(--border-strong);}
-.btn[aria-disabled="true"]{opacity:.45; pointer-events:none;}
+.btn:disabled{opacity:.5; cursor:default; transform:none;}
 
-.tabs{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px;}
-.tab{font-family:inherit; font-size:0.84rem; font-weight:600; padding:8px 16px; border-radius:999px; background:transparent; border:1px solid var(--border-strong); color:var(--text-dim); cursor:pointer;}
-.tab.active{background:var(--blue); border-color:var(--blue); color:#fff;}
+.intro{padding:34px 0 6px;}
+.intro h1{font-size:clamp(1.8rem,4.5vw,2.6rem);}
+.intro p{max-width:540px;}
 
-.build-list{background:var(--ink-2); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden;}
-.build{border-bottom:1px solid var(--border);}
-.build:last-child{border-bottom:none;}
-.build-row{display:grid; grid-template-columns:1.3fr 0.7fr 0.9fr auto; gap:12px; align-items:center; padding:16px 20px; cursor:pointer;}
-.build-row:hover{background:rgba(234,237,255,0.03);}
-.build-ver{font-weight:700;}
-.build-ver span{display:block; font-weight:400; font-size:0.78rem; color:var(--text-faint);}
-.build-date{font-size:0.84rem; color:var(--text-dim);}
-.chev{color:var(--text-faint); transition:transform .2s ease;}
-.build.open .chev{transform:rotate(90deg);}
-.build-detail{padding:0 20px 18px; display:none;}
-.build.open .build-detail{display:block;}
-.build-detail ul{margin:0 0 14px; padding-left:18px; color:var(--text-dim); font-size:0.88rem;}
-.build-detail li{margin-bottom:4px;}
-.detail-actions{display:flex; gap:10px; flex-wrap:wrap;}
-.empty{padding:36px 20px; text-align:center; color:var(--text-faint); font-size:0.9rem;}
+.label{font-size:0.76rem; text-transform:uppercase; letter-spacing:0.07em; color:var(--blue-light); font-weight:700; margin:34px 0 14px;}
 
-.how{background:var(--ink-2); border:1px solid var(--border); border-radius:var(--radius); padding:22px 26px;}
-.how ol{margin:10px 0 0; padding-left:20px; color:var(--text-dim); font-size:0.9rem;}
-.how li{margin-bottom:6px;}
+.stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px;}
+.stat-card{background:var(--ink-2); border:1px solid var(--border); border-radius:var(--radius); padding:20px 22px;}
+.stat-label{font-size:0.72rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-faint); font-weight:700;}
+.stat-big{font-size:2rem; font-weight:800; color:var(--text); margin:4px 0 2px; font-variant-numeric:tabular-nums; line-height:1.1;}
+.stat-sub{font-size:0.82rem; color:var(--text-dim);}
+
+.panel{background:var(--ink-2); border:1px solid var(--border); border-radius:var(--radius); padding:20px;}
+.map-bar{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:14px;}
+.seg{display:inline-flex; background:var(--ink); border:1px solid var(--border-strong); border-radius:999px; padding:3px;}
+.seg button{background:transparent; border:none; color:var(--text-dim); font-weight:700; font-size:0.82rem; padding:7px 16px; border-radius:999px; cursor:pointer;}
+.seg button.active{background:var(--blue); color:#fff;}
+.nav{display:flex; align-items:center; gap:10px;}
+.nav-label{font-weight:700; font-size:0.9rem; min-width:150px; text-align:center;}
+.icon-btn{width:32px; height:32px; border-radius:9px; background:var(--ink); border:1px solid var(--border-strong); color:var(--text); cursor:pointer; font-size:0.95rem;}
+.icon-btn:hover{background:var(--ink-3);}
+.icon-btn:disabled{opacity:.35; cursor:default;}
+
+#map{position:relative; width:100%; line-height:0;}
+#map svg{width:100%; height:auto; display:block;}
+#map .state{fill:#1a1640; stroke:rgba(234,237,255,0.12); stroke-width:0.6;}
+.route{fill:none; stroke:var(--blue-light); stroke-linecap:round; stroke-dasharray:3 6; opacity:.9;}
+.route-hit{fill:none; stroke:transparent; stroke-width:18; cursor:pointer;}
+.airport{fill:var(--ink); stroke:var(--green); stroke-width:2.2; cursor:pointer;}
+.airport-label{fill:var(--text); font-size:11px; font-weight:700; paint-order:stroke; stroke:rgba(11,9,31,.85); stroke-width:3px; pointer-events:none;}
+.plane{fill:#fff; pointer-events:none; filter:drop-shadow(0 1px 2px rgba(0,0,0,.6));}
+.map-tip{position:absolute; z-index:3; pointer-events:none; background:var(--ink); border:1px solid var(--border-strong); border-radius:10px; padding:8px 12px; font-size:0.8rem; line-height:1.4; color:var(--text); white-space:nowrap; box-shadow:0 8px 20px rgba(0,0,0,.45); transform:translate(-50%,-125%);}
+.map-tip b{display:block; font-size:0.86rem;}
+.map-tip span{color:var(--text-dim);}
+.map-empty{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; line-height:1.4;}
+.map-empty span{background:rgba(11,9,31,.85); border:1px solid var(--border-strong); padding:10px 18px; border-radius:999px; font-size:0.86rem; color:var(--text-dim);}
+.map-loading{text-align:center; color:var(--text-faint); font-size:0.86rem; padding:70px 0; line-height:1.4;}
+
+.week{display:grid; grid-template-columns:repeat(7,1fr); gap:8px; margin-top:16px;}
+.day{background:var(--ink); border:1px solid var(--border); border-radius:var(--radius-sm); padding:10px 8px 8px; text-align:center; cursor:pointer; color:var(--text); display:flex; flex-direction:column; align-items:center; gap:4px;}
+.day:hover{border-color:var(--border-strong);}
+.day.selected{border-color:var(--blue); background:rgba(81,106,246,0.10);}
+.day.today .day-name::after{content:' •'; color:var(--green);}
+.day:disabled{opacity:.4; cursor:default;}
+.day-name{font-size:0.68rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-faint); font-weight:700;}
+.day-bar{width:100%; height:34px; display:flex; align-items:flex-end; justify-content:center;}
+.day-bar i{display:block; width:60%; min-height:3px; background:var(--blue); border-radius:4px 4px 2px 2px; opacity:.9;}
+.day-bar i.zero{background:rgba(234,237,255,0.12);}
+.day-count{font-weight:800; font-size:0.95rem;}
+.day-spend{font-size:0.68rem; color:var(--text-dim);}
+
+.table-wrap{overflow-x:auto; background:var(--ink-2); border:1px solid var(--border); border-radius:var(--radius);}
+table{width:100%; border-collapse:collapse; min-width:520px;}
+th,td{text-align:left; padding:13px 18px; font-size:0.86rem; white-space:nowrap;}
+thead th{font-size:0.7rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-faint); border-bottom:1px solid var(--border);}
+tbody tr:not(:last-child) td{border-bottom:1px solid var(--border);}
+td.num, th.num{text-align:right; font-variant-numeric:tabular-nums;}
+.route-cell{font-weight:700;}
+.route-cell span{color:var(--blue-light); margin:0 6px; font-weight:400;}
+tfoot td{border-top:1px solid var(--border-strong); font-weight:700;}
+.del{background:none; border:none; color:var(--text-faint); cursor:pointer; font-size:1rem;}
+.del:hover{color:var(--red);}
+.empty{padding:34px 20px; text-align:center; color:var(--text-faint); font-size:0.9rem;}
+.load-error{padding:16px 20px; background:rgba(255,140,140,0.08); border:1px solid rgba(255,140,140,0.3); color:var(--red); border-radius:var(--radius-sm); font-size:0.86rem; margin-top:20px; display:flex; justify-content:space-between; gap:12px; align-items:center;}
 
 footer{padding:40px 0 56px;}
-footer p{font-size:0.78rem; color:var(--text-faint);}
+footer p{font-size:0.78rem; color:var(--text-faint); max-width:560px;}
+
+.modal-overlay{position:fixed; inset:0; background:rgba(5,4,15,.75); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; z-index:100; padding:20px;}
+.modal{background:var(--ink-2); border:1px solid var(--border-strong); border-radius:var(--radius); padding:30px; max-width:440px; width:100%; position:relative; max-height:90vh; overflow-y:auto;}
+.modal h3{font-size:1.15rem; margin-bottom:4px;}
+.modal .sub{font-size:0.86rem; margin-bottom:20px;}
+.x{position:absolute; top:14px; right:16px; background:none; border:none; color:var(--text-faint); font-size:1.4rem; cursor:pointer; line-height:1;}
+.x:hover{color:var(--text);}
+.field{display:flex; flex-direction:column; gap:6px; margin-bottom:14px;}
+.field label{font-size:0.78rem; font-weight:700; color:var(--text-dim);}
+.field input, .field select{background:var(--ink); border:1px solid var(--border-strong); border-radius:var(--radius-sm); padding:10px 13px; color:var(--text); font-family:inherit; font-size:0.92rem; outline:none; color-scheme:dark;}
+.field input:focus, .field select:focus{border-color:var(--blue);}
+.row2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+.msg{font-size:0.82rem; margin:2px 0 12px; min-height:1.2em;}
+.msg.err{color:var(--red);}
+.msg.ok{color:var(--green);}
+.modal .btn{width:100%; justify-content:center;}
 
 @media (max-width:640px){
-  .build-row{grid-template-columns:1fr auto; row-gap:6px;}
-  .build-row .build-date{grid-column:1;}
-  .latest{flex-direction:column;}
+  .nav-label{min-width:0;}
+  .day-spend{display:none;}
+  .row2{grid-template-columns:1fr;}
 }
 </style>
 </head>
 <body>
-
 <div class="halo" aria-hidden="true"></div>
 
 <div class="container">
-  <header><span class="brand">fomo <span class="slash">/ test builds</span></span></header>
+  <header>
+    <span class="brand">fomo <span class="slash">/ trip</span></span>
+    <div class="head-actions">
+      <span class="admin-dot" id="admin-dot" hidden>admin</span>
+      <button class="btn btn-ghost" id="lock-btn" hidden>lock</button>
+      <button class="btn btn-primary" id="log-btn">+ log a flight</button>
+    </div>
+  </header>
 
   <section class="intro">
-    <h1>test builds.</h1>
-    <p>Every build worth trying, in one place. Grab the latest, check what changed, and tell us what breaks.</p>
+    <h1>trip tracker.</h1>
+    <p>Every creator flight, every day. Where they're headed and what it costs.</p>
   </section>
 
-  <p class="label">latest build</p>
-  <div class="latest" id="latest"></div>
-
-  <p class="label">all builds</p>
-  <div class="tabs" id="tabs">
-    <button class="tab active" data-filter="all">all</button>
-    <button class="tab" data-filter="ios">ios</button>
-    <button class="tab" data-filter="android">android</button>
-    <button class="tab" data-filter="web">web</button>
-  </div>
-  <div class="build-list" id="build-list"></div>
-
-  <p class="label">how to test</p>
-  <div class="how">
-    <h3 style="font-size:1.05rem; margin:0;">Getting a build running</h3>
-    <ol>
-      <li>Pick a build above and hit <b>install</b>.</li>
-      <li>Use it for real, the way you would trade on fomo day to day.</li>
-      <li>Something off? Open the build's notes and send the details back.</li>
-    </ol>
+  <div class="load-error" id="load-error" hidden>
+    <span>Couldn't load flights right now.</span>
+    <button class="btn btn-ghost" id="retry-btn" style="padding:8px 16px;">retry</button>
   </div>
 
-  <footer><p>fomo test builds are pre-release and may be unstable. Trading involves risk. Nothing here is financial advice.</p></footer>
+  <p class="label">at a glance</p>
+  <div class="stats">
+    <div class="stat-card"><p class="stat-label">flights today</p><p class="stat-big" id="s-today">0</p><p class="stat-sub" id="s-today-spend">$0 spent</p></div>
+    <div class="stat-card"><p class="stat-label">flights this week</p><p class="stat-big" id="s-week">0</p><p class="stat-sub" id="s-week-spend">$0 spent</p></div>
+    <div class="stat-card"><p class="stat-label">flights all time</p><p class="stat-big" id="s-all">0</p><p class="stat-sub" id="s-all-sub">no flights yet</p></div>
+    <div class="stat-card"><p class="stat-label">total spend</p><p class="stat-big" id="s-spend">$0</p><p class="stat-sub" id="s-avg">–</p></div>
+  </div>
+
+  <p class="label">flight map</p>
+  <div class="panel">
+    <div class="map-bar">
+      <div class="seg" id="mode-seg">
+        <button data-mode="day" class="active">daily</button>
+        <button data-mode="week">weekly</button>
+      </div>
+      <div class="nav">
+        <button class="icon-btn" id="prev" aria-label="Previous">←</button>
+        <span class="nav-label" id="nav-label"></span>
+        <button class="icon-btn" id="next" aria-label="Next">→</button>
+      </div>
+    </div>
+    <div id="map"><p class="map-loading">loading map…</p></div>
+    <div class="week" id="week"></div>
+  </div>
+
+  <p class="label" id="log-label">flight log</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>date</th><th>creator</th><th>route</th><th class="num">cost</th><th></th></tr></thead>
+      <tbody id="log-body"></tbody>
+      <tfoot id="log-foot"></tfoot>
+    </table>
+  </div>
+
+  <footer><p>Creators are shown by initials or an ID only. This page isn't listed in search engines.</p></footer>
 </div>
 
-<script>
-// ------------------------------------------------------------------
-// Add real builds here, newest first. Entries flagged `sample: true`
-// are placeholders showing what a build looks like — delete them once
-// you add real ones.
-//   platform: 'ios' | 'android' | 'web'
-//   status:   'stable' | 'beta' | 'broken'
-//   link:     install / TestFlight / download URL ('' shows a disabled button)
-// ------------------------------------------------------------------
-const BUILDS = [
-  {
-    version: 'sample-build-2', build: 'Build 0002', platform: 'ios', status: 'beta', date: '2026-09-18',
-    notes: ['Replace this sample with a real build.', 'Add one line per change so testers know what to look at.'],
-    link: '', sample: true,
-  },
-  {
-    version: 'sample-build-1', build: 'Build 0001', platform: 'web', status: 'stable', date: '2026-09-10',
-    notes: ['Sample entry, shown only to demonstrate the layout.'],
-    link: '', sample: true,
-  },
-];
+<!-- Log-a-flight modal -->
+<div class="modal-overlay" id="modal" hidden>
+  <div class="modal">
+    <button class="x" id="modal-x" aria-label="Close">×</button>
 
-const PLATFORM_LABEL = { ios: 'iOS', android: 'Android', web: 'Web' };
-let filter = 'all';
-
-function fmtDate(iso) {
-  const [y, m, d] = iso.split('-').map(Number);
-  return new Date(y, m - 1, d).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
-}
-function esc(s) {
-  return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-}
-function pills(b) {
-  return `<span class="pill" style="text-transform:none; letter-spacing:0;">${PLATFORM_LABEL[b.platform] || esc(b.platform)}</span>` +
-    `<span class="pill ${esc(b.status)}">${esc(b.status)}</span>` +
-    (b.sample ? '<span class="pill sample">sample</span>' : '');
-}
-function installBtn(b, cls) {
-  return b.link
-    ? `<a class="btn ${cls}" href="${esc(b.link)}" target="_blank" rel="noopener">Install</a>`
-    : `<a class="btn ${cls}" aria-disabled="true">Install</a>`;
-}
-
-function renderLatest() {
-  const el = document.getElementById('latest');
-  const b = BUILDS[0];
-  if (!b) { el.innerHTML = '<p>No builds yet.</p>'; return; }
-  el.innerHTML = `
-    <div>
-      <div class="meta">${pills(b)}</div>
-      <h2>${esc(b.version)}</h2>
-      <p>${esc(b.build)} · ${fmtDate(b.date)}${b.notes[0] ? ' — ' + esc(b.notes[0]) : ''}</p>
+    <div id="gate">
+      <h3>Enter passcode</h3>
+      <p class="sub">Only people with the passcode can log or remove flights.</p>
+      <form id="gate-form">
+        <div class="field"><label for="pass">Passcode</label><input type="password" id="pass" autocomplete="off" required></div>
+        <p class="msg" id="gate-msg"></p>
+        <button type="submit" class="btn btn-primary" id="gate-btn">Unlock</button>
+      </form>
     </div>
-    ${installBtn(b, 'btn-primary')}`;
+
+    <div id="logform" hidden>
+      <h3>Log a flight</h3>
+      <p class="sub">Add a completed flight. It shows up for everyone right away.</p>
+      <form id="flight-form">
+        <div class="row2">
+          <div class="field"><label for="f-date">Date</label><input type="date" id="f-date" required></div>
+          <div class="field"><label for="f-creator">Creator (initials or ID)</label><input type="text" id="f-creator" maxlength="10" placeholder="e.g. AK or C-014" required></div>
+        </div>
+        <div class="field"><label for="f-from">From</label><select id="f-from" required></select></div>
+        <div class="field"><label for="f-to">To</label><select id="f-to" required></select></div>
+        <div class="field"><label for="f-cost">Cost (USD)</label><input type="number" id="f-cost" min="0" max="100000" step="0.01" placeholder="0.00" required></div>
+        <p class="msg" id="flight-msg"></p>
+        <button type="submit" class="btn btn-primary" id="flight-btn">Log flight</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+<script>
+// ---------- Locations (airport code -> where it is + which campuses it serves) ----------
+const AIRPORTS = {
+  ABQ: ['Albuquerque', 'UNM', 35.0402, -106.6090],
+  ATL: ['Atlanta', 'Georgia Tech', 33.6407, -84.4277],
+  AUS: ['Austin', 'UT Austin', 30.1975, -97.6664],
+  BHM: ['Birmingham', 'Alabama', 33.5629, -86.7535],
+  BNA: ['Nashville', 'Vanderbilt', 36.1263, -86.6774],
+  BOS: ['Boston', 'BU / Harvard', 42.3656, -71.0096],
+  BWI: ['Baltimore', 'Johns Hopkins', 39.1774, -76.6684],
+  CLE: ['Cleveland', 'Case Western', 41.4058, -81.8539],
+  CLT: ['Charlotte', 'UNC Charlotte', 35.2144, -80.9473],
+  CMH: ['Columbus', 'Ohio State', 39.9980, -82.8919],
+  DCA: ['Washington DC', 'Georgetown / GWU', 38.8512, -77.0402],
+  DEN: ['Denver', 'CU Boulder', 39.8561, -104.6737],
+  DFW: ['Dallas', 'SMU / UT Dallas', 32.8998, -97.0403],
+  DTW: ['Detroit', 'Michigan', 42.2162, -83.3554],
+  FLL: ['Fort Lauderdale', 'Nova Southeastern', 26.0742, -80.1506],
+  HNL: ['Honolulu', 'Hawaii', 21.3187, -157.9225],
+  IAH: ['Houston', 'Rice / UH', 29.9902, -95.3368],
+  IND: ['Indianapolis', 'Butler / IU', 39.7173, -86.2944],
+  JAX: ['Jacksonville', 'UNF', 30.4941, -81.6879],
+  JFK: ['New York', 'NYU / Columbia', 40.6413, -73.7781],
+  LAS: ['Las Vegas', 'UNLV', 36.0840, -115.1537],
+  LAX: ['Los Angeles', 'UCLA / USC', 33.9416, -118.4085],
+  MCI: ['Kansas City', 'Missouri', 39.2976, -94.7139],
+  MCO: ['Orlando', 'UCF', 28.4312, -81.3081],
+  MIA: ['Miami', 'University of Miami', 25.7959, -80.2870],
+  MSN: ['Madison', 'Wisconsin', 43.1399, -89.3375],
+  MSP: ['Minneapolis', 'Minnesota', 44.8848, -93.2223],
+  MSY: ['New Orleans', 'Tulane / LSU', 29.9934, -90.2580],
+  OKC: ['Oklahoma City', 'Oklahoma', 35.3931, -97.6007],
+  ORD: ['Chicago', 'Northwestern / UChicago', 41.9742, -87.9073],
+  PDX: ['Portland', 'Oregon', 45.5898, -122.5951],
+  PHL: ['Philadelphia', 'Penn', 39.8744, -75.2424],
+  PHX: ['Phoenix', 'ASU', 33.4342, -112.0116],
+  PIT: ['Pittsburgh', 'CMU / Pitt', 40.4915, -80.2329],
+  RDU: ['Raleigh', 'Duke / UNC / NC State', 35.8776, -78.7875],
+  SAN: ['San Diego', 'SDSU / UCSD', 32.7338, -117.1933],
+  SAT: ['San Antonio', 'UTSA', 29.5337, -98.4698],
+  SEA: ['Seattle', 'UW', 47.4502, -122.3088],
+  SFO: ['San Francisco', 'Cal / Stanford', 37.6213, -122.3790],
+  SJC: ['San Jose', 'SJSU', 37.3639, -121.9289],
+  SLC: ['Salt Lake City', 'Utah', 40.7899, -111.9791],
+  SMF: ['Sacramento', 'UC Davis', 38.6954, -121.5908],
+  STL: ['St. Louis', 'WashU', 38.7487, -90.3700],
+  TPA: ['Tampa', 'USF', 27.9755, -82.5332],
+  TUS: ['Tucson', 'Arizona', 32.1161, -110.9410],
+};
+const loc = (code) => {
+  const a = AIRPORTS[code];
+  return a ? { code, city: a[0], campus: a[1], lat: a[2], lon: a[3] } : null;
+};
+
+// ---------- State ----------
+let flights = [];
+let mode = 'day';   // 'day' | 'week'
+let offset = 0;     // 0 = today / this week, negative = earlier
+let passcode = sessionStorage.getItem('trip_pass') || '';
+
+// ---------- Helpers ----------
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const money = (n) => {
+  const whole = Math.abs(n - Math.round(n)) < 0.005;
+  const digits = whole ? 0 : 2;
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: digits, maximumFractionDigits: digits }).format(n);
+};
+const sum = (list) => list.reduce((t, f) => t + f.cost, 0);
+const pad = (n) => String(n).padStart(2, '0');
+const ymd = (d) => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+const parseYmd = (s) => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
+const startOfToday = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };
+const mondayOf = (d) => { const x = new Date(d); x.setHours(0, 0, 0, 0); const day = x.getDay(); x.setDate(x.getDate() + (day === 0 ? -6 : 1 - day)); return x; };
+const short = (d) => d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+
+function selectedRange() {
+  const today = startOfToday();
+  if (mode === 'day') {
+    const d = addDays(today, offset);
+    const label = offset === 0 ? 'Today' : offset === -1 ? 'Yesterday' : d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+    return { start: d, end: d, label };
+  }
+  const mon = addDays(mondayOf(today), offset * 7);
+  const sun = addDays(mon, 6);
+  return { start: mon, end: sun, label: (offset === 0 ? 'This week · ' : '') + short(mon) + ' – ' + short(sun) };
+}
+const inRange = (f, r) => f.date >= ymd(r.start) && f.date <= ymd(r.end);
+
+// ---------- Stats ----------
+function renderStats() {
+  const today = startOfToday();
+  const t = flights.filter((f) => f.date === ymd(today));
+  const wk = { start: mondayOf(today), end: addDays(mondayOf(today), 6) };
+  const w = flights.filter((f) => inRange(f, wk));
+  $('s-today').textContent = t.length;
+  $('s-today-spend').textContent = money(sum(t)) + ' spent';
+  $('s-week').textContent = w.length;
+  $('s-week-spend').textContent = money(sum(w)) + ' spent';
+  $('s-all').textContent = flights.length;
+  $('s-spend').textContent = money(sum(flights));
+  if (flights.length) {
+    const first = flights.reduce((m, f) => (f.date < m ? f.date : m), flights[0].date);
+    $('s-all-sub').textContent = 'since ' + short(parseYmd(first));
+    $('s-avg').textContent = money(sum(flights) / flights.length) + ' per flight';
+  } else {
+    $('s-all-sub').textContent = 'no flights yet';
+    $('s-avg').textContent = '–';
+  }
 }
 
-function renderList() {
-  const list = document.getElementById('build-list');
-  const items = BUILDS.filter((b) => filter === 'all' || b.platform === filter);
-  if (!items.length) { list.innerHTML = '<div class="empty">No builds for this platform yet.</div>'; return; }
-  list.innerHTML = items.map((b, i) => `
-    <div class="build" data-i="${i}">
-      <div class="build-row">
-        <div class="build-ver">${esc(b.version)}<span>${esc(b.build)}</span></div>
-        <div>${pills(b)}</div>
-        <div class="build-date">${fmtDate(b.date)}</div>
-        <span class="chev">›</span>
-      </div>
-      <div class="build-detail">
-        <ul>${b.notes.map((n) => `<li>${esc(n)}</li>`).join('')}</ul>
-        <div class="detail-actions">${installBtn(b, 'btn-primary')}</div>
-      </div>
-    </div>`).join('');
-  list.querySelectorAll('.build-row').forEach((row) => {
-    row.addEventListener('click', () => row.parentElement.classList.toggle('open'));
-  });
+// ---------- Week strip ----------
+function renderWeek() {
+  const r = selectedRange();
+  const mon = mondayOf(r.start);
+  const today = startOfToday();
+  const days = Array.from({ length: 7 }, (_, i) => addDays(mon, i));
+  const per = days.map((d) => flights.filter((f) => f.date === ymd(d)));
+  const max = Math.max(1, ...per.map((p) => p.length));
+  $('week').innerHTML = days.map((d, i) => {
+    const future = d > today;
+    const selected = mode === 'day' ? ymd(d) === ymd(r.start) : true;
+    const cls = ['day', selected ? 'selected' : '', ymd(d) === ymd(today) ? 'today' : ''].join(' ');
+    const h = per[i].length ? 6 + Math.round((per[i].length / max) * 28) : 3;
+    return `<button class="${cls}" data-date="${ymd(d)}" ${future ? 'disabled' : ''}>
+      <span class="day-name">${d.toLocaleDateString(undefined, { weekday: 'short' })}</span>
+      <span class="day-bar"><i class="${per[i].length ? '' : 'zero'}" style="height:${h}px"></i></span>
+      <span class="day-count">${per[i].length}</span>
+      <span class="day-spend">${money(sum(per[i]))}</span>
+    </button>`;
+  }).join('');
+  $('week').querySelectorAll('.day').forEach((b) => b.addEventListener('click', () => {
+    mode = 'day';
+    offset = Math.round((parseYmd(b.dataset.date) - today) / 86400000);
+    setModeUI();
+    renderAll();
+  }));
 }
 
-document.querySelectorAll('#tabs .tab').forEach((tab) => {
-  tab.addEventListener('click', () => {
-    filter = tab.dataset.filter;
-    document.querySelectorAll('#tabs .tab').forEach((t) => t.classList.toggle('active', t === tab));
-    renderList();
+// ---------- Log table ----------
+function renderLog() {
+  const r = selectedRange();
+  const list = flights.filter((f) => inRange(f, r));
+  $('log-label').textContent = 'flight log · ' + r.label.toLowerCase();
+  const admin = !!passcode;
+  $('log-body').innerHTML = list.length ? list.map((f) => {
+    const a = loc(f.from), b = loc(f.to);
+    return `<tr>
+      <td>${short(parseYmd(f.date))}</td>
+      <td>${esc(f.creator)}</td>
+      <td class="route-cell" title="${esc(a ? a.city : f.from)} to ${esc(b ? b.city : f.to)}">${esc(f.from)}<span>→</span>${esc(f.to)}</td>
+      <td class="num">${money(f.cost)}</td>
+      <td class="num">${admin ? `<button class="del" data-id="${esc(f.id)}" aria-label="Remove flight">✕</button>` : ''}</td>
+    </tr>`;
+  }).join('') : `<tr><td colspan="5" class="empty">No flights logged for this period.</td></tr>`;
+  $('log-foot').innerHTML = list.length
+    ? `<tr><td colspan="3">${list.length} flight${list.length === 1 ? '' : 's'}</td><td class="num">${money(sum(list))}</td><td></td></tr>` : '';
+  $('log-body').querySelectorAll('.del').forEach((b) => b.addEventListener('click', () => removeFlight(b.dataset.id)));
+}
+
+// ---------- Map ----------
+const MAP_W = 960, MAP_H = 600;
+let projection = null, routeLayer = null, planes = [];
+const tip = document.createElement('div');
+tip.className = 'map-tip';
+tip.hidden = true;
+const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function initMap() {
+  if (typeof d3 === 'undefined') { $('map').innerHTML = '<p class="map-loading">Map unavailable — check your connection.</p>'; return; }
+  d3.json('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json').then((us) => {
+    const geo = topojson.feature(us, us.objects.states);
+    projection = d3.geoAlbersUsa().fitSize([MAP_W, MAP_H], geo);
+    const path = d3.geoPath(projection);
+    $('map').innerHTML = '';
+    const svg = d3.select('#map').append('svg').attr('viewBox', `0 0 ${MAP_W} ${MAP_H}`);
+    svg.append('g').selectAll('path').data(geo.features).join('path').attr('class', 'state').attr('d', path);
+    routeLayer = svg.append('g');
+    $('map').appendChild(tip);
+    drawRoutes();
+  }).catch(() => { $('map').innerHTML = '<p class="map-loading">Map unavailable — check your connection.</p>'; });
+}
+
+function aggregate(list) {
+  const m = new Map();
+  list.forEach((f) => {
+    const k = f.from + '>' + f.to;
+    const r = m.get(k) || { from: f.from, to: f.to, count: 0, spend: 0 };
+    r.count += 1; r.spend += f.cost; m.set(k, r);
   });
+  return [...m.values()];
+}
+
+const PLANE = 'M11 0 L3 -2.4 L-1 -10 L-4.4 -10 L-2.4 -2.6 L-8 -3.6 L-9.4 -1.4 L-5.6 0 L-9.4 1.4 L-8 3.6 L-2.4 2.6 L-4.4 10 L-1 10 L3 2.4 Z';
+
+function showTip(evt, html) {
+  const box = $('map').getBoundingClientRect();
+  tip.innerHTML = html;
+  tip.style.left = (evt.clientX - box.left) + 'px';
+  tip.style.top = (evt.clientY - box.top) + 'px';
+  tip.hidden = false;
+}
+
+function drawRoutes() {
+  if (!routeLayer || !projection) return;
+  routeLayer.selectAll('*').remove();
+  planes = [];
+  const r = selectedRange();
+  const list = flights.filter((f) => inRange(f, r));
+  const routes = aggregate(list);
+  const old = $('map').querySelector('.map-empty');
+  if (old) old.remove();
+  if (!routes.length) {
+    const e = document.createElement('div');
+    e.className = 'map-empty';
+    e.innerHTML = '<span>No flights logged for this period</span>';
+    $('map').appendChild(e);
+    return;
+  }
+
+  const airportCount = new Map();
+  routes.forEach((rt) => {
+    const A = loc(rt.from), B = loc(rt.to);
+    if (!A || !B) return;
+    const p0 = projection([A.lon, A.lat]), p1 = projection([B.lon, B.lat]);
+    if (!p0 || !p1) return;
+    airportCount.set(rt.from, p0); airportCount.set(rt.to, p1);
+
+    const mx = (p0[0] + p1[0]) / 2, my = (p0[1] + p1[1]) / 2;
+    const dx = p1[0] - p0[0], dy = p1[1] - p0[1];
+    const dist = Math.hypot(dx, dy) || 1;
+    let nx = dy / dist, ny = -dx / dist;
+    if (ny > 0) { nx = -nx; ny = -ny; }
+    const bulge = dist * 0.28;
+    const d = `M${p0[0]},${p0[1]} Q${mx + nx * bulge},${my + ny * bulge} ${p1[0]},${p1[1]}`;
+
+    const width = Math.min(1.6 + rt.count * 0.7, 6);
+    const route = routeLayer.append('path').attr('class', 'route').attr('d', d).style('stroke-width', width);
+    const hit = routeLayer.append('path').attr('class', 'route-hit').attr('d', d);
+    const html = `<b>${esc(rt.from)} → ${esc(rt.to)}</b><span>${esc(A.city)} to ${esc(B.city)}<br>${rt.count} flight${rt.count === 1 ? '' : 's'} · ${money(rt.spend)}</span>`;
+    hit.on('mousemove', (e) => showTip(e, html)).on('mouseleave', () => { tip.hidden = true; });
+
+    const plane = routeLayer.append('path').attr('class', 'plane').attr('d', PLANE);
+    planes.push({ node: route.node(), el: plane.node(), len: route.node().getTotalLength(), phase: Math.random() });
+  });
+
+  airportCount.forEach((p, code) => {
+    const A = loc(code);
+    const g = routeLayer.append('g');
+    const c = g.append('circle').attr('class', 'airport').attr('cx', p[0]).attr('cy', p[1]).attr('r', 4.5);
+    g.append('text').attr('class', 'airport-label').attr('x', p[0] + 8).attr('y', p[1] + 4).text(code);
+    c.on('mousemove', (e) => showTip(e, `<b>${esc(code)} · ${esc(A.city)}</b><span>${esc(A.campus)}</span>`)).on('mouseleave', () => { tip.hidden = true; });
+  });
+  placePlanes(performance.now());
+}
+
+function placePlanes(now) {
+  planes.forEach((p) => {
+    const t = reduceMotion ? 0.5 : ((now / 1000) * 70 / p.len + p.phase) % 1;
+    const pt = p.node.getPointAtLength(t * p.len);
+    const ahead = p.node.getPointAtLength(Math.min(p.len, t * p.len + 2));
+    const angle = Math.atan2(ahead.y - pt.y, ahead.x - pt.x) * 180 / Math.PI;
+    p.el.setAttribute('transform', `translate(${pt.x},${pt.y}) rotate(${angle}) scale(1.15)`);
+  });
+}
+function loop(now) {
+  if (planes.length && !reduceMotion) placePlanes(now);
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+// ---------- Render ----------
+function setModeUI() {
+  $('mode-seg').querySelectorAll('button').forEach((b) => b.classList.toggle('active', b.dataset.mode === mode));
+}
+function renderAll() {
+  const r = selectedRange();
+  $('nav-label').textContent = r.label;
+  $('next').disabled = offset >= 0;
+  renderStats();
+  renderWeek();
+  renderLog();
+  drawRoutes();
+}
+
+$('mode-seg').querySelectorAll('button').forEach((b) => b.addEventListener('click', () => { mode = b.dataset.mode; offset = 0; setModeUI(); renderAll(); }));
+$('prev').addEventListener('click', () => { offset -= 1; renderAll(); });
+$('next').addEventListener('click', () => { if (offset < 0) { offset += 1; renderAll(); } });
+
+// ---------- Data ----------
+async function loadFlights() {
+  try {
+    const res = await fetch('/api/flights', { cache: 'no-store' });
+    if (!res.ok) throw new Error('bad status');
+    flights = (await res.json()).flights || [];
+    $('load-error').hidden = true;
+  } catch (e) {
+    $('load-error').hidden = false;
+  }
+  renderAll();
+}
+$('retry-btn').addEventListener('click', loadFlights);
+
+// ---------- Admin ----------
+function syncAdminUI() {
+  $('admin-dot').hidden = !passcode;
+  $('lock-btn').hidden = !passcode;
+  renderLog();
+}
+function openModal() {
+  $('modal').hidden = false;
+  const unlocked = !!passcode;
+  $('gate').hidden = unlocked;
+  $('logform').hidden = !unlocked;
+  if (unlocked) { $('f-date').value = ymd(new Date()); $('f-date').max = ymd(new Date()); $('f-creator').focus(); }
+  else { $('pass').value = ''; $('gate-msg').textContent = ''; $('pass').focus(); }
+}
+const closeModal = () => { $('modal').hidden = true; };
+$('log-btn').addEventListener('click', openModal);
+$('modal-x').addEventListener('click', closeModal);
+$('modal').addEventListener('click', (e) => { if (e.target === $('modal')) closeModal(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+$('lock-btn').addEventListener('click', () => { passcode = ''; sessionStorage.removeItem('trip_pass'); syncAdminUI(); });
+
+function lockOut(msg) {
+  passcode = ''; sessionStorage.removeItem('trip_pass'); syncAdminUI();
+  $('gate').hidden = false; $('logform').hidden = true;
+  $('gate-msg').className = 'msg err'; $('gate-msg').textContent = msg;
+}
+
+$('gate-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const attempt = $('pass').value;
+  $('gate-btn').disabled = true;
+  $('gate-msg').className = 'msg'; $('gate-msg').textContent = '';
+  try {
+    const res = await fetch('/api/auth', { method: 'POST', headers: { 'x-passcode': attempt } });
+    if (res.status === 204) {
+      passcode = attempt; sessionStorage.setItem('trip_pass', attempt); syncAdminUI(); openModal();
+    } else if (res.status === 503) {
+      $('gate-msg').className = 'msg err'; $('gate-msg').textContent = 'The passcode hasn’t been set up on the server yet.';
+    } else {
+      $('gate-msg').className = 'msg err'; $('gate-msg').textContent = 'Wrong passcode.';
+    }
+  } catch (err) {
+    $('gate-msg').className = 'msg err'; $('gate-msg').textContent = 'Couldn’t reach the server.';
+  }
+  $('gate-btn').disabled = false;
 });
 
-renderLatest();
-renderList();
+function fillSelects() {
+  const opts = Object.keys(AIRPORTS)
+    .sort((a, b) => AIRPORTS[a][0].localeCompare(AIRPORTS[b][0]))
+    .map((c) => `<option value="${c}">${esc(AIRPORTS[c][0])} (${esc(AIRPORTS[c][1])}) — ${c}</option>`).join('');
+  $('f-from').innerHTML = '<option value="" disabled selected>Choose origin</option>' + opts;
+  $('f-to').innerHTML = '<option value="" disabled selected>Choose destination</option>' + opts;
+}
+
+$('flight-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const msg = $('flight-msg');
+  msg.className = 'msg'; msg.textContent = '';
+  if ($('f-from').value === $('f-to').value) { msg.className = 'msg err'; msg.textContent = 'Origin and destination must differ.'; return; }
+  $('flight-btn').disabled = true;
+  try {
+    const res = await fetch('/api/flights', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'x-passcode': passcode },
+      body: JSON.stringify({ date: $('f-date').value, creator: $('f-creator').value, from: $('f-from').value, to: $('f-to').value, cost: $('f-cost').value }),
+    });
+    if (res.status === 401) { lockOut('Session expired — enter the passcode again.'); }
+    else if (res.status === 201) {
+      const { flight } = await res.json();
+      flights.unshift(flight);
+      msg.className = 'msg ok'; msg.textContent = `Logged ${flight.from} → ${flight.to}.`;
+      $('f-cost').value = ''; $('f-creator').value = '';
+      const d = parseYmd(flight.date);
+      const today = startOfToday();
+      if (mode === 'day') offset = Math.min(0, Math.round((d - today) / 86400000));
+      else offset = Math.min(0, Math.round((mondayOf(d) - mondayOf(today)) / (7 * 86400000)));
+      renderAll();
+    } else {
+      const body = await res.json().catch(() => ({}));
+      msg.className = 'msg err'; msg.textContent = body.error || 'Something went wrong.';
+    }
+  } catch (err) {
+    msg.className = 'msg err'; msg.textContent = 'Couldn’t reach the server.';
+  }
+  $('flight-btn').disabled = false;
+});
+
+async function removeFlight(id) {
+  if (!confirm('Remove this flight? This can’t be undone.')) return;
+  try {
+    const res = await fetch('/api/flights/' + encodeURIComponent(id), { method: 'DELETE', headers: { 'x-passcode': passcode } });
+    if (res.status === 204) { flights = flights.filter((f) => f.id !== id); renderAll(); }
+    else if (res.status === 401) { syncAdminUI(); openModal(); lockOut('Session expired — enter the passcode again.'); }
+  } catch (e) { /* leave list as-is */ }
+}
+
+// ---------- Boot ----------
+fillSelects();
+syncAdminUI();
+setModeUI();
+initMap();
+loadFlights();
 </script>
 </body>
 </html>
