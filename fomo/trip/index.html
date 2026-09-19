@@ -134,7 +134,7 @@ footer p{font-size:0.8rem; color:var(--text-faint); max-width:560px;}
 
 /* ---- modal ---- */
 .modal-overlay{position:fixed; inset:0; background:rgba(5,4,15,.78); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; z-index:100; padding:20px;}
-.modal{background:var(--solid); border:1px solid var(--border-strong); border-radius:var(--radius); padding:30px; max-width:440px; width:100%; position:relative; max-height:90vh; overflow-y:auto;}
+.modal{background:var(--solid); border:1px solid var(--border-strong); border-radius:var(--radius); padding:30px; max-width:480px; width:100%; position:relative; max-height:90vh; overflow-y:auto;}
 .modal h3{font-size:1.15rem; margin-bottom:4px;}
 .modal .sub{font-size:0.86rem; margin-bottom:20px; color:var(--text-dim);}
 .x{position:absolute; top:14px; right:16px; background:none; border:none; color:var(--text-faint); font-size:1.4rem; cursor:pointer; line-height:1;}
@@ -143,11 +143,18 @@ footer p{font-size:0.8rem; color:var(--text-faint); max-width:560px;}
 .field label{font-size:0.8rem; font-weight:600; color:var(--text-dim);}
 .field input, .field select{background:var(--ink); border:1px solid var(--border-strong); border-radius:var(--radius-sm); padding:10px 13px; color:var(--text); font-family:inherit; font-size:0.92rem; outline:none; color-scheme:dark;}
 .field input:focus, .field select:focus{border-color:var(--blue);}
-.row2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+.row2{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:12px;}
+.field select, .field input[type=date], .field input[type=number]{width:100%; min-width:0;}
 .msg{font-size:0.82rem; margin:2px 0 12px; min-height:1.2em;}
 .msg.err{color:var(--red);}
 .msg.ok{color:var(--blue-light);}
 .modal .btn{width:100%;}
+.handle-row{display:flex; align-items:center; gap:12px;}
+.handle-row input[type=text]{flex:1; min-width:0;}
+.field .na{display:inline-flex; align-items:center; gap:6px; white-space:nowrap; font-size:0.82rem; cursor:pointer; color:var(--text-dim);}
+.field .na input{width:auto; padding:0; border:0; background:none; accent-color:var(--blue);}
+.handle-row input:disabled{opacity:.45;}
+.na-val{color:var(--text-faint);}
 
 @media (max-width:640px){
   .nav-label{min-width:0;}
@@ -183,6 +190,7 @@ footer p{font-size:0.8rem; color:var(--text-faint); max-width:560px;}
     <span class="nav-brand">fomo</span>
     <div class="head-actions">
       <span class="admin-dot" id="admin-dot" hidden>admin</span>
+      <button class="btn btn-dark" id="admin-btn">admin</button>
       <button class="btn btn-dark" id="lock-btn" hidden>lock</button>
       <button class="btn btn-dark" id="log-btn">log a flight</button>
     </div>
@@ -234,13 +242,13 @@ footer p{font-size:0.8rem; color:var(--text-faint); max-width:560px;}
   <p class="label" id="log-label">flight log</p>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>date</th><th>creator</th><th>route</th><th class="num">cost</th><th></th></tr></thead>
+      <thead><tr id="log-head"></tr></thead>
       <tbody id="log-body"></tbody>
       <tfoot id="log-foot"></tfoot>
     </table>
   </div>
 
-  <footer><p>creators are shown by initials or an id only. this page isn't listed in search engines.</p></footer>
+  <footer><p>creators appear by initials only. full names and handles are kept private. this page isn't listed in search engines.</p></footer>
 </div>
 </main>
 
@@ -249,29 +257,37 @@ footer p{font-size:0.8rem; color:var(--text-faint); max-width:560px;}
   <div class="modal">
     <button class="x" id="modal-x" aria-label="Close">×</button>
 
-    <div id="gate">
-      <h3>Enter passcode</h3>
-      <p class="sub">Only people with the passcode can log or remove flights.</p>
+    <div id="gate" hidden>
+      <h3>admin</h3>
+      <p class="sub">enter the admin passcode to see full details and remove flights.</p>
       <form id="gate-form">
-        <div class="field"><label for="pass">Passcode</label><input type="password" id="pass" autocomplete="off" required></div>
+        <div class="field"><label for="pass">passcode</label><input type="password" id="pass" autocomplete="off" required></div>
         <p class="msg" id="gate-msg"></p>
-        <button type="submit" class="btn btn-primary" id="gate-btn">Unlock</button>
+        <button type="submit" class="btn btn-primary" id="gate-btn">unlock</button>
       </form>
     </div>
 
-    <div id="logform" hidden>
-      <h3>Log a flight</h3>
-      <p class="sub">Add a completed flight. It shows up for everyone right away.</p>
+    <div id="logform">
+      <h3>log a flight</h3>
+      <p class="sub">add a completed flight. it shows up for everyone right away. full names and handles stay private.</p>
       <form id="flight-form">
-        <div class="row2">
-          <div class="field"><label for="f-date">Date</label><input type="date" id="f-date" required></div>
-          <div class="field"><label for="f-creator">Creator (initials or ID)</label><input type="text" id="f-creator" maxlength="10" placeholder="e.g. AK or C-014" required></div>
+        <div class="field"><label for="f-name">full name</label><input type="text" id="f-name" maxlength="60" autocomplete="off" placeholder="first and last name" required></div>
+        <div class="field"><label for="f-ig">instagram</label>
+          <div class="handle-row"><input type="text" id="f-ig" maxlength="31" autocomplete="off" placeholder="@handle" required><label class="na"><input type="checkbox" id="f-ig-na"> n/a</label></div>
         </div>
-        <div class="field"><label for="f-from">From</label><select id="f-from" required></select></div>
-        <div class="field"><label for="f-to">To</label><select id="f-to" required></select></div>
-        <div class="field"><label for="f-cost">Cost (USD)</label><input type="number" id="f-cost" min="0" max="100000" step="0.01" placeholder="0.00" required></div>
+        <div class="field"><label for="f-tt">tiktok</label>
+          <div class="handle-row"><input type="text" id="f-tt" maxlength="25" autocomplete="off" placeholder="@handle" required><label class="na"><input type="checkbox" id="f-tt-na"> n/a</label></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label for="f-from">school</label><select id="f-from" required></select></div>
+          <div class="field"><label for="f-to">school traveled to</label><select id="f-to" required></select></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label for="f-date">flight date</label><input type="date" id="f-date" required></div>
+          <div class="field"><label for="f-cost">cost of flight (usd)</label><input type="number" id="f-cost" min="0" max="100000" step="0.01" placeholder="0.00" required></div>
+        </div>
         <p class="msg" id="flight-msg"></p>
-        <button type="submit" class="btn btn-primary" id="flight-btn">Log flight</button>
+        <button type="submit" class="btn btn-primary" id="flight-btn">log flight</button>
       </form>
     </div>
   </div>
@@ -280,57 +296,67 @@ footer p{font-size:0.8rem; color:var(--text-faint); max-width:560px;}
 <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
 <script>
-// ---------- Locations (airport code -> where it is + which campuses it serves) ----------
-const AIRPORTS = {
-  ABQ: ['Albuquerque', 'UNM', 35.0402, -106.6090],
-  ATL: ['Atlanta', 'Georgia Tech', 33.6407, -84.4277],
-  AUS: ['Austin', 'UT Austin', 30.1975, -97.6664],
-  BHM: ['Birmingham', 'Alabama', 33.5629, -86.7535],
-  BNA: ['Nashville', 'Vanderbilt', 36.1263, -86.6774],
-  BOS: ['Boston', 'BU / Harvard', 42.3656, -71.0096],
-  BWI: ['Baltimore', 'Johns Hopkins', 39.1774, -76.6684],
-  CLE: ['Cleveland', 'Case Western', 41.4058, -81.8539],
-  CLT: ['Charlotte', 'UNC Charlotte', 35.2144, -80.9473],
-  CMH: ['Columbus', 'Ohio State', 39.9980, -82.8919],
-  DCA: ['Washington DC', 'Georgetown / GWU', 38.8512, -77.0402],
-  DEN: ['Denver', 'CU Boulder', 39.8561, -104.6737],
-  DFW: ['Dallas', 'SMU / UT Dallas', 32.8998, -97.0403],
-  DTW: ['Detroit', 'Michigan', 42.2162, -83.3554],
-  FLL: ['Fort Lauderdale', 'Nova Southeastern', 26.0742, -80.1506],
-  HNL: ['Honolulu', 'Hawaii', 21.3187, -157.9225],
-  IAH: ['Houston', 'Rice / UH', 29.9902, -95.3368],
-  IND: ['Indianapolis', 'Butler / IU', 39.7173, -86.2944],
-  JAX: ['Jacksonville', 'UNF', 30.4941, -81.6879],
-  JFK: ['New York', 'NYU / Columbia', 40.6413, -73.7781],
-  LAS: ['Las Vegas', 'UNLV', 36.0840, -115.1537],
-  LAX: ['Los Angeles', 'UCLA / USC', 33.9416, -118.4085],
-  MCI: ['Kansas City', 'Missouri', 39.2976, -94.7139],
-  MCO: ['Orlando', 'UCF', 28.4312, -81.3081],
-  MIA: ['Miami', 'University of Miami', 25.7959, -80.2870],
-  MSN: ['Madison', 'Wisconsin', 43.1399, -89.3375],
-  MSP: ['Minneapolis', 'Minnesota', 44.8848, -93.2223],
-  MSY: ['New Orleans', 'Tulane / LSU', 29.9934, -90.2580],
-  OKC: ['Oklahoma City', 'Oklahoma', 35.3931, -97.6007],
-  ORD: ['Chicago', 'Northwestern / UChicago', 41.9742, -87.9073],
-  PDX: ['Portland', 'Oregon', 45.5898, -122.5951],
-  PHL: ['Philadelphia', 'Penn', 39.8744, -75.2424],
-  PHX: ['Phoenix', 'ASU', 33.4342, -112.0116],
-  PIT: ['Pittsburgh', 'CMU / Pitt', 40.4915, -80.2329],
-  RDU: ['Raleigh', 'Duke / UNC / NC State', 35.8776, -78.7875],
-  SAN: ['San Diego', 'SDSU / UCSD', 32.7338, -117.1933],
-  SAT: ['San Antonio', 'UTSA', 29.5337, -98.4698],
-  SEA: ['Seattle', 'UW', 47.4502, -122.3088],
-  SFO: ['San Francisco', 'Cal / Stanford', 37.6213, -122.3790],
-  SJC: ['San Jose', 'SJSU', 37.3639, -121.9289],
-  SLC: ['Salt Lake City', 'Utah', 40.7899, -111.9791],
-  SMF: ['Sacramento', 'UC Davis', 38.6954, -121.5908],
-  STL: ['St. Louis', 'WashU', 38.7487, -90.3700],
-  TPA: ['Tampa', 'USF', 27.9755, -82.5332],
-  TUS: ['Tucson', 'Arizona', 32.1161, -110.9410],
+// ---------- Schools: code -> [short label, full name, city, lat, lon] ----------
+const SCHOOLS = {
+  // west
+  asu: ['ASU', 'Arizona State University', 'Tempe, AZ', 33.4242, -111.9281],
+  ua: ['Arizona', 'University of Arizona', 'Tucson, AZ', 32.2319, -110.9501],
+  ucla: ['UCLA', 'UCLA', 'Los Angeles, CA', 34.0689, -118.4452],
+  usc: ['USC', 'University of Southern California', 'Los Angeles, CA', 34.0224, -118.2851],
+  cal: ['Cal', 'UC Berkeley', 'Berkeley, CA', 37.8719, -122.2585],
+  stanford: ['Stanford', 'Stanford University', 'Stanford, CA', 37.4275, -122.1697],
+  ucsd: ['UCSD', 'UC San Diego', 'San Diego, CA', 32.8801, -117.2340],
+  sdsu: ['SDSU', 'San Diego State University', 'San Diego, CA', 32.7757, -117.0719],
+  uw: ['UW', 'University of Washington', 'Seattle, WA', 47.6553, -122.3035],
+  uo: ['Oregon', 'University of Oregon', 'Eugene, OR', 44.0448, -123.0726],
+  utah: ['Utah', 'University of Utah', 'Salt Lake City, UT', 40.7649, -111.8421],
+  cu: ['CU Boulder', 'University of Colorado Boulder', 'Boulder, CO', 40.0076, -105.2659],
+  // texas + plains
+  utaustin: ['UT Austin', 'University of Texas at Austin', 'Austin, TX', 30.2849, -97.7341],
+  tamu: ['Texas A&M', 'Texas A&M University', 'College Station, TX', 30.6187, -96.3365],
+  rice: ['Rice', 'Rice University', 'Houston, TX', 29.7174, -95.4018],
+  smu: ['SMU', 'Southern Methodist University', 'Dallas, TX', 32.8412, -96.7845],
+  ou: ['Oklahoma', 'University of Oklahoma', 'Norman, OK', 35.2059, -97.4457],
+  mizzou: ['Mizzou', 'University of Missouri', 'Columbia, MO', 38.9404, -92.3277],
+  wustl: ['WashU', 'Washington University in St. Louis', 'St. Louis, MO', 38.6488, -90.3108],
+  // midwest
+  wisconsin: ['Wisconsin', 'University of Wisconsin–Madison', 'Madison, WI', 43.0766, -89.4125],
+  minnesota: ['Minnesota', 'University of Minnesota', 'Minneapolis, MN', 44.9740, -93.2277],
+  northwestern: ['Northwestern', 'Northwestern University', 'Evanston, IL', 42.0565, -87.6753],
+  uchicago: ['UChicago', 'University of Chicago', 'Chicago, IL', 41.7886, -87.5987],
+  illinois: ['Illinois', 'University of Illinois Urbana-Champaign', 'Champaign, IL', 40.1020, -88.2272],
+  purdue: ['Purdue', 'Purdue University', 'West Lafayette, IN', 40.4237, -86.9212],
+  iu: ['Indiana', 'Indiana University', 'Bloomington, IN', 39.1682, -86.5230],
+  michigan: ['Michigan', 'University of Michigan', 'Ann Arbor, MI', 42.2780, -83.7382],
+  osu: ['Ohio State', 'The Ohio State University', 'Columbus, OH', 40.0067, -83.0305],
+  // northeast
+  penn: ['Penn', 'University of Pennsylvania', 'Philadelphia, PA', 39.9522, -75.1932],
+  pennstate: ['Penn State', 'Penn State University', 'State College, PA', 40.7982, -77.8599],
+  pitt: ['Pitt', 'University of Pittsburgh', 'Pittsburgh, PA', 40.4444, -79.9608],
+  cmu: ['CMU', 'Carnegie Mellon University', 'Pittsburgh, PA', 40.4433, -79.9436],
+  nyu: ['NYU', 'New York University', 'New York, NY', 40.7295, -73.9965],
+  columbia: ['Columbia', 'Columbia University', 'New York, NY', 40.8075, -73.9626],
+  cornell: ['Cornell', 'Cornell University', 'Ithaca, NY', 42.4534, -76.4735],
+  yale: ['Yale', 'Yale University', 'New Haven, CT', 41.3163, -72.9223],
+  harvard: ['Harvard', 'Harvard University', 'Cambridge, MA', 42.3770, -71.1167],
+  bu: ['BU', 'Boston University', 'Boston, MA', 42.3505, -71.1054],
+  georgetown: ['Georgetown', 'Georgetown University', 'Washington, DC', 38.9076, -77.0723],
+  umd: ['Maryland', 'University of Maryland', 'College Park, MD', 38.9869, -76.9426],
+  uva: ['UVA', 'University of Virginia', 'Charlottesville, VA', 38.0336, -78.5080],
+  // south
+  duke: ['Duke', 'Duke University', 'Durham, NC', 36.0014, -78.9382],
+  unc: ['UNC', 'UNC Chapel Hill', 'Chapel Hill, NC', 35.9049, -79.0469],
+  gt: ['Georgia Tech', 'Georgia Institute of Technology', 'Atlanta, GA', 33.7756, -84.3963],
+  uga: ['Georgia', 'University of Georgia', 'Athens, GA', 33.9480, -83.3773],
+  vanderbilt: ['Vanderbilt', 'Vanderbilt University', 'Nashville, TN', 36.1447, -86.8027],
+  ala: ['Alabama', 'University of Alabama', 'Tuscaloosa, AL', 33.2119, -87.5451],
+  uf: ['Florida', 'University of Florida', 'Gainesville, FL', 29.6436, -82.3549],
+  fsu: ['FSU', 'Florida State University', 'Tallahassee, FL', 30.4419, -84.2985],
+  miami: ['Miami', 'University of Miami', 'Coral Gables, FL', 25.7217, -80.2786],
 };
 const loc = (code) => {
-  const a = AIRPORTS[code];
-  return a ? { code, city: a[0], campus: a[1], lat: a[2], lon: a[3] } : null;
+  const a = SCHOOLS[code];
+  return a ? { code, label: a[0], name: a[1], city: a[2], lat: a[3], lon: a[4] } : null;
 };
 
 // ---------- State ----------
@@ -338,6 +364,7 @@ let flights = [];
 let mode = 'day';   // 'day' | 'week'
 let offset = 0;     // 0 = today / this week, negative = earlier
 let passcode = sessionStorage.getItem('trip_pass') || '';
+let adminView = false; // true only when the server confirms the admin passcode
 
 // ---------- Helpers ----------
 const $ = (id) => document.getElementById(id);
@@ -424,19 +451,23 @@ function renderLog() {
   const r = selectedRange();
   const list = flights.filter((f) => inRange(f, r));
   $('log-label').textContent = 'flight log · ' + r.label.toLowerCase();
-  const admin = !!passcode;
-  $('log-body').innerHTML = list.length ? list.map((f) => {
+  const handle = (v) => (v === 'N/A' || !v ? '<span class="na-val">N/A</span>' : '@' + esc(v));
+  const route = (f) => {
     const a = loc(f.from), b = loc(f.to);
-    return `<tr>
-      <td>${short(parseYmd(f.date))}</td>
-      <td>${esc(f.creator)}</td>
-      <td class="route-cell" title="${esc(a ? a.city : f.from)} to ${esc(b ? b.city : f.to)}">${esc(f.from)}<span>→</span>${esc(f.to)}</td>
-      <td class="num">${money(f.cost)}</td>
-      <td class="num">${admin ? `<button class="del" data-id="${esc(f.id)}" aria-label="Remove flight">✕</button>` : ''}</td>
-    </tr>`;
-  }).join('') : `<tr><td colspan="5" class="empty">No flights logged for this period.</td></tr>`;
+    return `<td class="route-cell" title="${esc(a ? a.name : f.from)} to ${esc(b ? b.name : f.to)}">${esc(a ? a.label : f.from)}<span>→</span>${esc(b ? b.label : f.to)}</td>`;
+  };
+  $('log-head').innerHTML = adminView
+    ? '<th>date</th><th>name</th><th>instagram</th><th>tiktok</th><th>route</th><th class="num">cost</th><th></th>'
+    : '<th>date</th><th>creator</th><th>route</th><th class="num">cost</th>';
+  const cols = adminView ? 7 : 4;
+  $('log-body').innerHTML = list.length ? list.map((f) => adminView
+    ? `<tr><td>${short(parseYmd(f.date))}</td><td>${esc(f.name || f.creator || '')}</td><td>${handle(f.instagram)}</td><td>${handle(f.tiktok)}</td>${route(f)}<td class="num">${money(f.cost)}</td><td class="num"><button class="del" data-id="${esc(f.id)}" aria-label="Remove flight">✕</button></td></tr>`
+    : `<tr><td>${short(parseYmd(f.date))}</td><td>${esc(f.creator)}</td>${route(f)}<td class="num">${money(f.cost)}</td></tr>`
+  ).join('') : `<tr><td colspan="${cols}" class="empty">No flights logged for this period.</td></tr>`;
+  const count = `${list.length} flight${list.length === 1 ? '' : 's'}`;
   $('log-foot').innerHTML = list.length
-    ? `<tr><td colspan="3">${list.length} flight${list.length === 1 ? '' : 's'}</td><td class="num">${money(sum(list))}</td><td></td></tr>` : '';
+    ? (adminView ? `<tr><td colspan="5">${count}</td><td class="num">${money(sum(list))}</td><td></td></tr>` : `<tr><td colspan="3">${count}</td><td class="num">${money(sum(list))}</td></tr>`)
+    : '';
   $('log-body').querySelectorAll('.del').forEach((b) => b.addEventListener('click', () => removeFlight(b.dataset.id)));
 }
 
@@ -519,7 +550,7 @@ function drawRoutes() {
     const width = Math.min(1.6 + rt.count * 0.7, 6);
     const route = routeLayer.append('path').attr('class', 'route').attr('d', d).style('stroke-width', width);
     const hit = routeLayer.append('path').attr('class', 'route-hit').attr('d', d);
-    const html = `<b>${esc(rt.from)} → ${esc(rt.to)}</b><span>${esc(A.city)} to ${esc(B.city)}<br>${rt.count} flight${rt.count === 1 ? '' : 's'} · ${money(rt.spend)}</span>`;
+    const html = `<b>${esc(A.label)} → ${esc(B.label)}</b><span>${esc(A.name)} to ${esc(B.name)}<br>${rt.count} flight${rt.count === 1 ? '' : 's'} · ${money(rt.spend)}</span>`;
     hit.on('mousemove', (e) => showTip(e, html)).on('mouseleave', () => { tip.hidden = true; });
 
     const plane = routeLayer.append('path').attr('class', 'plane').attr('d', PLANE);
@@ -530,8 +561,8 @@ function drawRoutes() {
     const A = loc(code);
     const g = routeLayer.append('g');
     const c = g.append('circle').attr('class', 'airport').attr('cx', p[0]).attr('cy', p[1]).attr('r', 4.5);
-    g.append('text').attr('class', 'airport-label').attr('x', p[0] + 8).attr('y', p[1] + 4).text(code);
-    c.on('mousemove', (e) => showTip(e, `<b>${esc(code)} · ${esc(A.city)}</b><span>${esc(A.campus)}</span>`)).on('mouseleave', () => { tip.hidden = true; });
+    g.append('text').attr('class', 'airport-label').attr('x', p[0] + 8).attr('y', p[1] + 4).text(A.label);
+    c.on('mousemove', (e) => showTip(e, `<b>${esc(A.label)}</b><span>${esc(A.name)} · ${esc(A.city)}</span>`)).on('mouseleave', () => { tip.hidden = true; });
   });
   placePlanes(performance.now());
 }
@@ -572,9 +603,12 @@ $('next').addEventListener('click', () => { if (offset < 0) { offset += 1; rende
 // ---------- Data ----------
 async function loadFlights() {
   try {
-    const res = await fetch('/api/flights', { cache: 'no-store' });
+    const res = await fetch('/api/flights', { cache: 'no-store', headers: passcode ? { 'x-passcode': passcode } : {} });
     if (!res.ok) throw new Error('bad status');
-    flights = (await res.json()).flights || [];
+    const data = await res.json();
+    flights = data.flights || [];
+    adminView = !!data.admin;
+    if (passcode && !adminView) { passcode = ''; sessionStorage.removeItem('trip_pass'); syncAdminUI(); }
     $('load-error').hidden = true;
   } catch (e) {
     $('load-error').hidden = false;
@@ -591,30 +625,41 @@ function enter() {
 }
 $('login-btn').addEventListener('click', enter);
 
-// ---------- Admin ----------
+// ---------- Admin + logging ----------
 function syncAdminUI() {
   $('admin-dot').hidden = !passcode;
   $('lock-btn').hidden = !passcode;
-  renderLog();
+  $('admin-btn').hidden = !!passcode;
 }
-function openModal() {
+function openModal(kind) {
   $('modal').hidden = false;
-  const unlocked = !!passcode;
-  $('gate').hidden = unlocked;
-  $('logform').hidden = !unlocked;
-  if (unlocked) { $('f-date').value = ymd(new Date()); $('f-date').max = ymd(new Date()); $('f-creator').focus(); }
-  else { $('pass').value = ''; $('gate-msg').textContent = ''; $('pass').focus(); }
+  $('gate').hidden = kind !== 'admin';
+  $('logform').hidden = kind !== 'log';
+  if (kind === 'log') {
+    $('f-date').max = ymd(new Date());
+    if (!$('f-date').value) $('f-date').value = ymd(new Date());
+    $('flight-msg').textContent = '';
+    $('f-name').focus();
+  } else {
+    $('pass').value = ''; $('gate-msg').textContent = ''; $('gate-msg').className = 'msg';
+    $('pass').focus();
+  }
 }
 const closeModal = () => { $('modal').hidden = true; };
-$('log-btn').addEventListener('click', openModal);
+$('log-btn').addEventListener('click', () => openModal('log'));
+$('admin-btn').addEventListener('click', () => openModal('admin'));
 $('modal-x').addEventListener('click', closeModal);
 $('modal').addEventListener('click', (e) => { if (e.target === $('modal')) closeModal(); });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
-$('lock-btn').addEventListener('click', () => { passcode = ''; sessionStorage.removeItem('trip_pass'); syncAdminUI(); });
+$('lock-btn').addEventListener('click', () => {
+  passcode = ''; sessionStorage.removeItem('trip_pass'); adminView = false;
+  syncAdminUI(); loadFlights();
+});
 
 function lockOut(msg) {
-  passcode = ''; sessionStorage.removeItem('trip_pass'); syncAdminUI();
-  $('gate').hidden = false; $('logform').hidden = true;
+  passcode = ''; sessionStorage.removeItem('trip_pass'); adminView = false;
+  syncAdminUI(); loadFlights();
+  openModal('admin');
   $('gate-msg').className = 'msg err'; $('gate-msg').textContent = msg;
 }
 
@@ -626,55 +671,77 @@ $('gate-form').addEventListener('submit', async (e) => {
   try {
     const res = await fetch('/api/auth', { method: 'POST', headers: { 'x-passcode': attempt } });
     if (res.status === 204) {
-      passcode = attempt; sessionStorage.setItem('trip_pass', attempt); syncAdminUI(); openModal();
+      passcode = attempt; sessionStorage.setItem('trip_pass', attempt);
+      syncAdminUI(); closeModal(); await loadFlights();
     } else if (res.status === 503) {
-      $('gate-msg').className = 'msg err'; $('gate-msg').textContent = 'The passcode hasn’t been set up on the server yet.';
+      $('gate-msg').className = 'msg err'; $('gate-msg').textContent = 'the admin passcode hasn’t been set up yet.';
     } else {
-      $('gate-msg').className = 'msg err'; $('gate-msg').textContent = 'Wrong passcode.';
+      $('gate-msg').className = 'msg err'; $('gate-msg').textContent = 'wrong passcode.';
     }
   } catch (err) {
-    $('gate-msg').className = 'msg err'; $('gate-msg').textContent = 'Couldn’t reach the server.';
+    $('gate-msg').className = 'msg err'; $('gate-msg').textContent = 'couldn’t reach the server.';
   }
   $('gate-btn').disabled = false;
 });
 
 function fillSelects() {
-  const opts = Object.keys(AIRPORTS)
-    .sort((a, b) => AIRPORTS[a][0].localeCompare(AIRPORTS[b][0]))
-    .map((c) => `<option value="${c}">${esc(AIRPORTS[c][0])} (${esc(AIRPORTS[c][1])}) — ${c}</option>`).join('');
-  $('f-from').innerHTML = '<option value="" disabled selected>Choose origin</option>' + opts;
-  $('f-to').innerHTML = '<option value="" disabled selected>Choose destination</option>' + opts;
+  const opts = Object.keys(SCHOOLS)
+    .sort((a, b) => SCHOOLS[a][1].localeCompare(SCHOOLS[b][1]))
+    .map((c) => `<option value="${c}">${esc(SCHOOLS[c][1])}</option>`).join('');
+  $('f-from').innerHTML = '<option value="" disabled selected>choose school</option>' + opts;
+  $('f-to').innerHTML = '<option value="" disabled selected>choose destination</option>' + opts;
 }
+
+// "n/a" tickboxes for instagram and tiktok
+function wireNA(inputId, naId) {
+  const input = $(inputId), na = $(naId);
+  na.addEventListener('change', () => {
+    input.disabled = na.checked;
+    input.required = !na.checked;
+    if (na.checked) input.value = '';
+  });
+}
+wireNA('f-ig', 'f-ig-na');
+wireNA('f-tt', 'f-tt-na');
+const handleValue = (inputId, naId) => ($(naId).checked ? 'N/A' : $(inputId).value.trim());
+function resetHandle(inputId, naId) { $(inputId).value = ''; $(naId).checked = false; $(inputId).disabled = false; $(inputId).required = true; }
 
 $('flight-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const msg = $('flight-msg');
   msg.className = 'msg'; msg.textContent = '';
-  if ($('f-from').value === $('f-to').value) { msg.className = 'msg err'; msg.textContent = 'Origin and destination must differ.'; return; }
+  if ($('f-name').value.trim().split(/\s+/).length < 2) { msg.className = 'msg err'; msg.textContent = 'enter the full name (first and last).'; return; }
+  if ($('f-from').value === $('f-to').value) { msg.className = 'msg err'; msg.textContent = 'the two schools must be different.'; return; }
   $('flight-btn').disabled = true;
   try {
     const res = await fetch('/api/flights', {
       method: 'POST',
-      headers: { 'content-type': 'application/json', 'x-passcode': passcode },
-      body: JSON.stringify({ date: $('f-date').value, creator: $('f-creator').value, from: $('f-from').value, to: $('f-to').value, cost: $('f-cost').value }),
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        name: $('f-name').value,
+        instagram: handleValue('f-ig', 'f-ig-na'),
+        tiktok: handleValue('f-tt', 'f-tt-na'),
+        from: $('f-from').value, to: $('f-to').value,
+        date: $('f-date').value, cost: $('f-cost').value,
+      }),
     });
-    if (res.status === 401) { lockOut('Session expired — enter the passcode again.'); }
-    else if (res.status === 201) {
+    if (res.status === 201) {
       const { flight } = await res.json();
-      flights.unshift(flight);
-      msg.className = 'msg ok'; msg.textContent = `Logged ${flight.from} → ${flight.to}.`;
-      $('f-cost').value = ''; $('f-creator').value = '';
+      const a = loc(flight.from), b = loc(flight.to);
+      msg.className = 'msg ok'; msg.textContent = `logged ${a ? a.label : flight.from} → ${b ? b.label : flight.to}.`;
+      $('f-name').value = ''; $('f-cost').value = '';
+      resetHandle('f-ig', 'f-ig-na'); resetHandle('f-tt', 'f-tt-na');
       const d = parseYmd(flight.date);
       const today = startOfToday();
       if (mode === 'day') offset = Math.min(0, Math.round((d - today) / 86400000));
       else offset = Math.min(0, Math.round((mondayOf(d) - mondayOf(today)) / (7 * 86400000)));
-      renderAll();
+      await loadFlights();
     } else {
       const body = await res.json().catch(() => ({}));
-      msg.className = 'msg err'; msg.textContent = body.error || 'Something went wrong.';
+      msg.className = 'msg err'; msg.textContent = (body.error || 'something went wrong.').toLowerCase();
     }
   } catch (err) {
-    msg.className = 'msg err'; msg.textContent = 'Couldn’t reach the server.';
+    msg.className = 'msg err'; msg.textContent = 'couldn’t reach the server.';
   }
   $('flight-btn').disabled = false;
 });
@@ -684,7 +751,7 @@ async function removeFlight(id) {
   try {
     const res = await fetch('/api/flights/' + encodeURIComponent(id), { method: 'DELETE', headers: { 'x-passcode': passcode } });
     if (res.status === 204) { flights = flights.filter((f) => f.id !== id); renderAll(); }
-    else if (res.status === 401) { syncAdminUI(); openModal(); lockOut('Session expired — enter the passcode again.'); }
+    else if (res.status === 401) { lockOut('session expired — enter the passcode again.'); }
   } catch (e) { /* leave list as-is */ }
 }
 
