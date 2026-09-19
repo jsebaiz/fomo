@@ -12,11 +12,12 @@ async function sha256(text) {
   return new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text)));
 }
 
-// Returns true, false, or 'unconfigured' (fail closed when no passcode secret is set).
-async function checkPasscode(request, env) {
-  if (!env.ADMIN_PASSCODE) return 'unconfigured';
-  const given = request.headers.get('x-passcode') || '';
-  const [a, b] = await Promise.all([sha256(given), sha256(env.ADMIN_PASSCODE)]);
+// Returns true, false, or 'unconfigured' (fail closed when the secret isn't set).
+async function check(request, env, header, secretName) {
+  const secret = env[secretName];
+  if (!secret) return 'unconfigured';
+  const given = request.headers.get(header) || '';
+  const [a, b] = await Promise.all([sha256(given), sha256(secret)]);
   return crypto.subtle.timingSafeEqual(a, b);
 }
 
@@ -44,11 +45,22 @@ async function readFlights(env) {
   return (await env.FLIGHTS.get(KEY, 'json')) || [];
 }
 
+// Writes need the admin passcode.
 async function guard(request, env) {
-  const ok = await checkPasscode(request, env);
+  const ok = await check(request, env, 'x-passcode', 'ADMIN_PASSCODE');
   if (ok === 'unconfigured') return json({ error: 'Passcode is not configured on the server' }, 503);
   if (!ok) return json({ error: 'Wrong passcode' }, 401);
   return null;
+}
+
+// Reading needs the viewer password (the admin passcode also works).
+async function guardView(request, env) {
+  const view = await check(request, env, 'x-view-pass', 'VIEW_PASSCODE');
+  if (view === true) return null;
+  const admin = await check(request, env, 'x-passcode', 'ADMIN_PASSCODE');
+  if (admin === true) return null;
+  if (view === 'unconfigured') return json({ error: 'Login is not configured on the server' }, 503);
+  return json({ error: 'Wrong password' }, 401);
 }
 
 export default {
@@ -58,7 +70,14 @@ export default {
 
     if (!path.startsWith('/api/')) return env.ASSETS.fetch(request);
 
+    if (path === '/api/login' && request.method === 'POST') {
+      const denied = await guardView(request, env);
+      return denied || empty(204);
+    }
+
     if (path === '/api/flights' && request.method === 'GET') {
+      const denied = await guardView(request, env);
+      if (denied) return denied;
       const flights = await readFlights(env);
       flights.sort((a, b) => (a.date === b.date ? (a.createdAt < b.createdAt ? 1 : -1) : a.date < b.date ? 1 : -1));
       return json({ flights });
@@ -101,7 +120,7 @@ export default {
       return empty(204);
     }
 
-    if (path === '/api/flights' || path === '/api/auth' || del) return json({ error: 'Method not allowed' }, 405);
+    if (path === '/api/flights' || path === '/api/auth' || path === '/api/login' || del) return json({ error: 'Method not allowed' }, 405);
     return json({ error: 'Not found' }, 404);
   },
 };
