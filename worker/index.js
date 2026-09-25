@@ -145,7 +145,10 @@ function cleanUsername(value) {
 
 // What the public clan list shows. The referral code and member usernames are
 // never included here — usernames are only exposed via the admin-gated
-// /api/clans/internal roster below.
+// /api/clans/internal roster below. Only approved members count toward the
+// public member count and leaderboard — a submitted username is a pending
+// claim until an admin approves it on the internal roster.
+const approvedMembers = (c) => (c.members || []).filter((m) => m.status === 'approved');
 const publicClan = (c, joins) => ({
   id: c.id,
   name: c.name,
@@ -153,15 +156,16 @@ const publicClan = (c, joins) => ({
   schoolLabel: c.schoolLabel,
   chapterName: c.chapterName,
   chapterSize: c.chapterSize || null,
-  members: (c.members || []).length,
+  members: approvedMembers(c).length,
   joined: joins,
   createdAt: c.createdAt,
 });
 
 function joinsWithin(clan, ms) {
-  if (ms == null) return (clan.members || []).length;
+  const approved = approvedMembers(clan);
+  if (ms == null) return approved.length;
   const cutoff = Date.now() - ms;
-  return (clan.members || []).filter((m) => new Date(m.joinedAt).getTime() >= cutoff).length;
+  return approved.filter((m) => new Date(m.joinedAt).getTime() >= cutoff).length;
 }
 
 const WINDOWS = { '24h': 86400000, '7d': 7 * 86400000, '30d': 30 * 86400000, all: null };
@@ -229,7 +233,7 @@ export default {
       const ms = Object.prototype.hasOwnProperty.call(WINDOWS, windowKey) ? WINDOWS[windowKey] : null;
       const clans = await readList(env, CLANS_KEY);
       const withCounts = clans.map((c) => ({ clan: c, joined: joinsWithin(c, ms) }));
-      withCounts.sort((a, b) => b.joined - a.joined || (b.clan.members || []).length - (a.clan.members || []).length);
+      withCounts.sort((a, b) => b.joined - a.joined || approvedMembers(b.clan).length - approvedMembers(a.clan).length);
       return json({ clans: withCounts.map(({ clan, joined }) => publicClan(clan, joined)) });
     }
 
@@ -269,11 +273,45 @@ export default {
       const rows = [];
       clans.forEach((c) => {
         (c.members || []).forEach((m) => {
-          rows.push({ username: m.username, joinedAt: m.joinedAt, school: c.schoolLabel, chapterName: c.chapterName });
+          rows.push({
+            code: c.code, username: m.username, joinedAt: m.joinedAt,
+            school: c.schoolLabel, chapterName: c.chapterName,
+            status: m.status === 'approved' ? 'approved' : 'pending',
+          });
         });
       });
       rows.sort((a, b) => (a.joinedAt < b.joinedAt ? 1 : -1));
       return json({ rows });
+    }
+
+    // Approving a submission is what actually counts someone toward their clan's
+    // public member count and leaderboard rank — a raw submission alone doesn't.
+    // Admin-passcode gated, same as the roster it's driven from.
+    if (path === '/api/clans/internal/approve' && request.method === 'POST') {
+      const denied = await guard(request, env);
+      if (denied) return denied;
+      const text = await request.text();
+      if (text.length > 8192) return json({ error: 'Request too large' }, 413);
+      let body;
+      try { body = JSON.parse(text); } catch { return json({ error: 'Invalid JSON' }, 400); }
+
+      const approvals = Array.isArray(body && body.approvals) ? body.approvals : [];
+      if (!approvals.length || approvals.length > 200) return json({ error: 'Send 1–200 approvals' }, 400);
+
+      const clans = await readList(env, CLANS_KEY);
+      let approved = 0;
+      for (const a of approvals) {
+        const code = String((a && a.code) || '');
+        const username = String((a && a.username) || '');
+        const clan = clans.find((c) => c.code === code);
+        if (!clan) continue;
+        const member = (clan.members || []).find((m) => m.username.toLowerCase() === username.toLowerCase());
+        if (!member || member.status === 'approved') continue;
+        member.status = 'approved';
+        approved++;
+      }
+      if (approved > 0) await env.FLIGHTS.put(CLANS_KEY, JSON.stringify(clans));
+      return json({ approved });
     }
 
     // Resolve a referral code to the clan it names, for the join page to greet by name.
@@ -306,12 +344,12 @@ export default {
       if (clan.members.some((m) => m.username.toLowerCase() === username.toLowerCase())) {
         return json({ error: 'That username already joined this clan' }, 409);
       }
-      clan.members.push({ username, joinedAt: new Date().toISOString() });
+      clan.members.push({ username, joinedAt: new Date().toISOString(), status: 'pending' });
       await env.FLIGHTS.put(CLANS_KEY, JSON.stringify(clans));
       return json({ name: clan.name, members: clan.members.length }, 201);
     }
 
-    if (path === '/api/flights' || path === '/api/auth' || path === '/api/clans' || path === '/api/clans/internal' || lookup || join || del) {
+    if (path === '/api/flights' || path === '/api/auth' || path === '/api/clans' || path === '/api/clans/internal' || path === '/api/clans/internal/approve' || lookup || join || del) {
       return json({ error: 'Method not allowed' }, 405);
     }
     return json({ error: 'Not found' }, 404);

@@ -39,8 +39,9 @@ svg{display:block;}
 .iconbtn{width:38px; height:38px; border-radius:999px; background:none; border:none; color:var(--text); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:background .15s ease;}
 .iconbtn:hover{background:rgba(255,255,255,0.07);}
 .iconbtn svg{width:20px; height:20px;}
-.brandmark{display:flex; align-items:center; gap:9px; color:var(--text-dim); font-weight:700; font-size:0.95rem;}
-.brandmark img{display:block; width:26px; height:26px; border-radius:8px;}
+.brandmark{display:flex; align-items:center; gap:10px; color:var(--text-dim); font-weight:700; font-size:0.95rem;}
+.badge{display:flex; align-items:center; justify-content:center; flex-shrink:0; width:26px; height:26px; border-radius:50%; background:linear-gradient(135deg, var(--blue-light), var(--blue-electric)); box-shadow:0 2px 10px rgba(81,106,246,.35);}
+.badge svg{width:58%; height:58%; color:#fff;}
 
 .hero{margin-top:22px; position:relative; z-index:1;}
 .title-row{display:flex; align-items:flex-start; justify-content:space-between; gap:20px; flex-wrap:wrap;}
@@ -49,7 +50,7 @@ h1{font-size:clamp(2.2rem,4vw,3rem); font-weight:800; margin:0; letter-spacing:-
 .tabs{display:flex; gap:3px; background:var(--panel); border:1px solid var(--border); border-radius:999px; padding:4px; flex-shrink:0; margin-top:6px;}
 .tabs button{background:none; border:none; color:var(--text-dim); font-weight:600; font-size:0.86rem; padding:9px 17px; border-radius:999px; cursor:pointer; transition:background .15s ease, color .15s ease;}
 .tabs button:hover{color:var(--text);}
-.tabs button.active{background:linear-gradient(135deg, var(--blue-electric), var(--blue)); color:#fff;}
+.tabs button.active{background:var(--blue-electric); color:#fff;}
 
 .desc{font-size:0.98rem; color:var(--text-dim); margin:14px 0 0; max-width:52ch;}
 
@@ -67,7 +68,7 @@ h1{font-size:clamp(2.2rem,4vw,3rem); font-weight:800; margin:0; letter-spacing:-
 .row:last-child{border-bottom:none;}
 .row:hover{background:rgba(255,255,255,0.03);}
 .rank{width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.86rem; color:var(--text-faint); flex-shrink:0;}
-.rank.r1{background:linear-gradient(135deg, var(--blue-electric), var(--blue)); color:#fff;}
+.rank.r1{background:var(--blue-electric); color:#fff;}
 .rank.r2{background:var(--blue); color:#fff;}
 .rank.r3{background:rgba(172,184,249,0.30); color:var(--text);}
 .icon{width:52px; height:52px; border-radius:15px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.08rem; color:#fff; flex-shrink:0; letter-spacing:0.01em;}
@@ -95,8 +96,8 @@ h1{font-size:clamp(2.2rem,4vw,3rem); font-weight:800; margin:0; letter-spacing:-
 .footer-cta p{font-size:0.95rem; color:var(--text-dim); margin-bottom:18px;}
 .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:15px 30px; border-radius:999px; font-weight:700; font-size:0.98rem; cursor:pointer; border:none; transition:transform .15s ease, filter .15s ease;}
 .btn:hover{transform:translateY(-1px);}
-.btn-primary{background:linear-gradient(135deg, var(--blue-electric), var(--blue)); color:#fff; box-shadow:0 10px 30px rgba(81,106,246,.32);}
-.btn-primary:hover{filter:brightness(1.1);}
+.btn-primary{background:var(--blue-electric); color:#fff; box-shadow:0 10px 30px rgba(81,106,246,.32);}
+.btn-primary:hover{filter:brightness(1.12);}
 
 @media (max-width:680px){
   .wrap{padding:0 18px 50px;}
@@ -117,7 +118,7 @@ h1{font-size:clamp(2.2rem,4vw,3rem); font-weight:800; margin:0; letter-spacing:-
     <button class="iconbtn" id="back-btn" aria-label="Back">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
     </button>
-    <div class="brandmark"><img src="/fomo-favicon.svg" alt="">fomo</div>
+    <div class="brandmark"><span class="badge"><svg viewBox="0 0 100 100" fill="currentColor"><path d="M36.9747 24.3586C44.1067 24.3587 49.7941 27.9515 52.9484 33.5959C48.7626 38.0418 45.6617 43.7612 44.4679 50.0002C43.2743 56.2391 44.1865 61.9572 46.67 66.4026C41.3555 72.0468 34.2931 75.6408 27.1613 75.6409C18.432 75.6407 11.8659 70.2588 9.46204 62.3196H26.8478C27.4159 62.3193 28.0059 61.8593 28.1691 61.2932L34.6486 38.7043C34.8098 38.1381 34.4815 37.6782 33.9152 37.678H14.1788C19.6213 29.7404 28.2465 24.3588 36.9747 24.3586Z"/><path d="M72.3285 24.3586C85.0779 24.3586 93.2156 35.8374 90.5062 49.9993C87.7966 64.1596 75.2646 75.6409 62.515 75.6409C53.7856 75.6408 47.2196 70.2589 44.8158 62.3196H64.1537C64.7218 62.3194 65.3127 61.8594 65.476 61.2932L71.9545 38.7043C72.1157 38.138 71.7876 37.678 71.2211 37.678H49.5316C54.9741 29.7401 63.5999 24.3587 72.3285 24.3586Z"/></svg></span>fomo</div>
   </div>
 
   <div class="hero">
