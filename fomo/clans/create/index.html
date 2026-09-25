@@ -10,96 +10,118 @@
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0A0A0D; --card:#1A1A1E; --field:#151518; --border:rgba(255,255,255,0.10);
-  --text:#F5F5F7; --text-dim:rgba(245,245,247,0.55); --text-faint:rgba(245,245,247,0.35);
-  --green:#33D17A; --blue:#516AF6; --blue-electric:#4A36FF; --red:#ff9a9a;
+  --ink:#0B091F; --ink-2:#141230; --field:#100E24; --border:rgba(234,237,255,0.14);
+  --text:#EAEDFF; --text-dim:rgba(234,237,255,0.62); --text-faint:rgba(234,237,255,0.38);
+  --blue:#516AF6; --blue-electric:#4A36FF; --blue-light:#ACB8F9; --red:#ff9a9a;
+  --radius:16px; --radius-sm:12px;
 }
 *{box-sizing:border-box;}
 [hidden]{display:none !important;}
-html,body{margin:0; background:var(--bg);}
+html,body{margin:0; background:var(--ink);}
 body{color:var(--text); font-family:'Schibsted Grotesk','Inter',-apple-system,sans-serif; line-height:1.45; min-height:100vh;}
 button{font-family:inherit;}
 a{color:inherit; text-decoration:none;}
-.phone{max-width:480px; margin:0 auto; min-height:100vh; padding:0 18px 110px; position:relative;}
+svg{display:block;}
+.phone{max-width:480px; margin:0 auto; min-height:100vh; padding:0 18px 110px; position:relative; z-index:1;}
+.halo{position:fixed; top:-30%; left:50%; transform:translateX(-50%); width:900px; height:600px; background:radial-gradient(circle, rgba(74,54,255,0.16) 0%, rgba(74,54,255,0.04) 45%, transparent 70%); pointer-events:none; z-index:0;}
 
-.topbar{display:flex; align-items:center; padding:18px 0 6px; position:relative;}
-.iconbtn{width:32px; height:32px; border-radius:999px; background:none; border:none; color:var(--text); display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:1.1rem;}
+.topbar{display:flex; align-items:center; justify-content:space-between; padding:18px 0 6px; position:relative;}
+.iconbtn{width:34px; height:34px; border-radius:999px; background:none; border:none; color:var(--text); display:flex; align-items:center; justify-content:center; cursor:pointer;}
 .iconbtn:hover{background:rgba(255,255,255,0.06);}
+.iconbtn svg{width:19px; height:19px;}
 .topbar h2{position:absolute; left:0; right:0; text-align:center; font-size:1.02rem; font-weight:700; margin:0; pointer-events:none;}
+.brandmark{color:var(--blue-light); display:flex; align-items:center;}
+.brandmark svg{width:24px; height:15px;}
 
-.banner-wrap{position:relative; margin:22px 0 44px;}
-.banner{height:120px; border-radius:16px; background:linear-gradient(135deg, #3a3a40, #232326); position:relative; transition:background .2s ease;}
-.banner .pencil{position:absolute; right:10px; bottom:10px; width:28px; height:28px; border-radius:999px; background:rgba(0,0,0,0.55); border:none; color:#fff; font-size:0.8rem; display:flex; align-items:center; justify-content:center; cursor:pointer;}
+.banner-wrap{position:relative; margin:22px 0 46px;}
+.banner{height:120px; border-radius:16px; background:linear-gradient(135deg, #232145, #14122a); position:relative; transition:background .2s ease; overflow:hidden;}
+.banner::after{content:''; position:absolute; inset:0; background:radial-gradient(circle at 30% 20%, rgba(255,255,255,0.18), transparent 55%);}
+.pencil-btn{position:absolute; width:28px; height:28px; border-radius:999px; background:rgba(11,9,31,0.65); border:1px solid var(--border); color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; backdrop-filter:blur(4px);}
+.pencil-btn svg{width:13px; height:13px;}
+.banner .pencil-btn{right:10px; bottom:10px;}
 .icon-wrap{position:absolute; left:14px; bottom:-24px;}
-.icon{width:64px; height:64px; border-radius:18px; background:linear-gradient(135deg, #3a3a40, #232326); border:3px solid var(--bg); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.3rem; color:#fff;}
-.icon-wrap .pencil{position:absolute; right:-4px; bottom:-4px; width:22px; height:22px; border-radius:999px; background:rgba(0,0,0,0.6); border:none; color:#fff; font-size:0.65rem; display:flex; align-items:center; justify-content:center; cursor:pointer;}
+.icon{width:64px; height:64px; border-radius:18px; background:linear-gradient(135deg, #232145, #14122a); border:3px solid var(--ink); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.3rem; color:#fff;}
+.icon-wrap .pencil-btn{width:22px; height:22px; right:-4px; bottom:-4px;}
+.icon-wrap .pencil-btn svg{width:11px; height:11px;}
 
 .field{margin-bottom:20px;}
-.field label{display:block; font-size:0.82rem; color:var(--text-dim); margin-bottom:8px; font-weight:600;}
-.field input, .field textarea{width:100%; background:var(--field); border:1px solid var(--border); border-radius:12px; padding:13px 14px; color:var(--text); font-family:inherit; font-size:0.95rem; outline:none; resize:none;}
-.field input:focus, .field textarea:focus{border-color:var(--blue);}
-.field .count{text-align:right; font-size:0.72rem; color:var(--text-faint); margin-top:4px;}
+.field label{display:block; font-size:0.86rem; color:var(--text-dim); margin-bottom:8px; font-weight:600;}
+.field input, .field textarea{width:100%; background:var(--field); border:1px solid var(--border); border-radius:12px; padding:13px 14px; color:var(--text); font-family:inherit; font-size:0.95rem; outline:none; resize:none; transition:border-color .15s ease;}
+.field input::placeholder, .field textarea::placeholder{color:var(--text-faint);}
+.field input:focus, .field textarea:focus{border-color:var(--blue); box-shadow:0 0 0 3px rgba(81,106,246,0.15);}
+.field .hint{font-size:0.76rem; color:var(--text-faint); margin-top:6px;}
 
-.row-action{display:flex; align-items:center; gap:12px; padding:14px 4px; border-top:1px solid var(--border); border-bottom:1px solid var(--border); cursor:default;}
-.row-action .ricon{font-size:1.1rem; width:22px; text-align:center; flex-shrink:0;}
-.row-action .rlabel{flex:1; font-weight:600; font-size:0.95rem;}
+.row-action{display:flex; align-items:center; gap:12px; padding:14px 4px; border-top:1px solid var(--border); border-bottom:1px solid var(--border);}
+.row-action .ricon{width:22px; height:22px; flex-shrink:0; color:var(--text-dim); display:flex; align-items:center; justify-content:center;}
+.row-action .ricon svg{width:19px; height:19px;}
+.row-action .rlabel{flex:1; font-weight:700; font-size:0.95rem;}
 .row-action .rlabel small{display:block; font-weight:400; font-size:0.76rem; color:var(--text-faint); margin-top:1px;}
-.row-action .rmeta{color:var(--text-faint); font-size:0.85rem;}
+.row-action .rmeta{color:var(--text-faint); font-size:0.85rem; flex-shrink:0;}
 .row-action.copyable{cursor:pointer;}
 .row-action.copyable:hover{background:rgba(255,255,255,0.03);}
-.row-action.copyable .rlabel{color:var(--blue-light,#8FA0FF);}
+.row-action.copyable .ricon, .row-action.copyable .rlabel{color:var(--blue-light);}
 
 .msg{font-size:0.84rem; margin:14px 2px 0; min-height:1.2em;}
 .msg.err{color:var(--red);}
-.msg.ok{color:var(--green);}
 
-.bottom-bar{position:fixed; left:0; right:0; bottom:0; padding:14px 18px calc(14px + env(safe-area-inset-bottom)); background:linear-gradient(to top, var(--bg) 60%, transparent);}
+.bottom-bar{position:fixed; left:0; right:0; bottom:0; padding:14px 18px calc(14px + env(safe-area-inset-bottom)); background:linear-gradient(to top, var(--ink) 55%, transparent); z-index:2;}
 .bottom-inner{max-width:480px; margin:0 auto;}
-.btn{display:flex; align-items:center; justify-content:center; width:100%; padding:16px; border-radius:14px; font-weight:700; font-size:0.98rem; cursor:pointer; border:none;}
-.btn-primary{background:var(--text); color:var(--bg);}
-.btn-primary:hover{filter:brightness(0.92);}
-.btn-primary:disabled{opacity:.5; cursor:default;}
-.btn-secondary{background:var(--card); color:var(--text); border:1px solid var(--border);}
+.btn{display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:16px; border-radius:14px; font-weight:700; font-size:0.98rem; cursor:pointer; border:none; transition:transform .15s ease, filter .15s ease;}
+.btn:hover{transform:translateY(-1px);}
+.btn-primary{background:linear-gradient(135deg, var(--blue-electric), var(--blue)); color:#fff; box-shadow:0 8px 24px rgba(81,106,246,.3);}
+.btn-primary:hover{filter:brightness(1.1);}
+.btn-primary:disabled{opacity:.5; cursor:default; transform:none; filter:none;}
+.btn-secondary{background:var(--ink-2); color:var(--text); border:1px solid var(--border);}
 
-.success{display:none; text-align:center; margin:30px 0 10px;}
+.success{display:none; text-align:center; margin:34px 0 10px;}
 .success.show{display:block;}
-.success .check{width:52px; height:52px; border-radius:999px; background:rgba(51,209,122,0.12); color:var(--green); font-size:1.5rem; display:flex; align-items:center; justify-content:center; margin:0 auto 14px;}
+.success .check{width:56px; height:56px; border-radius:999px; background:rgba(81,106,246,0.14); color:var(--blue-light); display:flex; align-items:center; justify-content:center; margin:0 auto 16px;}
+.success .check svg{width:26px; height:26px;}
 .success h3{margin:0 0 6px; font-size:1.15rem;}
 .success p{font-size:0.88rem; color:var(--text-dim); margin:0;}
 </style>
 </head>
 <body>
 
+<div class="halo" aria-hidden="true"></div>
+
 <div class="phone">
   <div class="topbar">
-    <button class="iconbtn" id="back-btn" aria-label="Back">←</button>
+    <button class="iconbtn" id="back-btn" aria-label="Back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
     <h2>Create a clan</h2>
+    <span class="brandmark"><svg viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="7"><circle cx="20" cy="20" r="16"/><circle cx="44" cy="20" r="16"/></svg></span>
   </div>
 
   <form id="clan-form">
     <div class="banner-wrap">
       <div class="banner" id="banner">
-        <button type="button" class="pencil" id="banner-pencil" title="The banner is generated automatically from your clan's name">✏️</button>
+        <button type="button" class="pencil-btn" id="banner-pencil" title="The banner is generated automatically from your clan's name">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+        </button>
       </div>
       <div class="icon-wrap">
         <div class="icon" id="icon-preview">?</div>
-        <button type="button" class="pencil" title="The icon is generated automatically from your clan's name">✏️</button>
+        <button type="button" class="pencil-btn" title="The icon is generated automatically from your clan's name">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+        </button>
       </div>
     </div>
 
     <div class="field">
       <label for="c-name">Clan name</label>
-      <input type="text" id="c-name" maxlength="40" placeholder="Name your clan" autocomplete="off" required>
+      <input type="text" id="c-name" maxlength="40" placeholder="Name your clan (ex. Sigma Chi SDSU)" autocomplete="off" required>
     </div>
 
     <div class="field">
-      <label for="c-desc">A short description</label>
-      <textarea id="c-desc" rows="3" maxlength="140" placeholder="What is your frat about?"></textarea>
-      <div class="count"><span id="c-desc-count">0</span>/140</div>
+      <label for="c-size">How many members are in your fraternity?</label>
+      <input type="number" id="c-size" min="1" max="2000" step="1" placeholder="e.g. 45" inputmode="numeric">
+      <div class="hint">Optional — shown as your chapter's size on the clans list.</div>
     </div>
 
     <div class="row-action" id="invite-row">
-      <span class="ricon">👥</span>
+      <span class="ricon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="8" r="3"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><path d="M16 8.5c1.4.3 2.5 1.5 2.5 3s-1.1 2.7-2.5 3M20 19c0-2.3-1.6-4.2-3.8-4.8"/></svg></span>
       <span class="rlabel">Invite members<small>Available once your clan is created</small></span>
       <span class="rmeta">0</span>
     </div>
@@ -108,7 +130,7 @@ a{color:inherit; text-decoration:none;}
   </form>
 
   <div class="success" id="success">
-    <div class="check">✓</div>
+    <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
     <h3 id="success-name"></h3>
     <p>Your clan is live. Share your link to bring the frat in.</p>
   </div>
@@ -125,9 +147,10 @@ a{color:inherit; text-decoration:none;}
 const $ = (id) => document.getElementById(id);
 document.getElementById('back-btn').addEventListener('click', () => { if (history.length > 1) history.back(); else location.href = '../'; });
 
+// Icon colors stay inside the brand's blue family (no rainbow), matching the clans list.
 const PALETTE = [
-  ['#516AF6', '#2E3A8C'], ['#7B4AE2', '#3E2870'], ['#2B9E8F', '#155048'],
-  ['#C2544D', '#6B2622'], ['#B8862E', '#5C4315'], ['#3D7EBE', '#1E3F5F'],
+  ['#516AF6', '#2E3A8C'], ['#4A36FF', '#241B7A'], ['#7B8FF7', '#3A458F'],
+  ['#33409E', '#181D4B'], ['#8DA0FF', '#3E4A99'], ['#3550C4', '#1B2560'],
 ];
 function paletteFor(name) {
   let h = 0;
@@ -142,8 +165,8 @@ function updatePreview() {
   const name = $('c-name').value.trim();
   const icon = $('icon-preview');
   if (!name) {
-    $('banner').style.background = 'linear-gradient(135deg, #3a3a40, #232326)';
-    icon.style.background = 'linear-gradient(135deg, #3a3a40, #232326)';
+    $('banner').style.background = 'linear-gradient(135deg, #232145, #14122a)';
+    icon.style.background = 'linear-gradient(135deg, #232145, #14122a)';
     icon.textContent = '?';
     return;
   }
@@ -153,10 +176,7 @@ function updatePreview() {
   icon.textContent = initialsOf(name);
 }
 $('c-name').addEventListener('input', updatePreview);
-$('c-desc').addEventListener('input', () => { $('c-desc-count').textContent = $('c-desc').value.length; });
-[$('banner-pencil'), ...document.querySelectorAll('.icon-wrap .pencil')].forEach((b) => {
-  b.addEventListener('click', () => { b.blur(); });
-});
+document.querySelectorAll('.pencil-btn').forEach((b) => b.addEventListener('click', () => b.blur()));
 
 let created = false;
 $('clan-form').addEventListener('submit', async (e) => {
@@ -172,7 +192,7 @@ $('clan-form').addEventListener('submit', async (e) => {
     const res = await fetch('/api/clans', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ name, description: $('c-desc').value.trim() }),
+      body: JSON.stringify({ name, chapterSize: $('c-size').value }),
     });
     if (res.status === 201) {
       const { clan } = await res.json();
@@ -190,14 +210,14 @@ $('clan-form').addEventListener('submit', async (e) => {
 });
 
 function showCreated(clan) {
-  $('c-name').disabled = true; $('c-desc').disabled = true;
+  $('c-name').disabled = true; $('c-size').disabled = true;
   $('success-name').textContent = clan.name + ' is ready.';
   $('success').classList.add('show');
   $('form-msg').textContent = '';
 
   const row = $('invite-row');
   row.classList.add('copyable');
-  row.innerHTML = `<span class="ricon">🔗</span><span class="rlabel">Copy link<small>Send it to your group chat</small></span><span class="rmeta" id="copy-state">→</span>`;
+  row.innerHTML = `<span class="ricon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 15 15 9"/><path d="M10.5 6.5 12 5a4 4 0 0 1 5.7 5.7l-1.5 1.5"/><path d="M13.5 17.5 12 19a4 4 0 0 1-5.7-5.7l1.5-1.5"/></svg></span><span class="rlabel">Copy link<small>Send it to your group chat</small></span><span class="rmeta" id="copy-state">→</span>`;
   row.addEventListener('click', async () => {
     try {
       await navigator.clipboard.writeText(clan.referralUrl);

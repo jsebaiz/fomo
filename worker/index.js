@@ -97,11 +97,17 @@ function randomCode(len = 8) {
 
 function parseClan(body) {
   const name = String(body.name || '').trim().replace(/\s+/g, ' ');
-  const description = String(body.description || '').trim().replace(/\s+/g, ' ');
   if (!/^[\p{L}\p{N}][\p{L}\p{N} .,'&()-]{1,39}$/u.test(name)) return { error: 'Enter a clan name (2–40 characters)' };
-  if (description.length > 140) return { error: 'Keep the description under 140 characters' };
-  if (description && !/^[\p{L}\p{N}\p{P}\p{Zs}]{1,140}$/u.test(description)) return { error: 'Invalid description' };
-  return { clan: { name, description } };
+
+  // Chapter size is optional context, self-reported and never used for ranking.
+  let chapterSize = null;
+  const raw = body.chapterSize;
+  if (raw !== undefined && raw !== null && String(raw).trim() !== '') {
+    const n = Number(raw);
+    if (!Number.isInteger(n) || n < 1 || n > 2000) return { error: 'Chapter size should be a number between 1 and 2000' };
+    chapterSize = n;
+  }
+  return { clan: { name, chapterSize } };
 }
 
 function cleanUsername(value) {
@@ -115,7 +121,7 @@ function cleanUsername(value) {
 const publicClan = (c, joins) => ({
   id: c.id,
   name: c.name,
-  description: c.description,
+  chapterSize: c.chapterSize || null,
   members: (c.members || []).length,
   joined: joins,
   createdAt: c.createdAt,
@@ -212,7 +218,7 @@ export default {
       let code;
       do { code = randomCode(); } while (clans.some((c) => c.code === code));
 
-      const clan = { id: crypto.randomUUID(), code, name: parsed.clan.name, description: parsed.clan.description, members: [], createdAt: new Date().toISOString() };
+      const clan = { id: crypto.randomUUID(), code, name: parsed.clan.name, chapterSize: parsed.clan.chapterSize, members: [], createdAt: new Date().toISOString() };
       clans.push(clan);
       await env.FLIGHTS.put(CLANS_KEY, JSON.stringify(clans));
       return json({ clan: { ...publicClan(clan, 0), code, referralUrl: `${url.origin}/fomo/referral/${code}` } }, 201);
