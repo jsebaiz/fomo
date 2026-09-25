@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>fomo / create a clan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0A0A0D; --card:#1A1A1E; --field:#151518; --border:rgba(255,255,255,0.10);
+  --text:#F5F5F7; --text-dim:rgba(245,245,247,0.55); --text-faint:rgba(245,245,247,0.35);
+  --green:#33D17A; --blue:#516AF6; --blue-electric:#4A36FF; --red:#ff9a9a;
+}
+*{box-sizing:border-box;}
+[hidden]{display:none !important;}
+html,body{margin:0; background:var(--bg);}
+body{color:var(--text); font-family:'Schibsted Grotesk','Inter',-apple-system,sans-serif; line-height:1.45; min-height:100vh;}
+button{font-family:inherit;}
+a{color:inherit; text-decoration:none;}
+.phone{max-width:480px; margin:0 auto; min-height:100vh; padding:0 18px 110px; position:relative;}
+
+.topbar{display:flex; align-items:center; padding:18px 0 6px; position:relative;}
+.iconbtn{width:32px; height:32px; border-radius:999px; background:none; border:none; color:var(--text); display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:1.1rem;}
+.iconbtn:hover{background:rgba(255,255,255,0.06);}
+.topbar h2{position:absolute; left:0; right:0; text-align:center; font-size:1.02rem; font-weight:700; margin:0; pointer-events:none;}
+
+.banner-wrap{position:relative; margin:22px 0 44px;}
+.banner{height:120px; border-radius:16px; background:linear-gradient(135deg, #3a3a40, #232326); position:relative; transition:background .2s ease;}
+.banner .pencil{position:absolute; right:10px; bottom:10px; width:28px; height:28px; border-radius:999px; background:rgba(0,0,0,0.55); border:none; color:#fff; font-size:0.8rem; display:flex; align-items:center; justify-content:center; cursor:pointer;}
+.icon-wrap{position:absolute; left:14px; bottom:-24px;}
+.icon{width:64px; height:64px; border-radius:18px; background:linear-gradient(135deg, #3a3a40, #232326); border:3px solid var(--bg); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.3rem; color:#fff;}
+.icon-wrap .pencil{position:absolute; right:-4px; bottom:-4px; width:22px; height:22px; border-radius:999px; background:rgba(0,0,0,0.6); border:none; color:#fff; font-size:0.65rem; display:flex; align-items:center; justify-content:center; cursor:pointer;}
+
+.field{margin-bottom:20px;}
+.field label{display:block; font-size:0.82rem; color:var(--text-dim); margin-bottom:8px; font-weight:600;}
+.field input, .field textarea{width:100%; background:var(--field); border:1px solid var(--border); border-radius:12px; padding:13px 14px; color:var(--text); font-family:inherit; font-size:0.95rem; outline:none; resize:none;}
+.field input:focus, .field textarea:focus{border-color:var(--blue);}
+.field .count{text-align:right; font-size:0.72rem; color:var(--text-faint); margin-top:4px;}
+
+.row-action{display:flex; align-items:center; gap:12px; padding:14px 4px; border-top:1px solid var(--border); border-bottom:1px solid var(--border); cursor:default;}
+.row-action .ricon{font-size:1.1rem; width:22px; text-align:center; flex-shrink:0;}
+.row-action .rlabel{flex:1; font-weight:600; font-size:0.95rem;}
+.row-action .rlabel small{display:block; font-weight:400; font-size:0.76rem; color:var(--text-faint); margin-top:1px;}
+.row-action .rmeta{color:var(--text-faint); font-size:0.85rem;}
+.row-action.copyable{cursor:pointer;}
+.row-action.copyable:hover{background:rgba(255,255,255,0.03);}
+.row-action.copyable .rlabel{color:var(--blue-light,#8FA0FF);}
+
+.msg{font-size:0.84rem; margin:14px 2px 0; min-height:1.2em;}
+.msg.err{color:var(--red);}
+.msg.ok{color:var(--green);}
+
+.bottom-bar{position:fixed; left:0; right:0; bottom:0; padding:14px 18px calc(14px + env(safe-area-inset-bottom)); background:linear-gradient(to top, var(--bg) 60%, transparent);}
+.bottom-inner{max-width:480px; margin:0 auto;}
+.btn{display:flex; align-items:center; justify-content:center; width:100%; padding:16px; border-radius:14px; font-weight:700; font-size:0.98rem; cursor:pointer; border:none;}
+.btn-primary{background:var(--text); color:var(--bg);}
+.btn-primary:hover{filter:brightness(0.92);}
+.btn-primary:disabled{opacity:.5; cursor:default;}
+.btn-secondary{background:var(--card); color:var(--text); border:1px solid var(--border);}
+
+.success{display:none; text-align:center; margin:30px 0 10px;}
+.success.show{display:block;}
+.success .check{width:52px; height:52px; border-radius:999px; background:rgba(51,209,122,0.12); color:var(--green); font-size:1.5rem; display:flex; align-items:center; justify-content:center; margin:0 auto 14px;}
+.success h3{margin:0 0 6px; font-size:1.15rem;}
+.success p{font-size:0.88rem; color:var(--text-dim); margin:0;}
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="topbar">
+    <button class="iconbtn" id="back-btn" aria-label="Back">←</button>
+    <h2>Create a clan</h2>
+  </div>
+
+  <form id="clan-form">
+    <div class="banner-wrap">
+      <div class="banner" id="banner">
+        <button type="button" class="pencil" id="banner-pencil" title="The banner is generated automatically from your clan's name">✏️</button>
+      </div>
+      <div class="icon-wrap">
+        <div class="icon" id="icon-preview">?</div>
+        <button type="button" class="pencil" title="The icon is generated automatically from your clan's name">✏️</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="c-name">Clan name</label>
+      <input type="text" id="c-name" maxlength="40" placeholder="Name your clan" autocomplete="off" required>
+    </div>
+
+    <div class="field">
+      <label for="c-desc">A short description</label>
+      <textarea id="c-desc" rows="3" maxlength="140" placeholder="What is your frat about?"></textarea>
+      <div class="count"><span id="c-desc-count">0</span>/140</div>
+    </div>
+
+    <div class="row-action" id="invite-row">
+      <span class="ricon">👥</span>
+      <span class="rlabel">Invite members<small>Available once your clan is created</small></span>
+      <span class="rmeta">0</span>
+    </div>
+
+    <p class="msg" id="form-msg"></p>
+  </form>
+
+  <div class="success" id="success">
+    <div class="check">✓</div>
+    <h3 id="success-name"></h3>
+    <p>Your clan is live. Share your link to bring the frat in.</p>
+  </div>
+</div>
+
+<div class="bottom-bar">
+  <div class="bottom-inner">
+    <button type="submit" form="clan-form" class="btn btn-primary" id="submit-btn">Create a clan</button>
+    <a href="../" class="btn btn-secondary" id="done-btn" style="display:none; margin-top:10px;">View all clans</a>
+  </div>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+document.getElementById('back-btn').addEventListener('click', () => { if (history.length > 1) history.back(); else location.href = '../'; });
+
+const PALETTE = [
+  ['#516AF6', '#2E3A8C'], ['#7B4AE2', '#3E2870'], ['#2B9E8F', '#155048'],
+  ['#C2544D', '#6B2622'], ['#B8862E', '#5C4315'], ['#3D7EBE', '#1E3F5F'],
+];
+function paletteFor(name) {
+  let h = 0;
+  for (const ch of name) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return PALETTE[h % PALETTE.length];
+}
+function initialsOf(name) {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  return ((parts[0] || '?')[0] + (parts[1] ? parts[1][0] : '')).toUpperCase();
+}
+function updatePreview() {
+  const name = $('c-name').value.trim();
+  const icon = $('icon-preview');
+  if (!name) {
+    $('banner').style.background = 'linear-gradient(135deg, #3a3a40, #232326)';
+    icon.style.background = 'linear-gradient(135deg, #3a3a40, #232326)';
+    icon.textContent = '?';
+    return;
+  }
+  const [a, b] = paletteFor(name);
+  $('banner').style.background = `linear-gradient(135deg, ${a}, ${b})`;
+  icon.style.background = `linear-gradient(135deg, ${a}, ${b})`;
+  icon.textContent = initialsOf(name);
+}
+$('c-name').addEventListener('input', updatePreview);
+$('c-desc').addEventListener('input', () => { $('c-desc-count').textContent = $('c-desc').value.length; });
+[$('banner-pencil'), ...document.querySelectorAll('.icon-wrap .pencil')].forEach((b) => {
+  b.addEventListener('click', () => { b.blur(); });
+});
+
+let created = false;
+$('clan-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (created) return;
+  const msg = $('form-msg');
+  msg.className = 'msg'; msg.textContent = '';
+  const name = $('c-name').value.trim();
+  if (name.length < 2) { msg.className = 'msg err'; msg.textContent = 'enter a clan name.'; return; }
+
+  $('submit-btn').disabled = true;
+  try {
+    const res = await fetch('/api/clans', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ name, description: $('c-desc').value.trim() }),
+    });
+    if (res.status === 201) {
+      const { clan } = await res.json();
+      created = true;
+      showCreated(clan);
+    } else {
+      const body = await res.json().catch(() => ({}));
+      msg.className = 'msg err'; msg.textContent = (body.error || 'something went wrong.').toLowerCase();
+      $('submit-btn').disabled = false;
+    }
+  } catch (err) {
+    msg.className = 'msg err'; msg.textContent = 'couldn’t reach the server.';
+    $('submit-btn').disabled = false;
+  }
+});
+
+function showCreated(clan) {
+  $('c-name').disabled = true; $('c-desc').disabled = true;
+  $('success-name').textContent = clan.name + ' is ready.';
+  $('success').classList.add('show');
+  $('form-msg').textContent = '';
+
+  const row = $('invite-row');
+  row.classList.add('copyable');
+  row.innerHTML = `<span class="ricon">🔗</span><span class="rlabel">Copy link<small>Send it to your group chat</small></span><span class="rmeta" id="copy-state">→</span>`;
+  row.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(clan.referralUrl);
+      $('copy-state').textContent = 'Copied!';
+      setTimeout(() => { $('copy-state').textContent = '→'; }, 1800);
+    } catch (e) {
+      prompt('Copy this link:', clan.referralUrl);
+    }
+  });
+
+  $('submit-btn').style.display = 'none';
+  $('done-btn').style.display = 'flex';
+}
+</script>
+</body>
+</html>

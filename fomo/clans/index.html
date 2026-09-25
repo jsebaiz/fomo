@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>fomo / clans</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0A0A0D; --card:#1A1A1E; --border:rgba(255,255,255,0.08);
+  --text:#F5F5F7; --text-dim:rgba(245,245,247,0.55); --text-faint:rgba(245,245,247,0.35);
+  --green:#33D17A; --blue:#516AF6; --blue-electric:#4A36FF;
+}
+*{box-sizing:border-box;}
+[hidden]{display:none !important;}
+html,body{margin:0; background:var(--bg);}
+body{color:var(--text); font-family:'Schibsted Grotesk','Inter',-apple-system,sans-serif; line-height:1.45; min-height:100vh;}
+button{font-family:inherit;}
+a{color:inherit; text-decoration:none;}
+.phone{max-width:480px; margin:0 auto; min-height:100vh; padding:0 18px 32px; position:relative;}
+
+.topbar{display:flex; align-items:center; justify-content:space-between; padding:18px 0 4px;}
+.iconbtn{width:32px; height:32px; border-radius:999px; background:none; border:none; color:var(--text); display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:1.1rem;}
+.iconbtn:hover{background:rgba(255,255,255,0.06);}
+
+.title-row{display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-top:6px;}
+h1{font-size:1.9rem; font-weight:800; margin:0; letter-spacing:-0.02em;}
+.tabs{display:flex; gap:4px; background:rgba(255,255,255,0.04); border-radius:999px; padding:3px; flex-shrink:0; margin-top:4px;}
+.tabs button{background:none; border:none; color:var(--text-dim); font-weight:600; font-size:0.82rem; padding:7px 12px; border-radius:999px; cursor:pointer;}
+.tabs button.active{background:rgba(255,255,255,0.14); color:var(--text);}
+
+.desc{font-size:0.88rem; color:var(--text-dim); margin:10px 0 22px;}
+
+.list{display:flex; flex-direction:column;}
+.row{display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--border);}
+.rank{width:26px; text-align:center; font-size:0.95rem; font-weight:700; color:var(--text-faint); flex-shrink:0;}
+.rank.medal{font-size:1.15rem;}
+.icon{width:44px; height:44px; border-radius:13px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1rem; color:#fff; flex-shrink:0;}
+.meta{flex:1; min-width:0;}
+.meta .name{font-weight:700; font-size:1rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.meta .members{font-size:0.8rem; color:var(--text-faint); display:flex; align-items:center; gap:4px; margin-top:2px;}
+.stat{text-align:right; flex-shrink:0;}
+.stat .joined{color:var(--green); font-weight:700; font-size:0.95rem; white-space:nowrap;}
+.stat .joined.zero{color:var(--text-faint);}
+.stat .window-label{font-size:0.72rem; color:var(--text-faint); margin-top:2px;}
+
+.empty{padding:60px 10px; text-align:center; color:var(--text-faint); font-size:0.9rem;}
+.load-error{margin:20px 0; padding:14px 16px; background:rgba(255,90,90,0.08); border:1px solid rgba(255,90,90,0.25); border-radius:12px; font-size:0.86rem; color:#ff9a9a; display:flex; justify-content:space-between; align-items:center; gap:12px;}
+.load-error button{background:none; border:1px solid rgba(255,90,90,0.4); color:#ff9a9a; border-radius:999px; padding:6px 12px; font-size:0.8rem; cursor:pointer;}
+
+.footer-cta{text-align:center; padding:36px 10px 10px;}
+.footer-cta p{font-size:0.86rem; color:var(--text-faint); margin-bottom:10px;}
+.footer-cta a{color:var(--blue-light,#8FA0FF); font-weight:700; font-size:0.95rem;}
+.footer-cta a:hover{text-decoration:underline;}
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="topbar">
+    <button class="iconbtn" id="back-btn" aria-label="Back">←</button>
+    <button class="iconbtn" aria-label="More" title="Nothing here yet">⋯</button>
+  </div>
+
+  <div class="title-row">
+    <h1>Clans</h1>
+    <div class="tabs" id="tabs">
+      <button data-w="24h">24h</button>
+      <button data-w="7d">7d</button>
+      <button data-w="30d">30d</button>
+      <button data-w="all" class="active">All</button>
+    </div>
+  </div>
+  <p class="desc">Clans are frat groups competing in Greek Wars, ranked by how many members they've brought in.</p>
+
+  <div class="load-error" id="load-error" hidden>
+    <span>couldn't load clans right now.</span>
+    <button id="retry-btn">retry</button>
+  </div>
+
+  <div class="list" id="list"></div>
+
+  <div class="footer-cta">
+    <p>Want to see your frat on this list?</p>
+    <a href="create/">Create a clan</a>
+  </div>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+document.getElementById('back-btn').addEventListener('click', () => { if (history.length > 1) history.back(); else location.href = '/'; });
+
+const MEDALS = { 1: '🥇', 2: '🥈', 3: '🥉' };
+const PALETTE = ['#516AF6', '#7B4AE2', '#2B9E8F', '#C2544D', '#B8862E', '#3D7EBE'];
+function colorFor(id) {
+  let h = 0;
+  for (const ch of String(id)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return PALETTE[h % PALETTE.length];
+}
+function initialsOf(name) {
+  const parts = String(name).trim().split(/\s+/).filter(Boolean);
+  return ((parts[0] || '?')[0] + (parts[1] ? parts[1][0] : '')).toUpperCase();
+}
+const WINDOW_LABEL = { '24h': 'today', '7d': 'this week', '30d': 'this month', all: 'total' };
+
+let currentWindow = 'all';
+
+async function loadClans() {
+  try {
+    const res = await fetch('/api/clans?window=' + currentWindow, { cache: 'no-store' });
+    if (!res.ok) throw new Error('bad status');
+    const { clans } = await res.json();
+    render(clans);
+    $('load-error').hidden = true;
+  } catch (e) {
+    $('load-error').hidden = false;
+    $('list').innerHTML = '';
+  }
+}
+$('retry-btn').addEventListener('click', loadClans);
+
+function render(clans) {
+  if (!clans.length) {
+    $('list').innerHTML = '<div class="empty">No clans yet — be the first to create one.</div>';
+    return;
+  }
+  const showStat = currentWindow !== 'all'; // "all" would just repeat the member count
+  $('list').innerHTML = clans.map((c, i) => {
+    const rank = i + 1;
+    return `<div class="row">
+      <div class="rank ${MEDALS[rank] ? 'medal' : ''}">${MEDALS[rank] || rank}</div>
+      <div class="icon" style="background:${colorFor(c.id)}">${esc(initialsOf(c.name))}</div>
+      <div class="meta">
+        <div class="name">${esc(c.name)}</div>
+        <div class="members">👤 ${c.members} member${c.members === 1 ? '' : 's'}</div>
+      </div>
+      ${showStat ? `<div class="stat">
+        <div class="joined ${c.joined === 0 ? 'zero' : ''}">${c.joined > 0 ? '+' : ''}${c.joined}</div>
+        <div class="window-label">${esc(WINDOW_LABEL[currentWindow])}</div>
+      </div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+$('tabs').querySelectorAll('button').forEach((b) => {
+  b.addEventListener('click', () => {
+    currentWindow = b.dataset.w;
+    $('tabs').querySelectorAll('button').forEach((x) => x.classList.toggle('active', x === b));
+    loadClans();
+  });
+});
+
+loadClans();
+</script>
+</body>
+</html>

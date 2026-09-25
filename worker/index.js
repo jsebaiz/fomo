@@ -1,6 +1,8 @@
-const KEY = 'flights';
+const FLIGHTS_KEY = 'flights';
+const CLANS_KEY = 'clans';
 const MAX_FLIGHTS = 5000;
-const MAX_ADDS_PER_MINUTE = 20; // per visitor; the form is open to anyone, so keep spam in check
+const MAX_CLANS = 2000;
+const MAX_ADDS_PER_MINUTE = 20; // per visitor; these forms are open to anyone, so keep spam in check
 const NA = 'N/A';
 
 const json = (data, status = 200) =>
@@ -9,6 +11,7 @@ const json = (data, status = 200) =>
     headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' },
   });
 const empty = (status) => new Response(null, { status, headers: { 'cache-control': 'no-store' } });
+const redirect = (location, status = 302) => new Response(null, { status, headers: { location, 'cache-control': 'no-store' } });
 
 async function sha256(text) {
   return new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text)));
@@ -71,34 +74,78 @@ function initials(name) {
   const letters = parts.length > 1 ? [first(parts[0]), first(parts[parts.length - 1])] : [first(parts[0])];
   return letters.join('.') + '.';
 }
-const publicView = (f) => ({ id: f.id, date: f.date, from: f.from, to: f.to, cost: f.cost, creator: initials(f.name || f.creator) });
+const publicFlight = (f) => ({ id: f.id, date: f.date, from: f.from, to: f.to, cost: f.cost, creator: initials(f.name || f.creator) });
 
-async function tooManyAdds(request, env) {
-  const ip = request.headers.get('cf-connecting-ip') || 'unknown';
-  const key = `rl:${ip}:${Math.floor(Date.now() / 60000)}`;
+async function tooMany(env, bucket, ip, limit) {
+  const key = `rl:${bucket}:${ip}:${Math.floor(Date.now() / 60000)}`;
   const n = parseInt((await env.FLIGHTS.get(key)) || '0', 10);
-  if (n >= MAX_ADDS_PER_MINUTE) return true;
+  if (n >= limit) return true;
   await env.FLIGHTS.put(key, String(n + 1), { expirationTtl: 120 });
   return false;
 }
+const ipOf = (request) => request.headers.get('cf-connecting-ip') || 'unknown';
 
-async function readFlights(env) {
-  return (await env.FLIGHTS.get(KEY, 'json')) || [];
+async function readList(env, key) {
+  return (await env.FLIGHTS.get(key, 'json')) || [];
 }
+
+function randomCode(len = 8) {
+  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  const bytes = crypto.getRandomValues(new Uint8Array(len));
+  return Array.from(bytes, (b) => chars[b % chars.length]).join('');
+}
+
+function parseClan(body) {
+  const name = String(body.name || '').trim().replace(/\s+/g, ' ');
+  const description = String(body.description || '').trim().replace(/\s+/g, ' ');
+  if (!/^[\p{L}\p{N}][\p{L}\p{N} .,'&()-]{1,39}$/u.test(name)) return { error: 'Enter a clan name (2–40 characters)' };
+  if (description.length > 140) return { error: 'Keep the description under 140 characters' };
+  if (description && !/^[\p{L}\p{N}\p{P}\p{Zs}]{1,140}$/u.test(description)) return { error: 'Invalid description' };
+  return { clan: { name, description } };
+}
+
+function cleanUsername(value) {
+  const v = String(value || '').trim().replace(/^@/, '');
+  if (!/^[A-Za-z0-9._]{2,24}$/.test(v)) return null;
+  return v;
+}
+
+// What the public clan list shows. The referral code is never included here —
+// it's handed only to the clan's own creator, and resolved one-way via /api/clans/:code.
+const publicClan = (c, joins) => ({
+  id: c.id,
+  name: c.name,
+  description: c.description,
+  members: (c.members || []).length,
+  joined: joins,
+  createdAt: c.createdAt,
+});
+
+function joinsWithin(clan, ms) {
+  if (ms == null) return (clan.members || []).length;
+  const cutoff = Date.now() - ms;
+  return (clan.members || []).filter((m) => new Date(m.joinedAt).getTime() >= cutoff).length;
+}
+
+const WINDOWS = { '24h': 86400000, '7d': 7 * 86400000, '30d': 30 * 86400000, all: null };
 
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     const path = url.pathname.replace(/\/+$/, '');
 
+    // A referral link redirects straight to the join page; it carries no page of its own.
+    const ref = path.match(/^\/fomo\/referral\/([a-z0-9]{4,16})$/);
+    if (ref) return redirect(`/fomo/join?ref=${ref[1]}`);
+
     if (!path.startsWith('/api/')) return env.ASSETS.fetch(request);
 
-    // Anyone can read the tracker. Admins also get the private details.
+    // ---------------- Flights ----------------
     if (path === '/api/flights' && request.method === 'GET') {
       const admin = (await check(request, env, 'x-passcode', 'ADMIN_PASSCODE')) === true;
-      const flights = await readFlights(env);
+      const flights = await readList(env, FLIGHTS_KEY);
       flights.sort((a, b) => (a.date === b.date ? (a.createdAt < b.createdAt ? 1 : -1) : a.date < b.date ? 1 : -1));
-      return json({ admin, flights: admin ? flights : flights.map(publicView) });
+      return json({ admin, flights: admin ? flights : flights.map(publicFlight) });
     }
 
     if (path === '/api/auth' && request.method === 'POST') {
@@ -106,7 +153,6 @@ export default {
       return denied || empty(204);
     }
 
-    // Anyone can log a flight.
     if (path === '/api/flights' && request.method === 'POST') {
       const text = await request.text();
       if (text.length > 2048) return json({ error: 'Request too large' }, 413);
@@ -115,30 +161,101 @@ export default {
 
       const parsed = parseFlight(body || {});
       if (parsed.error) return json({ error: parsed.error }, 400);
+      if (await tooMany(env, 'flight', ipOf(request), MAX_ADDS_PER_MINUTE)) return json({ error: 'Too many entries — try again in a minute' }, 429);
 
-      if (await tooManyAdds(request, env)) return json({ error: 'Too many entries — try again in a minute' }, 429);
-
-      const flights = await readFlights(env);
+      const flights = await readList(env, FLIGHTS_KEY);
       if (flights.length >= MAX_FLIGHTS) return json({ error: 'Flight limit reached' }, 409);
 
       const flight = { id: crypto.randomUUID(), ...parsed.flight, createdAt: new Date().toISOString() };
       flights.push(flight);
-      await env.FLIGHTS.put(KEY, JSON.stringify(flights));
-      return json({ flight: publicView(flight) }, 201);
+      await env.FLIGHTS.put(FLIGHTS_KEY, JSON.stringify(flights));
+      return json({ flight: publicFlight(flight) }, 201);
     }
 
     const del = path.match(/^\/api\/flights\/([A-Za-z0-9-]{1,64})$/);
     if (del && request.method === 'DELETE') {
       const denied = await guard(request, env);
       if (denied) return denied;
-      const flights = await readFlights(env);
+      const flights = await readList(env, FLIGHTS_KEY);
       const next = flights.filter((f) => f.id !== del[1]);
       if (next.length === flights.length) return json({ error: 'Not found' }, 404);
-      await env.FLIGHTS.put(KEY, JSON.stringify(next));
+      await env.FLIGHTS.put(FLIGHTS_KEY, JSON.stringify(next));
       return empty(204);
     }
 
-    if (path === '/api/flights' || path === '/api/auth' || del) return json({ error: 'Method not allowed' }, 405);
+    // ---------------- Clans ----------------
+    // List, ranked by joins in the selected window (24h / 7d / 30d / all). Total member
+    // count is always shown too. No trading PnL here — there's no real trading data behind
+    // this page, so nothing here pretends to be a dollar figure.
+    if (path === '/api/clans' && request.method === 'GET') {
+      const windowKey = url.searchParams.get('window') || 'all';
+      const ms = Object.prototype.hasOwnProperty.call(WINDOWS, windowKey) ? WINDOWS[windowKey] : null;
+      const clans = await readList(env, CLANS_KEY);
+      const withCounts = clans.map((c) => ({ clan: c, joined: joinsWithin(c, ms) }));
+      withCounts.sort((a, b) => b.joined - a.joined || (b.clan.members || []).length - (a.clan.members || []).length);
+      return json({ clans: withCounts.map(({ clan, joined }) => publicClan(clan, joined)) });
+    }
+
+    if (path === '/api/clans' && request.method === 'POST') {
+      const text = await request.text();
+      if (text.length > 2048) return json({ error: 'Request too large' }, 413);
+      let body;
+      try { body = JSON.parse(text); } catch { return json({ error: 'Invalid JSON' }, 400); }
+
+      const parsed = parseClan(body || {});
+      if (parsed.error) return json({ error: parsed.error }, 400);
+      if (await tooMany(env, 'clan', ipOf(request), 5)) return json({ error: 'Too many clans created — try again in a minute' }, 429);
+
+      const clans = await readList(env, CLANS_KEY);
+      if (clans.length >= MAX_CLANS) return json({ error: 'Clan limit reached' }, 409);
+
+      let code;
+      do { code = randomCode(); } while (clans.some((c) => c.code === code));
+
+      const clan = { id: crypto.randomUUID(), code, name: parsed.clan.name, description: parsed.clan.description, members: [], createdAt: new Date().toISOString() };
+      clans.push(clan);
+      await env.FLIGHTS.put(CLANS_KEY, JSON.stringify(clans));
+      return json({ clan: { ...publicClan(clan, 0), code, referralUrl: `${url.origin}/fomo/referral/${code}` } }, 201);
+    }
+
+    // Resolve a referral code to the clan it names, for the join page to greet by name.
+    // Deliberately narrow: name only, never the member list or the code itself.
+    const lookup = path.match(/^\/api\/clans\/([a-z0-9]{4,16})$/);
+    if (lookup && request.method === 'GET') {
+      const clans = await readList(env, CLANS_KEY);
+      const clan = clans.find((c) => c.code === lookup[1]);
+      if (!clan) return json({ error: 'Not found' }, 404);
+      return json({ name: clan.name });
+    }
+
+    // Joining with an existing fomo username. Open to anyone; the only gate is the rate limit.
+    const join = path.match(/^\/api\/clans\/([a-z0-9]{4,16})\/join$/);
+    if (join && request.method === 'POST') {
+      const text = await request.text();
+      if (text.length > 512) return json({ error: 'Request too large' }, 413);
+      let body;
+      try { body = JSON.parse(text); } catch { return json({ error: 'Invalid JSON' }, 400); }
+
+      const username = cleanUsername(body && body.username);
+      if (!username) return json({ error: 'Enter a valid fomo username' }, 400);
+      if (await tooMany(env, 'join', ipOf(request), MAX_ADDS_PER_MINUTE)) return json({ error: 'Too many attempts — try again in a minute' }, 429);
+
+      const clans = await readList(env, CLANS_KEY);
+      const clan = clans.find((c) => c.code === join[1]);
+      if (!clan) return json({ error: 'That invite link is no longer valid' }, 404);
+
+      clan.members = clan.members || [];
+      if (clan.members.some((m) => m.username.toLowerCase() === username.toLowerCase())) {
+        return json({ error: 'That username already joined this clan' }, 409);
+      }
+      clan.members.push({ username, joinedAt: new Date().toISOString() });
+      await env.FLIGHTS.put(CLANS_KEY, JSON.stringify(clans));
+      return json({ name: clan.name, members: clan.members.length }, 201);
+    }
+
+    if (path === '/api/flights' || path === '/api/auth' || path === '/api/clans' || lookup || join || del) {
+      return json({ error: 'Method not allowed' }, 405);
+    }
     return json({ error: 'Not found' }, 404);
   },
 };
