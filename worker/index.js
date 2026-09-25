@@ -95,9 +95,35 @@ function randomCode(len = 8) {
   return Array.from(bytes, (b) => chars[b % chars.length]).join('');
 }
 
+// Server-side twin of the school list the pages use for colors — here only the
+// code and label matter, since validation and the display name are computed here.
+const SCHOOL_LABELS = {
+  asu: 'Arizona State University', ua: 'University of Arizona', ucla: 'UCLA',
+  usc: 'University of Southern California', cal: 'UC Berkeley', stanford: 'Stanford University',
+  ucsd: 'UC San Diego', sdsu: 'San Diego State University', uw: 'University of Washington',
+  uo: 'University of Oregon', utah: 'University of Utah', cu: 'CU Boulder',
+  utaustin: 'UT Austin', tamu: 'Texas A&M University', rice: 'Rice University',
+  smu: 'Southern Methodist University', ou: 'University of Oklahoma', mizzou: 'University of Missouri',
+  wustl: 'Washington University in St. Louis', wisconsin: 'University of Wisconsin–Madison',
+  minnesota: 'University of Minnesota', northwestern: 'Northwestern University',
+  uchicago: 'University of Chicago', illinois: 'University of Illinois', purdue: 'Purdue University',
+  iu: 'Indiana University', michigan: 'University of Michigan', osu: 'Ohio State University',
+  penn: 'University of Pennsylvania', pennstate: 'Penn State University', pitt: 'University of Pittsburgh',
+  cmu: 'Carnegie Mellon University', nyu: 'New York University', columbia: 'Columbia University',
+  cornell: 'Cornell University', yale: 'Yale University', harvard: 'Harvard University',
+  bu: 'Boston University', georgetown: 'Georgetown University', umd: 'University of Maryland',
+  uva: 'University of Virginia', duke: 'Duke University', unc: 'UNC Chapel Hill',
+  gt: 'Georgia Tech', uga: 'University of Georgia', vanderbilt: 'Vanderbilt University',
+  ala: 'University of Alabama', uf: 'University of Florida', fsu: 'Florida State University',
+  miami: 'University of Miami',
+};
+
 function parseClan(body) {
-  const name = String(body.name || '').trim().replace(/\s+/g, ' ');
-  if (!/^[\p{L}\p{N}][\p{L}\p{N} .,'&()-]{1,39}$/u.test(name)) return { error: 'Enter a clan name (2–40 characters)' };
+  const school = String(body.school || '').trim().toLowerCase();
+  if (!SCHOOL_LABELS[school]) return { error: 'Choose a school from the list' };
+
+  const chapterName = String(body.chapterName || '').trim().replace(/\s+/g, ' ');
+  if (!/^[\p{L}][\p{L} .'-]{1,39}$/u.test(chapterName)) return { error: 'Enter a chapter name (2–40 letters)' };
 
   // Chapter size is optional context, self-reported and never used for ranking.
   let chapterSize = null;
@@ -107,7 +133,8 @@ function parseClan(body) {
     if (!Number.isInteger(n) || n < 1 || n > 2000) return { error: 'Chapter size should be a number between 1 and 2000' };
     chapterSize = n;
   }
-  return { clan: { name, chapterSize } };
+  const name = `${chapterName} — ${SCHOOL_LABELS[school]}`;
+  return { clan: { school, schoolLabel: SCHOOL_LABELS[school], chapterName, name, chapterSize } };
 }
 
 function cleanUsername(value) {
@@ -116,11 +143,15 @@ function cleanUsername(value) {
   return v;
 }
 
-// What the public clan list shows. The referral code is never included here —
-// it's handed only to the clan's own creator, and resolved one-way via /api/clans/:code.
+// What the public clan list shows. The referral code and member usernames are
+// never included here — usernames are only exposed via the admin-gated
+// /api/clans/internal roster below.
 const publicClan = (c, joins) => ({
   id: c.id,
   name: c.name,
+  school: c.school,
+  schoolLabel: c.schoolLabel,
+  chapterName: c.chapterName,
   chapterSize: c.chapterSize || null,
   members: (c.members || []).length,
   joined: joins,
@@ -218,10 +249,31 @@ export default {
       let code;
       do { code = randomCode(); } while (clans.some((c) => c.code === code));
 
-      const clan = { id: crypto.randomUUID(), code, name: parsed.clan.name, chapterSize: parsed.clan.chapterSize, members: [], createdAt: new Date().toISOString() };
+      const clan = {
+        id: crypto.randomUUID(), code,
+        school: parsed.clan.school, schoolLabel: parsed.clan.schoolLabel, chapterName: parsed.clan.chapterName,
+        name: parsed.clan.name, chapterSize: parsed.clan.chapterSize, members: [], createdAt: new Date().toISOString(),
+      };
       clans.push(clan);
       await env.FLIGHTS.put(CLANS_KEY, JSON.stringify(clans));
       return json({ clan: { ...publicClan(clan, 0), code, referralUrl: `${url.origin}/fomo/referral/${code}` } }, 201);
+    }
+
+    // Flat roster of every join across every clan, for manually crediting people who
+    // already have fomo and submitted a username without going through a specific
+    // referral link. Admin-passcode gated — usernames never appear anywhere public.
+    if (path === '/api/clans/internal' && request.method === 'GET') {
+      const denied = await guard(request, env);
+      if (denied) return denied;
+      const clans = await readList(env, CLANS_KEY);
+      const rows = [];
+      clans.forEach((c) => {
+        (c.members || []).forEach((m) => {
+          rows.push({ username: m.username, joinedAt: m.joinedAt, school: c.schoolLabel, chapterName: c.chapterName });
+        });
+      });
+      rows.sort((a, b) => (a.joinedAt < b.joinedAt ? 1 : -1));
+      return json({ rows });
     }
 
     // Resolve a referral code to the clan it names, for the join page to greet by name.
@@ -259,7 +311,7 @@ export default {
       return json({ name: clan.name, members: clan.members.length }, 201);
     }
 
-    if (path === '/api/flights' || path === '/api/auth' || path === '/api/clans' || lookup || join || del) {
+    if (path === '/api/flights' || path === '/api/auth' || path === '/api/clans' || path === '/api/clans/internal' || lookup || join || del) {
       return json({ error: 'Method not allowed' }, 405);
     }
     return json({ error: 'Not found' }, 404);

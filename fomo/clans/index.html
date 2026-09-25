@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
 <title>fomo / clans</title>
+<link rel="icon" href="/fomo-favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -30,8 +31,8 @@ svg{display:block;}
 .iconbtn{width:34px; height:34px; border-radius:999px; background:none; border:none; color:var(--text); display:flex; align-items:center; justify-content:center; cursor:pointer;}
 .iconbtn:hover{background:rgba(255,255,255,0.06);}
 .iconbtn svg{width:19px; height:19px;}
-.brandmark{display:flex; align-items:center; gap:7px; color:var(--text-dim); font-weight:700; font-size:0.92rem;}
-.brandmark svg{width:22px; height:14px; color:var(--blue-light);}
+.brandmark{display:flex; align-items:center; gap:8px; color:var(--text-dim); font-weight:700; font-size:0.92rem;}
+.brandmark img{display:block; width:24px; height:24px; border-radius:7px;}
 
 .title-row{display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-top:10px; position:relative; z-index:1;}
 h1{font-size:1.9rem; font-weight:800; margin:0; letter-spacing:-0.02em;}
@@ -47,11 +48,12 @@ h1{font-size:1.9rem; font-weight:800; margin:0; letter-spacing:-0.02em;}
 .rank.r1{background:var(--blue); color:#fff;}
 .rank.r2{background:var(--blue-electric); color:#fff;}
 .rank.r3{background:rgba(172,184,249,0.28); color:var(--text);}
-.icon{width:44px; height:44px; border-radius:13px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.95rem; color:#fff; flex-shrink:0;}
+.icon{width:44px; height:44px; border-radius:13px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.95rem; color:#fff; flex-shrink:0; letter-spacing:0.01em;}
+.icon.small-glyph{font-size:0.78rem;}
 .meta{flex:1; min-width:0;}
 .meta .name{font-weight:700; font-size:1rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
-.meta .members{font-size:0.8rem; color:var(--text-faint); display:flex; align-items:center; gap:5px; margin-top:2px;}
-.meta .members svg{width:13px; height:13px; flex-shrink:0;}
+.meta .sub{font-size:0.8rem; color:var(--text-faint); display:flex; align-items:center; gap:5px; margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.meta .sub svg{width:13px; height:13px; flex-shrink:0;}
 .stat{text-align:right; flex-shrink:0;}
 .stat .joined{color:var(--blue-light); font-weight:700; font-size:0.95rem; white-space:nowrap;}
 .stat .joined.zero{color:var(--text-faint);}
@@ -87,10 +89,7 @@ h1{font-size:1.9rem; font-weight:800; margin:0; letter-spacing:-0.02em;}
     <button class="iconbtn" id="back-btn" aria-label="Back">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
     </button>
-    <div class="brandmark">
-      <svg viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="7"><circle cx="20" cy="20" r="16"/><circle cx="44" cy="20" r="16"/></svg>
-      fomo
-    </div>
+    <div class="brandmark"><img src="/fomo-favicon.svg" alt="">fomo</div>
   </div>
 
   <div class="title-row">
@@ -126,17 +125,99 @@ const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 document.getElementById('back-btn').addEventListener('click', () => { if (history.length > 1) history.back(); else location.href = '/'; });
 
-// Icon colors stay inside the brand's blue family (no rainbow) — hue and lightness vary, hue does not.
-const PALETTE = ['#516AF6', '#4A36FF', '#7B8FF7', '#33409E', '#8DA0FF', '#3550C4'];
-function colorFor(id) {
-  let h = 0;
-  for (const ch of String(id)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
-  return PALETTE[h % PALETTE.length];
+// Same school-color and Greek-letter tables as the create page, so an icon looks
+// identical wherever it appears.
+const SCHOOLS = {
+  asu: ['Arizona State University', '#8C1D40', '#FFC627'],
+  ua: ['University of Arizona', '#AB0520', '#0C234B'],
+  ucla: ['UCLA', '#2774AE', '#FFD100'],
+  usc: ['University of Southern California', '#990000', '#FFC72C'],
+  cal: ['UC Berkeley', '#003262', '#FDB515'],
+  stanford: ['Stanford University', '#8C1515', null],
+  ucsd: ['UC San Diego', '#182B49', '#C69214'],
+  sdsu: ['San Diego State University', '#A6192E', null],
+  uw: ['University of Washington', '#4B2E83', '#B7A57A'],
+  uo: ['University of Oregon', '#154733', '#FEE123'],
+  utah: ['University of Utah', '#CC0000', null],
+  cu: ['CU Boulder', '#CFB87C', '#000000'],
+  utaustin: ['UT Austin', '#BF5700', null],
+  tamu: ['Texas A&M University', '#500000', null],
+  rice: ['Rice University', '#00205B', null],
+  smu: ['Southern Methodist University', '#C8102E', '#0033A0'],
+  ou: ['University of Oklahoma', '#841617', null],
+  mizzou: ['University of Missouri', '#F1B82D', '#000000'],
+  wustl: ['Washington University in St. Louis', '#A51417', null],
+  wisconsin: ['University of Wisconsin–Madison', '#C5050C', null],
+  minnesota: ['University of Minnesota', '#7A0019', '#FFCC33'],
+  northwestern: ['Northwestern University', '#4E2A84', null],
+  uchicago: ['University of Chicago', '#800000', null],
+  illinois: ['University of Illinois', '#E84A27', '#13294B'],
+  purdue: ['Purdue University', '#B1810B', '#000000'],
+  iu: ['Indiana University', '#990000', null],
+  michigan: ['University of Michigan', '#00274C', '#FFCB05'],
+  osu: ['Ohio State University', '#BB0000', null],
+  penn: ['University of Pennsylvania', '#011F5B', '#990000'],
+  pennstate: ['Penn State University', '#041E42', null],
+  pitt: ['University of Pittsburgh', '#003594', '#FFB81C'],
+  cmu: ['Carnegie Mellon University', '#C41230', null],
+  nyu: ['New York University', '#57068C', null],
+  columbia: ['Columbia University', '#003D74', '#B9D9EB'],
+  cornell: ['Cornell University', '#B31B1B', null],
+  yale: ['Yale University', '#00356B', null],
+  harvard: ['Harvard University', '#A51C30', null],
+  bu: ['Boston University', '#CC0000', null],
+  georgetown: ['Georgetown University', '#041E42', null],
+  umd: ['University of Maryland', '#E21833', '#FFD520'],
+  uva: ['University of Virginia', '#232D4B', '#E57200'],
+  duke: ['Duke University', '#001A57', null],
+  unc: ['UNC Chapel Hill', '#7BAFD4', '#13294B'],
+  gt: ['Georgia Tech', '#B3A369', '#003057'],
+  uga: ['University of Georgia', '#BA0C2F', '#000000'],
+  vanderbilt: ['Vanderbilt University', '#866D4B', '#000000'],
+  ala: ['University of Alabama', '#9E1B32', null],
+  uf: ['University of Florida', '#0021A5', '#FA4616'],
+  fsu: ['Florida State University', '#782F40', '#CEB888'],
+  miami: ['University of Miami', '#F47321', '#005030'],
+};
+const GREEK_LETTERS = {
+  'sigma chi': 'ΣΧ', 'sigma alpha epsilon': 'ΣΑΕ', 'sae': 'ΣΑΕ', 'kappa sigma': 'ΚΣ',
+  'sigma nu': 'ΣΝ', 'phi delta theta': 'ΦΔΘ', 'phi delt': 'ΦΔΘ', 'pi kappa alpha': 'ΠΚΑ',
+  'pike': 'ΠΚΑ', 'beta theta pi': 'ΒΘΠ', 'delta tau delta': 'ΔΤΔ', 'delt': 'ΔΤΔ',
+  'phi gamma delta': 'ΦΓΔ', 'fiji': 'ΦΓΔ', 'alpha tau omega': 'ΑΤΩ', 'ato': 'ΑΤΩ',
+  'kappa alpha': 'ΚΑ', 'kappa alpha order': 'ΚΑ', 'theta chi': 'ΘΧ', 'delta sigma phi': 'ΔΣΦ',
+  'lambda chi alpha': 'ΛΧΑ', 'tau kappa epsilon': 'ΤΚΕ', 'tke': 'ΤΚΕ', 'zeta beta tau': 'ΖΒΤ',
+  'zbt': 'ΖΒΤ', 'delta upsilon': 'ΔΥ', 'phi kappa psi': 'ΦΚΨ', 'alpha epsilon pi': 'ΑΕΠ',
+  'aepi': 'ΑΕΠ', 'sigma phi epsilon': 'ΣΦΕ', 'sig ep': 'ΣΦΕ', 'chi phi': 'ΧΦ',
+  'pi kappa phi': 'ΠΚΦ', 'phi kappa tau': 'ΦΚΤ', 'delta chi': 'ΔΧ', 'alpha sigma phi': 'ΑΣΦ',
+  'psi upsilon': 'ΨΥ', 'alpha chi omega': 'ΑΧΩ', 'axo': 'ΑΧΩ', 'kappa kappa gamma': 'ΚΚΓ',
+  'chi omega': 'ΧΩ', 'delta gamma': 'ΔΓ', 'alpha phi': 'ΑΦ', 'pi beta phi': 'ΠΒΦ',
+  'kappa delta': 'ΚΔ', 'zeta tau alpha': 'ΖΤΑ', 'zta': 'ΖΤΑ', 'gamma phi beta': 'ΓΦΒ',
+  'alpha delta pi': 'ΑΔΠ', 'adpi': 'ΑΔΠ', 'sigma kappa': 'ΣΚ', 'delta delta delta': 'ΔΔΔ',
+  'tri delta': 'ΔΔΔ', 'tridelta': 'ΔΔΔ', 'alpha omicron pi': 'ΑΟΠ', 'phi mu': 'ΦΜ',
+  'alpha gamma delta': 'ΑΓΔ', 'alpha xi delta': 'ΑΞΔ', 'delta zeta': 'ΔΖ',
+  'kappa alpha theta': 'ΚΑΘ', 'alpha epsilon phi': 'ΑΕΦ',
+};
+function shade(hex, pct) {
+  const n = parseInt(hex.slice(1), 16);
+  const clamp = (v) => Math.max(0, Math.min(255, v));
+  const r = clamp(((n >> 16) & 255) * (1 + pct));
+  const g = clamp(((n >> 8) & 255) * (1 + pct));
+  const b = clamp((n & 255) * (1 + pct));
+  return '#' + [r, g, b].map((v) => Math.round(v).toString(16).padStart(2, '0')).join('');
 }
+function schoolColors(code) {
+  const s = SCHOOLS[code];
+  if (!s) return ['#516AF6', '#2E3A8C'];
+  return [s[1], s[2] || shade(s[1], -0.42)];
+}
+function normChapter(s) { return String(s).toLowerCase().replace(/[.'’]/g, '').replace(/\s+/g, ' ').trim(); }
+function greekFor(chapterName) { return GREEK_LETTERS[normChapter(chapterName)] || null; }
 function initialsOf(name) {
   const parts = String(name).trim().split(/\s+/).filter(Boolean);
   return ((parts[0] || '?')[0] + (parts[1] ? parts[1][0] : '')).toUpperCase();
 }
+function glyphFor(chapterName) { return chapterName ? (greekFor(chapterName) || initialsOf(chapterName)) : '?'; }
+
 const WINDOW_LABEL = { '24h': 'today', '7d': 'this week', '30d': 'this month', all: 'total' };
 const PEOPLE_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="8" r="3"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><path d="M16 8.5c1.4.3 2.5 1.5 2.5 3s-1.1 2.7-2.5 3M20 19c0-2.3-1.6-4.2-3.8-4.8"/></svg>';
 const EMPTY_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="8" r="3"/><path d="M3 19c0-3 2.7-5 6-5s6 2 6 5"/><path d="M16 3.5 21 8.5M21 3.5 16 8.5"/></svg>';
@@ -166,13 +247,15 @@ function render(clans) {
   $('list').innerHTML = clans.map((c, i) => {
     const rank = i + 1;
     const rankCls = rank <= 3 ? ' r' + rank : '';
+    const [a, b] = schoolColors(c.school);
+    const glyph = glyphFor(c.chapterName);
     const membersLine = c.chapterSize ? `${c.members} of ${c.chapterSize} joined` : `${c.members} joined`;
     return `<div class="row">
       <div class="rank${rankCls}">${rank}</div>
-      <div class="icon" style="background:${colorFor(c.id)}">${esc(initialsOf(c.name))}</div>
+      <div class="icon ${glyph.length >= 3 ? 'small-glyph' : ''}" style="background:linear-gradient(135deg, ${a}, ${b})">${esc(glyph)}</div>
       <div class="meta">
-        <div class="name">${esc(c.name)}</div>
-        <div class="members">${PEOPLE_ICON}${membersLine}</div>
+        <div class="name">${esc(c.chapterName)}</div>
+        <div class="sub" title="${esc(c.schoolLabel)}">${esc(c.schoolLabel)} · ${membersLine}</div>
       </div>
       ${showStat ? `<div class="stat">
         <div class="joined ${c.joined === 0 ? 'zero' : ''}">${c.joined > 0 ? '+' : ''}${c.joined}</div>

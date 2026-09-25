@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
 <title>fomo / create a clan</title>
+<link rel="icon" href="/fomo-favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -30,8 +31,7 @@ svg{display:block;}
 .iconbtn:hover{background:rgba(255,255,255,0.06);}
 .iconbtn svg{width:19px; height:19px;}
 .topbar h2{position:absolute; left:0; right:0; text-align:center; font-size:1.02rem; font-weight:700; margin:0; pointer-events:none;}
-.brandmark{color:var(--blue-light); display:flex; align-items:center;}
-.brandmark svg{width:24px; height:15px;}
+.brandmark img{display:block; width:26px; height:26px; border-radius:7px;}
 
 .banner-wrap{position:relative; margin:22px 0 46px;}
 .banner{height:120px; border-radius:16px; background:linear-gradient(135deg, #232145, #14122a); position:relative; transition:background .2s ease; overflow:hidden;}
@@ -40,15 +40,19 @@ svg{display:block;}
 .pencil-btn svg{width:13px; height:13px;}
 .banner .pencil-btn{right:10px; bottom:10px;}
 .icon-wrap{position:absolute; left:14px; bottom:-24px;}
-.icon{width:64px; height:64px; border-radius:18px; background:linear-gradient(135deg, #232145, #14122a); border:3px solid var(--ink); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.3rem; color:#fff;}
+.icon{width:64px; height:64px; border-radius:18px; background:linear-gradient(135deg, #232145, #14122a); border:3px solid var(--ink); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.3rem; color:#fff; letter-spacing:0.01em;}
+.icon.small-glyph{font-size:1.05rem;}
 .icon-wrap .pencil-btn{width:22px; height:22px; right:-4px; bottom:-4px;}
 .icon-wrap .pencil-btn svg{width:11px; height:11px;}
 
 .field{margin-bottom:20px;}
 .field label{display:block; font-size:0.86rem; color:var(--text-dim); margin-bottom:8px; font-weight:600;}
-.field input, .field textarea{width:100%; background:var(--field); border:1px solid var(--border); border-radius:12px; padding:13px 14px; color:var(--text); font-family:inherit; font-size:0.95rem; outline:none; resize:none; transition:border-color .15s ease;}
-.field input::placeholder, .field textarea::placeholder{color:var(--text-faint);}
-.field input:focus, .field textarea:focus{border-color:var(--blue); box-shadow:0 0 0 3px rgba(81,106,246,0.15);}
+.field input, .field select{width:100%; background:var(--field); border:1px solid var(--border); border-radius:12px; padding:13px 14px; color:var(--text); font-family:inherit; font-size:0.95rem; outline:none; transition:border-color .15s ease;}
+.field select{appearance:none; -webkit-appearance:none; background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23ACB8F9" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>'); background-repeat:no-repeat; background-position:right 14px center; padding-right:38px;}
+.field select:invalid{color:var(--text-faint);}
+.field option{color:#000;}
+.field input::placeholder{color:var(--text-faint);}
+.field input:focus, .field select:focus{border-color:var(--blue); box-shadow:0 0 0 3px rgba(81,106,246,0.15);}
 .field .hint{font-size:0.76rem; color:var(--text-faint); margin-top:6px;}
 
 .row-action{display:flex; align-items:center; gap:12px; padding:14px 4px; border-top:1px solid var(--border); border-bottom:1px solid var(--border);}
@@ -91,31 +95,39 @@ svg{display:block;}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
     </button>
     <h2>Create a clan</h2>
-    <span class="brandmark"><svg viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="7"><circle cx="20" cy="20" r="16"/><circle cx="44" cy="20" r="16"/></svg></span>
+    <span class="brandmark"><img src="/fomo-favicon.svg" alt="fomo"></span>
   </div>
 
   <form id="clan-form">
     <div class="banner-wrap">
       <div class="banner" id="banner">
-        <button type="button" class="pencil-btn" id="banner-pencil" title="The banner is generated automatically from your clan's name">
+        <button type="button" class="pencil-btn" id="banner-pencil" title="Generated from your school and chapter">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
         </button>
       </div>
       <div class="icon-wrap">
         <div class="icon" id="icon-preview">?</div>
-        <button type="button" class="pencil-btn" title="The icon is generated automatically from your clan's name">
+        <button type="button" class="pencil-btn" title="Generated from your school and chapter">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
         </button>
       </div>
     </div>
 
     <div class="field">
-      <label for="c-name">Clan name</label>
-      <input type="text" id="c-name" maxlength="40" placeholder="Name your clan (ex. Sigma Chi SDSU)" autocomplete="off" required>
+      <label for="c-school">School</label>
+      <select id="c-school" required>
+        <option value="" disabled selected>Choose your school</option>
+      </select>
     </div>
 
     <div class="field">
-      <label for="c-size">How many members are in your fraternity?</label>
+      <label for="c-chapter">Chapter name</label>
+      <input type="text" id="c-chapter" maxlength="40" placeholder="e.g. Sigma Chi" autocomplete="off" required>
+      <div class="hint" id="chapter-hint">We'll recognize national fraternities and sororities and use their letters.</div>
+    </div>
+
+    <div class="field">
+      <label for="c-size">How many members are in your chapter?</label>
       <input type="number" id="c-size" min="1" max="2000" step="1" placeholder="e.g. 45" inputmode="numeric">
       <div class="hint">Optional — shown as your chapter's size on the clans list.</div>
     </div>
@@ -147,35 +159,128 @@ svg{display:block;}
 const $ = (id) => document.getElementById(id);
 document.getElementById('back-btn').addEventListener('click', () => { if (history.length > 1) history.back(); else location.href = '../'; });
 
-// Icon colors stay inside the brand's blue family (no rainbow), matching the clans list.
-const PALETTE = [
-  ['#516AF6', '#2E3A8C'], ['#4A36FF', '#241B7A'], ['#7B8FF7', '#3A458F'],
-  ['#33409E', '#181D4B'], ['#8DA0FF', '#3E4A99'], ['#3550C4', '#1B2560'],
-];
-function paletteFor(name) {
-  let h = 0;
-  for (const ch of name) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
-  return PALETTE[h % PALETTE.length];
+// ---------------------------------------------------------------------------
+// School code -> [display name, primary color, secondary color (null = auto-shade)]
+// Colors are each school's real, commonly recognized colors.
+// ---------------------------------------------------------------------------
+const SCHOOLS = {
+  asu: ['Arizona State University', '#8C1D40', '#FFC627'],
+  ua: ['University of Arizona', '#AB0520', '#0C234B'],
+  ucla: ['UCLA', '#2774AE', '#FFD100'],
+  usc: ['University of Southern California', '#990000', '#FFC72C'],
+  cal: ['UC Berkeley', '#003262', '#FDB515'],
+  stanford: ['Stanford University', '#8C1515', null],
+  ucsd: ['UC San Diego', '#182B49', '#C69214'],
+  sdsu: ['San Diego State University', '#A6192E', null],
+  uw: ['University of Washington', '#4B2E83', '#B7A57A'],
+  uo: ['University of Oregon', '#154733', '#FEE123'],
+  utah: ['University of Utah', '#CC0000', null],
+  cu: ['CU Boulder', '#CFB87C', '#000000'],
+  utaustin: ['UT Austin', '#BF5700', null],
+  tamu: ['Texas A&M University', '#500000', null],
+  rice: ['Rice University', '#00205B', null],
+  smu: ['Southern Methodist University', '#C8102E', '#0033A0'],
+  ou: ['University of Oklahoma', '#841617', null],
+  mizzou: ['University of Missouri', '#F1B82D', '#000000'],
+  wustl: ['Washington University in St. Louis', '#A51417', null],
+  wisconsin: ['University of Wisconsin–Madison', '#C5050C', null],
+  minnesota: ['University of Minnesota', '#7A0019', '#FFCC33'],
+  northwestern: ['Northwestern University', '#4E2A84', null],
+  uchicago: ['University of Chicago', '#800000', null],
+  illinois: ['University of Illinois', '#E84A27', '#13294B'],
+  purdue: ['Purdue University', '#B1810B', '#000000'],
+  iu: ['Indiana University', '#990000', null],
+  michigan: ['University of Michigan', '#00274C', '#FFCB05'],
+  osu: ['Ohio State University', '#BB0000', null],
+  penn: ['University of Pennsylvania', '#011F5B', '#990000'],
+  pennstate: ['Penn State University', '#041E42', null],
+  pitt: ['University of Pittsburgh', '#003594', '#FFB81C'],
+  cmu: ['Carnegie Mellon University', '#C41230', null],
+  nyu: ['New York University', '#57068C', null],
+  columbia: ['Columbia University', '#003D74', '#B9D9EB'],
+  cornell: ['Cornell University', '#B31B1B', null],
+  yale: ['Yale University', '#00356B', null],
+  harvard: ['Harvard University', '#A51C30', null],
+  bu: ['Boston University', '#CC0000', null],
+  georgetown: ['Georgetown University', '#041E42', null],
+  umd: ['University of Maryland', '#E21833', '#FFD520'],
+  uva: ['University of Virginia', '#232D4B', '#E57200'],
+  duke: ['Duke University', '#001A57', null],
+  unc: ['UNC Chapel Hill', '#7BAFD4', '#13294B'],
+  gt: ['Georgia Tech', '#B3A369', '#003057'],
+  uga: ['University of Georgia', '#BA0C2F', '#000000'],
+  vanderbilt: ['Vanderbilt University', '#866D4B', '#000000'],
+  ala: ['University of Alabama', '#9E1B32', null],
+  uf: ['University of Florida', '#0021A5', '#FA4616'],
+  fsu: ['Florida State University', '#782F40', '#CEB888'],
+  miami: ['University of Miami', '#F47321', '#005030'],
+};
+
+// Recognized national fraternities/sororities -> their actual Greek letters.
+// Unrecognized names fall back to initials, further down.
+const GREEK_LETTERS = {
+  'sigma chi': 'ΣΧ', 'sigma alpha epsilon': 'ΣΑΕ', 'sae': 'ΣΑΕ', 'kappa sigma': 'ΚΣ',
+  'sigma nu': 'ΣΝ', 'phi delta theta': 'ΦΔΘ', 'phi delt': 'ΦΔΘ', 'pi kappa alpha': 'ΠΚΑ',
+  'pike': 'ΠΚΑ', 'beta theta pi': 'ΒΘΠ', 'delta tau delta': 'ΔΤΔ', 'delt': 'ΔΤΔ',
+  'phi gamma delta': 'ΦΓΔ', 'fiji': 'ΦΓΔ', 'alpha tau omega': 'ΑΤΩ', 'ato': 'ΑΤΩ',
+  'kappa alpha': 'ΚΑ', 'kappa alpha order': 'ΚΑ', 'theta chi': 'ΘΧ', 'delta sigma phi': 'ΔΣΦ',
+  'lambda chi alpha': 'ΛΧΑ', 'tau kappa epsilon': 'ΤΚΕ', 'tke': 'ΤΚΕ', 'zeta beta tau': 'ΖΒΤ',
+  'zbt': 'ΖΒΤ', 'delta upsilon': 'ΔΥ', 'phi kappa psi': 'ΦΚΨ', 'alpha epsilon pi': 'ΑΕΠ',
+  'aepi': 'ΑΕΠ', 'sigma phi epsilon': 'ΣΦΕ', 'sig ep': 'ΣΦΕ', 'chi phi': 'ΧΦ',
+  'pi kappa phi': 'ΠΚΦ', 'phi kappa tau': 'ΦΚΤ', 'delta chi': 'ΔΧ', 'alpha sigma phi': 'ΑΣΦ',
+  'psi upsilon': 'ΨΥ', 'alpha chi omega': 'ΑΧΩ', 'axo': 'ΑΧΩ', 'kappa kappa gamma': 'ΚΚΓ',
+  'chi omega': 'ΧΩ', 'delta gamma': 'ΔΓ', 'alpha phi': 'ΑΦ', 'pi beta phi': 'ΠΒΦ',
+  'kappa delta': 'ΚΔ', 'zeta tau alpha': 'ΖΤΑ', 'zta': 'ΖΤΑ', 'gamma phi beta': 'ΓΦΒ',
+  'alpha delta pi': 'ΑΔΠ', 'adpi': 'ΑΔΠ', 'sigma kappa': 'ΣΚ', 'delta delta delta': 'ΔΔΔ',
+  'tri delta': 'ΔΔΔ', 'tridelta': 'ΔΔΔ', 'alpha omicron pi': 'ΑΟΠ', 'phi mu': 'ΦΜ',
+  'alpha gamma delta': 'ΑΓΔ', 'alpha xi delta': 'ΑΞΔ', 'delta zeta': 'ΔΖ',
+  'kappa alpha theta': 'ΚΑΘ', 'alpha epsilon phi': 'ΑΕΦ',
+};
+
+function shade(hex, pct) {
+  const n = parseInt(hex.slice(1), 16);
+  const clamp = (v) => Math.max(0, Math.min(255, v));
+  const r = clamp(((n >> 16) & 255) * (1 + pct));
+  const g = clamp(((n >> 8) & 255) * (1 + pct));
+  const b = clamp((n & 255) * (1 + pct));
+  return '#' + [r, g, b].map((v) => Math.round(v).toString(16).padStart(2, '0')).join('');
 }
+function schoolColors(code) {
+  const s = SCHOOLS[code];
+  if (!s) return ['#516AF6', '#2E3A8C'];
+  return [s[1], s[2] || shade(s[1], -0.42)];
+}
+function normChapter(s) { return String(s).toLowerCase().replace(/[.'’]/g, '').replace(/\s+/g, ' ').trim(); }
+function greekFor(chapterName) { return GREEK_LETTERS[normChapter(chapterName)] || null; }
 function initialsOf(name) {
-  const parts = name.trim().split(/\s+/).filter(Boolean);
+  const parts = String(name).trim().split(/\s+/).filter(Boolean);
   return ((parts[0] || '?')[0] + (parts[1] ? parts[1][0] : '')).toUpperCase();
 }
-function updatePreview() {
-  const name = $('c-name').value.trim();
-  const icon = $('icon-preview');
-  if (!name) {
-    $('banner').style.background = 'linear-gradient(135deg, #232145, #14122a)';
-    icon.style.background = 'linear-gradient(135deg, #232145, #14122a)';
-    icon.textContent = '?';
-    return;
-  }
-  const [a, b] = paletteFor(name);
-  $('banner').style.background = `linear-gradient(135deg, ${a}, ${b})`;
-  icon.style.background = `linear-gradient(135deg, ${a}, ${b})`;
-  icon.textContent = initialsOf(name);
+function glyphFor(chapterName) { return chapterName ? (greekFor(chapterName) || initialsOf(chapterName)) : '?'; }
+
+function fillSchools() {
+  const opts = Object.keys(SCHOOLS).sort((a, b) => SCHOOLS[a][0].localeCompare(SCHOOLS[b][0]))
+    .map((c) => `<option value="${c}">${SCHOOLS[c][0]}</option>`).join('');
+  $('c-school').innerHTML = '<option value="" disabled selected>Choose your school</option>' + opts;
 }
-$('c-name').addEventListener('input', updatePreview);
+fillSchools();
+
+function updatePreview() {
+  const school = $('c-school').value;
+  const chapter = $('c-chapter').value.trim();
+  const [a, b] = school ? schoolColors(school) : ['#232145', '#14122a'];
+  $('banner').style.background = `linear-gradient(135deg, ${a}, ${b})`;
+  const icon = $('icon-preview');
+  icon.style.background = `linear-gradient(135deg, ${a}, ${b})`;
+  const glyph = glyphFor(chapter);
+  icon.textContent = glyph;
+  icon.classList.toggle('small-glyph', glyph.length >= 3);
+  $('chapter-hint').textContent = chapter && greekFor(chapter)
+    ? `Recognized ${greekFor(chapter)} — using the real letters.`
+    : "We'll recognize national fraternities and sororities and use their letters.";
+}
+$('c-school').addEventListener('change', updatePreview);
+$('c-chapter').addEventListener('input', updatePreview);
 document.querySelectorAll('.pencil-btn').forEach((b) => b.addEventListener('click', () => b.blur()));
 
 let created = false;
@@ -184,15 +289,17 @@ $('clan-form').addEventListener('submit', async (e) => {
   if (created) return;
   const msg = $('form-msg');
   msg.className = 'msg'; msg.textContent = '';
-  const name = $('c-name').value.trim();
-  if (name.length < 2) { msg.className = 'msg err'; msg.textContent = 'enter a clan name.'; return; }
+  const school = $('c-school').value;
+  const chapterName = $('c-chapter').value.trim();
+  if (!school) { msg.className = 'msg err'; msg.textContent = 'choose your school.'; return; }
+  if (chapterName.length < 2) { msg.className = 'msg err'; msg.textContent = 'enter a chapter name.'; return; }
 
   $('submit-btn').disabled = true;
   try {
     const res = await fetch('/api/clans', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ name, chapterSize: $('c-size').value }),
+      body: JSON.stringify({ school, chapterName, chapterSize: $('c-size').value }),
     });
     if (res.status === 201) {
       const { clan } = await res.json();
@@ -210,7 +317,7 @@ $('clan-form').addEventListener('submit', async (e) => {
 });
 
 function showCreated(clan) {
-  $('c-name').disabled = true; $('c-size').disabled = true;
+  $('c-school').disabled = true; $('c-chapter').disabled = true; $('c-size').disabled = true;
   $('success-name').textContent = clan.name + ' is ready.';
   $('success').classList.add('show');
   $('form-msg').textContent = '';
@@ -231,6 +338,8 @@ function showCreated(clan) {
   $('submit-btn').style.display = 'none';
   $('done-btn').style.display = 'flex';
 }
+
+updatePreview();
 </script>
 </body>
 </html>
