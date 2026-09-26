@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>Clan leaderboard · fomo</title>
+<title>Chapter leaderboard · fomo</title>
 <link rel="icon" href="/fomo-favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,7 +15,7 @@
   --border:rgba(255,255,255,0.08); --border-2:rgba(255,255,255,0.16);
   --white:#FFFFFF; --text:#E8E8F0; --text-dim:#9B9BAD; --text-faint:#6A6A7C;
   --blue:#516AF6; --blue-hi:#6A80F8; --blue-dim:#8E9CF7;
-  --red:#F2555A;
+  --red:#F2555A; --green:#2ED47A;
   --radius:14px; --radius-lg:18px;
 }
 *{box-sizing:border-box;}
@@ -39,8 +39,23 @@ svg{display:block;}
 @media (max-width:560px){ .nav-actions .nav-btn.secondary{display:none;} }
 
 /* hero */
-.hero{padding:86px 0 0;}
+.hero{display:grid; grid-template-columns:1fr 430px; gap:56px; align-items:center; padding:86px 0 0;}
+@media (max-width:1040px){ .hero{grid-template-columns:1fr; gap:38px;} }
 @media (max-width:720px){ .hero{padding:52px 0 0;} }
+.hero-copy{min-width:0;}
+
+/* greek village preview */
+.gv-card{display:block; border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; background:var(--surface); transition:border-color .15s ease, transform .15s ease;}
+.gv-card:hover{border-color:var(--border-2); transform:translateY(-2px);}
+.gv-chrome{display:flex; align-items:center; gap:7px; padding:10px 14px; border-bottom:1px solid var(--border); background:var(--surface-2);}
+.gv-chrome i{width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,0.16); flex-shrink:0;}
+.gv-chrome span{margin-left:6px; font-size:0.72rem; color:var(--text-faint); font-family:ui-monospace,SFMono-Regular,Menlo,monospace; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.gv-frame{position:relative; height:258px; overflow:hidden; pointer-events:none; background:var(--bg);}
+.gv-frame iframe{position:absolute; top:0; left:0; width:1440px; height:880px; border:0; transform:scale(0.2972); transform-origin:0 0;}
+.gv-bar{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:15px 18px; border-top:1px solid var(--border); font-weight:700; font-size:0.95rem; color:var(--white);}
+.gv-bar svg{width:15px; height:15px; color:var(--blue);}
+.gv-card:hover .gv-bar svg{transform:translateX(2px);}
+.gv-bar svg{transition:transform .15s ease;}
 .eyebrow{font-size:0.86rem; font-weight:600; color:var(--text-faint); margin-bottom:22px;}
 h1{font-size:clamp(2.6rem,6.2vw,4.2rem); font-weight:800; letter-spacing:-0.04em; line-height:1.02; margin:0 0 26px; color:var(--white);}
 .lede{font-size:clamp(1.05rem,1.7vw,1.35rem); color:var(--text-dim); margin:0 0 34px; max-width:40ch; font-weight:500; line-height:1.5;}
@@ -75,8 +90,10 @@ h1{font-size:clamp(2.6rem,6.2vw,4.2rem); font-weight:800; letter-spacing:-0.04em
 @media (max-width:720px){ .progress{display:none;} }
 .bar{height:5px; border-radius:99px; background:rgba(125,145,255,0.14); overflow:hidden;}
 .bar span{display:block; height:100%; border-radius:99px; background:var(--blue);}
-.bar.done span{background:var(--blue-dim);}
+.bar.done span{background:var(--green);}
 .progress .pct{font-size:0.72rem; color:var(--text-faint); margin-top:6px; text-align:right; font-variant-numeric:tabular-nums;}
+.progress .pct.done{color:var(--green);}
+.paid{display:inline-block; margin-left:9px; padding:3px 7px; border-radius:5px; background:var(--green); color:#062B18; font-size:0.62rem; font-weight:800; letter-spacing:0.09em; text-transform:uppercase; vertical-align:2px;}
 .stat-cell{text-align:right; flex-shrink:0; min-width:64px;}
 .stat-cell .joined{color:var(--blue-dim); font-weight:700; font-size:1rem; font-variant-numeric:tabular-nums;}
 .stat-cell .joined.zero{color:var(--text-faint);}
@@ -152,7 +169,7 @@ a.fcard:hover{border-color:var(--border-2); background:var(--surface-2); transfo
 
 <div class="wrap">
   <nav class="nav">
-    <a class="nav-brand" href="/">fomo <span class="slash">/clans</span></a>
+    <a class="nav-brand" href="/">fomo <span class="slash">/greek wars</span></a>
     <div class="nav-actions">
       <a class="nav-btn secondary" id="get-app" href="#" target="_blank" rel="noopener">Get the app</a>
       <a class="nav-btn" href="create/">Register chapter</a>
@@ -160,14 +177,27 @@ a.fcard:hover{border-color:var(--border-2); background:var(--surface-2); transfo
   </nav>
 
   <header class="hero">
-    <div class="eyebrow">fomo greek wars</div>
-    <h1>Clan leaderboard.</h1>
-    <p class="lede">Every registered chapter, ranked by how many members they've brought in. Two minutes to register yours and get the link.</p>
-    <a class="cta" href="create/">
-      Register your chapter
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    <div class="hero-copy">
+      <div class="eyebrow">fomo greek wars</div>
+      <h1>Chapter leaderboard.</h1>
+      <p class="lede">Every registered chapter, ranked by how many members they've brought in. Two minutes to register yours and get the link.</p>
+      <a class="cta" href="create/">
+        Register your chapter
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <p class="caption">$500 is guaranteed once 80% of your actives are onboarded.</p>
+    </div>
+
+    <a class="gv-card" href="https://milomessina.com/fomo/campuswars/" target="_blank" rel="noopener">
+      <div class="gv-chrome"><i></i><i></i><i></i><span>milomessina.com/fomo/campuswars</span></div>
+      <div class="gv-frame">
+        <iframe src="https://milomessina.com/fomo/campuswars/" title="Greek Village preview" loading="lazy" scrolling="no" tabindex="-1" aria-hidden="true"></iframe>
+      </div>
+      <div class="gv-bar">
+        Enter Greek Village
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </div>
     </a>
-    <p class="caption">$500 is guaranteed once 80% of your actives are onboarded.</p>
   </header>
 
   <div class="load-error" id="load-error" hidden>
@@ -320,12 +350,12 @@ function rowHtml(c, rank, showStat) {
       ? `<img class="icon" src="/api/clans/${esc(c.id)}/avatar" alt="" loading="lazy">`
       : `<div class="icon ${glyph.length >= 3 ? 'small-glyph' : ''}" style="background:${a}">${esc(glyph)}</div>`}
     <div class="meta">
-      <div class="name">${esc(c.chapterName)}</div>
+      <div class="name">${esc(c.chapterName)}${goal ? '<span class="paid">Paid</span>' : ''}</div>
       <div class="sub">${esc(c.schoolLabel)}${c.chapterSize ? ` · ${c.members} of ${c.chapterSize}` : ` · ${c.members} joined`}</div>
     </div>
     ${pct !== null ? `<div class="progress">
       <div class="bar${goal ? ' done' : ''}"><span style="width:${pct}%"></span></div>
-      <div class="pct">${pct}%${goal ? ' · goal' : ''}</div>
+      <div class="pct${goal ? ' done' : ''}">${pct}%</div>
     </div>` : '<div class="progress"></div>'}
     ${showStat ? `<div class="stat-cell">
       <div class="joined ${c.joined === 0 ? 'zero' : ''}">${c.joined > 0 ? '+' : ''}${c.joined}</div>
