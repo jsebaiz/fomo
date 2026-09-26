@@ -4,179 +4,213 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>fomo / clans</title>
+<title>Clan leaderboard · fomo</title>
 <link rel="icon" href="/fomo-favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg-top:#E7E9FC; --bg-bottom:#F9FAFF;
-  --ink:#0B091F;
-  --text:#15142B; --text-dim:#5B5A73; --text-faint:#8B899F;
-  --card:#FFFFFF; --border:rgba(20,20,50,0.09); --border-strong:rgba(20,20,50,0.16);
-  --panel-tint:rgba(81,106,246,0.05);
-  --blue:#516AF6; --blue-electric:#4A36FF; --blue-light:#ACB8F9;
-  --red:#D64545; --radius:20px; --radius-sm:14px;
-  --shadow:0 4px 24px rgba(20,20,60,0.06), 0 1px 2px rgba(20,20,60,0.05);
+  --bg:#080B1A; --bg-lift:#0A0E20;
+  --card:#0F1430; --card-2:#121835; --card-hl:#151C42;
+  --border:rgba(125,145,255,0.14); --border-hl:rgba(110,135,255,0.34);
+  --line:rgba(125,145,255,0.22);
+  --white:#FFFFFF; --text:#E8EBFA; --text-dim:#A8B2E0; --text-faint:#6E7AA8;
+  --blue:#516AF6; --blue-electric:#4A36FF; --blue-soft:#8C9BFF;
+  --red:#FF7A7A;
+  --radius:16px; --radius-lg:20px;
 }
 *{box-sizing:border-box;}
 [hidden]{display:none !important;}
 html,body{margin:0;}
-body{background:linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 55%, #ffffff 100%); color:var(--text); font-family:'Schibsted Grotesk','Inter',-apple-system,sans-serif; line-height:1.45; min-height:100vh;}
+body{background:var(--bg); color:var(--text); font-family:'Schibsted Grotesk','Inter',-apple-system,sans-serif; line-height:1.5; min-height:100vh; -webkit-font-smoothing:antialiased;}
 button{font-family:inherit;}
 a{color:inherit; text-decoration:none;}
 svg{display:block;}
 
-.wrap{max-width:900px; margin:0 auto; padding:0 32px 70px;}
+.glow{position:fixed; top:-380px; left:50%; transform:translateX(-50%); width:1200px; height:800px; pointer-events:none; z-index:0;
+  background:radial-gradient(circle, rgba(81,106,246,0.13) 0%, rgba(74,54,255,0.05) 42%, transparent 68%);}
+.wrap{max-width:1120px; margin:0 auto; padding:0 40px 80px; position:relative; z-index:1;}
+@media (max-width:720px){ .wrap{padding:0 20px 56px;} }
 
-.topbar{display:flex; align-items:center; justify-content:space-between; padding:28px 0 8px;}
-.iconbtn{width:38px; height:38px; border-radius:999px; background:none; border:none; color:var(--text); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:background .15s ease;}
-.iconbtn:hover{background:rgba(20,20,60,0.06);}
-.iconbtn svg{width:20px; height:20px;}
-.brandmark{display:flex; align-items:center; gap:9px; color:var(--text); font-weight:800; font-size:1rem;}
-.badge{display:flex; align-items:center; justify-content:center; flex-shrink:0; width:27px; height:27px; border-radius:50%; background:linear-gradient(135deg, var(--blue-light), var(--blue-electric)); box-shadow:0 2px 10px rgba(81,106,246,.35);}
+/* nav */
+.nav{display:flex; align-items:center; justify-content:space-between; padding:26px 0 0;}
+.nav-brand{display:flex; align-items:center; gap:10px; font-size:1.18rem; font-weight:800; color:var(--white); letter-spacing:-0.02em;}
+.nav-brand .slash{color:var(--text-faint); font-weight:600;}
+.badge{display:flex; align-items:center; justify-content:center; flex-shrink:0; width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg, var(--blue-soft), var(--blue-electric)); box-shadow:0 2px 12px rgba(81,106,246,.4);}
 .badge svg{width:58%; height:58%; color:#fff;}
-.brandmark .sub{color:var(--blue-electric); font-weight:800; font-size:0.72rem; letter-spacing:0.09em; text-transform:uppercase; margin-left:2px;}
+.nav-actions{display:flex; align-items:center; gap:10px;}
+.nav-btn{border:1px solid var(--border); background:var(--card); color:var(--text); border-radius:10px; padding:10px 18px; font-size:0.88rem; font-weight:600; cursor:pointer; transition:background .15s ease, border-color .15s ease;}
+.nav-btn:hover{background:var(--card-2); border-color:var(--border-hl);}
+@media (max-width:560px){ .nav-actions .nav-btn.secondary{display:none;} }
 
-.eyebrow{display:flex; align-items:center; gap:8px; color:var(--blue-electric); font-weight:800; font-size:0.78rem; letter-spacing:0.09em; text-transform:uppercase; margin:26px 0 10px;}
-.eyebrow::before{content:''; width:7px; height:7px; border-radius:50%; background:var(--blue-electric);}
+/* hero */
+.hero{padding:86px 0 0;}
+@media (max-width:720px){ .hero{padding:52px 0 0;} }
+.eyebrow{font-size:0.86rem; font-weight:600; color:var(--text-faint); margin-bottom:22px;}
+h1{font-size:clamp(2.6rem,6.2vw,4.2rem); font-weight:800; letter-spacing:-0.04em; line-height:1.02; margin:0 0 26px; color:var(--white);}
+.lede{font-size:clamp(1.05rem,1.7vw,1.35rem); color:var(--text-dim); margin:0 0 34px; max-width:40ch; font-weight:500; line-height:1.5;}
+.cta{display:inline-flex; align-items:center; gap:10px; background:linear-gradient(135deg, var(--blue-electric), var(--blue)); color:#fff; border:none; border-radius:12px; padding:17px 26px; font-size:1rem; font-weight:700; cursor:pointer;
+  box-shadow:0 10px 34px rgba(74,54,255,0.42); transition:transform .15s ease, filter .15s ease;}
+.cta:hover{transform:translateY(-1px); filter:brightness(1.1);}
+.cta svg{width:16px; height:16px;}
+.caption{font-size:0.88rem; color:var(--text-faint); margin:52px 0 22px;}
 
-.title-row{display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap;}
-h1{font-size:clamp(2.4rem,5vw,3.4rem); font-weight:800; margin:0; letter-spacing:-0.035em; line-height:0.98; text-transform:uppercase; color:var(--ink);}
-h1 .accent{color:var(--blue-electric);}
-.tabs{display:flex; gap:3px; background:var(--card); border:1px solid var(--border); border-radius:999px; padding:4px; flex-shrink:0; box-shadow:var(--shadow);}
-.tabs button{background:none; border:none; color:var(--text-dim); font-weight:700; font-size:0.86rem; padding:9px 17px; border-radius:999px; cursor:pointer; transition:background .15s ease, color .15s ease;}
+/* stats */
+.stats{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin:0 0 56px;}
+@media (max-width:820px){ .stats{grid-template-columns:repeat(2,1fr);} }
+.stat{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:20px 22px;}
+.stat .num{font-size:1.9rem; font-weight:800; color:var(--white); letter-spacing:-0.03em; line-height:1.1;}
+.stat .lbl{font-size:0.78rem; color:var(--text-faint); margin-top:4px; text-transform:uppercase; letter-spacing:0.07em; font-weight:700;}
+
+/* board */
+.board-head{display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap; margin-bottom:18px;}
+.board-title{font-size:1.5rem; font-weight:800; color:var(--white); letter-spacing:-0.025em; margin:0;}
+.board-sub{font-size:0.86rem; color:var(--text-faint); margin:5px 0 0;}
+.tabs{display:flex; gap:3px; background:var(--card); border:1px solid var(--border); border-radius:11px; padding:4px;}
+.tabs button{background:none; border:none; color:var(--text-faint); font-weight:600; font-size:0.85rem; padding:8px 15px; border-radius:8px; cursor:pointer; transition:background .15s ease, color .15s ease;}
 .tabs button:hover{color:var(--text);}
 .tabs button.active{background:var(--blue-electric); color:#fff;}
 
-.desc{font-size:1.02rem; color:var(--text-dim); margin:16px 0 0; max-width:56ch;}
-
-.stats-row{display:flex; gap:14px; margin:28px 0 8px; flex-wrap:wrap;}
-.stat-card{flex:1; min-width:150px; background:var(--card); border:1px solid var(--border); border-radius:var(--radius-sm); padding:18px 20px; box-shadow:var(--shadow);}
-.stat-card .num{font-size:1.7rem; font-weight:800; color:var(--ink); letter-spacing:-0.02em;}
-.stat-card .lbl{font-size:0.8rem; color:var(--text-faint); margin-top:3px; font-weight:600;}
-
-.load-error{margin:24px 0; padding:16px 18px; background:rgba(214,69,69,0.07); border:1px solid rgba(214,69,69,0.22); border-radius:var(--radius-sm); font-size:0.9rem; color:var(--red); display:flex; justify-content:space-between; align-items:center; gap:12px;}
-.load-error button{background:none; border:1px solid rgba(214,69,69,0.4); color:var(--red); border-radius:999px; padding:7px 14px; font-size:0.82rem; cursor:pointer; font-weight:600;}
-
-.board{margin-top:28px; background:var(--card); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow);}
-.board-head{display:flex; align-items:center; justify-content:space-between; padding:16px 22px; border-bottom:1px solid var(--border);}
-.board-head span{font-size:0.78rem; font-weight:800; text-transform:uppercase; letter-spacing:0.07em; color:var(--text-faint);}
+.board{background:var(--card); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden;}
 .list{display:flex; flex-direction:column;}
-.row{display:flex; align-items:center; gap:16px; padding:16px 22px; border-bottom:1px solid var(--border); transition:background .12s ease;}
-.list:last-child .row:last-child{border-bottom:none;}
-.row:hover{background:var(--panel-tint);}
-.rank{width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.86rem; color:var(--text-faint); flex-shrink:0; background:rgba(20,20,50,0.05);}
-.rank.r1{background:var(--blue-electric); color:#fff;}
-.rank.r2{background:var(--blue); color:#fff;}
-.rank.r3{background:var(--blue-light); color:#fff;}
-.icon{width:52px; height:52px; border-radius:15px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.08rem; color:#fff; flex-shrink:0; letter-spacing:0.01em;}
-.icon.small-glyph{font-size:0.86rem;}
+.row{display:flex; align-items:center; gap:18px; padding:17px 24px; border-bottom:1px solid var(--border); transition:background .12s ease;}
+.row:last-child{border-bottom:none;}
+.row:hover{background:var(--card-2);}
+#list-more .row:last-child{border-bottom:none;}
+.rank{width:30px; flex-shrink:0; font-size:0.85rem; font-weight:700; color:var(--text-faint); font-variant-numeric:tabular-nums;}
+.row.top3 .rank{color:var(--blue-soft);}
+.icon{width:46px; height:46px; border-radius:13px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1rem; color:#fff; flex-shrink:0;}
+.icon.small-glyph{font-size:0.8rem;}
 .meta{flex:1; min-width:0;}
-.meta .name{font-weight:700; font-size:1.08rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--ink);}
-.meta .sub{font-size:0.85rem; color:var(--text-faint); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-top:3px;}
-.stat{text-align:right; flex-shrink:0;}
-.stat .joined{color:var(--blue-electric); font-weight:700; font-size:1.02rem; white-space:nowrap;}
-.stat .joined.zero{color:var(--text-faint);}
-.stat .window-label{font-size:0.74rem; color:var(--text-faint); margin-top:3px;}
+.meta .name{font-weight:700; font-size:1.04rem; color:var(--white); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.meta .sub{font-size:0.84rem; color:var(--text-faint); margin-top:3px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.progress{width:120px; flex-shrink:0;}
+@media (max-width:720px){ .progress{display:none;} }
+.bar{height:5px; border-radius:99px; background:rgba(125,145,255,0.14); overflow:hidden;}
+.bar span{display:block; height:100%; border-radius:99px; background:linear-gradient(90deg, var(--blue), var(--blue-soft));}
+.bar.done span{background:linear-gradient(90deg, #4A36FF, #8C9BFF);}
+.progress .pct{font-size:0.72rem; color:var(--text-faint); margin-top:6px; text-align:right; font-variant-numeric:tabular-nums;}
+.stat-cell{text-align:right; flex-shrink:0; min-width:64px;}
+.stat-cell .joined{color:var(--blue-soft); font-weight:700; font-size:1rem; font-variant-numeric:tabular-nums;}
+.stat-cell .joined.zero{color:var(--text-faint);}
+.stat-cell .wl{font-size:0.7rem; color:var(--text-faint); margin-top:3px; text-transform:uppercase; letter-spacing:0.06em;}
 
-.delete-btn{width:34px; height:34px; border-radius:999px; background:none; border:1px solid transparent; color:var(--text-faint); display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; opacity:0; transform:translateX(-4px); transition:opacity .15s ease, transform .15s ease, background .12s ease, color .12s ease, border-color .12s ease;}
-.delete-btn svg{width:16px; height:16px;}
-.row:hover .delete-btn, .delete-btn:focus-visible{opacity:1; transform:none;}
-.delete-btn:hover{background:rgba(214,69,69,0.10); border-color:rgba(214,69,69,0.28); color:var(--red);}
+.delete-btn{width:32px; height:32px; border-radius:9px; background:none; border:1px solid transparent; color:var(--text-faint); display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; opacity:0; transition:opacity .15s ease, background .12s ease, color .12s ease, border-color .12s ease;}
+.delete-btn svg{width:15px; height:15px;}
+.row:hover .delete-btn, .delete-btn:focus-visible{opacity:1;}
+.delete-btn:hover{background:rgba(255,122,122,0.10); border-color:rgba(255,122,122,0.3); color:var(--red);}
 
-.expand-row{border-top:1px solid var(--border);}
-.expand-btn{width:100%; background:none; border:none; padding:15px 22px; font-weight:700; font-size:0.9rem; color:var(--blue-electric); cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:background .12s ease;}
-.expand-btn:hover{background:var(--panel-tint);}
-.expand-btn svg{width:15px; height:15px; transition:transform .2s ease;}
+.expand-btn{width:100%; background:none; border:none; border-top:1px solid var(--border); padding:16px; font-weight:700; font-size:0.89rem; color:var(--blue-soft); cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:background .12s ease;}
+.expand-btn:hover{background:var(--card-2);}
+.expand-btn svg{width:14px; height:14px; transition:transform .2s ease;}
 .expand-btn.open svg{transform:rotate(180deg);}
 
-.skeleton{padding:16px 22px; display:flex; align-items:center; gap:16px; border-bottom:1px solid var(--border);}
-.sk{background:linear-gradient(90deg, #eef0fb 25%, #f7f8ff 37%, #eef0fb 63%); background-size:400% 100%; animation:shimmer 1.4s ease infinite; border-radius:8px;}
+.skeleton{padding:17px 24px; display:flex; align-items:center; gap:18px; border-bottom:1px solid var(--border);}
+.sk{background:linear-gradient(90deg, rgba(125,145,255,0.06) 25%, rgba(125,145,255,0.14) 37%, rgba(125,145,255,0.06) 63%); background-size:400% 100%; animation:shimmer 1.4s ease infinite; border-radius:8px;}
 @keyframes shimmer{0%{background-position:100% 0;}100%{background-position:0 0;}}
-.sk-icon{width:52px; height:52px; border-radius:15px; flex-shrink:0;}
+.sk-icon{width:46px; height:46px; border-radius:13px; flex-shrink:0;}
 .sk-lines{flex:1;}
-.sk-line1{width:32%; height:15px; margin-bottom:9px;}
-.sk-line2{width:22%; height:11px;}
+.sk-line1{width:30%; height:14px; margin-bottom:9px;}
+.sk-line2{width:20%; height:10px;}
+.empty{padding:64px 20px; text-align:center; color:var(--text-faint); font-size:0.94rem;}
+.load-error{margin:20px 0; padding:16px 18px; background:rgba(255,122,122,0.07); border:1px solid rgba(255,122,122,0.22); border-radius:var(--radius); font-size:0.9rem; color:var(--red); display:flex; justify-content:space-between; align-items:center; gap:12px;}
+.load-error button{background:none; border:1px solid rgba(255,122,122,0.35); color:var(--red); border-radius:8px; padding:7px 14px; font-size:0.82rem; cursor:pointer; font-weight:600;}
 
-.empty{padding:70px 20px; text-align:center; color:var(--text-faint); font-size:0.95rem;}
-.empty svg{width:34px; height:34px; margin:0 auto 16px; color:var(--text-faint); opacity:.6;}
+/* flow map */
+.flow-section{margin-top:82px;}
+.flow-caption{font-size:0.88rem; color:var(--text-faint); margin:0 0 26px;}
+.flow-top{display:flex; justify-content:center;}
+.fcard{position:relative; display:block; background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:20px 22px; transition:border-color .15s ease, background .15s ease, transform .15s ease;}
+a.fcard:hover{border-color:var(--border-hl); background:var(--card-2); transform:translateY(-2px);}
+.fcard-tag{font-size:0.65rem; text-transform:uppercase; letter-spacing:0.11em; color:var(--text-faint); font-weight:700; margin-bottom:9px;}
+.fcard-title{font-size:1.12rem; font-weight:700; color:var(--white); letter-spacing:-0.015em;}
+.fcard-path{font-size:0.8rem; color:var(--text-faint); margin-top:7px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace;}
+.fcard .corner{position:absolute; top:19px; right:20px; width:14px; height:14px; color:var(--text-faint);}
+.fcard-hl{background:var(--card-hl); border-color:var(--border-hl); min-width:390px;}
+@media (max-width:560px){ .fcard-hl{min-width:0; width:100%;} }
+.fcard-hl .fcard-tag{color:var(--blue-soft);}
+.fcard-hl .corner{color:var(--blue-soft);}
 
-.footer-cta{text-align:center; padding:50px 10px 10px;}
-.footer-cta p{font-size:0.95rem; color:var(--text-dim); margin-bottom:18px; font-weight:500;}
-.btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:15px 30px; border-radius:999px; font-weight:700; font-size:0.98rem; cursor:pointer; border:none; transition:transform .15s ease, filter .15s ease;}
-.btn:hover{transform:translateY(-1px);}
-.btn-primary{background:var(--blue-electric); color:#fff; box-shadow:0 10px 30px rgba(81,106,246,.28);}
-.btn-primary:hover{filter:brightness(1.1);}
-
-@media (max-width:680px){
-  .wrap{padding:0 18px 50px;}
-  .row{padding:14px 16px; gap:12px;}
-  .icon{width:44px; height:44px; border-radius:13px; font-size:0.95rem;}
-  .icon.small-glyph{font-size:0.78rem;}
-  .stats-row{gap:10px;}
+.connect{position:relative; height:58px;}
+.connect i{position:absolute; background:var(--line); display:block;}
+.connect .v-main{left:50%; top:0; width:1px; height:29px; transform:translateX(-50%);}
+.connect .h-span{top:29px; left:16.666%; right:16.666%; height:1px;}
+.connect .v-drop{top:29px; width:1px; height:29px;}
+.flow-labels{display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-bottom:12px;}
+.flow-labels span{text-align:center; font-size:0.66rem; text-transform:uppercase; letter-spacing:0.11em; color:var(--text-faint); font-weight:700;}
+.flow-row{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+@media (max-width:760px){
+  .connect{display:none;}
+  .flow-labels{display:none;}
+  .flow-row{grid-template-columns:1fr; gap:12px; margin-top:12px;}
+  .flow-top{margin-bottom:12px;}
 }
 
 /* modal */
-.modal-overlay{position:fixed; inset:0; background:rgba(11,9,31,0.45); backdrop-filter:blur(3px); display:flex; align-items:center; justify-content:center; z-index:20; padding:20px;}
-.modal{width:100%; max-width:380px; background:#fff; border:1px solid var(--border); border-radius:var(--radius); padding:28px; box-shadow:0 24px 60px rgba(20,20,60,0.22);}
-.modal h3{margin:0 0 8px; font-size:1.15rem; font-weight:800; color:var(--ink);}
+.modal-overlay{position:fixed; inset:0; background:rgba(4,6,16,0.72); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; z-index:30; padding:20px;}
+.modal{width:100%; max-width:380px; background:var(--card-hl); border:1px solid var(--border-hl); border-radius:var(--radius); padding:28px; box-shadow:0 30px 70px rgba(0,0,0,0.5);}
+.modal h3{margin:0 0 8px; font-size:1.15rem; font-weight:800; color:var(--white);}
 .modal p{margin:0 0 20px; font-size:0.9rem; color:var(--text-dim);}
-.modal p strong{color:var(--ink); font-weight:700;}
-.modal input{width:100%; background:#F7F8FF; border:1px solid var(--border-strong); border-radius:12px; padding:13px 14px; color:var(--text); font-family:inherit; font-size:0.95rem; outline:none; margin-bottom:6px;}
+.modal p strong{color:var(--white); font-weight:700;}
+.modal input{width:100%; background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:13px 14px; color:var(--text); font-family:inherit; font-size:0.95rem; outline:none; margin-bottom:6px;}
 .modal input:focus{border-color:var(--blue);}
 .modal-msg{font-size:0.84rem; color:var(--red); min-height:1.2em; margin:0 0 14px;}
 .modal-actions{display:flex; gap:10px;}
-.modal-actions button{flex:1; padding:13px; border-radius:12px; font-weight:700; font-size:0.92rem; cursor:pointer; border:none; transition:filter .12s ease, background .12s ease;}
-.modal-btn-cancel{background:#F1F2FA; color:var(--text); border:1px solid var(--border-strong) !important;}
-.modal-btn-cancel:hover{background:#E7E9F5;}
-.modal-btn-delete{background:var(--red); color:#fff;}
-.modal-btn-delete:hover{filter:brightness(1.08);}
+.modal-actions button{flex:1; padding:13px; border-radius:10px; font-weight:700; font-size:0.92rem; cursor:pointer; border:none; transition:filter .12s ease, background .12s ease;}
+.modal-btn-cancel{background:var(--card); color:var(--text); border:1px solid var(--border) !important;}
+.modal-btn-cancel:hover{background:var(--card-2);}
+.modal-btn-delete{background:#C2384B; color:#fff;}
+.modal-btn-delete:hover{filter:brightness(1.12);}
 .modal-btn-delete:disabled{opacity:.5; cursor:default; filter:none;}
 
 /* footer */
-.site-footer{background:var(--ink); color:rgba(234,237,255,0.7); margin-top:60px;}
-.footer-inner{max-width:1080px; margin:0 auto; padding:56px 32px 32px; display:flex; justify-content:space-between; gap:40px; flex-wrap:wrap;}
-.footer-brand .badge{width:34px; height:34px; margin-bottom:14px;}
-.footer-brand .fname{font-size:1.5rem; font-weight:800; color:#EAEDFF; letter-spacing:-0.02em;}
-.footer-brand p{font-size:0.92rem; color:rgba(234,237,255,0.5); margin:8px 0 0; max-width:26ch;}
+.site-footer{border-top:1px solid var(--border); margin-top:96px;}
+.footer-inner{max-width:1120px; margin:0 auto; padding:52px 40px 28px; display:flex; justify-content:space-between; gap:40px; flex-wrap:wrap;}
+@media (max-width:720px){ .footer-inner{padding:44px 20px 24px;} }
+.footer-brand .badge{width:32px; height:32px; margin-bottom:14px;}
+.footer-brand .fname{font-size:1.4rem; font-weight:800; color:var(--white); letter-spacing:-0.02em;}
+.footer-brand p{font-size:0.9rem; color:var(--text-faint); margin:7px 0 0; max-width:26ch;}
 .footer-cols{display:flex; gap:56px; flex-wrap:wrap;}
-.footer-col h4{font-size:0.72rem; text-transform:uppercase; letter-spacing:0.09em; color:rgba(234,237,255,0.38); margin:0 0 14px; font-weight:700;}
-.footer-col a{display:block; font-size:0.9rem; color:rgba(234,237,255,0.75); margin-bottom:11px; transition:color .12s ease;}
-.footer-col a:hover{color:#fff;}
-.footer-bottom{max-width:1080px; margin:0 auto; padding:20px 32px 32px; border-top:1px solid rgba(234,237,255,0.1); font-size:0.8rem; color:rgba(234,237,255,0.4);}
+.footer-col h4{font-size:0.66rem; text-transform:uppercase; letter-spacing:0.11em; color:var(--text-faint); margin:0 0 14px; font-weight:700;}
+.footer-col a{display:block; font-size:0.89rem; color:var(--text-dim); margin-bottom:11px; transition:color .12s ease;}
+.footer-col a:hover{color:var(--white);}
+.footer-bottom{max-width:1120px; margin:0 auto; padding:18px 40px 34px; border-top:1px solid var(--border); font-size:0.8rem; color:var(--text-faint);}
+@media (max-width:720px){ .footer-bottom{padding:18px 20px 30px;} }
 </style>
 </head>
 <body>
 
+<div class="glow" aria-hidden="true"></div>
+
 <div class="wrap">
-  <div class="topbar">
-    <button class="iconbtn" id="back-btn" aria-label="Back">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-    </button>
-    <div class="brandmark"><span class="badge"><svg viewBox="0 0 100 100" fill="currentColor"><path d="M36.9747 24.3586C44.1067 24.3587 49.7941 27.9515 52.9484 33.5959C48.7626 38.0418 45.6617 43.7612 44.4679 50.0002C43.2743 56.2391 44.1865 61.9572 46.67 66.4026C41.3555 72.0468 34.2931 75.6408 27.1613 75.6409C18.432 75.6407 11.8659 70.2588 9.46204 62.3196H26.8478C27.4159 62.3193 28.0059 61.8593 28.1691 61.2932L34.6486 38.7043C34.8098 38.1381 34.4815 37.6782 33.9152 37.678H14.1788C19.6213 29.7404 28.2465 24.3588 36.9747 24.3586Z"/><path d="M72.3285 24.3586C85.0779 24.3586 93.2156 35.8374 90.5062 49.9993C87.7966 64.1596 75.2646 75.6409 62.515 75.6409C53.7856 75.6408 47.2196 70.2589 44.8158 62.3196H64.1537C64.7218 62.3194 65.3127 61.8594 65.476 61.2932L71.9545 38.7043C72.1157 38.138 71.7876 37.678 71.2211 37.678H49.5316C54.9741 29.7401 63.5999 24.3587 72.3285 24.3586Z"/></svg></span>fomo<span class="sub">Greek Wars</span></div>
-  </div>
-
-  <div class="hero">
-    <div class="eyebrow">Registration · Live standings</div>
-    <div class="title-row">
-      <h1>Clan<br><span class="accent">leaderboard.</span></h1>
-      <div class="tabs" id="tabs">
-        <button data-w="24h">24h</button>
-        <button data-w="7d">7d</button>
-        <button data-w="30d">30d</button>
-        <button data-w="all" class="active">All</button>
-      </div>
+  <nav class="nav">
+    <a class="nav-brand" href="/">
+      <span class="badge"><svg viewBox="0 0 100 100" fill="currentColor"><path d="M36.9747 24.3586C44.1067 24.3587 49.7941 27.9515 52.9484 33.5959C48.7626 38.0418 45.6617 43.7612 44.4679 50.0002C43.2743 56.2391 44.1865 61.9572 46.67 66.4026C41.3555 72.0468 34.2931 75.6408 27.1613 75.6409C18.432 75.6407 11.8659 70.2588 9.46204 62.3196H26.8478C27.4159 62.3193 28.0059 61.8593 28.1691 61.2932L34.6486 38.7043C34.8098 38.1381 34.4815 37.6782 33.9152 37.678H14.1788C19.6213 29.7404 28.2465 24.3588 36.9747 24.3586Z"/><path d="M72.3285 24.3586C85.0779 24.3586 93.2156 35.8374 90.5062 49.9993C87.7966 64.1596 75.2646 75.6409 62.515 75.6409C53.7856 75.6408 47.2196 70.2589 44.8158 62.3196H64.1537C64.7218 62.3194 65.3127 61.8594 65.476 61.2932L71.9545 38.7043C72.1157 38.138 71.7876 37.678 71.2211 37.678H49.5316C54.9741 29.7401 63.5999 24.3587 72.3285 24.3586Z"/></svg></span>
+      fomo <span class="slash">/clans</span>
+    </a>
+    <div class="nav-actions">
+      <a class="nav-btn secondary" href="https://fomo.family" target="_blank" rel="noopener">Get the app</a>
+      <a class="nav-btn" href="create/">Register chapter</a>
     </div>
-    <p class="desc">Every recognized chapter competing in Greek Wars, ranked by how many members they've brought in. Two minutes to register your chapter and get your link.</p>
+  </nav>
 
-    <div class="stats-row" id="stats-row" hidden>
-      <div class="stat-card"><div class="num" id="stat-clans">—</div><div class="lbl">Chapters</div></div>
-      <div class="stat-card"><div class="num" id="stat-members">—</div><div class="lbl">Members joined</div></div>
-      <div class="stat-card"><div class="num" id="stat-hit80">—</div><div class="lbl">Hit 80%</div></div>
-      <div class="stat-card"><div class="num" id="stat-actives">—</div><div class="lbl">Actives covered</div></div>
-    </div>
+  <header class="hero">
+    <div class="eyebrow">fomo greek wars</div>
+    <h1>Clan leaderboard.</h1>
+    <p class="lede">Every registered chapter, ranked by how many members they've brought in. Two minutes to register yours and get the link.</p>
+    <a class="cta" href="create/">
+      Register your chapter
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+    <p class="caption">Live standings · Counts update as members are approved.</p>
+  </header>
+
+  <div class="stats" id="stats" hidden>
+    <div class="stat"><div class="num" id="stat-clans">—</div><div class="lbl">Chapters</div></div>
+    <div class="stat"><div class="num" id="stat-members">—</div><div class="lbl">Members joined</div></div>
+    <div class="stat"><div class="num" id="stat-hit80">—</div><div class="lbl">Hit 80%</div></div>
+    <div class="stat"><div class="num" id="stat-actives">—</div><div class="lbl">Actives covered</div></div>
   </div>
 
   <div class="load-error" id="load-error" hidden>
@@ -184,26 +218,75 @@ h1 .accent{color:var(--blue-electric);}
     <button id="retry-btn">retry</button>
   </div>
 
+  <div class="board-head">
+    <div>
+      <h2 class="board-title" id="board-title">Standings</h2>
+      <p class="board-sub" id="board-sub">Ranked by members brought in.</p>
+    </div>
+    <div class="tabs" id="tabs">
+      <button data-w="24h">24h</button>
+      <button data-w="7d">7d</button>
+      <button data-w="30d">30d</button>
+      <button data-w="all" class="active">All</button>
+    </div>
+  </div>
+
   <div class="board">
-    <div class="board-head"><span id="board-title">Top 10</span></div>
     <div class="list" id="list">
       <div class="skeleton"><div class="sk sk-icon"></div><div class="sk-lines"><div class="sk sk-line1"></div><div class="sk sk-line2"></div></div></div>
       <div class="skeleton"><div class="sk sk-icon"></div><div class="sk-lines"><div class="sk sk-line1"></div><div class="sk sk-line2"></div></div></div>
       <div class="skeleton"><div class="sk sk-icon"></div><div class="sk-lines"><div class="sk sk-line1"></div><div class="sk sk-line2"></div></div></div>
     </div>
     <div class="list" id="list-more" hidden></div>
-    <div class="expand-row" id="expand-row" hidden>
-      <button class="expand-btn" id="expand-btn">
-        <span id="expand-label">View full list</span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-      </button>
-    </div>
+    <button class="expand-btn" id="expand-btn" hidden>
+      <span id="expand-label">View full list</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
   </div>
 
-  <div class="footer-cta">
-    <p>Want to see your chapter on this list?</p>
-    <a href="create/" class="btn btn-primary">Register your chapter</a>
-  </div>
+  <section class="flow-section">
+    <p class="flow-caption">How it runs · Follow a branch to see where it goes.</p>
+
+    <div class="flow-top">
+      <a class="fcard fcard-hl" href="create/">
+        <div class="fcard-tag">Start here</div>
+        <div class="fcard-title">Register your chapter</div>
+        <div class="fcard-path">/fomo/clans/create</div>
+        <svg class="corner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+      </a>
+    </div>
+
+    <div class="connect" aria-hidden="true">
+      <i class="v-main"></i>
+      <i class="h-span"></i>
+      <i class="v-drop" style="left:16.666%"></i>
+      <i class="v-drop" style="left:50%"></i>
+      <i class="v-drop" style="left:83.333%"></i>
+    </div>
+
+    <div class="flow-labels" aria-hidden="true">
+      <span>Share it</span><span>They join</span><span>Chapter goal</span>
+    </div>
+
+    <div class="flow-row">
+      <div class="fcard">
+        <div class="fcard-tag">Auto-generated</div>
+        <div class="fcard-title">Your clan link</div>
+        <div class="fcard-path">/fomo/referral/:code</div>
+      </div>
+      <a class="fcard" href="/fomo/join/">
+        <div class="fcard-tag">One tap</div>
+        <div class="fcard-title">Join your frat</div>
+        <div class="fcard-path">/fomo/join</div>
+        <svg class="corner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+      </a>
+      <div class="fcard">
+        <div class="fcard-tag">Goal</div>
+        <div class="fcard-title">80% of actives</div>
+        <div class="fcard-path">unlocks the chapter payout</div>
+      </div>
+    </div>
+  </section>
 </div>
 
 <div class="modal-overlay" id="delete-modal" hidden>
@@ -255,7 +338,6 @@ h1 .accent{color:var(--blue-electric);}
 <script>
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-document.getElementById('back-btn').addEventListener('click', () => { if (history.length > 1) history.back(); else location.href = '/'; });
 
 // Same school-color and Greek-letter tables as the create page, so an icon looks
 // identical wherever it appears.
@@ -362,8 +444,13 @@ function initialsOf(name) {
 }
 function glyphFor(chapterName) { return chapterName ? (greekFor(chapterName) || initialsOf(chapterName)) : '?'; }
 
-const WINDOW_LABEL = { '24h': 'today', '7d': 'this week', '30d': 'this month', all: 'total' };
-const EMPTY_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="8" r="3"/><path d="M3 19c0-3 2.7-5 6-5s6 2 6 5"/><path d="M16 3.5 21 8.5M21 3.5 16 8.5"/></svg>';
+const WINDOW_LABEL = { '24h': 'today', '7d': 'week', '30d': 'month', all: 'total' };
+const BOARD_SUB = {
+  '24h': 'Members approved in the last 24 hours.',
+  '7d': 'Members approved in the last 7 days.',
+  '30d': 'Members approved in the last 30 days.',
+  all: 'Ranked by members brought in.',
+};
 
 let currentWindow = 'all';
 let expanded = false;
@@ -380,39 +467,43 @@ async function loadClans() {
     $('load-error').hidden = false;
     $('list').innerHTML = '';
     $('list-more').innerHTML = '';
-    $('expand-row').hidden = true;
-    $('stats-row').hidden = true;
+    $('expand-btn').hidden = true;
+    $('stats').hidden = true;
   }
 }
 $('retry-btn').addEventListener('click', loadClans);
 
 function renderStats(clans) {
-  if (!clans.length) { $('stats-row').hidden = true; return; }
+  if (!clans.length) { $('stats').hidden = true; return; }
   const totalMembers = clans.reduce((sum, c) => sum + c.members, 0);
   const totalActives = clans.reduce((sum, c) => sum + (c.chapterSize || 0), 0);
   const hit80 = clans.filter((c) => c.chapterSize && c.members >= 0.8 * c.chapterSize).length;
   $('stat-clans').textContent = clans.length;
-  $('stat-members').textContent = totalMembers;
+  $('stat-members').textContent = totalMembers.toLocaleString();
   $('stat-hit80').textContent = hit80;
   $('stat-actives').textContent = totalActives.toLocaleString();
-  $('stats-row').hidden = false;
+  $('stats').hidden = false;
 }
 
 function rowHtml(c, rank, showStat) {
-  const rankCls = rank <= 3 ? ' r' + rank : '';
   const [a, b] = schoolColors(c.school);
   const glyph = glyphFor(c.chapterName);
-  const membersLine = c.chapterSize ? `${c.members} of ${c.chapterSize} joined` : `${c.members} joined`;
-  return `<div class="row">
-    <div class="rank${rankCls}">${rank}</div>
+  const pct = c.chapterSize ? Math.min(100, Math.round((c.members / c.chapterSize) * 100)) : null;
+  const goal = pct !== null && pct >= 80;
+  return `<div class="row${rank <= 3 ? ' top3' : ''}">
+    <div class="rank">${String(rank).padStart(2, '0')}</div>
     <div class="icon ${glyph.length >= 3 ? 'small-glyph' : ''}" style="background:linear-gradient(135deg, ${a}, ${b})">${esc(glyph)}</div>
     <div class="meta">
       <div class="name">${esc(c.chapterName)}</div>
-      <div class="sub" title="${esc(c.schoolLabel)}">${esc(c.schoolLabel)} · ${membersLine}</div>
+      <div class="sub">${esc(c.schoolLabel)}${c.chapterSize ? ` · ${c.members} of ${c.chapterSize}` : ` · ${c.members} joined`}</div>
     </div>
-    ${showStat ? `<div class="stat">
+    ${pct !== null ? `<div class="progress">
+      <div class="bar${goal ? ' done' : ''}"><span style="width:${pct}%"></span></div>
+      <div class="pct">${pct}%${goal ? ' · goal' : ''}</div>
+    </div>` : '<div class="progress"></div>'}
+    ${showStat ? `<div class="stat-cell">
       <div class="joined ${c.joined === 0 ? 'zero' : ''}">${c.joined > 0 ? '+' : ''}${c.joined}</div>
-      <div class="window-label">${esc(WINDOW_LABEL[currentWindow])}</div>
+      <div class="wl">${esc(WINDOW_LABEL[currentWindow])}</div>
     </div>` : ''}
     <button class="delete-btn" data-id="${esc(c.id)}" data-name="${esc(c.name)}" title="Delete clan" aria-label="Delete ${esc(c.name)}">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><path d="M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13"/><path d="M10 11v6M14 11v6"/></svg>
@@ -428,18 +519,19 @@ function wireDeleteButtons(container) {
 
 function render(clans) {
   renderStats(clans);
+  $('board-sub').textContent = BOARD_SUB[currentWindow];
   if (!clans.length) {
-    $('board-title').textContent = 'Leaderboard';
-    $('list').innerHTML = `<div class="empty">${EMPTY_ICON}No clans yet — be the first to register.</div>`;
+    $('board-title').textContent = 'Standings';
+    $('list').innerHTML = '<div class="empty">No chapters registered yet — be the first.</div>';
     $('list-more').innerHTML = ''; $('list-more').hidden = true;
-    $('expand-row').hidden = true;
+    $('expand-btn').hidden = true;
     return;
   }
   const showStat = currentWindow !== 'all';
   const top = clans.slice(0, 10);
   const rest = clans.slice(10);
 
-  $('board-title').textContent = clans.length > 10 ? `Top 10 of ${clans.length}` : 'Leaderboard';
+  $('board-title').textContent = clans.length > 10 ? `Top 10 of ${clans.length}` : 'Standings';
   $('list').innerHTML = top.map((c, i) => rowHtml(c, i + 1, showStat)).join('');
   wireDeleteButtons($('list'));
 
@@ -447,13 +539,13 @@ function render(clans) {
   if (rest.length) {
     $('list-more').innerHTML = rest.map((c, i) => rowHtml(c, i + 11, showStat)).join('');
     wireDeleteButtons($('list-more'));
-    $('expand-row').hidden = false;
+    $('expand-btn').hidden = false;
     $('list-more').hidden = !expanded;
     $('expand-btn').classList.toggle('open', expanded);
     $('expand-label').textContent = expanded ? 'Show top 10 only' : `View full list (${rest.length} more)`;
   } else {
     $('list-more').innerHTML = ''; $('list-more').hidden = true;
-    $('expand-row').hidden = true;
+    $('expand-btn').hidden = true;
   }
 }
 
