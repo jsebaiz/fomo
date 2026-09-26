@@ -11,13 +11,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#080B1A; --bg-lift:#0A0E20;
-  --card:#0F1430; --card-2:#121835; --card-hl:#151C42;
-  --border:rgba(125,145,255,0.14); --border-hl:rgba(110,135,255,0.34);
-  --white:#FFFFFF; --text:#E8EBFA; --text-dim:#A8B2E0; --text-faint:#6E7AA8;
-  --blue:#516AF6; --blue-electric:#4A36FF; --blue-soft:#8C9BFF;
-  --red:#FF7A7A;
-  --radius:16px; --radius-lg:20px;
+  --bg:#08080F; --surface:#0F0F17; --surface-2:#15151F; --surface-3:#1B1B26;
+  --border:rgba(255,255,255,0.08); --border-2:rgba(255,255,255,0.16);
+  --white:#FFFFFF; --text:#E8E8F0; --text-dim:#9B9BAD; --text-faint:#6A6A7C;
+  --blue:#516AF6; --blue-hi:#6A80F8; --blue-dim:#8E9CF7;
+  --red:#F2555A;
+  --radius:14px; --radius-lg:18px;
 }
 *{box-sizing:border-box;}
 [hidden]{display:none !important;}
@@ -27,8 +26,6 @@ button{font-family:inherit;}
 a{color:inherit; text-decoration:none;}
 svg{display:block;}
 
-.glow{position:fixed; top:-380px; left:50%; transform:translateX(-50%); width:1200px; height:800px; pointer-events:none; z-index:0;
-  background:radial-gradient(circle, rgba(81,106,246,0.13) 0%, rgba(74,54,255,0.05) 42%, transparent 68%);}
 .wrap{max-width:1120px; margin:0 auto; padding:0 40px 80px; position:relative; z-index:1;}
 @media (max-width:720px){ .wrap{padding:0 20px 56px;} }
 
@@ -37,8 +34,8 @@ svg{display:block;}
 .nav-brand{display:flex; align-items:center; gap:10px; font-size:1.18rem; font-weight:800; color:var(--white); letter-spacing:-0.02em;}
 .nav-brand .slash{color:var(--text-faint); font-weight:600;}
 .nav-actions{display:flex; align-items:center; gap:10px;}
-.nav-btn{border:1px solid var(--border); background:var(--card); color:var(--text); border-radius:10px; padding:10px 18px; font-size:0.88rem; font-weight:600; cursor:pointer; transition:background .15s ease, border-color .15s ease;}
-.nav-btn:hover{background:var(--card-2); border-color:var(--border-hl);}
+.nav-btn{border:1px solid var(--border); background:var(--surface); color:var(--text); border-radius:10px; padding:10px 18px; font-size:0.88rem; font-weight:600; cursor:pointer; transition:background .15s ease, border-color .15s ease;}
+.nav-btn:hover{background:var(--surface-2); border-color:var(--border-2);}
 @media (max-width:560px){ .nav-actions .nav-btn.secondary{display:none;} }
 
 /* two-column */
@@ -50,18 +47,18 @@ h1{font-size:clamp(2.3rem,4.6vw,3.4rem); font-weight:800; letter-spacing:-0.04em
 .lede{font-size:1.08rem; color:var(--text-dim); margin:0 0 28px; max-width:38ch; font-weight:500;}
 .checks{list-style:none; padding:0; margin:0 0 26px;}
 .checks li{display:flex; gap:12px; align-items:flex-start; font-size:0.95rem; color:var(--text-dim); margin-bottom:14px; line-height:1.45;}
-.checks svg{width:16px; height:16px; flex-shrink:0; margin-top:4px; color:var(--blue-soft);}
+.checks svg{width:16px; height:16px; flex-shrink:0; margin-top:4px; color:var(--blue-dim);}
 .fineprint{font-size:0.8rem; color:var(--text-faint); margin:0; line-height:1.5;}
 
 /* step card */
-.panel{background:var(--card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:30px 32px;}
+.panel{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:30px 32px;}
 @media (max-width:560px){ .panel{padding:24px 20px;} }
 .step-count{font-size:0.78rem; font-weight:700; color:var(--text-faint); letter-spacing:0.06em; font-variant-numeric:tabular-nums; margin-bottom:8px;}
 .step-title{font-size:1.45rem; font-weight:800; color:var(--white); letter-spacing:-0.025em; margin:0 0 24px;}
 .field{margin-bottom:20px;}
 .field:last-of-type{margin-bottom:0;}
 .field label{display:block; font-size:0.83rem; font-weight:700; color:var(--text-faint); margin-bottom:8px;}
-.field input, .field select{width:100%; background:var(--bg-lift); border:1px solid var(--border); border-radius:11px; padding:14px 15px; color:var(--text); font-family:inherit; font-size:1rem; outline:none; transition:border-color .15s ease, box-shadow .15s ease;}
+.field input, .field select{width:100%; background:var(--surface); border:1px solid var(--border); border-radius:11px; padding:14px 15px; color:var(--text); font-family:inherit; font-size:1rem; outline:none; transition:border-color .15s ease, box-shadow .15s ease;}
 .field select{appearance:none; -webkit-appearance:none; background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%236E7AA8" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>'); background-repeat:no-repeat; background-position:right 15px center; padding-right:40px;}
 .field select:invalid{color:var(--text-faint);}
 .field option{color:#fff; background:#0F1430;}
@@ -69,41 +66,63 @@ h1{font-size:clamp(2.3rem,4.6vw,3.4rem); font-weight:800; letter-spacing:-0.04em
 .field input::placeholder{color:var(--text-faint);}
 .field input:focus, .field select:focus{border-color:var(--blue); box-shadow:0 0 0 3px rgba(81,106,246,0.16);}
 .field .hint{font-size:0.8rem; color:var(--text-faint); margin-top:8px;}
+/* typeahead */
+.cb-wrap{position:relative;}
+.cb-menu{position:absolute; top:calc(100% + 6px); left:0; right:0; z-index:20; background:var(--surface-2); border:1px solid var(--border-2); border-radius:12px; padding:5px; max-height:270px; overflow:auto; box-shadow:0 18px 40px rgba(0,0,0,.55);}
+.cb-item{display:flex; align-items:baseline; gap:9px; width:100%; text-align:left; background:none; border:none; color:var(--text); padding:10px 12px; border-radius:8px; cursor:pointer; font-size:0.95rem;}
+.cb-item:hover, .cb-item.active{background:var(--blue); color:#fff;}
+.cb-label{font-weight:600;}
+.cb-sub{font-size:0.78rem; color:var(--text-faint); margin-left:auto;}
+.cb-item:hover .cb-sub, .cb-item.active .cb-sub{color:rgba(255,255,255,.75);}
+
+/* artwork */
+.art{display:grid; grid-template-columns:96px 1fr; gap:14px; align-items:start; margin-top:4px;}
+.art-slot{position:relative; border:1px dashed var(--border-2); border-radius:12px; background:var(--surface-2); overflow:hidden; cursor:pointer; transition:border-color .15s ease;}
+.art-slot:hover{border-color:var(--blue);}
+.art-slot input{position:absolute; inset:0; opacity:0; cursor:pointer;}
+.art-avatar{aspect-ratio:1; display:flex; align-items:center; justify-content:center;}
+.art-banner{height:96px; display:flex; align-items:center; justify-content:center;}
+.art-slot img{width:100%; height:100%; object-fit:cover; display:block;}
+.art-ph{font-size:0.76rem; color:var(--text-faint); text-align:center; padding:8px; line-height:1.35; pointer-events:none;}
+.art-clear{position:absolute; top:6px; right:6px; z-index:2; width:22px; height:22px; border-radius:6px; border:none; background:rgba(0,0,0,.65); color:#fff; font-size:0.8rem; line-height:1; cursor:pointer; display:none;}
+.art-slot.filled .art-clear{display:block;}
+.art-slot.filled .art-ph{display:none;}
+
 .row-two{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
 @media (max-width:560px){ .row-two{grid-template-columns:1fr;} }
 
 .step-actions{display:flex; align-items:center; gap:12px; margin-top:26px; flex-wrap:wrap;}
-.cta{display:inline-flex; align-items:center; gap:10px; background:linear-gradient(135deg, var(--blue-electric), var(--blue)); color:#fff; border:none; border-radius:12px; padding:16px 26px; font-size:0.98rem; font-weight:700; cursor:pointer;
-  box-shadow:0 10px 30px rgba(74,54,255,0.4); transition:transform .15s ease, filter .15s ease;}
-.cta:hover{transform:translateY(-1px); filter:brightness(1.1);}
-.cta:disabled{opacity:.5; cursor:default; transform:none; filter:none; box-shadow:none;}
+.cta{display:inline-flex; align-items:center; gap:10px; background:var(--blue); color:#fff; border:none; border-radius:12px; padding:16px 26px; font-size:0.98rem; font-weight:700; cursor:pointer;
+  transition:background .15s ease;}
+.cta:hover{background:var(--blue-hi);}
+.cta:disabled{opacity:.5; cursor:default;}
 .cta svg{width:15px; height:15px;}
 .btn-back{background:none; border:none; color:var(--text-faint); font-size:0.9rem; font-weight:600; cursor:pointer; padding:10px 4px;}
 .btn-back:hover{color:var(--text);}
-.btn-ghost{display:inline-flex; align-items:center; border:1px solid var(--border); background:var(--card-2); color:var(--text); border-radius:12px; padding:16px 24px; font-size:0.98rem; font-weight:700; cursor:pointer;}
-.btn-ghost:hover{border-color:var(--border-hl);}
+.btn-ghost{display:inline-flex; align-items:center; border:1px solid var(--border); background:var(--surface-2); color:var(--text); border-radius:12px; padding:16px 24px; font-size:0.98rem; font-weight:700; cursor:pointer;}
+.btn-ghost:hover{border-color:var(--border-2);}
 .enter-hint{font-size:0.83rem; color:var(--text-faint); margin:14px 0 0;}
-.enter-hint kbd{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:0.78rem; background:var(--bg-lift); border:1px solid var(--border); border-radius:5px; padding:2px 6px; color:var(--text-dim);}
+.enter-hint kbd{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:0.78rem; background:var(--surface); border:1px solid var(--border); border-radius:5px; padding:2px 6px; color:var(--text-dim);}
 
 .msg{font-size:0.86rem; margin:16px 0 0; min-height:1.2em;}
 .msg.err{color:var(--red);}
 
 /* preview strip inside step 2 */
 .preview{display:flex; align-items:center; gap:14px; margin-top:24px; padding-top:22px; border-top:1px solid var(--border);}
-.pv-icon{width:52px; height:52px; border-radius:14px; background:linear-gradient(135deg, rgba(81,106,246,.6), #0B0F24); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.05rem; color:#fff; flex-shrink:0;}
+.pv-icon{width:52px; height:52px; border-radius:14px; background:var(--blue); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.05rem; color:#fff; flex-shrink:0;}
 .pv-icon.small-glyph{font-size:0.82rem;}
 .pv-meta{min-width:0;}
 .pv-name{font-weight:700; color:var(--white); font-size:1rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
 .pv-school{font-size:0.83rem; color:var(--text-faint); margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
 
 /* success */
-.done-tag{font-size:0.66rem; text-transform:uppercase; letter-spacing:0.11em; color:var(--blue-soft); font-weight:700; margin-bottom:10px;}
-.copy-row{display:flex; align-items:center; gap:14px; padding:18px; margin-top:22px; background:var(--card-hl); border:1px solid var(--border-hl); border-radius:12px; cursor:pointer; transition:filter .12s ease;}
+.done-tag{font-size:0.66rem; text-transform:uppercase; letter-spacing:0.11em; color:var(--blue-dim); font-weight:700; margin-bottom:10px;}
+.copy-row{display:flex; align-items:center; gap:14px; padding:18px; margin-top:22px; background:var(--surface-3); border:1px solid var(--border-2); border-radius:12px; cursor:pointer; transition:filter .12s ease;}
 .copy-row:hover{filter:brightness(1.15);}
-.copy-row .ricon{width:20px; height:20px; color:var(--blue-soft); flex-shrink:0;}
+.copy-row .ricon{width:20px; height:20px; color:var(--blue-dim); flex-shrink:0;}
 .copy-row .rlabel{flex:1; font-weight:700; color:var(--white); font-size:0.96rem;}
 .copy-row .rlabel small{display:block; font-weight:500; font-size:0.79rem; color:var(--text-faint); margin-top:2px;}
-.copy-row .rmeta{color:var(--blue-soft); font-size:0.88rem; font-weight:700; flex-shrink:0;}
+.copy-row .rmeta{color:var(--blue-dim); font-size:0.88rem; font-weight:700; flex-shrink:0;}
 
 /* footer */
 .site-footer{border-top:1px solid var(--border); margin-top:96px;}
@@ -120,8 +139,6 @@ h1{font-size:clamp(2.3rem,4.6vw,3.4rem); font-weight:800; letter-spacing:-0.04em
 </style>
 </head>
 <body>
-
-<div class="glow" aria-hidden="true"></div>
 
 <div class="wrap">
   <nav class="nav">
@@ -156,11 +173,11 @@ h1{font-size:clamp(2.3rem,4.6vw,3.4rem); font-weight:800; letter-spacing:-0.04em
         <div class="row-two">
           <div class="field">
             <label for="f-first">First name</label>
-            <input type="text" id="f-first" maxlength="40" autocomplete="given-name" placeholder="Jesse">
+            <input type="text" id="f-first" maxlength="40" autocomplete="given-name" placeholder="Mark">
           </div>
           <div class="field">
             <label for="f-last">Last name</label>
-            <input type="text" id="f-last" maxlength="40" autocomplete="family-name" placeholder="Baizer">
+            <input type="text" id="f-last" maxlength="40" autocomplete="family-name" placeholder="Zuckerberg">
           </div>
         </div>
         <div class="field">
@@ -169,7 +186,17 @@ h1{font-size:clamp(2.3rem,4.6vw,3.4rem); font-weight:800; letter-spacing:-0.04em
         </div>
         <div class="field">
           <label for="f-email">Email</label>
-          <input type="email" id="f-email" maxlength="120" autocomplete="email" placeholder="you@school.edu">
+          <input type="email" id="f-email" maxlength="120" autocomplete="email" placeholder="mark@school.edu">
+        </div>
+        <div class="row-two">
+          <div class="field">
+            <label for="f-role">Role in the chapter</label>
+            <div class="cb-wrap"><input type="text" id="f-role" maxlength="40" placeholder="President"></div>
+          </div>
+          <div class="field">
+            <label for="f-ig">Instagram</label>
+            <input type="text" id="f-ig" maxlength="31" placeholder="@zuck">
+          </div>
         </div>
 
         <p class="msg" id="msg-1"></p>
@@ -190,20 +217,44 @@ h1{font-size:clamp(2.3rem,4.6vw,3.4rem); font-weight:800; letter-spacing:-0.04em
 
         <div class="field">
           <label for="c-school">School</label>
-          <select id="c-school">
-            <option value="" disabled selected>Choose your school</option>
-          </select>
+          <div class="cb-wrap"><input type="text" id="c-school" maxlength="60" placeholder="Start typing — e.g. Arizona"></div>
         </div>
         <div class="field">
           <label for="c-chapter">Chapter</label>
-          <select id="c-chapter">
-            <option value="" disabled selected>Choose your fraternity or sorority</option>
-          </select>
+          <div class="cb-wrap"><input type="text" id="c-chapter" maxlength="40" placeholder="Start typing — e.g. Sigma"></div>
           <div class="hint" id="chapter-hint">Only recognized national fraternities and sororities can register.</div>
         </div>
         <div class="field">
           <label for="c-size">How many actives in your chapter?</label>
           <input type="number" id="c-size" min="1" max="2000" step="1" placeholder="e.g. 90" inputmode="numeric">
+        </div>
+        <div class="row-two">
+          <div class="field">
+            <label for="c-best">Best trader in the chapter</label>
+            <input type="text" id="c-best" maxlength="60" placeholder="Name, or N/A">
+          </div>
+          <div class="field">
+            <label for="c-worst">Worst trader in the chapter</label>
+            <input type="text" id="c-worst" maxlength="60" placeholder="Name, or N/A">
+          </div>
+        </div>
+        <div class="field">
+          <label>Clan artwork <span style="font-weight:500; color:var(--text-faint);">— optional</span></label>
+          <div class="art">
+            <div class="art-slot art-avatar" id="slot-avatar">
+              <img id="img-avatar" alt="" hidden>
+              <span class="art-ph">Profile<br>picture</span>
+              <button type="button" class="art-clear" data-clear="avatar" aria-label="Remove picture">×</button>
+              <input type="file" id="file-avatar" accept="image/*">
+            </div>
+            <div class="art-slot art-banner" id="slot-banner">
+              <img id="img-banner" alt="" hidden>
+              <span class="art-ph">Banner image</span>
+              <button type="button" class="art-clear" data-clear="banner" aria-label="Remove banner">×</button>
+              <input type="file" id="file-banner" accept="image/*">
+            </div>
+          </div>
+          <div class="hint" id="art-hint">Skip it and we'll use your letters and school colors.</div>
         </div>
 
         <div class="preview" id="preview" hidden>
@@ -280,38 +331,33 @@ h1{font-size:clamp(2.3rem,4.6vw,3.4rem); font-weight:800; letter-spacing:-0.04em
 <script src="/fomo/greek-data.js"></script>
 <script>
 const $ = (id) => document.getElementById(id);
-const { SCHOOLS, FRATERNITIES, SORORITIES, schoolColors, glyphFor } = GreekData;
+const { SCHOOLS, FRATERNITIES, SORORITIES, ROLES, schoolColors, glyphFor, attachCombobox, resizeImage } = GreekData;
 
 // The App Store link for the fomo iOS app. fomo.family carries the real
 // App Store / Google Play badges; swap this for the direct store URL when we have it.
 const APP_URL = 'https://fomo.family';
 $('get-app').href = APP_URL;
 
-// ---- populate the two pickers -------------------------------------------
-(function fillSchools() {
-  const opts = Object.keys(SCHOOLS).sort((a, b) => SCHOOLS[a][0].localeCompare(SCHOOLS[b][0]))
-    .map((c) => `<option value="${c}">${SCHOOLS[c][0]}</option>`).join('');
-  $('c-school').insertAdjacentHTML('beforeend', opts);
-})();
+// ---- typeaheads ----------------------------------------------------------
+const schoolItems = Object.keys(SCHOOLS)
+  .sort((a, b) => SCHOOLS[a][0].localeCompare(SCHOOLS[b][0]))
+  .map((code) => ({ value: code, label: SCHOOLS[code][0] }));
 
-(function fillChapters() {
-  const group = (label, list) =>
-    `<optgroup label="${label}">` +
-    list.map(([name]) => `<option value="${name}">${name}</option>`).join('') +
-    '</optgroup>';
-  $('c-chapter').insertAdjacentHTML('beforeend',
-    group('Fraternities', FRATERNITIES) + group('Sororities', SORORITIES));
-})();
+const chapterItems = FRATERNITIES.map(([name, letters]) => ({ value: name, label: name, sub: letters, keywords: 'fraternity ' + letters }))
+  .concat(SORORITIES.map(([name, letters]) => ({ value: name, label: name, sub: letters, keywords: 'sorority ' + letters })))
+  .sort((a, b) => a.label.localeCompare(b.label));
 
-// ---- step 1 --------------------------------------------------------------
+const roleItems = ROLES.map((r) => ({ value: r, label: r }));
+
+attachCombobox($('c-school'), schoolItems, { strict: true, limit: 8 });
+attachCombobox($('c-chapter'), chapterItems, { strict: true, limit: 9 });
+attachCombobox($('f-role'), roleItems, { strict: false, limit: 7 });
+
+// ---- validation helpers --------------------------------------------------
 const EMAIL_RE = /^[^\s@]{1,64}@[^\s@.]+(\.[^\s@.]+)+$/;
 const NAME_RE = /^[\p{L}][\p{L} .'-]{0,39}$/u;
 
-function err(id, text) {
-  const el = $(id);
-  el.className = 'msg err';
-  el.textContent = text;
-}
+function err(id, text) { const el = $(id); el.className = 'msg err'; el.textContent = text; }
 function clearErr(id) { const el = $(id); el.className = 'msg'; el.textContent = ''; }
 
 function validateStep1() {
@@ -319,11 +365,15 @@ function validateStep1() {
   const last = $('f-last').value.trim();
   const phone = $('f-phone').value.trim();
   const email = $('f-email').value.trim();
+  const role = $('f-role').value.trim();
+  const ig = $('f-ig').value.trim().replace(/^@/, '');
   if (!NAME_RE.test(first)) return 'enter your first name.';
   if (!NAME_RE.test(last)) return 'enter your last name.';
   const digits = phone.replace(/\D/g, '');
   if (digits.length < 10 || digits.length > 15) return 'enter a valid phone number.';
   if (!EMAIL_RE.test(email)) return 'enter a valid email.';
+  if (role.length < 2) return 'enter your role in the chapter.';
+  if (!/^[A-Za-z0-9._]{1,30}$/.test(ig)) return 'enter your instagram handle.';
   return null;
 }
 
@@ -338,28 +388,74 @@ function goStep2() {
 $('next-btn').addEventListener('click', goStep2);
 $('back-btn').addEventListener('click', () => { $('step-2').hidden = true; $('step-1').hidden = false; });
 
-// Enter advances step 1 instead of submitting the form.
-['f-first', 'f-last', 'f-phone', 'f-email'].forEach((id) => {
+['f-first', 'f-last', 'f-phone', 'f-email', 'f-ig'].forEach((id) => {
   $(id).addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); goStep2(); } });
 });
 
-// ---- step 2 preview ------------------------------------------------------
+// ---- artwork -------------------------------------------------------------
+const art = { avatar: null, banner: null };
+const ART_SPEC = { avatar: [512, 512, 0.85], banner: [1400, 480, 0.82] };
+
+function wireArt(kind) {
+  const input = $('file-' + kind);
+  const slot = $('slot-' + kind);
+  const img = $('img-' + kind);
+  input.addEventListener('change', async () => {
+    const file = input.files && input.files[0];
+    if (!file) return;
+    $('art-hint').textContent = 'Resizing…';
+    try {
+      const [w, h, q] = ART_SPEC[kind];
+      const dataUrl = await resizeImage(file, w, h, q);
+      art[kind] = dataUrl;
+      img.src = dataUrl;
+      img.hidden = false;
+      slot.classList.add('filled');
+      $('art-hint').textContent = 'Looks good. Skip either one and we fall back to your letters.';
+      updatePreview();
+    } catch (e) {
+      $('art-hint').textContent = 'Couldn’t read that image — try a JPG or PNG.';
+    }
+    input.value = '';
+  });
+}
+wireArt('avatar');
+wireArt('banner');
+
+document.querySelectorAll('.art-clear').forEach((btn) => {
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const kind = btn.dataset.clear;
+    art[kind] = null;
+    $('img-' + kind).hidden = true;
+    $('img-' + kind).removeAttribute('src');
+    $('slot-' + kind).classList.remove('filled');
+    updatePreview();
+  });
+});
+
+// ---- live preview --------------------------------------------------------
 function updatePreview() {
-  const school = $('c-school').value;
-  const chapter = $('c-chapter').value;
-  if (!school && !chapter) { $('preview').hidden = true; return; }
+  const school = $('c-school').dataset.value || '';
+  const chapter = $('c-chapter').dataset.value || '';
+  if (!school && !chapter && !art.avatar) { $('preview').hidden = true; return; }
   $('preview').hidden = false;
-  const [a, b] = school ? schoolColors(school) : ['rgba(81,106,246,.6)', '#0B0F24'];
   const icon = $('pv-icon');
-  icon.style.background = `linear-gradient(135deg, ${a}, ${b})`;
-  const glyph = glyphFor(chapter);
-  icon.textContent = glyph;
-  icon.classList.toggle('small-glyph', glyph.length >= 3);
+  if (art.avatar) {
+    icon.style.background = `center/cover no-repeat url("${art.avatar}")`;
+    icon.textContent = '';
+  } else {
+    const [a] = school ? schoolColors(school) : ['#516AF6'];
+    icon.style.background = a;
+    const glyph = glyphFor(chapter);
+    icon.textContent = glyph;
+    icon.classList.toggle('small-glyph', glyph.length >= 3);
+  }
   $('pv-name').textContent = chapter || 'Your clan';
   $('pv-school').textContent = school ? SCHOOLS[school][0] : 'Pick a school';
 }
-$('c-school').addEventListener('change', updatePreview);
-$('c-chapter').addEventListener('change', updatePreview);
+$('c-school').addEventListener('cb:change', updatePreview);
+$('c-chapter').addEventListener('cb:change', updatePreview);
 
 // ---- submit --------------------------------------------------------------
 let created = false;
@@ -368,10 +464,10 @@ $('clan-form').addEventListener('submit', async (e) => {
   if (created) return;
   clearErr('msg-2');
 
-  const school = $('c-school').value;
-  const chapterName = $('c-chapter').value;
-  if (!school) { err('msg-2', 'choose your school.'); return; }
-  if (!chapterName) { err('msg-2', 'choose your fraternity or sorority.'); return; }
+  const school = $('c-school').dataset.value || '';
+  const chapterName = $('c-chapter').dataset.value || '';
+  if (!school) { err('msg-2', 'pick your school from the list.'); return; }
+  if (!chapterName) { err('msg-2', 'pick your fraternity or sorority from the list.'); return; }
 
   $('submit-btn').disabled = true;
   try {
@@ -383,7 +479,14 @@ $('clan-form').addEventListener('submit', async (e) => {
         lastName: $('f-last').value.trim(),
         phone: $('f-phone').value.trim(),
         email: $('f-email').value.trim(),
-        school, chapterName, chapterSize: $('c-size').value,
+        role: $('f-role').value.trim(),
+        instagram: $('f-ig').value.trim().replace(/^@/, ''),
+        school, chapterName,
+        chapterSize: $('c-size').value,
+        bestTrader: $('c-best').value.trim(),
+        worstTrader: $('c-worst').value.trim(),
+        avatar: art.avatar || '',
+        banner: art.banner || '',
       }),
     });
     if (res.status === 201) {

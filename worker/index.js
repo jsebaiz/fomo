@@ -179,6 +179,8 @@ function parseContact(body) {
   const lastName = clean(body.lastName);
   const email = clean(body.email).toLowerCase();
   const phoneRaw = clean(body.phone);
+  const role = clean(body.role);
+  const instagram = clean(body.instagram).replace(/^@/, '').toLowerCase();
   const nameRe = /^[\p{L}][\p{L} .'-]{0,39}$/u;
 
   if (!nameRe.test(firstName)) return { error: 'Enter your first name' };
@@ -186,8 +188,23 @@ function parseContact(body) {
   if (email.length > 120 || !EMAIL_RE.test(email)) return { error: 'Enter a valid email' };
   const digits = phoneRaw.replace(/\D/g, '');
   if (digits.length < 10 || digits.length > 15) return { error: 'Enter a valid phone number' };
+  if (!/^[\p{L}][\p{L} /&.'-]{1,39}$/u.test(role)) return { error: 'Enter your role in the chapter' };
+  if (!/^[A-Za-z0-9._]{1,30}$/.test(instagram)) return { error: 'Enter a valid Instagram handle' };
 
-  return { contact: { firstName, lastName, email, phone: phoneRaw.slice(0, 24) } };
+  return { contact: { firstName, lastName, email, phone: phoneRaw.slice(0, 24), role, instagram } };
+}
+
+// Clan artwork. Kept in its own KV entry per clan so the leaderboard read
+// (one JSON blob of every clan) stays small and fast.
+const MEDIA_KEY = (id) => `clanmedia:${id}`;
+const MAX_IMAGE_BYTES = 400 * 1024;
+function parseDataUrl(value) {
+  const v = String(value || '');
+  if (!v) return null;
+  const m = v.match(/^data:(image\/(?:jpeg|png|webp));base64,([A-Za-z0-9+/=]+)$/);
+  if (!m) return { error: 'Unsupported image' };
+  if (m[2].length > MAX_IMAGE_BYTES) return { error: 'Image is too large' };
+  return { mime: m[1], data: m[2] };
 }
 
 function parseClan(body) {
@@ -206,8 +223,13 @@ function parseClan(body) {
     if (!Number.isInteger(n) || n < 1 || n > 2000) return { error: 'Chapter size should be a number between 1 and 2000' };
     chapterSize = n;
   }
+  // Self-reported, free text, optional — "N/A" is a perfectly fine answer.
+  const trader = (v) => String(v ?? '').trim().replace(/\s+/g, ' ').slice(0, 60);
+  const bestTrader = trader(body.bestTrader);
+  const worstTrader = trader(body.worstTrader);
+
   const name = `${chapterName} — ${SCHOOL_LABELS[school]}`;
-  return { clan: { school, schoolLabel: SCHOOL_LABELS[school], chapterName, name, chapterSize } };
+  return { clan: { school, schoolLabel: SCHOOL_LABELS[school], chapterName, name, chapterSize, bestTrader, worstTrader } };
 }
 
 function cleanUsername(value) {
@@ -236,6 +258,8 @@ const publicClan = (c, joins) => ({
   chapterSize: c.chapterSize || null,
   members: totalApproved(c),
   joined: joins,
+  hasAvatar: !!(c.media && c.media.avatar),
+  hasBanner: !!(c.media && c.media.banner),
   createdAt: c.createdAt,
 });
 
@@ -318,7 +342,7 @@ export default {
 
     if (path === '/api/clans' && request.method === 'POST') {
       const text = await request.text();
-      if (text.length > 2048) return json({ error: 'Request too large' }, 413);
+      if (text.length > 900 * 1024) return json({ error: 'Request too large' }, 413);
       let body;
       try { body = JSON.parse(text); } catch { return json({ error: 'Invalid JSON' }, 400); }
 
@@ -334,15 +358,27 @@ export default {
         return json({ error: 'That chapter is already registered' }, 409);
       }
 
+      const avatar = parseDataUrl(body.avatar);
+      if (avatar && avatar.error) return json({ error: avatar.error }, 400);
+      const banner = parseDataUrl(body.banner);
+      if (banner && banner.error) return json({ error: banner.error }, 400);
+
       let code;
       do { code = randomCode(); } while (clans.some((c) => c.code === code));
 
+      const id = crypto.randomUUID();
       const clan = {
-        id: crypto.randomUUID(), code,
+        id, code,
         school: parsed.clan.school, schoolLabel: parsed.clan.schoolLabel, chapterName: parsed.clan.chapterName,
         name: parsed.clan.name, chapterSize: parsed.clan.chapterSize,
-        contact: person.contact, members: [], createdAt: new Date().toISOString(),
+        bestTrader: parsed.clan.bestTrader, worstTrader: parsed.clan.worstTrader,
+        contact: person.contact,
+        media: { avatar: !!avatar, banner: !!banner },
+        members: [], createdAt: new Date().toISOString(),
       };
+      if (avatar || banner) {
+        await env.FLIGHTS.put(MEDIA_KEY(id), JSON.stringify({ avatar: avatar || null, banner: banner || null }));
+      }
       clans.push(clan);
       await env.FLIGHTS.put(CLANS_KEY, JSON.stringify(clans));
       return json({ clan: { ...publicClan(clan, 0), code, referralUrl: `${url.origin}/fomo/referral/${code}` } }, 201);
@@ -374,6 +410,9 @@ export default {
           code: c.code, chapterName: c.chapterName, school: c.schoolLabel,
           firstName: c.contact.firstName, lastName: c.contact.lastName,
           email: c.contact.email, phone: c.contact.phone,
+          role: c.contact.role || '', instagram: c.contact.instagram || '',
+          bestTrader: c.bestTrader || '', worstTrader: c.worstTrader || '',
+          referralUrl: `${url.origin}/fomo/referral/${c.code}`,
           members: totalApproved(c), chapterSize: c.chapterSize || null,
           createdAt: c.createdAt,
         }))
@@ -470,6 +509,19 @@ export default {
       return json({ name: clan.name });
     }
 
+    // Clan artwork, served from its own KV entry. Public: it's the picture the
+    // chapter chose to show on the board.
+    const mediaReq = path.match(/^\/api\/clans\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\/(avatar|banner)$/);
+    if (mediaReq && request.method === 'GET') {
+      const stored = await env.FLIGHTS.get(MEDIA_KEY(mediaReq[1]), 'json');
+      const pic = stored && stored[mediaReq[2]];
+      if (!pic) return json({ error: 'Not found' }, 404);
+      const bytes = Uint8Array.from(atob(pic.data), (ch) => ch.charCodeAt(0));
+      return new Response(bytes, {
+        headers: { 'content-type': pic.mime, 'cache-control': 'public, max-age=86400' },
+      });
+    }
+
     // Deleting a clan, from the public leaderboard's hover action. Keyed by the clan's
     // UUID id (already public in every list response) rather than its referral code, so
     // this never has to expose the code. Admin-passcode gated like every other delete.
@@ -481,6 +533,7 @@ export default {
       const next = clans.filter((c) => c.id !== clanId[1]);
       if (next.length === clans.length) return json({ error: 'Not found' }, 404);
       await env.FLIGHTS.put(CLANS_KEY, JSON.stringify(next));
+      await env.FLIGHTS.delete(MEDIA_KEY(clanId[1]));
       return empty(204);
     }
 
@@ -511,7 +564,7 @@ export default {
       return json({ name: clan.name, members: clan.members.length }, 201);
     }
 
-    if (path === '/api/flights' || path === '/api/auth' || path === '/api/clans' || path === '/api/clans/internal' || path === '/api/clans/internal/approve' || path === '/api/clans/seed' || lookup || join || clanId || del) {
+    if (path === '/api/flights' || path === '/api/auth' || path === '/api/clans' || path === '/api/clans/internal' || path === '/api/clans/internal/approve' || path === '/api/clans/seed' || lookup || join || clanId || mediaReq || del) {
       return json({ error: 'Method not allowed' }, 405);
     }
     return json({ error: 'Not found' }, 404);

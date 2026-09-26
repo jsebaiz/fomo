@@ -167,5 +167,143 @@
     return lettersFor(chapterName) || initialsOf(chapterName);
   }
 
-  g.GreekData = { SCHOOLS, FRATERNITIES, SORORITIES, ORGS, norm, shade, schoolColors, orgFor, lettersFor, glyphFor };
+
+  // Common chapter roles — offered as suggestions, but anything can be typed.
+  const ROLES = [
+    'President', 'Vice President', 'Treasurer', 'Secretary', 'Rush Chair',
+    'Recruitment Chair', 'Social Chair', 'Philanthropy Chair', 'Risk Manager',
+    'New Member Educator', 'House Manager', 'Alumni Chair', 'Scholarship Chair',
+    'Pledge Class President', 'Member',
+  ];
+
+  // ---------------------------------------------------------------------
+  // Typeahead. Wraps a plain text input: filters a list as you type, arrow
+  // keys + enter to pick, click to pick. In strict mode the input only counts
+  // as filled once a real item is chosen (input.dataset.value holds it).
+  // ---------------------------------------------------------------------
+  function attachCombobox(input, items, options) {
+    const opts = options || {};
+    const strict = opts.strict !== false;
+    const limit = opts.limit || 8;
+    const box = document.createElement('div');
+    box.className = 'cb-menu';
+    box.hidden = true;
+    const wrap = input.parentNode;
+    if (getComputedStyle(wrap).position === 'static') wrap.style.position = 'relative';
+    wrap.appendChild(box);
+
+    let matches = [];
+    let active = -1;
+
+    input.setAttribute('autocomplete', 'off');
+    input.setAttribute('role', 'combobox');
+    input.setAttribute('aria-expanded', 'false');
+
+    const list = () => (typeof items === 'function' ? items() : items);
+
+    function filter(q) {
+      const needle = norm(q);
+      const all = list();
+      if (!needle) return all.slice(0, limit);
+      const starts = [], contains = [];
+      all.forEach((it) => {
+        const hay = norm(it.label + ' ' + (it.keywords || ''));
+        const at = hay.indexOf(needle);
+        if (at === 0) starts.push(it);
+        else if (at > 0) contains.push(it);
+      });
+      return starts.concat(contains).slice(0, limit);
+    }
+
+    function close() { box.hidden = true; active = -1; input.setAttribute('aria-expanded', 'false'); }
+
+    function open(q) {
+      matches = filter(q);
+      if (!matches.length) { close(); return; }
+      box.innerHTML = matches.map((m, i) =>
+        `<button type="button" class="cb-item${i === active ? ' active' : ''}" data-i="${i}">` +
+        `<span class="cb-label">${m.label}</span>` +
+        (m.sub ? `<span class="cb-sub">${m.sub}</span>` : '') +
+        '</button>').join('');
+      box.hidden = false;
+      input.setAttribute('aria-expanded', 'true');
+    }
+
+    function choose(i) {
+      const m = matches[i];
+      if (!m) return;
+      input.value = m.label;
+      input.dataset.value = m.value;
+      close();
+      input.dispatchEvent(new CustomEvent('cb:change', { detail: m, bubbles: true }));
+    }
+
+    input.addEventListener('input', () => {
+      if (strict) input.dataset.value = '';
+      else input.dataset.value = input.value.trim();
+      active = -1;
+      open(input.value);
+      if (!strict) input.dispatchEvent(new CustomEvent('cb:change', { detail: null, bubbles: true }));
+    });
+    input.addEventListener('focus', () => open(input.value));
+    input.addEventListener('keydown', (e) => {
+      if (box.hidden && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) { open(input.value); return; }
+      if (box.hidden) return;
+      if (e.key === 'ArrowDown') { e.preventDefault(); active = Math.min(active + 1, matches.length - 1); open(input.value); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); active = Math.max(active - 1, 0); open(input.value); }
+      else if (e.key === 'Enter') {
+        if (active >= 0) { e.preventDefault(); e.stopPropagation(); choose(active); }
+        else if (matches.length === 1) { e.preventDefault(); e.stopPropagation(); choose(0); }
+        else close();
+      } else if (e.key === 'Escape') { close(); }
+    });
+    box.addEventListener('mousedown', (e) => {
+      const btn = e.target.closest('.cb-item');
+      if (!btn) return;
+      e.preventDefault();
+      choose(Number(btn.dataset.i));
+    });
+    document.addEventListener('click', (e) => { if (!wrap.contains(e.target)) close(); });
+    input.addEventListener('blur', () => {
+      setTimeout(() => {
+        close();
+        if (!strict) { input.dataset.value = input.value.trim(); return; }
+        // strict: snap to an exact match if they typed one, otherwise clear
+        const exact = list().find((it) => norm(it.label) === norm(input.value));
+        if (exact) { input.value = exact.label; input.dataset.value = exact.value; }
+        else if (!input.dataset.value) { input.value = ''; }
+      }, 120);
+    });
+
+    return { close };
+  }
+
+  // Downscale + re-encode a picked image so it fits comfortably in storage.
+  function resizeImage(file, maxW, maxH, quality) {
+    return new Promise((resolve, reject) => {
+      if (!file || !/^image\//.test(file.type)) { reject(new Error('not an image')); return; }
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error('read failed'));
+      reader.onload = () => {
+        const img = new Image();
+        img.onerror = () => reject(new Error('decode failed'));
+        img.onload = () => {
+          const scale = Math.min(maxW / img.width, maxH / img.height, 1);
+          const tw = Math.max(1, Math.round(img.width * scale));
+          const th = Math.max(1, Math.round(img.height * scale));
+          const canvas = document.createElement('canvas');
+          canvas.width = tw; canvas.height = th;
+          const ctx = canvas.getContext('2d');
+          ctx.fillStyle = '#0F0F17';
+          ctx.fillRect(0, 0, tw, th);
+          ctx.drawImage(img, 0, 0, tw, th);
+          resolve(canvas.toDataURL('image/jpeg', quality || 0.82));
+        };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  g.GreekData = { SCHOOLS, FRATERNITIES, SORORITIES, ROLES, ORGS, norm, shade, schoolColors, orgFor, lettersFor, glyphFor, attachCombobox, resizeImage };
 })(window);

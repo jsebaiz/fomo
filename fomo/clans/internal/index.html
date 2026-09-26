@@ -86,7 +86,9 @@ input[type="checkbox"]:disabled{cursor:default; opacity:.3;}
 .approve-btn:disabled{opacity:.5; cursor:default;}
 .section-h{font-size:1.4rem; font-weight:800; color:var(--white); letter-spacing:-0.03em; margin:56px 0 4px;}
 td.muted{color:var(--text-faint); font-size:0.85rem;}
-td.stack small{display:block; color:var(--text-faint); font-size:0.8rem; margin-top:2px;}
+td.stack small{display:block; color:var(--text-faint); font-size:0.79rem; margin-top:2px;}
+.link-btn{background:var(--panel-strong); border:1px solid var(--border-strong); color:var(--blue-light); border-radius:8px; padding:6px 12px; font-size:0.79rem; font-weight:700; cursor:pointer; white-space:nowrap;}
+.link-btn:hover{background:var(--blue-electric); color:#fff; border-color:transparent;}
 .empty{padding:50px 20px; text-align:center; color:var(--text-faint); font-size:0.9rem;}
 .load-error{margin-top:20px; padding:14px 16px; background:rgba(255,122,122,0.07); border:1px solid rgba(255,122,122,0.22); border-radius:12px; font-size:0.86rem; color:var(--red); display:flex; justify-content:space-between; align-items:center; gap:12px;}
 .load-error button{background:none; border:1px solid rgba(255,122,122,0.35); color:var(--red); border-radius:999px; padding:6px 12px; font-size:0.8rem; cursor:pointer; font-weight:600;}
@@ -163,7 +165,7 @@ td.stack small{display:block; color:var(--text-faint); font-size:0.8rem; margin-
     <div class="table-wrap" id="chapters-wrap">
       <table>
         <thead><tr>
-          <th>Chapter</th><th>School</th><th>Who registered</th><th>Contact</th><th>Progress</th><th>Registered</th>
+          <th>Chapter</th><th>School</th><th>Who registered</th><th>Contact</th><th>Traders</th><th>Referral link</th><th>Progress</th>
         </tr></thead>
         <tbody id="chapter-rows"></tbody>
       </table>
@@ -310,16 +312,27 @@ function renderChapters() {
   $('chapter-rows').innerHTML = chapters.map((c) => `<tr>
     <td class="username">${esc(c.chapterName)}</td>
     <td>${esc(c.school)}</td>
-    <td>${esc(c.firstName)} ${esc(c.lastName)}</td>
-    <td class="stack">${esc(c.email)}<small>${esc(c.phone)}</small></td>
-    <td class="muted">${c.members}${c.chapterSize ? ' / ' + c.chapterSize : ''}</td>
-    <td class="when">${fmtWhen(c.createdAt)}</td>
+    <td class="stack">${esc(c.firstName)} ${esc(c.lastName)}<small>${esc(c.role || '—')}</small></td>
+    <td class="stack">${esc(c.phone)}<small>${esc(c.email)}</small><small>@${esc(c.instagram || '—')}</small></td>
+    <td class="stack muted">${esc(c.bestTrader || '—')}<small>worst: ${esc(c.worstTrader || '—')}</small></td>
+    <td><button class="link-btn" data-link="${esc(c.referralUrl)}">Copy link</button></td>
+    <td class="muted">${c.members}${c.chapterSize ? ' / ' + c.chapterSize : ''}<small style="display:block;color:var(--text-faint);">${fmtWhen(c.createdAt)}</small></td>
   </tr>`).join('');
+
+  $('chapter-rows').querySelectorAll('.link-btn').forEach((b) => {
+    b.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(b.dataset.link);
+        const t = b.textContent; b.textContent = 'Copied!';
+        setTimeout(() => { b.textContent = t; }, 1500);
+      } catch (e) { prompt('Referral link:', b.dataset.link); }
+    });
+  });
 }
 
 $('copy-chapters').addEventListener('click', async () => {
-  const header = 'chapter,school,first_name,last_name,email,phone,members,actives,registered_at';
-  const lines = chapters.map((c) => [c.chapterName, c.school, c.firstName, c.lastName, c.email, c.phone, c.members, c.chapterSize || '', c.createdAt]
+  const header = 'chapter,school,first_name,last_name,role,instagram,email,phone,best_trader,worst_trader,referral_link,members,actives,registered_at';
+  const lines = chapters.map((c) => [c.chapterName, c.school, c.firstName, c.lastName, c.role, c.instagram, c.email, c.phone, c.bestTrader, c.worstTrader, c.referralUrl, c.members, c.chapterSize || '', c.createdAt]
     .map((v) => `"${String(v).replace(/"/g, '""')}"`).join(','));
   const csv = [header, ...lines].join('\n');
   try {

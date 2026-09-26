@@ -11,12 +11,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#080B1A; --bg-lift:#0A0E20;
-  --card:#0F1430; --card-2:#121835; --card-hl:#151C42;
-  --border:rgba(125,145,255,0.14); --border-hl:rgba(110,135,255,0.34);
-  --white:#FFFFFF; --text:#E8EBFA; --text-dim:#A8B2E0; --text-faint:#6E7AA8;
-  --blue:#516AF6; --blue-electric:#4A36FF; --blue-soft:#8C9BFF;
-  --red:#FF7A7A; --radius:16px; --radius-lg:20px;
+  --bg:#08080F; --surface:#0F0F17; --surface-2:#15151F; --surface-3:#1B1B26;
+  --border:rgba(255,255,255,0.08); --border-2:rgba(255,255,255,0.16);
+  --white:#FFFFFF; --text:#E8E8F0; --text-dim:#9B9BAD; --text-faint:#6A6A7C;
+  --blue:#516AF6; --blue-hi:#6A80F8; --blue-dim:#8E9CF7;
+  --red:#F2555A;
+  --radius:14px; --radius-lg:18px;
 }
 *{box-sizing:border-box;}
 [hidden]{display:none !important;}
@@ -26,8 +26,6 @@ button{font-family:inherit;}
 a{color:inherit; text-decoration:none;}
 svg{display:block;}
 
-.glow{position:fixed; top:-380px; left:50%; transform:translateX(-50%); width:1200px; height:800px; pointer-events:none; z-index:0;
-  background:radial-gradient(circle, rgba(81,106,246,0.14) 0%, rgba(74,54,255,0.05) 42%, transparent 68%);}
 
 .nav{max-width:1120px; width:100%; margin:0 auto; padding:26px 40px 0; display:flex; align-items:center; justify-content:space-between; position:relative; z-index:1;}
 @media (max-width:720px){ .nav{padding:22px 20px 0;} }
@@ -37,33 +35,34 @@ svg{display:block;}
 .hero{flex:1; display:flex; align-items:center; justify-content:center; padding:56px 20px 80px; position:relative; z-index:1;}
 .card{max-width:470px; width:100%; text-align:center;}
 
-.eyebrow{font-size:0.8rem; font-weight:700; color:var(--blue-soft); letter-spacing:0.11em; text-transform:uppercase; margin-bottom:20px;}
-h1{font-size:clamp(2.1rem,5vw,2.9rem); font-weight:800; letter-spacing:-0.04em; line-height:1.05; margin:0 0 18px; color:var(--white);}
+.eyebrow{font-size:0.8rem; font-weight:700; color:var(--blue-dim); letter-spacing:0.11em; text-transform:uppercase; margin-bottom:20px;}
+h1{font-size:clamp(2.1rem,5.2vw,3rem); font-weight:800; letter-spacing:-0.035em; line-height:1.06; margin:0 0 18px; color:var(--white); text-transform:uppercase;}
+h1 .hl{color:var(--blue);}
 .sub{font-size:1.04rem; color:var(--text-dim); margin:0 0 32px; line-height:1.55;}
 
 .btn{display:flex; align-items:center; justify-content:center; gap:9px; width:100%; padding:18px; border-radius:13px; font-weight:700; font-size:1.02rem; cursor:pointer; border:none; transition:transform .15s ease, filter .15s ease;}
-.btn:hover{transform:translateY(-1px);}
-.btn-primary{background:linear-gradient(135deg, var(--blue-electric), var(--blue)); color:#fff; box-shadow:0 10px 34px rgba(74,54,255,0.42);}
-.btn-primary:hover{filter:brightness(1.1);}
+
+.btn-primary{background:var(--blue); color:#fff;}
+.btn-primary:hover{background:var(--blue-hi);}
 .btn:disabled{opacity:.5; cursor:default; transform:none;}
 
 .divider{display:flex; align-items:center; gap:12px; margin:34px 0 18px; color:var(--text-faint); font-size:0.82rem; font-weight:600;}
 .divider::before, .divider::after{content:''; flex:1; height:1px; background:var(--border);}
 
-.username-block{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:22px; text-align:left;}
+.username-block{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:22px; text-align:left;}
 .username-block p.ask{font-size:0.92rem; color:var(--text-dim); margin:0 0 16px; text-align:center;}
 .uf{margin-bottom:12px;}
 .uf label{display:block; font-size:0.78rem; font-weight:700; color:var(--text-faint); margin-bottom:7px;}
-.uf input{width:100%; background:var(--bg-lift); border:1px solid var(--border); border-radius:11px; padding:13px 14px; color:var(--text); font-family:inherit; font-size:0.96rem; outline:none;}
+.uf input{width:100%; background:var(--surface); border:1px solid var(--border); border-radius:11px; padding:13px 14px; color:var(--text); font-family:inherit; font-size:0.96rem; outline:none;}
 .uf input::placeholder{color:var(--text-faint);}
 .uf input:focus{border-color:var(--blue); box-shadow:0 0 0 3px rgba(81,106,246,0.16);}
-#join-btn{width:100%; background:var(--card-2); border:1px solid var(--border-hl); color:var(--white); border-radius:11px; padding:14px; font-weight:700; font-size:0.96rem; cursor:pointer; margin-top:4px; transition:filter .12s ease;}
+#join-btn{width:100%; background:var(--surface-2); border:1px solid var(--border-2); color:var(--white); border-radius:11px; padding:14px; font-weight:700; font-size:0.96rem; cursor:pointer; margin-top:4px; transition:filter .12s ease;}
 #join-btn:hover:not(:disabled){filter:brightness(1.3);}
 #join-btn:disabled{opacity:.5; cursor:default;}
 
 .msg{font-size:0.86rem; margin:14px 0 0; min-height:1.2em; text-align:center;}
 .msg.err{color:var(--red);}
-.msg.ok{color:var(--blue-soft);}
+.msg.ok{color:var(--blue-dim);}
 
 /* footer */
 .site-footer{border-top:1px solid var(--border); position:relative; z-index:1;}
@@ -81,8 +80,6 @@ h1{font-size:clamp(2.1rem,5vw,2.9rem); font-weight:800; letter-spacing:-0.04em; 
 </head>
 <body>
 
-<div class="glow" aria-hidden="true"></div>
-
 <nav class="nav">
   <span class="nav-brand">fomo <span class="slash">/join</span></span>
 </nav>
@@ -90,7 +87,7 @@ h1{font-size:clamp(2.1rem,5vw,2.9rem); font-weight:800; letter-spacing:-0.04em; 
 <div class="hero">
   <div class="card">
     <div class="eyebrow">Greek Wars</div>
-    <h1 id="headline">Join your frat in Greek Wars.</h1>
+    <h1 id="headline">Join your frat in <span class="hl">Greek Wars.</span></h1>
     <p class="sub">Trade with your brothers. Climb the board.<br>Bring the house.</p>
 
     <a class="btn btn-primary" id="join-now" href="https://fomo.family" target="_blank" rel="noopener">Join now</a>
@@ -98,14 +95,14 @@ h1{font-size:clamp(2.1rem,5vw,2.9rem); font-weight:800; letter-spacing:-0.04em; 
     <div id="username-wrap" hidden>
       <div class="divider">already have fomo?</div>
       <div class="username-block">
-        <p class="ask">Type your username and email to join the frat.</p>
+        <p class="ask">Type your fomo username and fomo email to join the frat.</p>
         <div class="uf">
           <label for="username">fomo username</label>
           <input type="text" id="username" placeholder="yourusername" autocomplete="off" maxlength="24">
         </div>
         <div class="uf">
-          <label for="email">Email</label>
-          <input type="email" id="email" placeholder="you@school.edu" autocomplete="email" maxlength="120">
+          <label for="email">fomo email</label>
+          <input type="email" id="email" placeholder="the email on your fomo account" autocomplete="email" maxlength="120">
         </div>
         <button type="button" id="join-btn">Join the frat</button>
         <p class="msg" id="join-msg"></p>
@@ -174,7 +171,7 @@ document.getElementById('join-btn').addEventListener('click', async () => {
   const username = input.value.trim();
   const email = emailInput.value.trim();
   if (username.length < 2) { msg.className = 'msg err'; msg.textContent = 'enter your fomo username.'; return; }
-  if (!EMAIL_RE.test(email)) { msg.className = 'msg err'; msg.textContent = 'enter a valid email.'; return; }
+  if (!EMAIL_RE.test(email)) { msg.className = 'msg err'; msg.textContent = 'enter the email on your fomo account.'; return; }
 
   btn.disabled = true;
   try {
