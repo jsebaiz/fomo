@@ -324,6 +324,20 @@ export default {
       return json({ name: clan.name });
     }
 
+    // Deleting a clan, from the public leaderboard's hover action. Keyed by the clan's
+    // UUID id (already public in every list response) rather than its referral code, so
+    // this never has to expose the code. Admin-passcode gated like every other delete.
+    const clanId = path.match(/^\/api\/clans\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/);
+    if (clanId && request.method === 'DELETE') {
+      const denied = await guard(request, env);
+      if (denied) return denied;
+      const clans = await readList(env, CLANS_KEY);
+      const next = clans.filter((c) => c.id !== clanId[1]);
+      if (next.length === clans.length) return json({ error: 'Not found' }, 404);
+      await env.FLIGHTS.put(CLANS_KEY, JSON.stringify(next));
+      return empty(204);
+    }
+
     // Joining with an existing fomo username. Open to anyone; the only gate is the rate limit.
     const join = path.match(/^\/api\/clans\/([a-z0-9]{4,16})\/join$/);
     if (join && request.method === 'POST') {
@@ -349,7 +363,7 @@ export default {
       return json({ name: clan.name, members: clan.members.length }, 201);
     }
 
-    if (path === '/api/flights' || path === '/api/auth' || path === '/api/clans' || path === '/api/clans/internal' || path === '/api/clans/internal/approve' || lookup || join || del) {
+    if (path === '/api/flights' || path === '/api/auth' || path === '/api/clans' || path === '/api/clans/internal' || path === '/api/clans/internal/approve' || lookup || join || clanId || del) {
       return json({ error: 'Method not allowed' }, 405);
     }
     return json({ error: 'Not found' }, 404);

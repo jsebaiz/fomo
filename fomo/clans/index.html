@@ -81,6 +81,27 @@ h1{font-size:clamp(2.2rem,4vw,3rem); font-weight:800; margin:0; letter-spacing:-
 .stat .joined.zero{color:var(--text-faint);}
 .stat .window-label{font-size:0.74rem; color:var(--text-faint); margin-top:3px;}
 
+.delete-btn{width:34px; height:34px; border-radius:999px; background:none; border:1px solid transparent; color:var(--text-faint); display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; opacity:0; transform:translateX(-4px); transition:opacity .15s ease, transform .15s ease, background .12s ease, color .12s ease, border-color .12s ease;}
+.delete-btn svg{width:16px; height:16px;}
+.row:hover .delete-btn, .delete-btn:focus-visible{opacity:1; transform:none;}
+.delete-btn:hover{background:rgba(255,90,90,0.12); border-color:rgba(255,90,90,0.3); color:var(--red);}
+
+.modal-overlay{position:fixed; inset:0; background:rgba(5,4,15,0.72); backdrop-filter:blur(3px); display:flex; align-items:center; justify-content:center; z-index:20; padding:20px;}
+.modal{width:100%; max-width:380px; background:#100E1F; border:1px solid var(--border-strong); border-radius:var(--radius); padding:28px; box-shadow:0 20px 60px rgba(0,0,0,.5);}
+.modal h3{margin:0 0 8px; font-size:1.15rem; font-weight:800;}
+.modal p{margin:0 0 20px; font-size:0.9rem; color:var(--text-dim);}
+.modal p strong{color:var(--text); font-weight:700;}
+.modal input{width:100%; background:var(--field, rgba(234,237,255,0.05)); border:1px solid var(--border-strong); border-radius:12px; padding:13px 14px; color:var(--text); font-family:inherit; font-size:0.95rem; outline:none; margin-bottom:6px;}
+.modal input:focus{border-color:var(--blue);}
+.modal-msg{font-size:0.84rem; color:var(--red); min-height:1.2em; margin:0 0 14px;}
+.modal-actions{display:flex; gap:10px;}
+.modal-actions button{flex:1; padding:13px; border-radius:12px; font-weight:700; font-size:0.92rem; cursor:pointer; border:none; transition:filter .12s ease, background .12s ease;}
+.modal-btn-cancel{background:var(--panel); color:var(--text); border:1px solid var(--border-strong) !important;}
+.modal-btn-cancel:hover{background:var(--panel-strong);}
+.modal-btn-delete{background:#D64545; color:#fff;}
+.modal-btn-delete:hover{filter:brightness(1.1);}
+.modal-btn-delete:disabled{opacity:.5; cursor:default; filter:none;}
+
 .skeleton{padding:16px 22px; display:flex; align-items:center; gap:16px; border-bottom:1px solid var(--border);}
 .sk{background:linear-gradient(90deg, var(--panel) 25%, var(--panel-strong) 37%, var(--panel) 63%); background-size:400% 100%; animation:shimmer 1.4s ease infinite; border-radius:8px;}
 @keyframes shimmer{0%{background-position:100% 0;}100%{background-position:0 0;}}
@@ -156,6 +177,19 @@ h1{font-size:clamp(2.2rem,4vw,3rem); font-weight:800; margin:0; letter-spacing:-
   <div class="footer-cta">
     <p>Want to see your frat on this list?</p>
     <a href="create/" class="btn btn-primary">Create a clan</a>
+  </div>
+</div>
+
+<div class="modal-overlay" id="delete-modal" hidden>
+  <div class="modal">
+    <h3>Delete this clan?</h3>
+    <p>This removes <strong id="delete-modal-name"></strong> and everyone who joined it. This can't be undone.</p>
+    <input type="password" id="delete-pass" placeholder="admin passcode" autocomplete="off" hidden>
+    <p class="modal-msg" id="delete-modal-msg"></p>
+    <div class="modal-actions">
+      <button class="modal-btn-cancel" id="delete-cancel">Cancel</button>
+      <button class="modal-btn-delete" id="delete-confirm">Delete clan</button>
+    </div>
   </div>
 </div>
 
@@ -310,8 +344,15 @@ function render(clans) {
         <div class="joined ${c.joined === 0 ? 'zero' : ''}">${c.joined > 0 ? '+' : ''}${c.joined}</div>
         <div class="window-label">${esc(WINDOW_LABEL[currentWindow])}</div>
       </div>` : ''}
+      <button class="delete-btn" data-id="${esc(c.id)}" data-name="${esc(c.name)}" title="Delete clan" aria-label="Delete ${esc(c.name)}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><path d="M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13"/><path d="M10 11v6M14 11v6"/></svg>
+      </button>
     </div>`;
   }).join('');
+
+  $('list').querySelectorAll('.delete-btn').forEach((btn) => {
+    btn.addEventListener('click', () => openDeleteModal(btn.dataset.id, btn.dataset.name));
+  });
 }
 
 $('tabs').querySelectorAll('button').forEach((b) => {
@@ -320,6 +361,70 @@ $('tabs').querySelectorAll('button').forEach((b) => {
     $('tabs').querySelectorAll('button').forEach((x) => x.classList.toggle('active', x === b));
     loadClans();
   });
+});
+
+// ---------------------------------------------------------------------------
+// Delete clan — admin-passcode gated. Reuses the same session passcode as the
+// internal roster page (same key), so an already-unlocked admin isn't asked twice.
+// ---------------------------------------------------------------------------
+let deleteTargetId = null;
+let adminPass = sessionStorage.getItem('internal_pass') || '';
+
+function openDeleteModal(id, name) {
+  deleteTargetId = id;
+  $('delete-modal-name').textContent = name;
+  $('delete-modal-msg').textContent = '';
+  $('delete-pass').hidden = !!adminPass;
+  $('delete-pass').value = '';
+  $('delete-confirm').disabled = false;
+  $('delete-confirm').textContent = 'Delete clan';
+  $('delete-modal').hidden = false;
+  if (!adminPass) setTimeout(() => $('delete-pass').focus(), 30);
+}
+function closeDeleteModal() {
+  $('delete-modal').hidden = true;
+  deleteTargetId = null;
+}
+$('delete-cancel').addEventListener('click', closeDeleteModal);
+$('delete-modal').addEventListener('click', (e) => { if (e.target.id === 'delete-modal') closeDeleteModal(); });
+$('delete-pass').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('delete-confirm').click(); });
+
+$('delete-confirm').addEventListener('click', async () => {
+  if (!deleteTargetId) return;
+  const attempt = adminPass || $('delete-pass').value;
+  if (!attempt) { $('delete-modal-msg').textContent = 'enter the admin passcode.'; return; }
+
+  $('delete-confirm').disabled = true;
+  $('delete-confirm').textContent = 'Deleting…';
+  $('delete-modal-msg').textContent = '';
+  try {
+    const res = await fetch('/api/clans/' + encodeURIComponent(deleteTargetId), {
+      method: 'DELETE',
+      headers: { 'x-passcode': attempt },
+    });
+    if (res.status === 204) {
+      if (!adminPass) { adminPass = attempt; sessionStorage.setItem('internal_pass', attempt); }
+      closeDeleteModal();
+      loadClans();
+    } else if (res.status === 401) {
+      adminPass = ''; sessionStorage.removeItem('internal_pass');
+      $('delete-pass').hidden = false;
+      $('delete-modal-msg').textContent = 'wrong passcode.';
+      $('delete-confirm').disabled = false;
+      $('delete-confirm').textContent = 'Delete clan';
+      $('delete-pass').focus();
+    } else if (res.status === 503) {
+      $('delete-modal-msg').textContent = 'the passcode hasn’t been set up yet.';
+      $('delete-confirm').disabled = false;
+      $('delete-confirm').textContent = 'Delete clan';
+    } else {
+      throw new Error('bad status');
+    }
+  } catch (e) {
+    $('delete-modal-msg').textContent = 'couldn’t reach the server — try again.';
+    $('delete-confirm').disabled = false;
+    $('delete-confirm').textContent = 'Delete clan';
+  }
 });
 
 loadClans();
