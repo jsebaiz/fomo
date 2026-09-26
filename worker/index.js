@@ -116,6 +116,10 @@ const SCHOOL_LABELS = {
   gt: 'Georgia Tech', uga: 'University of Georgia', vanderbilt: 'Vanderbilt University',
   ala: 'University of Alabama', uf: 'University of Florida', fsu: 'Florida State University',
   miami: 'University of Miami',
+  elon: 'Elon University', sc: 'University of South Carolina', clemson: 'Clemson University',
+  ohiou: 'Ohio University', emory: 'Emory University', fiu: 'Florida International University',
+  tampa: 'University of Tampa', vt: 'Virginia Tech', coastal: 'Coastal Carolina University',
+  rutgers: 'Rutgers University', tcu: 'Texas Christian University', salisbury: 'Salisbury University',
 };
 
 function parseClan(body) {
@@ -149,6 +153,11 @@ function cleanUsername(value) {
 // public member count and leaderboard — a submitted username is a pending
 // claim until an admin approves it on the internal roster.
 const approvedMembers = (c) => (c.members || []).filter((m) => m.status === 'approved');
+// A clan's total also includes `seedApproved` — a baseline count set once via the
+// admin-only /api/clans/seed import (e.g. registrations already confirmed on an
+// external roster before this chapter had a fomo clan page). It's a plain number,
+// never tied to any named person, so it carries no identity to expose.
+const totalApproved = (c) => (c.seedApproved || 0) + approvedMembers(c).length;
 const publicClan = (c, joins) => ({
   id: c.id,
   name: c.name,
@@ -156,16 +165,17 @@ const publicClan = (c, joins) => ({
   schoolLabel: c.schoolLabel,
   chapterName: c.chapterName,
   chapterSize: c.chapterSize || null,
-  members: approvedMembers(c).length,
+  members: totalApproved(c),
   joined: joins,
   createdAt: c.createdAt,
 });
 
 function joinsWithin(clan, ms) {
-  const approved = approvedMembers(clan);
-  if (ms == null) return approved.length;
+  // "All time" includes the seeded baseline; a specific recent window (24h/7d/30d)
+  // only reflects real, timestamped joins — seed data has no join date to place in one.
+  if (ms == null) return totalApproved(clan);
   const cutoff = Date.now() - ms;
-  return approved.filter((m) => new Date(m.joinedAt).getTime() >= cutoff).length;
+  return approvedMembers(clan).filter((m) => new Date(m.joinedAt).getTime() >= cutoff).length;
 }
 
 const WINDOWS = { '24h': 86400000, '7d': 7 * 86400000, '30d': 30 * 86400000, all: null };
@@ -233,7 +243,7 @@ export default {
       const ms = Object.prototype.hasOwnProperty.call(WINDOWS, windowKey) ? WINDOWS[windowKey] : null;
       const clans = await readList(env, CLANS_KEY);
       const withCounts = clans.map((c) => ({ clan: c, joined: joinsWithin(c, ms) }));
-      withCounts.sort((a, b) => b.joined - a.joined || approvedMembers(b.clan).length - approvedMembers(a.clan).length);
+      withCounts.sort((a, b) => b.joined - a.joined || totalApproved(b.clan) - totalApproved(a.clan));
       return json({ clans: withCounts.map(({ clan, joined }) => publicClan(clan, joined)) });
     }
 
@@ -314,6 +324,54 @@ export default {
       return json({ approved });
     }
 
+    // One-time admin import for chapter-level totals from an external roster (e.g. an
+    // existing registration system) — school, chapter, chapter size, and how many are
+    // already confirmed. Deliberately carries no names — that data never touches this
+    // endpoint. Upserts by (school, chapterName) so re-running it is safe.
+    if (path === '/api/clans/seed' && request.method === 'POST') {
+      const denied = await guard(request, env);
+      if (denied) return denied;
+      const text = await request.text();
+      if (text.length > 32768) return json({ error: 'Request too large' }, 413);
+      let body;
+      try { body = JSON.parse(text); } catch { return json({ error: 'Invalid JSON' }, 400); }
+
+      const chapters = Array.isArray(body && body.chapters) ? body.chapters : [];
+      if (!chapters.length || chapters.length > 300) return json({ error: 'Send 1–300 chapters' }, 400);
+
+      const clans = await readList(env, CLANS_KEY);
+      let created = 0, updated = 0;
+      const errors = [];
+      for (const raw of chapters) {
+        const parsed = parseClan(raw || {});
+        if (parsed.error) { errors.push({ input: raw, error: parsed.error }); continue; }
+        const seedApproved = Number(raw.seedApproved);
+        if (!Number.isInteger(seedApproved) || seedApproved < 0 || seedApproved > 5000) {
+          errors.push({ input: raw, error: 'seedApproved must be an integer 0–5000' });
+          continue;
+        }
+        const existing = clans.find((c) => c.school === parsed.clan.school && c.chapterName.toLowerCase() === parsed.clan.chapterName.toLowerCase());
+        if (existing) {
+          existing.chapterSize = parsed.clan.chapterSize;
+          existing.seedApproved = seedApproved;
+          updated++;
+        } else {
+          if (clans.length >= MAX_CLANS) { errors.push({ input: raw, error: 'Clan limit reached' }); continue; }
+          let code;
+          do { code = randomCode(); } while (clans.some((c) => c.code === code));
+          clans.push({
+            id: crypto.randomUUID(), code,
+            school: parsed.clan.school, schoolLabel: parsed.clan.schoolLabel, chapterName: parsed.clan.chapterName,
+            name: parsed.clan.name, chapterSize: parsed.clan.chapterSize, seedApproved,
+            members: [], createdAt: new Date().toISOString(),
+          });
+          created++;
+        }
+      }
+      await env.FLIGHTS.put(CLANS_KEY, JSON.stringify(clans));
+      return json({ created, updated, errors });
+    }
+
     // Resolve a referral code to the clan it names, for the join page to greet by name.
     // Deliberately narrow: name only, never the member list or the code itself.
     const lookup = path.match(/^\/api\/clans\/([a-z0-9]{4,16})$/);
@@ -363,7 +421,7 @@ export default {
       return json({ name: clan.name, members: clan.members.length }, 201);
     }
 
-    if (path === '/api/flights' || path === '/api/auth' || path === '/api/clans' || path === '/api/clans/internal' || path === '/api/clans/internal/approve' || lookup || join || clanId || del) {
+    if (path === '/api/flights' || path === '/api/auth' || path === '/api/clans' || path === '/api/clans/internal' || path === '/api/clans/internal/approve' || path === '/api/clans/seed' || lookup || join || clanId || del) {
       return json({ error: 'Method not allowed' }, 405);
     }
     return json({ error: 'Not found' }, 404);
