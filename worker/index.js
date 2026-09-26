@@ -122,12 +122,81 @@ const SCHOOL_LABELS = {
   rutgers: 'Rutgers University', tcu: 'Texas Christian University', salisbury: 'Salisbury University',
 };
 
+// Recognized national fraternities and sororities. A chapter name has to match
+// one of these (or a common nickname) — the server is the authority here, so a
+// tampered request can't register "Whiskey Barrel Club" as a chapter. Kept in
+// sync by hand with /fomo/greek-data.js, which owns the letters and colors.
+const ORG_NAMES = [
+  'Acacia', 'Alpha Chi Rho', 'Alpha Delta Gamma', 'Alpha Delta Phi', 'Alpha Epsilon Pi',
+  'Alpha Gamma Rho', 'Alpha Gamma Sigma', 'Alpha Kappa Lambda', 'Alpha Phi Alpha',
+  'Alpha Phi Delta', 'Alpha Sigma Phi', 'Alpha Tau Omega', 'Beta Chi Theta',
+  'Beta Sigma Psi', 'Beta Theta Pi', 'Chi Phi', 'Chi Psi', 'Delta Chi',
+  'Delta Kappa Epsilon', 'Delta Lambda Phi', 'Delta Phi', 'Delta Sigma Phi',
+  'Delta Tau Delta', 'Delta Upsilon', 'FarmHouse', 'Iota Phi Theta', 'Kappa Alpha Order',
+  'Kappa Alpha Psi', 'Kappa Delta Rho', 'Kappa Sigma', 'Lambda Chi Alpha',
+  'Lambda Theta Phi', 'Omega Psi Phi', 'Phi Beta Sigma', 'Phi Delta Theta',
+  'Phi Gamma Delta', 'Phi Iota Alpha', 'Phi Kappa Psi', 'Phi Kappa Sigma',
+  'Phi Kappa Tau', 'Phi Kappa Theta', 'Phi Mu Delta', 'Phi Sigma Kappa',
+  'Pi Kappa Alpha', 'Pi Kappa Phi', 'Pi Lambda Phi', 'Psi Upsilon',
+  'Sigma Alpha Epsilon', 'Sigma Alpha Mu', 'Sigma Chi', 'Sigma Lambda Beta', 'Sigma Nu',
+  'Sigma Phi Delta', 'Sigma Phi Epsilon', 'Sigma Pi', 'Sigma Tau Gamma', 'Tau Delta Phi',
+  'Tau Epsilon Phi', 'Tau Kappa Epsilon', 'Theta Chi', 'Theta Delta Chi', 'Theta Xi',
+  'Triangle', 'Zeta Beta Tau', 'Zeta Psi',
+  'Alpha Chi Omega', 'Alpha Delta Pi', 'Alpha Epsilon Phi', 'Alpha Gamma Delta',
+  'Alpha Kappa Alpha', 'Alpha Omicron Pi', 'Alpha Phi', 'Alpha Sigma Alpha',
+  'Alpha Sigma Tau', 'Alpha Xi Delta', 'Chi Omega', 'Delta Delta Delta', 'Delta Gamma',
+  'Delta Phi Epsilon', 'Delta Sigma Theta', 'Delta Zeta', 'Gamma Phi Beta',
+  'Kappa Alpha Theta', 'Kappa Delta', 'Kappa Kappa Gamma', 'Phi Mu', 'Phi Sigma Sigma',
+  'Pi Beta Phi', 'Sigma Delta Tau', 'Sigma Gamma Rho', 'Sigma Kappa', 'Sigma Sigma Sigma',
+  'Theta Phi Alpha', 'Zeta Phi Beta', 'Zeta Tau Alpha',
+];
+const ORG_ALIASES = {
+  'sae': 'Sigma Alpha Epsilon', 'pike': 'Pi Kappa Alpha', 'fiji': 'Phi Gamma Delta',
+  'tke': 'Tau Kappa Epsilon', 'zbt': 'Zeta Beta Tau', 'aepi': 'Alpha Epsilon Pi',
+  'sammy': 'Sigma Alpha Mu', 'sig ep': 'Sigma Phi Epsilon', 'sigep': 'Sigma Phi Epsilon',
+  'phi delt': 'Phi Delta Theta', 'phi psi': 'Phi Kappa Psi', 'delt': 'Delta Tau Delta',
+  'dke': 'Delta Kappa Epsilon', 'deke': 'Delta Kappa Epsilon', 'ato': 'Alpha Tau Omega',
+  'psi u': 'Psi Upsilon', 'ka': 'Kappa Alpha Order', 'kappa alpha': 'Kappa Alpha Order',
+  'kappa sig': 'Kappa Sigma', 'lambda chi': 'Lambda Chi Alpha', 'tep': 'Tau Epsilon Phi',
+  'axo': 'Alpha Chi Omega', 'adpi': 'Alpha Delta Pi', 'aoii': 'Alpha Omicron Pi',
+  'tri delta': 'Delta Delta Delta', 'tridelta': 'Delta Delta Delta',
+  'tri delt': 'Delta Delta Delta', 'zta': 'Zeta Tau Alpha', 'theta': 'Kappa Alpha Theta',
+  'kkg': 'Kappa Kappa Gamma', 'dg': 'Delta Gamma', 'dphie': 'Delta Phi Epsilon',
+  'sdt': 'Sigma Delta Tau', 'tri sigma': 'Sigma Sigma Sigma', 'aka': 'Alpha Kappa Alpha',
+  'dst': 'Delta Sigma Theta',
+};
+const normOrg = (s) => String(s).toLowerCase().replace(/[.'’]/g, '').replace(/\s+/g, ' ').trim();
+const ORG_LOOKUP = {};
+ORG_NAMES.forEach((n) => { ORG_LOOKUP[normOrg(n)] = n; });
+Object.keys(ORG_ALIASES).forEach((a) => { ORG_LOOKUP[normOrg(a)] = ORG_ALIASES[a]; });
+
+// The officer who registers the chapter. Stored so the roster has someone to
+// contact — never returned by any public endpoint, only the admin roster.
+const EMAIL_RE = /^[^\s@]{1,64}@[^\s@.]+(\.[^\s@.]+)+$/;
+function parseContact(body) {
+  const clean = (v) => String(v ?? '').trim().replace(/\s+/g, ' ');
+  const firstName = clean(body.firstName);
+  const lastName = clean(body.lastName);
+  const email = clean(body.email).toLowerCase();
+  const phoneRaw = clean(body.phone);
+  const nameRe = /^[\p{L}][\p{L} .'-]{0,39}$/u;
+
+  if (!nameRe.test(firstName)) return { error: 'Enter your first name' };
+  if (!nameRe.test(lastName)) return { error: 'Enter your last name' };
+  if (email.length > 120 || !EMAIL_RE.test(email)) return { error: 'Enter a valid email' };
+  const digits = phoneRaw.replace(/\D/g, '');
+  if (digits.length < 10 || digits.length > 15) return { error: 'Enter a valid phone number' };
+
+  return { contact: { firstName, lastName, email, phone: phoneRaw.slice(0, 24) } };
+}
+
 function parseClan(body) {
   const school = String(body.school || '').trim().toLowerCase();
   if (!SCHOOL_LABELS[school]) return { error: 'Choose a school from the list' };
 
-  const chapterName = String(body.chapterName || '').trim().replace(/\s+/g, ' ');
-  if (!/^[\p{L}][\p{L} .'-]{1,39}$/u.test(chapterName)) return { error: 'Enter a chapter name (2–40 letters)' };
+  const canonical = ORG_LOOKUP[normOrg(body.chapterName)];
+  if (!canonical) return { error: 'Choose a recognized fraternity or sorority from the list' };
+  const chapterName = canonical;
 
   // Chapter size is optional context, self-reported and never used for ranking.
   let chapterSize = null;
@@ -253,12 +322,17 @@ export default {
       let body;
       try { body = JSON.parse(text); } catch { return json({ error: 'Invalid JSON' }, 400); }
 
+      const person = parseContact(body || {});
+      if (person.error) return json({ error: person.error }, 400);
       const parsed = parseClan(body || {});
       if (parsed.error) return json({ error: parsed.error }, 400);
       if (await tooMany(env, 'clan', ipOf(request), 5)) return json({ error: 'Too many clans created — try again in a minute' }, 429);
 
       const clans = await readList(env, CLANS_KEY);
       if (clans.length >= MAX_CLANS) return json({ error: 'Clan limit reached' }, 409);
+      if (clans.some((c) => c.school === parsed.clan.school && c.chapterName.toLowerCase() === parsed.clan.chapterName.toLowerCase())) {
+        return json({ error: 'That chapter is already registered' }, 409);
+      }
 
       let code;
       do { code = randomCode(); } while (clans.some((c) => c.code === code));
@@ -266,7 +340,8 @@ export default {
       const clan = {
         id: crypto.randomUUID(), code,
         school: parsed.clan.school, schoolLabel: parsed.clan.schoolLabel, chapterName: parsed.clan.chapterName,
-        name: parsed.clan.name, chapterSize: parsed.clan.chapterSize, members: [], createdAt: new Date().toISOString(),
+        name: parsed.clan.name, chapterSize: parsed.clan.chapterSize,
+        contact: person.contact, members: [], createdAt: new Date().toISOString(),
       };
       clans.push(clan);
       await env.FLIGHTS.put(CLANS_KEY, JSON.stringify(clans));
@@ -284,14 +359,27 @@ export default {
       clans.forEach((c) => {
         (c.members || []).forEach((m) => {
           rows.push({
-            code: c.code, username: m.username, joinedAt: m.joinedAt,
+            code: c.code, username: m.username, email: m.email || '', joinedAt: m.joinedAt,
             school: c.schoolLabel, chapterName: c.chapterName,
             status: m.status === 'approved' ? 'approved' : 'pending',
           });
         });
       });
       rows.sort((a, b) => (a.joinedAt < b.joinedAt ? 1 : -1));
-      return json({ rows });
+
+      // Who registered each chapter. Only ever served here, behind the passcode.
+      const chapters = clans
+        .filter((c) => c.contact)
+        .map((c) => ({
+          code: c.code, chapterName: c.chapterName, school: c.schoolLabel,
+          firstName: c.contact.firstName, lastName: c.contact.lastName,
+          email: c.contact.email, phone: c.contact.phone,
+          members: totalApproved(c), chapterSize: c.chapterSize || null,
+          createdAt: c.createdAt,
+        }))
+        .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+
+      return json({ rows, chapters });
     }
 
     // Approving a submission is what actually counts someone toward their clan's
@@ -406,6 +494,8 @@ export default {
 
       const username = cleanUsername(body && body.username);
       if (!username) return json({ error: 'Enter a valid fomo username' }, 400);
+      const email = String((body && body.email) || '').trim().toLowerCase();
+      if (email.length > 120 || !EMAIL_RE.test(email)) return json({ error: 'Enter a valid email' }, 400);
       if (await tooMany(env, 'join', ipOf(request), MAX_ADDS_PER_MINUTE)) return json({ error: 'Too many attempts — try again in a minute' }, 429);
 
       const clans = await readList(env, CLANS_KEY);
@@ -416,7 +506,7 @@ export default {
       if (clan.members.some((m) => m.username.toLowerCase() === username.toLowerCase())) {
         return json({ error: 'That username already joined this clan' }, 409);
       }
-      clan.members.push({ username, joinedAt: new Date().toISOString(), status: 'pending' });
+      clan.members.push({ username, email, joinedAt: new Date().toISOString(), status: 'pending' });
       await env.FLIGHTS.put(CLANS_KEY, JSON.stringify(clans));
       return json({ name: clan.name, members: clan.members.length }, 201);
     }

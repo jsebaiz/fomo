@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>Register your chapter · fomo</title>
+<title>Onboard your chapter · fomo</title>
 <link rel="icon" href="/fomo-favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,7 +14,6 @@
   --bg:#080B1A; --bg-lift:#0A0E20;
   --card:#0F1430; --card-2:#121835; --card-hl:#151C42;
   --border:rgba(125,145,255,0.14); --border-hl:rgba(110,135,255,0.34);
-  --line:rgba(125,145,255,0.22);
   --white:#FFFFFF; --text:#E8EBFA; --text-dim:#A8B2E0; --text-faint:#6E7AA8;
   --blue:#516AF6; --blue-electric:#4A36FF; --blue-soft:#8C9BFF;
   --red:#FF7A7A;
@@ -37,123 +36,79 @@ svg{display:block;}
 .nav{display:flex; align-items:center; justify-content:space-between; padding:26px 0 0;}
 .nav-brand{display:flex; align-items:center; gap:10px; font-size:1.18rem; font-weight:800; color:var(--white); letter-spacing:-0.02em;}
 .nav-brand .slash{color:var(--text-faint); font-weight:600;}
-.badge{display:flex; align-items:center; justify-content:center; flex-shrink:0; width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg, var(--blue-soft), var(--blue-electric)); box-shadow:0 2px 12px rgba(81,106,246,.4);}
-.badge svg{width:58%; height:58%; color:#fff;}
 .nav-actions{display:flex; align-items:center; gap:10px;}
 .nav-btn{border:1px solid var(--border); background:var(--card); color:var(--text); border-radius:10px; padding:10px 18px; font-size:0.88rem; font-weight:600; cursor:pointer; transition:background .15s ease, border-color .15s ease;}
 .nav-btn:hover{background:var(--card-2); border-color:var(--border-hl);}
 @media (max-width:560px){ .nav-actions .nav-btn.secondary{display:none;} }
 
-/* hero */
-.hero{padding:86px 0 0; max-width:720px;}
-@media (max-width:720px){ .hero{padding:52px 0 0;} }
-.eyebrow{font-size:0.86rem; font-weight:600; color:var(--text-faint); margin-bottom:22px;}
-h1{font-size:clamp(2.4rem,5.6vw,3.9rem); font-weight:800; letter-spacing:-0.04em; line-height:1.02; margin:0 0 26px; color:var(--white);}
-.lede{font-size:clamp(1.02rem,1.6vw,1.28rem); color:var(--text-dim); margin:0 0 30px; max-width:44ch; font-weight:500;}
-.checks{list-style:none; padding:0; margin:0 0 20px;}
-.checks li{display:flex; gap:12px; align-items:flex-start; font-size:0.96rem; color:var(--text-dim); margin-bottom:13px;}
-.checks svg{width:17px; height:17px; flex-shrink:0; margin-top:3px; color:var(--blue-soft);}
+/* two-column */
+.split{display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:start; padding:76px 0 0;}
+@media (max-width:900px){ .split{grid-template-columns:1fr; gap:36px; padding:48px 0 0;} }
 
-.caption{font-size:0.88rem; color:var(--text-faint); margin:56px 0 24px;}
+.eyebrow{font-size:0.86rem; font-weight:600; color:var(--text-faint); margin-bottom:20px;}
+h1{font-size:clamp(2.3rem,4.6vw,3.4rem); font-weight:800; letter-spacing:-0.04em; line-height:1.02; margin:0 0 22px; color:var(--white);}
+.lede{font-size:1.08rem; color:var(--text-dim); margin:0 0 28px; max-width:38ch; font-weight:500;}
+.checks{list-style:none; padding:0; margin:0 0 26px;}
+.checks li{display:flex; gap:12px; align-items:flex-start; font-size:0.95rem; color:var(--text-dim); margin-bottom:14px; line-height:1.45;}
+.checks svg{width:16px; height:16px; flex-shrink:0; margin-top:4px; color:var(--blue-soft);}
+.fineprint{font-size:0.8rem; color:var(--text-faint); margin:0; line-height:1.5;}
 
-/* form layout */
-.layout{display:grid; grid-template-columns:1fr 340px; gap:24px; align-items:start;}
-@media (max-width:900px){ .layout{grid-template-columns:1fr;} }
-
-.form-card{background:var(--card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:30px 32px;}
-@media (max-width:560px){ .form-card{padding:24px 20px;} }
-.step{display:flex; align-items:baseline; gap:12px; margin-bottom:9px;}
-.step-num{font-size:0.68rem; font-weight:700; letter-spacing:0.11em; color:var(--blue-soft); font-variant-numeric:tabular-nums;}
-.step-label{font-size:0.95rem; font-weight:700; color:var(--white);}
-.field{margin-bottom:26px;}
+/* step card */
+.panel{background:var(--card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:30px 32px;}
+@media (max-width:560px){ .panel{padding:24px 20px;} }
+.step-count{font-size:0.78rem; font-weight:700; color:var(--text-faint); letter-spacing:0.06em; font-variant-numeric:tabular-nums; margin-bottom:8px;}
+.step-title{font-size:1.45rem; font-weight:800; color:var(--white); letter-spacing:-0.025em; margin:0 0 24px;}
+.field{margin-bottom:20px;}
 .field:last-of-type{margin-bottom:0;}
-.field input, .field select{width:100%; background:var(--bg-lift); border:1px solid var(--border); border-radius:11px; padding:15px 16px; color:var(--text); font-family:inherit; font-size:1rem; outline:none; transition:border-color .15s ease, box-shadow .15s ease;}
+.field label{display:block; font-size:0.83rem; font-weight:700; color:var(--text-faint); margin-bottom:8px;}
+.field input, .field select{width:100%; background:var(--bg-lift); border:1px solid var(--border); border-radius:11px; padding:14px 15px; color:var(--text); font-family:inherit; font-size:1rem; outline:none; transition:border-color .15s ease, box-shadow .15s ease;}
 .field select{appearance:none; -webkit-appearance:none; background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%236E7AA8" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>'); background-repeat:no-repeat; background-position:right 15px center; padding-right:40px;}
 .field select:invalid{color:var(--text-faint);}
 .field option{color:#fff; background:#0F1430;}
+.field optgroup{color:var(--text-faint); background:#0B0F24; font-style:normal;}
 .field input::placeholder{color:var(--text-faint);}
 .field input:focus, .field select:focus{border-color:var(--blue); box-shadow:0 0 0 3px rgba(81,106,246,0.16);}
-.field .hint{font-size:0.8rem; color:var(--text-faint); margin-top:9px;}
-.row-two{display:grid; grid-template-columns:1fr 1fr; gap:20px;}
+.field .hint{font-size:0.8rem; color:var(--text-faint); margin-top:8px;}
+.row-two{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
 @media (max-width:560px){ .row-two{grid-template-columns:1fr;} }
 
-.invite-row{display:flex; align-items:center; gap:14px; padding:18px 0 0; border-top:1px solid var(--border); margin-top:26px;}
-.invite-row .ricon{width:22px; height:22px; flex-shrink:0; color:var(--text-faint); display:flex; align-items:center; justify-content:center;}
-.invite-row .ricon svg{width:19px; height:19px;}
-.invite-row .rlabel{flex:1; font-weight:700; font-size:0.96rem; color:var(--white);}
-.invite-row .rlabel small{display:block; font-weight:500; font-size:0.79rem; color:var(--text-faint); margin-top:2px;}
-.invite-row .rmeta{color:var(--text-faint); font-size:0.88rem; flex-shrink:0;}
-.invite-row.copyable{cursor:pointer; border-radius:11px; padding:18px 12px; margin-left:-12px; margin-right:-12px; transition:background .12s ease;}
-.invite-row.copyable:hover{background:var(--card-2);}
-.invite-row.copyable .ricon, .invite-row.copyable .rlabel{color:var(--blue-soft);}
-
-.msg{font-size:0.86rem; margin:18px 0 0; min-height:1.2em;}
-.msg.err{color:var(--red);}
-
-.actions{display:flex; align-items:center; gap:12px; margin-top:28px; flex-wrap:wrap;}
-.cta{display:inline-flex; align-items:center; gap:10px; background:linear-gradient(135deg, var(--blue-electric), var(--blue)); color:#fff; border:none; border-radius:12px; padding:17px 28px; font-size:1rem; font-weight:700; cursor:pointer;
-  box-shadow:0 10px 34px rgba(74,54,255,0.42); transition:transform .15s ease, filter .15s ease;}
+.step-actions{display:flex; align-items:center; gap:12px; margin-top:26px; flex-wrap:wrap;}
+.cta{display:inline-flex; align-items:center; gap:10px; background:linear-gradient(135deg, var(--blue-electric), var(--blue)); color:#fff; border:none; border-radius:12px; padding:16px 26px; font-size:0.98rem; font-weight:700; cursor:pointer;
+  box-shadow:0 10px 30px rgba(74,54,255,0.4); transition:transform .15s ease, filter .15s ease;}
 .cta:hover{transform:translateY(-1px); filter:brightness(1.1);}
 .cta:disabled{opacity:.5; cursor:default; transform:none; filter:none; box-shadow:none;}
-.cta svg{width:16px; height:16px;}
-.btn-ghost{display:inline-flex; align-items:center; gap:8px; border:1px solid var(--border); background:var(--card-2); color:var(--text); border-radius:12px; padding:17px 26px; font-size:1rem; font-weight:700; cursor:pointer;}
+.cta svg{width:15px; height:15px;}
+.btn-back{background:none; border:none; color:var(--text-faint); font-size:0.9rem; font-weight:600; cursor:pointer; padding:10px 4px;}
+.btn-back:hover{color:var(--text);}
+.btn-ghost{display:inline-flex; align-items:center; border:1px solid var(--border); background:var(--card-2); color:var(--text); border-radius:12px; padding:16px 24px; font-size:0.98rem; font-weight:700; cursor:pointer;}
 .btn-ghost:hover{border-color:var(--border-hl);}
+.enter-hint{font-size:0.83rem; color:var(--text-faint); margin:14px 0 0;}
+.enter-hint kbd{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:0.78rem; background:var(--bg-lift); border:1px solid var(--border); border-radius:5px; padding:2px 6px; color:var(--text-dim);}
 
-.success{display:none; margin-top:26px; padding:22px; background:var(--card-hl); border:1px solid var(--border-hl); border-radius:var(--radius);}
-.success.show{display:block;}
-.success .stag{font-size:0.65rem; text-transform:uppercase; letter-spacing:0.11em; color:var(--blue-soft); font-weight:700; margin-bottom:9px;}
-.success h3{margin:0 0 6px; font-size:1.12rem; color:var(--white); font-weight:700; letter-spacing:-0.015em;}
-.success p{font-size:0.9rem; color:var(--text-dim); margin:0;}
+.msg{font-size:0.86rem; margin:16px 0 0; min-height:1.2em;}
+.msg.err{color:var(--red);}
 
-/* preview */
-.preview{background:var(--card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:22px; position:sticky; top:26px;}
-@media (max-width:900px){ .preview{position:static;} }
-.preview-tag{font-size:0.65rem; text-transform:uppercase; letter-spacing:0.11em; color:var(--text-faint); font-weight:700; margin-bottom:16px;}
-.banner-wrap{position:relative; margin-bottom:36px;}
-.banner{height:112px; border-radius:13px; background:linear-gradient(135deg, rgba(81,106,246,.6), #0B0F24); position:relative; transition:background .2s ease; overflow:hidden;}
-.banner::after{content:''; position:absolute; inset:0; background:radial-gradient(circle at 30% 20%, rgba(255,255,255,0.18), transparent 55%);}
-.icon-wrap{position:absolute; left:16px; bottom:-26px;}
-.icon{width:62px; height:62px; border-radius:17px; background:linear-gradient(135deg, rgba(81,106,246,.6), #0B0F24); border:3px solid var(--card); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.25rem; color:#fff;}
-.icon.small-glyph{font-size:1rem;}
-.preview-name{font-weight:700; font-size:1.05rem; margin:0 0 3px; color:var(--white); overflow-wrap:break-word;}
-.preview-school{font-size:0.85rem; color:var(--text-faint); margin:0 0 16px;}
-.preview-meta{display:flex; justify-content:space-between; font-size:0.8rem; color:var(--text-faint); border-top:1px solid var(--border); padding-top:14px;}
-.preview-meta b{color:var(--text); font-weight:700;}
+/* preview strip inside step 2 */
+.preview{display:flex; align-items:center; gap:14px; margin-top:24px; padding-top:22px; border-top:1px solid var(--border);}
+.pv-icon{width:52px; height:52px; border-radius:14px; background:linear-gradient(135deg, rgba(81,106,246,.6), #0B0F24); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.05rem; color:#fff; flex-shrink:0;}
+.pv-icon.small-glyph{font-size:0.82rem;}
+.pv-meta{min-width:0;}
+.pv-name{font-weight:700; color:var(--white); font-size:1rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.pv-school{font-size:0.83rem; color:var(--text-faint); margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
 
-/* flow map */
-.flow-section{margin-top:86px;}
-.flow-caption{font-size:0.88rem; color:var(--text-faint); margin:0 0 26px;}
-.flow-top{display:flex; justify-content:center;}
-.fcard{position:relative; display:block; background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:20px 22px; transition:border-color .15s ease, background .15s ease, transform .15s ease;}
-a.fcard:hover{border-color:var(--border-hl); background:var(--card-2); transform:translateY(-2px);}
-.fcard-tag{font-size:0.65rem; text-transform:uppercase; letter-spacing:0.11em; color:var(--text-faint); font-weight:700; margin-bottom:9px;}
-.fcard-title{font-size:1.12rem; font-weight:700; color:var(--white); letter-spacing:-0.015em;}
-.fcard-path{font-size:0.8rem; color:var(--text-faint); margin-top:7px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace;}
-.fcard .corner{position:absolute; top:19px; right:20px; width:14px; height:14px; color:var(--text-faint);}
-.fcard-hl{background:var(--card-hl); border-color:var(--border-hl); min-width:390px;}
-@media (max-width:560px){ .fcard-hl{min-width:0; width:100%;} }
-.fcard-hl .fcard-tag{color:var(--blue-soft);}
-
-.connect{position:relative; height:58px;}
-.connect i{position:absolute; background:var(--line); display:block;}
-.connect .v-main{left:50%; top:0; width:1px; height:29px; transform:translateX(-50%);}
-.connect .h-span{top:29px; left:16.666%; right:16.666%; height:1px;}
-.connect .v-drop{top:29px; width:1px; height:29px;}
-.flow-labels{display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-bottom:12px;}
-.flow-labels span{text-align:center; font-size:0.66rem; text-transform:uppercase; letter-spacing:0.11em; color:var(--text-faint); font-weight:700;}
-.flow-row{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
-@media (max-width:760px){
-  .connect{display:none;}
-  .flow-labels{display:none;}
-  .flow-row{grid-template-columns:1fr; gap:12px; margin-top:12px;}
-  .flow-top{margin-bottom:12px;}
-}
+/* success */
+.done-tag{font-size:0.66rem; text-transform:uppercase; letter-spacing:0.11em; color:var(--blue-soft); font-weight:700; margin-bottom:10px;}
+.copy-row{display:flex; align-items:center; gap:14px; padding:18px; margin-top:22px; background:var(--card-hl); border:1px solid var(--border-hl); border-radius:12px; cursor:pointer; transition:filter .12s ease;}
+.copy-row:hover{filter:brightness(1.15);}
+.copy-row .ricon{width:20px; height:20px; color:var(--blue-soft); flex-shrink:0;}
+.copy-row .rlabel{flex:1; font-weight:700; color:var(--white); font-size:0.96rem;}
+.copy-row .rlabel small{display:block; font-weight:500; font-size:0.79rem; color:var(--text-faint); margin-top:2px;}
+.copy-row .rmeta{color:var(--blue-soft); font-size:0.88rem; font-weight:700; flex-shrink:0;}
 
 /* footer */
 .site-footer{border-top:1px solid var(--border); margin-top:96px;}
 .footer-inner{max-width:1120px; margin:0 auto; padding:52px 40px 28px; display:flex; justify-content:space-between; gap:40px; flex-wrap:wrap;}
 @media (max-width:720px){ .footer-inner{padding:44px 20px 24px;} }
-.footer-brand .badge{width:32px; height:32px; margin-bottom:14px;}
 .footer-brand .fname{font-size:1.4rem; font-weight:800; color:var(--white); letter-spacing:-0.02em;}
 .footer-brand p{font-size:0.9rem; color:var(--text-faint); margin:7px 0 0; max-width:26ch;}
 .footer-cols{display:flex; gap:56px; flex-wrap:wrap;}
@@ -170,140 +125,129 @@ a.fcard:hover{border-color:var(--border-hl); background:var(--card-2); transform
 
 <div class="wrap">
   <nav class="nav">
-    <a class="nav-brand" href="/">
-      <span class="badge"><svg viewBox="0 0 100 100" fill="currentColor"><path d="M36.9747 24.3586C44.1067 24.3587 49.7941 27.9515 52.9484 33.5959C48.7626 38.0418 45.6617 43.7612 44.4679 50.0002C43.2743 56.2391 44.1865 61.9572 46.67 66.4026C41.3555 72.0468 34.2931 75.6408 27.1613 75.6409C18.432 75.6407 11.8659 70.2588 9.46204 62.3196H26.8478C27.4159 62.3193 28.0059 61.8593 28.1691 61.2932L34.6486 38.7043C34.8098 38.1381 34.4815 37.6782 33.9152 37.678H14.1788C19.6213 29.7404 28.2465 24.3588 36.9747 24.3586Z"/><path d="M72.3285 24.3586C85.0779 24.3586 93.2156 35.8374 90.5062 49.9993C87.7966 64.1596 75.2646 75.6409 62.515 75.6409C53.7856 75.6408 47.2196 70.2589 44.8158 62.3196H64.1537C64.7218 62.3194 65.3127 61.8594 65.476 61.2932L71.9545 38.7043C72.1157 38.138 71.7876 37.678 71.2211 37.678H49.5316C54.9741 29.7401 63.5999 24.3587 72.3285 24.3586Z"/></svg></span>
-      fomo <span class="slash">/clans</span>
-    </a>
+    <a class="nav-brand" href="/">fomo <span class="slash">/clans</span></a>
     <div class="nav-actions">
-      <a class="nav-btn secondary" href="https://fomo.family" target="_blank" rel="noopener">Get the app</a>
-      <a class="nav-btn" href="../">Leaderboard</a>
+      <a class="nav-btn secondary" id="get-app" href="#" target="_blank" rel="noopener">Get the app</a>
+      <a class="nav-btn" href="../">← Back to Greek Wars</a>
     </div>
   </nav>
 
-  <header class="hero">
-    <div class="eyebrow">registration · fall 2026</div>
-    <h1>Onboard your chapter.</h1>
-    <p class="lede">Two minutes. Your chapter becomes a clan, and you get the link to send everyone else.</p>
-    <ul class="checks">
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>One registration covers your whole chapter.</li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Any recognized Greek chapter — fraternity or sorority.</li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Your crest and colors are generated automatically.</li>
-    </ul>
-    <p class="caption">Three fields · Your clan goes live the moment you submit.</p>
-  </header>
+  <div class="split">
+    <div>
+      <div class="eyebrow">registration · fall 2026</div>
+      <h1>Onboard your chapter.</h1>
+      <p class="lede">Two minutes. Your chapter becomes a clan, and you get the link to send everyone else.</p>
+      <ul class="checks">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>$500 is guaranteed once 80% of your actives are onboarded.</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>One registration covers your whole chapter — you get a link to send everyone.</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Any recognized Greek chapter — fraternity or sorority.</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Members competing must be 18 or older.</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Nobody needs to know anything about crypto to enter.</li>
+      </ul>
+      <p class="fineprint">Trading involves risk, including loss of principal.</p>
+    </div>
 
-  <form id="clan-form">
-    <div class="layout">
-      <div class="form-card">
-        <div class="field">
-          <div class="step"><span class="step-num">01 / 03</span><span class="step-label">School</span></div>
-          <select id="c-school" required>
-            <option value="" disabled selected>Choose your school</option>
-          </select>
-        </div>
+    <form id="clan-form" novalidate>
+      <!-- step 1 -->
+      <div class="panel" id="step-1">
+        <div class="step-count">01 / 02</div>
+        <h2 class="step-title">Who's registering</h2>
 
         <div class="row-two">
           <div class="field">
-            <div class="step"><span class="step-num">02 / 03</span><span class="step-label">Chapter name</span></div>
-            <input type="text" id="c-chapter" maxlength="40" placeholder="e.g. Sigma Chi" autocomplete="off" required>
+            <label for="f-first">First name</label>
+            <input type="text" id="f-first" maxlength="40" autocomplete="given-name" placeholder="Jesse">
           </div>
           <div class="field">
-            <div class="step"><span class="step-num">03 / 03</span><span class="step-label">Actives</span></div>
-            <input type="number" id="c-size" min="1" max="2000" step="1" placeholder="e.g. 45" inputmode="numeric">
+            <label for="f-last">Last name</label>
+            <input type="text" id="f-last" maxlength="40" autocomplete="family-name" placeholder="Baizer">
           </div>
         </div>
-        <div class="hint" id="chapter-hint" style="margin:-16px 0 0;">We'll recognize national fraternities and sororities and use their letters.</div>
-
-        <div class="invite-row" id="invite-row">
-          <span class="ricon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="8" r="3"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><path d="M16 8.5c1.4.3 2.5 1.5 2.5 3s-1.1 2.7-2.5 3M20 19c0-2.3-1.6-4.2-3.8-4.8"/></svg></span>
-          <span class="rlabel">Invite members<small>Available once your clan is created</small></span>
-          <span class="rmeta">0</span>
+        <div class="field">
+          <label for="f-phone">Phone number</label>
+          <input type="tel" id="f-phone" maxlength="24" autocomplete="tel" placeholder="(555) 555-5555">
+        </div>
+        <div class="field">
+          <label for="f-email">Email</label>
+          <input type="email" id="f-email" maxlength="120" autocomplete="email" placeholder="you@school.edu">
         </div>
 
-        <p class="msg" id="form-msg"></p>
+        <p class="msg" id="msg-1"></p>
 
-        <div class="success" id="success">
-          <div class="stag">Clan is live</div>
-          <h3 id="success-name"></h3>
-          <p>Copy the link above and drop it in your chapter group chat.</p>
-        </div>
-
-        <div class="actions">
-          <button type="submit" class="cta" id="submit-btn">
-            Register chapter
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        <div class="step-actions">
+          <button type="button" class="cta" id="next-btn">
+            Next
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </button>
-          <a href="../" class="btn-ghost" id="done-btn" style="display:none;">View leaderboard</a>
+        </div>
+        <p class="enter-hint">Press <kbd>Enter</kbd> to continue.</p>
+      </div>
+
+      <!-- step 2 -->
+      <div class="panel" id="step-2" hidden>
+        <div class="step-count">02 / 02</div>
+        <h2 class="step-title">Your chapter</h2>
+
+        <div class="field">
+          <label for="c-school">School</label>
+          <select id="c-school">
+            <option value="" disabled selected>Choose your school</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="c-chapter">Chapter</label>
+          <select id="c-chapter">
+            <option value="" disabled selected>Choose your fraternity or sorority</option>
+          </select>
+          <div class="hint" id="chapter-hint">Only recognized national fraternities and sororities can register.</div>
+        </div>
+        <div class="field">
+          <label for="c-size">How many actives in your chapter?</label>
+          <input type="number" id="c-size" min="1" max="2000" step="1" placeholder="e.g. 90" inputmode="numeric">
+        </div>
+
+        <div class="preview" id="preview" hidden>
+          <div class="pv-icon" id="pv-icon">?</div>
+          <div class="pv-meta">
+            <div class="pv-name" id="pv-name">Your clan</div>
+            <div class="pv-school" id="pv-school">—</div>
+          </div>
+        </div>
+
+        <p class="msg" id="msg-2"></p>
+
+        <div class="step-actions">
+          <button type="submit" class="cta" id="submit-btn">
+            Create clan
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+          <button type="button" class="btn-back" id="back-btn">← Back</button>
         </div>
       </div>
 
-      <aside class="preview">
-        <div class="preview-tag">Live preview</div>
-        <div class="banner-wrap">
-          <div class="banner" id="banner"></div>
-          <div class="icon-wrap"><div class="icon" id="icon-preview">?</div></div>
-        </div>
-        <p class="preview-name" id="preview-name">Your clan</p>
-        <p class="preview-school" id="preview-school">Pick a school to preview colors</p>
-        <div class="preview-meta">
-          <span>Letters</span><b id="preview-letters">—</b>
-        </div>
-        <div class="preview-meta" style="border-top:none; padding-top:8px;">
-          <span>Actives</span><b id="preview-actives">—</b>
-        </div>
-      </aside>
-    </div>
-  </form>
+      <!-- done -->
+      <div class="panel" id="step-done" hidden>
+        <div class="done-tag">Clan is live</div>
+        <h2 class="step-title" id="done-name"></h2>
+        <p class="lede" style="margin-bottom:0; font-size:1rem;">Send this link to your chapter group chat. Everyone who joins through it counts toward your 80%.</p>
 
-  <section class="flow-section">
-    <p class="flow-caption">What happens next · Follow a branch to see where it goes.</p>
+        <div class="copy-row" id="copy-row">
+          <span class="ricon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 15 15 9"/><path d="M10.5 6.5 12 5a4 4 0 0 1 5.7 5.7l-1.5 1.5"/><path d="M13.5 17.5 12 19a4 4 0 0 1-5.7-5.7l1.5-1.5"/></svg></span>
+          <span class="rlabel">Copy link<small id="copy-url"></small></span>
+          <span class="rmeta" id="copy-state">Copy</span>
+        </div>
 
-    <div class="flow-top">
-      <div class="fcard fcard-hl">
-        <div class="fcard-tag">You are here</div>
-        <div class="fcard-title">Register your chapter</div>
-        <div class="fcard-path">/fomo/clans/create</div>
+        <div class="step-actions">
+          <a href="../" class="btn-ghost">View leaderboard</a>
+        </div>
       </div>
-    </div>
-
-    <div class="connect" aria-hidden="true">
-      <i class="v-main"></i>
-      <i class="h-span"></i>
-      <i class="v-drop" style="left:16.666%"></i>
-      <i class="v-drop" style="left:50%"></i>
-      <i class="v-drop" style="left:83.333%"></i>
-    </div>
-
-    <div class="flow-labels" aria-hidden="true">
-      <span>Share it</span><span>They join</span><span>Climb</span>
-    </div>
-
-    <div class="flow-row">
-      <div class="fcard">
-        <div class="fcard-tag">Auto-generated</div>
-        <div class="fcard-title">Your clan link</div>
-        <div class="fcard-path">/fomo/referral/:code</div>
-      </div>
-      <a class="fcard" href="/fomo/join/">
-        <div class="fcard-tag">One tap</div>
-        <div class="fcard-title">Join your frat</div>
-        <div class="fcard-path">/fomo/join</div>
-        <svg class="corner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
-      </a>
-      <a class="fcard" href="../">
-        <div class="fcard-tag">Live standings</div>
-        <div class="fcard-title">Clan leaderboard</div>
-        <div class="fcard-path">/fomo/clans</div>
-        <svg class="corner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
-      </a>
-    </div>
-  </section>
+    </form>
+  </div>
 </div>
 
 <footer class="site-footer">
   <div class="footer-inner">
     <div class="footer-brand">
-      <span class="badge"><svg viewBox="0 0 100 100" fill="currentColor"><path d="M36.9747 24.3586C44.1067 24.3587 49.7941 27.9515 52.9484 33.5959C48.7626 38.0418 45.6617 43.7612 44.4679 50.0002C43.2743 56.2391 44.1865 61.9572 46.67 66.4026C41.3555 72.0468 34.2931 75.6408 27.1613 75.6409C18.432 75.6407 11.8659 70.2588 9.46204 62.3196H26.8478C27.4159 62.3193 28.0059 61.8593 28.1691 61.2932L34.6486 38.7043C34.8098 38.1381 34.4815 37.6782 33.9152 37.678H14.1788C19.6213 29.7404 28.2465 24.3588 36.9747 24.3586Z"/><path d="M72.3285 24.3586C85.0779 24.3586 93.2156 35.8374 90.5062 49.9993C87.7966 64.1596 75.2646 75.6409 62.515 75.6409C53.7856 75.6408 47.2196 70.2589 44.8158 62.3196H64.1537C64.7218 62.3194 65.3127 61.8594 65.476 61.2932L71.9545 38.7043C72.1157 38.138 71.7876 37.678 71.2211 37.678H49.5316C54.9741 29.7401 63.5999 24.3587 72.3285 24.3586Z"/></svg></span>
       <div class="fname">fomo</div>
       <p>where traders become legends.</p>
     </div>
@@ -333,166 +277,114 @@ a.fcard:hover{border-color:var(--border-hl); background:var(--card-2); transform
   <div class="footer-bottom">© 2026 FOMO Labs Inc.</div>
 </footer>
 
+<script src="/fomo/greek-data.js"></script>
 <script>
 const $ = (id) => document.getElementById(id);
+const { SCHOOLS, FRATERNITIES, SORORITIES, schoolColors, glyphFor } = GreekData;
 
-// ---------------------------------------------------------------------------
-// School code -> [display name, primary color, secondary color (null = auto-shade)]
-// Colors are each school's real, commonly recognized colors.
-// ---------------------------------------------------------------------------
-const SCHOOLS = {
-  asu: ['Arizona State University', '#8C1D40', '#FFC627'],
-  ua: ['University of Arizona', '#AB0520', '#0C234B'],
-  ucla: ['UCLA', '#2774AE', '#FFD100'],
-  usc: ['University of Southern California', '#990000', '#FFC72C'],
-  cal: ['UC Berkeley', '#003262', '#FDB515'],
-  stanford: ['Stanford University', '#8C1515', null],
-  ucsd: ['UC San Diego', '#182B49', '#C69214'],
-  sdsu: ['San Diego State University', '#A6192E', null],
-  uw: ['University of Washington', '#4B2E83', '#B7A57A'],
-  uo: ['University of Oregon', '#154733', '#FEE123'],
-  utah: ['University of Utah', '#CC0000', null],
-  cu: ['CU Boulder', '#CFB87C', '#000000'],
-  utaustin: ['UT Austin', '#BF5700', null],
-  tamu: ['Texas A&M University', '#500000', null],
-  rice: ['Rice University', '#00205B', null],
-  smu: ['Southern Methodist University', '#C8102E', '#0033A0'],
-  ou: ['University of Oklahoma', '#841617', null],
-  mizzou: ['University of Missouri', '#F1B82D', '#000000'],
-  wustl: ['Washington University in St. Louis', '#A51417', null],
-  wisconsin: ['University of Wisconsin–Madison', '#C5050C', null],
-  minnesota: ['University of Minnesota', '#7A0019', '#FFCC33'],
-  northwestern: ['Northwestern University', '#4E2A84', null],
-  uchicago: ['University of Chicago', '#800000', null],
-  illinois: ['University of Illinois', '#E84A27', '#13294B'],
-  purdue: ['Purdue University', '#B1810B', '#000000'],
-  iu: ['Indiana University', '#990000', null],
-  michigan: ['University of Michigan', '#00274C', '#FFCB05'],
-  osu: ['Ohio State University', '#BB0000', null],
-  penn: ['University of Pennsylvania', '#011F5B', '#990000'],
-  pennstate: ['Penn State University', '#041E42', null],
-  pitt: ['University of Pittsburgh', '#003594', '#FFB81C'],
-  cmu: ['Carnegie Mellon University', '#C41230', null],
-  nyu: ['New York University', '#57068C', null],
-  columbia: ['Columbia University', '#003D74', '#B9D9EB'],
-  cornell: ['Cornell University', '#B31B1B', null],
-  yale: ['Yale University', '#00356B', null],
-  harvard: ['Harvard University', '#A51C30', null],
-  bu: ['Boston University', '#CC0000', null],
-  georgetown: ['Georgetown University', '#041E42', null],
-  umd: ['University of Maryland', '#E21833', '#FFD520'],
-  uva: ['University of Virginia', '#232D4B', '#E57200'],
-  duke: ['Duke University', '#001A57', null],
-  unc: ['UNC Chapel Hill', '#7BAFD4', '#13294B'],
-  gt: ['Georgia Tech', '#B3A369', '#003057'],
-  uga: ['University of Georgia', '#BA0C2F', '#000000'],
-  vanderbilt: ['Vanderbilt University', '#866D4B', '#000000'],
-  ala: ['University of Alabama', '#9E1B32', null],
-  uf: ['University of Florida', '#0021A5', '#FA4616'],
-  fsu: ['Florida State University', '#782F40', '#CEB888'],
-  miami: ['University of Miami', '#F47321', '#005030'],
-  elon: ['Elon University', '#860038', '#C8A96E'],
-  sc: ['University of South Carolina', '#73000A', '#000000'],
-  clemson: ['Clemson University', '#F56600', '#522D80'],
-  ohiou: ['Ohio University', '#00694E', null],
-  emory: ['Emory University', '#012169', '#F2A900'],
-  fiu: ['Florida International University', '#081E3F', '#B6862C'],
-  tampa: ['University of Tampa', '#CE1126', '#000000'],
-  vt: ['Virginia Tech', '#630031', '#CF4420'],
-  coastal: ['Coastal Carolina University', '#006F71', '#A27752'],
-  rutgers: ['Rutgers University', '#CC0033', '#000000'],
-  tcu: ['Texas Christian University', '#4D1979', null],
-  salisbury: ['Salisbury University', '#862633', '#C9A227'],
-};
+// The App Store link for the fomo iOS app. fomo.family carries the real
+// App Store / Google Play badges; swap this for the direct store URL when we have it.
+const APP_URL = 'https://fomo.family';
+$('get-app').href = APP_URL;
 
-// Recognized national fraternities/sororities -> their actual Greek letters.
-// Unrecognized names fall back to initials, further down.
-const GREEK_LETTERS = {
-  'sigma chi': 'ΣΧ', 'sigma alpha epsilon': 'ΣΑΕ', 'sae': 'ΣΑΕ', 'kappa sigma': 'ΚΣ',
-  'sigma nu': 'ΣΝ', 'phi delta theta': 'ΦΔΘ', 'phi delt': 'ΦΔΘ', 'pi kappa alpha': 'ΠΚΑ',
-  'pike': 'ΠΚΑ', 'beta theta pi': 'ΒΘΠ', 'delta tau delta': 'ΔΤΔ', 'delt': 'ΔΤΔ',
-  'phi gamma delta': 'ΦΓΔ', 'fiji': 'ΦΓΔ', 'alpha tau omega': 'ΑΤΩ', 'ato': 'ΑΤΩ',
-  'kappa alpha': 'ΚΑ', 'kappa alpha order': 'ΚΑ', 'theta chi': 'ΘΧ', 'delta sigma phi': 'ΔΣΦ',
-  'lambda chi alpha': 'ΛΧΑ', 'tau kappa epsilon': 'ΤΚΕ', 'tke': 'ΤΚΕ', 'zeta beta tau': 'ΖΒΤ',
-  'zbt': 'ΖΒΤ', 'delta upsilon': 'ΔΥ', 'phi kappa psi': 'ΦΚΨ', 'alpha epsilon pi': 'ΑΕΠ',
-  'aepi': 'ΑΕΠ', 'sigma phi epsilon': 'ΣΦΕ', 'sig ep': 'ΣΦΕ', 'chi phi': 'ΧΦ',
-  'pi kappa phi': 'ΠΚΦ', 'phi kappa tau': 'ΦΚΤ', 'delta chi': 'ΔΧ', 'alpha sigma phi': 'ΑΣΦ',
-  'psi upsilon': 'ΨΥ', 'psi u': 'ΨΥ', 'alpha chi omega': 'ΑΧΩ', 'axo': 'ΑΧΩ', 'kappa kappa gamma': 'ΚΚΓ',
-  'chi omega': 'ΧΩ', 'chi psi': 'ΧΨ', 'delta gamma': 'ΔΓ', 'alpha phi': 'ΑΦ', 'pi beta phi': 'ΠΒΦ',
-  'kappa delta': 'ΚΔ', 'zeta tau alpha': 'ΖΤΑ', 'zta': 'ΖΤΑ', 'gamma phi beta': 'ΓΦΒ',
-  'alpha delta pi': 'ΑΔΠ', 'adpi': 'ΑΔΠ', 'sigma kappa': 'ΣΚ', 'delta delta delta': 'ΔΔΔ',
-  'tri delta': 'ΔΔΔ', 'tridelta': 'ΔΔΔ', 'alpha omicron pi': 'ΑΟΠ', 'phi mu': 'ΦΜ',
-  'alpha gamma delta': 'ΑΓΔ', 'alpha xi delta': 'ΑΞΔ', 'delta zeta': 'ΔΖ', 'zeta psi': 'ΖΨ',
-  'kappa alpha theta': 'ΚΑΘ', 'alpha epsilon phi': 'ΑΕΦ', 'tau epsilon phi': 'ΤΕΦ',
-};
-
-function shade(hex, pct) {
-  const n = parseInt(hex.slice(1), 16);
-  const clamp = (v) => Math.max(0, Math.min(255, v));
-  const r = clamp(((n >> 16) & 255) * (1 + pct));
-  const g = clamp(((n >> 8) & 255) * (1 + pct));
-  const b = clamp((n & 255) * (1 + pct));
-  return '#' + [r, g, b].map((v) => Math.round(v).toString(16).padStart(2, '0')).join('');
-}
-function schoolColors(code) {
-  const s = SCHOOLS[code];
-  if (!s) return ['#516AF6', '#2E3A8C'];
-  return [s[1], s[2] || shade(s[1], -0.42)];
-}
-function normChapter(s) { return String(s).toLowerCase().replace(/[.'’]/g, '').replace(/\s+/g, ' ').trim(); }
-function greekFor(chapterName) { return GREEK_LETTERS[normChapter(chapterName)] || null; }
-function initialsOf(name) {
-  const parts = String(name).trim().split(/\s+/).filter(Boolean);
-  return ((parts[0] || '?')[0] + (parts[1] ? parts[1][0] : '')).toUpperCase();
-}
-function glyphFor(chapterName) { return chapterName ? (greekFor(chapterName) || initialsOf(chapterName)) : '?'; }
-
-function fillSchools() {
+// ---- populate the two pickers -------------------------------------------
+(function fillSchools() {
   const opts = Object.keys(SCHOOLS).sort((a, b) => SCHOOLS[a][0].localeCompare(SCHOOLS[b][0]))
     .map((c) => `<option value="${c}">${SCHOOLS[c][0]}</option>`).join('');
-  $('c-school').innerHTML = '<option value="" disabled selected>Choose your school</option>' + opts;
-}
-fillSchools();
+  $('c-school').insertAdjacentHTML('beforeend', opts);
+})();
 
+(function fillChapters() {
+  const group = (label, list) =>
+    `<optgroup label="${label}">` +
+    list.map(([name]) => `<option value="${name}">${name}</option>`).join('') +
+    '</optgroup>';
+  $('c-chapter').insertAdjacentHTML('beforeend',
+    group('Fraternities', FRATERNITIES) + group('Sororities', SORORITIES));
+})();
+
+// ---- step 1 --------------------------------------------------------------
+const EMAIL_RE = /^[^\s@]{1,64}@[^\s@.]+(\.[^\s@.]+)+$/;
+const NAME_RE = /^[\p{L}][\p{L} .'-]{0,39}$/u;
+
+function err(id, text) {
+  const el = $(id);
+  el.className = 'msg err';
+  el.textContent = text;
+}
+function clearErr(id) { const el = $(id); el.className = 'msg'; el.textContent = ''; }
+
+function validateStep1() {
+  const first = $('f-first').value.trim();
+  const last = $('f-last').value.trim();
+  const phone = $('f-phone').value.trim();
+  const email = $('f-email').value.trim();
+  if (!NAME_RE.test(first)) return 'enter your first name.';
+  if (!NAME_RE.test(last)) return 'enter your last name.';
+  const digits = phone.replace(/\D/g, '');
+  if (digits.length < 10 || digits.length > 15) return 'enter a valid phone number.';
+  if (!EMAIL_RE.test(email)) return 'enter a valid email.';
+  return null;
+}
+
+function goStep2() {
+  const problem = validateStep1();
+  if (problem) { err('msg-1', problem); return; }
+  clearErr('msg-1');
+  $('step-1').hidden = true;
+  $('step-2').hidden = false;
+  $('c-school').focus();
+}
+$('next-btn').addEventListener('click', goStep2);
+$('back-btn').addEventListener('click', () => { $('step-2').hidden = true; $('step-1').hidden = false; });
+
+// Enter advances step 1 instead of submitting the form.
+['f-first', 'f-last', 'f-phone', 'f-email'].forEach((id) => {
+  $(id).addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); goStep2(); } });
+});
+
+// ---- step 2 preview ------------------------------------------------------
 function updatePreview() {
   const school = $('c-school').value;
-  const chapter = $('c-chapter').value.trim();
+  const chapter = $('c-chapter').value;
+  if (!school && !chapter) { $('preview').hidden = true; return; }
+  $('preview').hidden = false;
   const [a, b] = school ? schoolColors(school) : ['rgba(81,106,246,.6)', '#0B0F24'];
-  $('banner').style.background = `linear-gradient(135deg, ${a}, ${b})`;
-  const icon = $('icon-preview');
+  const icon = $('pv-icon');
   icon.style.background = `linear-gradient(135deg, ${a}, ${b})`;
   const glyph = glyphFor(chapter);
   icon.textContent = glyph;
   icon.classList.toggle('small-glyph', glyph.length >= 3);
-  $('chapter-hint').textContent = chapter && greekFor(chapter)
-    ? `Recognized ${greekFor(chapter)} — using the real letters.`
-    : "We'll recognize national fraternities and sororities and use their letters.";
-  $('preview-name').textContent = chapter || 'Your clan';
-  $('preview-school').textContent = school ? SCHOOLS[school][0] : 'Pick a school to preview colors';
-  $('preview-letters').textContent = chapter ? glyph : '—';
-  $('preview-actives').textContent = $('c-size').value || '—';
+  $('pv-name').textContent = chapter || 'Your clan';
+  $('pv-school').textContent = school ? SCHOOLS[school][0] : 'Pick a school';
 }
 $('c-school').addEventListener('change', updatePreview);
-$('c-chapter').addEventListener('input', updatePreview);
-$('c-size').addEventListener('input', updatePreview);
+$('c-chapter').addEventListener('change', updatePreview);
 
+// ---- submit --------------------------------------------------------------
 let created = false;
 $('clan-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   if (created) return;
-  const msg = $('form-msg');
-  msg.className = 'msg'; msg.textContent = '';
+  clearErr('msg-2');
+
   const school = $('c-school').value;
-  const chapterName = $('c-chapter').value.trim();
-  if (!school) { msg.className = 'msg err'; msg.textContent = 'choose your school.'; return; }
-  if (chapterName.length < 2) { msg.className = 'msg err'; msg.textContent = 'enter a chapter name.'; return; }
+  const chapterName = $('c-chapter').value;
+  if (!school) { err('msg-2', 'choose your school.'); return; }
+  if (!chapterName) { err('msg-2', 'choose your fraternity or sorority.'); return; }
 
   $('submit-btn').disabled = true;
   try {
     const res = await fetch('/api/clans', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ school, chapterName, chapterSize: $('c-size').value }),
+      body: JSON.stringify({
+        firstName: $('f-first').value.trim(),
+        lastName: $('f-last').value.trim(),
+        phone: $('f-phone').value.trim(),
+        email: $('f-email').value.trim(),
+        school, chapterName, chapterSize: $('c-size').value,
+      }),
     });
     if (res.status === 201) {
       const { clan } = await res.json();
@@ -500,39 +392,30 @@ $('clan-form').addEventListener('submit', async (e) => {
       showCreated(clan);
     } else {
       const body = await res.json().catch(() => ({}));
-      msg.className = 'msg err'; msg.textContent = (body.error || 'something went wrong.').toLowerCase();
+      err('msg-2', (body.error || 'something went wrong.').toLowerCase());
       $('submit-btn').disabled = false;
     }
-  } catch (err) {
-    msg.className = 'msg err'; msg.textContent = 'couldn’t reach the server.';
+  } catch (e2) {
+    err('msg-2', 'couldn’t reach the server.');
     $('submit-btn').disabled = false;
   }
 });
 
 function showCreated(clan) {
-  $('c-school').disabled = true; $('c-chapter').disabled = true; $('c-size').disabled = true;
-  $('success-name').textContent = clan.name;
-  $('success').classList.add('show');
-  $('form-msg').textContent = '';
-
-  const row = $('invite-row');
-  row.classList.add('copyable');
-  row.innerHTML = `<span class="ricon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 15 15 9"/><path d="M10.5 6.5 12 5a4 4 0 0 1 5.7 5.7l-1.5 1.5"/><path d="M13.5 17.5 12 19a4 4 0 0 1-5.7-5.7l1.5-1.5"/></svg></span><span class="rlabel">Copy link<small>Send it to your group chat</small></span><span class="rmeta" id="copy-state">→</span>`;
-  row.addEventListener('click', async () => {
+  $('step-2').hidden = true;
+  $('step-done').hidden = false;
+  $('done-name').textContent = clan.name;
+  $('copy-url').textContent = clan.referralUrl;
+  $('copy-row').addEventListener('click', async () => {
     try {
       await navigator.clipboard.writeText(clan.referralUrl);
       $('copy-state').textContent = 'Copied!';
-      setTimeout(() => { $('copy-state').textContent = '→'; }, 1800);
+      setTimeout(() => { $('copy-state').textContent = 'Copy'; }, 1800);
     } catch (e) {
       prompt('Copy this link:', clan.referralUrl);
     }
   });
-
-  $('submit-btn').style.display = 'none';
-  $('done-btn').style.display = 'inline-flex';
 }
-
-updatePreview();
 </script>
 </body>
 </html>

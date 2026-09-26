@@ -11,19 +11,20 @@
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg-top:#E7E9FC; --bg-bottom:#F9FAFF;
-  --ink:#0B091F;
-  --text:#15142B; --text-dim:#5B5A73; --text-faint:#8B899F;
-  --card:#FFFFFF; --field:#F7F8FF; --border:rgba(20,20,50,0.09); --border-strong:rgba(20,20,50,0.16);
-  --panel-tint:rgba(81,106,246,0.05); --panel-strong:rgba(81,106,246,0.10);
-  --blue:#516AF6; --blue-electric:#4A36FF; --blue-light:#ACB8F9; --red:#D64545;
-  --radius:20px; --radius-sm:14px;
-  --shadow:0 4px 24px rgba(20,20,60,0.06), 0 1px 2px rgba(20,20,60,0.05);
+  --bg:#080B1A; --bg-lift:#0A0E20;
+  --card:#0F1430; --card-2:#121835; --card-hl:#151C42;
+  --border:rgba(125,145,255,0.14); --border-strong:rgba(110,135,255,0.34);
+  --panel-tint:rgba(125,145,255,0.05); --panel-strong:rgba(125,145,255,0.10);
+  --field:#0A0E20;
+  --white:#FFFFFF; --text:#E8EBFA; --text-dim:#A8B2E0; --text-faint:#6E7AA8;
+  --blue:#516AF6; --blue-electric:#4A36FF; --blue-light:#8C9BFF; --red:#FF7A7A;
+  --radius:16px; --radius-sm:12px;
+  --shadow:none;
 }
 *{box-sizing:border-box;}
 [hidden]{display:none !important;}
 html,body{margin:0;}
-body{background:linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 55%, #ffffff 100%); color:var(--text); font-family:'Schibsted Grotesk','Inter',-apple-system,sans-serif; line-height:1.45; min-height:100vh; display:flex; flex-direction:column;}
+body{background:var(--bg); color:var(--text); font-family:'Schibsted Grotesk','Inter',-apple-system,sans-serif; line-height:1.45; min-height:100vh; display:flex; flex-direction:column;}
 button{font-family:inherit;}
 a{color:inherit; text-decoration:none;}
 svg{display:block;}
@@ -31,17 +32,15 @@ svg{display:block;}
 
 header{display:flex; align-items:center; justify-content:space-between; padding:28px 0 8px;}
 .brandmark{display:flex; align-items:center; gap:10px; font-weight:800; font-size:0.95rem; color:var(--text);}
-.badge{display:flex; align-items:center; justify-content:center; flex-shrink:0; width:26px; height:26px; border-radius:50%; background:linear-gradient(135deg, var(--blue-light), var(--blue-electric)); box-shadow:0 2px 10px rgba(81,106,246,.35);}
-.badge svg{width:58%; height:58%; color:#fff;}
 .lock-btn{background:none; border:1px solid var(--border-strong); color:var(--text-dim); border-radius:999px; padding:9px 18px; font-size:0.84rem; cursor:pointer; font-weight:600;}
 .lock-btn:hover{background:var(--panel-tint);}
 
-h1{font-size:clamp(1.9rem,3.4vw,2.4rem); font-weight:800; margin:20px 0 6px; letter-spacing:-0.03em; text-transform:uppercase; color:var(--ink);}
+h1{font-size:clamp(1.9rem,3.4vw,2.6rem); font-weight:800; margin:20px 0 6px; letter-spacing:-0.04em; color:var(--white);}
 .sub{font-size:0.98rem; color:var(--text-dim); margin:0 0 32px; max-width:60ch;}
 
 /* gate */
 .gate{max-width:380px; margin:100px auto 0; text-align:center;}
-.gate h2{font-size:1.2rem; margin-bottom:8px; color:var(--ink);}
+.gate h2{font-size:1.2rem; margin-bottom:8px; color:var(--white);}
 .gate p{font-size:0.88rem; margin-bottom:22px; color:var(--text-dim);}
 .gate input{width:100%; background:var(--field); border:1px solid var(--border-strong); border-radius:12px; padding:13px 14px; color:var(--text); font-family:inherit; font-size:0.95rem; outline:none; text-align:center; margin-bottom:14px;}
 .gate input:focus{border-color:var(--blue);}
@@ -74,39 +73,41 @@ tbody tr:not(:last-child) td{border-bottom:1px solid var(--border);}
 tbody tr{transition:background .12s ease;}
 tbody tr:hover{background:var(--panel-tint);}
 tbody tr.is-approved{opacity:.55;}
-td.username{font-weight:700; color:var(--ink);}
+td.username{font-weight:700; color:var(--white);}
 td.when{color:var(--text-faint); font-size:0.82rem; white-space:nowrap;}
 input[type="checkbox"]{width:17px; height:17px; accent-color:var(--blue-electric); cursor:pointer;}
 input[type="checkbox"]:disabled{cursor:default; opacity:.3;}
 .status-badge{display:inline-flex; align-items:center; gap:5px; font-size:0.76rem; font-weight:700; padding:4px 10px; border-radius:999px;}
-.status-badge.pending{background:#F1F2FA; color:var(--text-faint);}
-.status-badge.approved{background:rgba(81,106,246,0.12); color:var(--blue-electric);}
+.status-badge.pending{background:rgba(125,145,255,0.10); color:var(--text-faint);}
+.status-badge.approved{background:rgba(81,106,246,0.20); color:var(--blue-light);}
 .status-badge svg{width:11px; height:11px;}
-.approve-btn{background:var(--panel-strong); border:1px solid var(--border-strong); color:var(--blue-electric); border-radius:999px; padding:7px 16px; font-size:0.82rem; font-weight:700; cursor:pointer; transition:background .12s ease, opacity .12s ease, color .12s ease;}
+.approve-btn{background:var(--panel-strong); border:1px solid var(--border-strong); color:var(--blue-light); border-radius:999px; padding:7px 16px; font-size:0.82rem; font-weight:700; cursor:pointer; transition:background .12s ease, opacity .12s ease, color .12s ease;}
 .approve-btn:hover:not(:disabled){background:var(--blue-electric); color:#fff; border-color:transparent;}
 .approve-btn:disabled{opacity:.5; cursor:default;}
+.section-h{font-size:1.4rem; font-weight:800; color:var(--white); letter-spacing:-0.03em; margin:56px 0 4px;}
+td.muted{color:var(--text-faint); font-size:0.85rem;}
+td.stack small{display:block; color:var(--text-faint); font-size:0.8rem; margin-top:2px;}
 .empty{padding:50px 20px; text-align:center; color:var(--text-faint); font-size:0.9rem;}
-.load-error{margin-top:20px; padding:14px 16px; background:rgba(214,69,69,0.07); border:1px solid rgba(214,69,69,0.22); border-radius:12px; font-size:0.86rem; color:var(--red); display:flex; justify-content:space-between; align-items:center; gap:12px;}
-.load-error button{background:none; border:1px solid rgba(214,69,69,0.4); color:var(--red); border-radius:999px; padding:6px 12px; font-size:0.8rem; cursor:pointer; font-weight:600;}
+.load-error{margin-top:20px; padding:14px 16px; background:rgba(255,122,122,0.07); border:1px solid rgba(255,122,122,0.22); border-radius:12px; font-size:0.86rem; color:var(--red); display:flex; justify-content:space-between; align-items:center; gap:12px;}
+.load-error button{background:none; border:1px solid rgba(255,122,122,0.35); color:var(--red); border-radius:999px; padding:6px 12px; font-size:0.8rem; cursor:pointer; font-weight:600;}
 
 /* footer */
-.site-footer{background:var(--ink); color:rgba(234,237,255,0.7);}
+.site-footer{border-top:1px solid var(--border); color:var(--text-dim);}
 .footer-inner{max-width:1080px; margin:0 auto; padding:56px 32px 32px; display:flex; justify-content:space-between; gap:40px; flex-wrap:wrap;}
-.footer-brand .badge{width:34px; height:34px; margin-bottom:14px;}
-.footer-brand .fname{font-size:1.5rem; font-weight:800; color:#EAEDFF; letter-spacing:-0.02em;}
-.footer-brand p{font-size:0.92rem; color:rgba(234,237,255,0.5); margin:8px 0 0; max-width:26ch;}
+.footer-brand .fname{font-size:1.4rem; font-weight:800; color:var(--white); letter-spacing:-0.02em;}
+.footer-brand p{font-size:0.9rem; color:var(--text-faint); margin:8px 0 0; max-width:26ch;}
 .footer-cols{display:flex; gap:56px; flex-wrap:wrap;}
-.footer-col h4{font-size:0.72rem; text-transform:uppercase; letter-spacing:0.09em; color:rgba(234,237,255,0.38); margin:0 0 14px; font-weight:700;}
-.footer-col a{display:block; font-size:0.9rem; color:rgba(234,237,255,0.75); margin-bottom:11px; transition:color .12s ease;}
-.footer-col a:hover{color:#fff;}
-.footer-bottom{max-width:1080px; margin:0 auto; padding:20px 32px 32px; border-top:1px solid rgba(234,237,255,0.1); font-size:0.8rem; color:rgba(234,237,255,0.4);}
+.footer-col h4{font-size:0.66rem; text-transform:uppercase; letter-spacing:0.11em; color:var(--text-faint); margin:0 0 14px; font-weight:700;}
+.footer-col a{display:block; font-size:0.89rem; color:var(--text-dim); margin-bottom:11px; transition:color .12s ease;}
+.footer-col a:hover{color:var(--white);}
+.footer-bottom{max-width:1080px; margin:0 auto; padding:18px 32px 32px; border-top:1px solid var(--border); font-size:0.8rem; color:var(--text-faint);}
 </style>
 </head>
 <body>
 
 <div class="wrap">
   <header>
-    <div class="brandmark"><span class="badge"><svg viewBox="0 0 100 100" fill="currentColor"><path d="M36.9747 24.3586C44.1067 24.3587 49.7941 27.9515 52.9484 33.5959C48.7626 38.0418 45.6617 43.7612 44.4679 50.0002C43.2743 56.2391 44.1865 61.9572 46.67 66.4026C41.3555 72.0468 34.2931 75.6408 27.1613 75.6409C18.432 75.6407 11.8659 70.2588 9.46204 62.3196H26.8478C27.4159 62.3193 28.0059 61.8593 28.1691 61.2932L34.6486 38.7043C34.8098 38.1381 34.4815 37.6782 33.9152 37.678H14.1788C19.6213 29.7404 28.2465 24.3588 36.9747 24.3586Z"/><path d="M72.3285 24.3586C85.0779 24.3586 93.2156 35.8374 90.5062 49.9993C87.7966 64.1596 75.2646 75.6409 62.515 75.6409C53.7856 75.6408 47.2196 70.2589 44.8158 62.3196H64.1537C64.7218 62.3194 65.3127 61.8594 65.476 61.2932L71.9545 38.7043C72.1157 38.138 71.7876 37.678 71.2211 37.678H49.5316C54.9741 29.7401 63.5999 24.3587 72.3285 24.3586Z"/></svg></span>fomo / clans / internal</div>
+    <div class="brandmark">fomo / clans / internal</div>
     <button class="lock-btn" id="lock-btn" hidden>lock</button>
   </header>
 
@@ -144,9 +145,27 @@ input[type="checkbox"]:disabled{cursor:default; opacity:.3;}
       <table>
         <thead><tr>
           <th class="col-check"><input type="checkbox" id="select-all" title="Select all pending"></th>
-          <th>Username</th><th>School</th><th>Fraternity</th><th>Joined</th><th>Status</th><th class="col-action"></th>
+          <th>Username</th><th>Email</th><th>School</th><th>Chapter</th><th>Joined</th><th>Status</th><th class="col-action"></th>
         </tr></thead>
         <tbody id="rows"></tbody>
+      </table>
+    </div>
+
+    <h2 class="section-h">Chapter contacts</h2>
+    <p class="sub">Who registered each chapter. Not shown anywhere public.</p>
+    <div class="toolbar">
+      <span class="count" id="chapter-count"></span>
+      <button class="copy-btn" id="copy-chapters">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>
+        Copy as CSV
+      </button>
+    </div>
+    <div class="table-wrap" id="chapters-wrap">
+      <table>
+        <thead><tr>
+          <th>Chapter</th><th>School</th><th>Who registered</th><th>Contact</th><th>Progress</th><th>Registered</th>
+        </tr></thead>
+        <tbody id="chapter-rows"></tbody>
       </table>
     </div>
   </div>
@@ -155,7 +174,6 @@ input[type="checkbox"]:disabled{cursor:default; opacity:.3;}
 <footer class="site-footer">
   <div class="footer-inner">
     <div class="footer-brand">
-      <span class="badge"><svg viewBox="0 0 100 100" fill="currentColor"><path d="M36.9747 24.3586C44.1067 24.3587 49.7941 27.9515 52.9484 33.5959C48.7626 38.0418 45.6617 43.7612 44.4679 50.0002C43.2743 56.2391 44.1865 61.9572 46.67 66.4026C41.3555 72.0468 34.2931 75.6408 27.1613 75.6409C18.432 75.6407 11.8659 70.2588 9.46204 62.3196H26.8478C27.4159 62.3193 28.0059 61.8593 28.1691 61.2932L34.6486 38.7043C34.8098 38.1381 34.4815 37.6782 33.9152 37.678H14.1788C19.6213 29.7404 28.2465 24.3588 36.9747 24.3586Z"/><path d="M72.3285 24.3586C85.0779 24.3586 93.2156 35.8374 90.5062 49.9993C87.7966 64.1596 75.2646 75.6409 62.515 75.6409C53.7856 75.6408 47.2196 70.2589 44.8158 62.3196H64.1537C64.7218 62.3194 65.3127 61.8594 65.476 61.2932L71.9545 38.7043C72.1157 38.138 71.7876 37.678 71.2211 37.678H49.5316C54.9741 29.7401 63.5999 24.3587 72.3285 24.3586Z"/></svg></span>
       <div class="fname">fomo</div>
       <p>where traders become legends.</p>
     </div>
@@ -191,6 +209,7 @@ const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&
 const key = (r) => r.code + '|' + r.username.toLowerCase();
 let passcode = sessionStorage.getItem('internal_pass') || '';
 let rows = [];
+let chapters = [];
 let selected = new Set();
 
 function fmtWhen(iso) {
@@ -204,6 +223,7 @@ async function loadRoster() {
     if (!res.ok) throw new Error('bad status');
     const data = await res.json();
     rows = data.rows || [];
+    chapters = data.chapters || [];
     selected = new Set([...selected].filter((k) => rows.some((r) => key(r) === k && r.status !== 'approved')));
     render();
     $('load-error').hidden = true;
@@ -239,6 +259,7 @@ function render() {
         return `<tr class="${isApproved ? 'is-approved' : ''}" data-key="${esc(k)}">
           <td class="col-check"><input type="checkbox" class="row-check" ${isApproved ? 'disabled' : ''} ${selected.has(k) ? 'checked' : ''}></td>
           <td class="username">@${esc(r.username)}</td>
+          <td class="muted">${esc(r.email || '—')}</td>
           <td>${esc(r.school)}</td>
           <td>${esc(r.chapterName)}</td>
           <td class="when">${fmtWhen(r.joinedAt)}</td>
@@ -267,6 +288,8 @@ function render() {
   updateApplyBtn();
   updateSelectAll();
 
+  renderChapters();
+
   let e = document.getElementById('empty-state');
   if (!rows.length) {
     if (!e) {
@@ -280,6 +303,33 @@ function render() {
     e.remove();
   }
 }
+
+function renderChapters() {
+  $('chapter-count').textContent = chapters.length + (chapters.length === 1 ? ' chapter' : ' chapters');
+  $('chapters-wrap').hidden = chapters.length === 0;
+  $('chapter-rows').innerHTML = chapters.map((c) => `<tr>
+    <td class="username">${esc(c.chapterName)}</td>
+    <td>${esc(c.school)}</td>
+    <td>${esc(c.firstName)} ${esc(c.lastName)}</td>
+    <td class="stack">${esc(c.email)}<small>${esc(c.phone)}</small></td>
+    <td class="muted">${c.members}${c.chapterSize ? ' / ' + c.chapterSize : ''}</td>
+    <td class="when">${fmtWhen(c.createdAt)}</td>
+  </tr>`).join('');
+}
+
+$('copy-chapters').addEventListener('click', async () => {
+  const header = 'chapter,school,first_name,last_name,email,phone,members,actives,registered_at';
+  const lines = chapters.map((c) => [c.chapterName, c.school, c.firstName, c.lastName, c.email, c.phone, c.members, c.chapterSize || '', c.createdAt]
+    .map((v) => `"${String(v).replace(/"/g, '""')}"`).join(','));
+  const csv = [header, ...lines].join('\n');
+  try {
+    await navigator.clipboard.writeText(csv);
+    const btn = $('copy-chapters');
+    const original = btn.innerHTML;
+    btn.textContent = 'Copied!';
+    setTimeout(() => { btn.innerHTML = original; }, 1600);
+  } catch (e) { prompt('Copy this CSV:', csv); }
+});
 
 function updateSelectAll() {
   const pending = rows.filter((r) => r.status !== 'approved');
@@ -320,8 +370,8 @@ $('apply-btn').addEventListener('click', () => {
 });
 
 $('copy-csv').addEventListener('click', async () => {
-  const header = 'username,school,fraternity,status,joined_at';
-  const lines = rows.map((r) => [r.username, r.school, r.chapterName, r.status, r.joinedAt].map((v) => `"${String(v).replace(/"/g, '""')}"`).join(','));
+  const header = 'username,email,school,chapter,status,joined_at';
+  const lines = rows.map((r) => [r.username, r.email || '', r.school, r.chapterName, r.status, r.joinedAt].map((v) => `"${String(v).replace(/"/g, '""')}"`).join(','));
   const csv = [header, ...lines].join('\n');
   try {
     await navigator.clipboard.writeText(csv);
