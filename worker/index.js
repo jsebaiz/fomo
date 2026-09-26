@@ -466,6 +466,16 @@ export default {
       const chapters = Array.isArray(body && body.chapters) ? body.chapters : [];
       if (!chapters.length || chapters.length > 300) return json({ error: 'Send 1–300 chapters' }, 400);
 
+      // replace: wipe every clan and its artwork first, so an import is a clean slate.
+      let cleared = 0;
+      if (body.replace === true) {
+        const existing = await readList(env, CLANS_KEY);
+        cleared = existing.length;
+        const media = await env.FLIGHTS.list({ prefix: 'clanmedia:' });
+        for (const k of media.keys) await env.FLIGHTS.delete(k.name);
+        await env.FLIGHTS.put(CLANS_KEY, JSON.stringify([]));
+      }
+
       const clans = await readList(env, CLANS_KEY);
       let created = 0, updated = 0;
       const errors = [];
@@ -477,10 +487,21 @@ export default {
           errors.push({ input: raw, error: 'seedApproved must be an integer 0–5000' });
           continue;
         }
+        // Contact is optional on import; when present it lands in the admin roster only.
+        let contact = null;
+        if (raw.firstName || raw.email) {
+          const person = parseContact(raw);
+          if (person.error) { errors.push({ input: raw.chapterName, error: person.error }); continue; }
+          contact = person.contact;
+        }
+
         const existing = clans.find((c) => c.school === parsed.clan.school && c.chapterName.toLowerCase() === parsed.clan.chapterName.toLowerCase());
         if (existing) {
           existing.chapterSize = parsed.clan.chapterSize;
           existing.seedApproved = seedApproved;
+          existing.bestTrader = parsed.clan.bestTrader;
+          existing.worstTrader = parsed.clan.worstTrader;
+          if (contact) existing.contact = contact;
           updated++;
         } else {
           if (clans.length >= MAX_CLANS) { errors.push({ input: raw, error: 'Clan limit reached' }); continue; }
@@ -490,13 +511,15 @@ export default {
             id: crypto.randomUUID(), code,
             school: parsed.clan.school, schoolLabel: parsed.clan.schoolLabel, chapterName: parsed.clan.chapterName,
             name: parsed.clan.name, chapterSize: parsed.clan.chapterSize, seedApproved,
-            members: [], createdAt: new Date().toISOString(),
+            bestTrader: parsed.clan.bestTrader, worstTrader: parsed.clan.worstTrader,
+            contact, media: { avatar: false, banner: false },
+            members: [], createdAt: raw.registeredAt || new Date().toISOString(),
           });
           created++;
         }
       }
       await env.FLIGHTS.put(CLANS_KEY, JSON.stringify(clans));
-      return json({ created, updated, errors });
+      return json({ cleared, created, updated, errors });
     }
 
     // Resolve a referral code to the clan it names, for the join page to greet by name.

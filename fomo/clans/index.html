@@ -196,7 +196,7 @@ a.fcard:hover{border-color:var(--border-2); background:var(--surface-2); transfo
     </div>
     <div class="list" id="list-more" hidden></div>
     <button class="expand-btn" id="expand-btn" hidden>
-      <span id="expand-label">View full list</span>
+      <span id="expand-label">View all</span>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
     </button>
   </div>
@@ -367,7 +367,7 @@ function render(clans) {
     $('expand-btn').hidden = false;
     $('list-more').hidden = !expanded;
     $('expand-btn').classList.toggle('open', expanded);
-    $('expand-label').textContent = expanded ? 'Show top 10 only' : `View full list (${rest.length} more)`;
+    $('expand-label').textContent = expanded ? 'Show top 10' : `View all ${clans.length} chapters`;
   } else {
     $('list-more').innerHTML = ''; $('list-more').hidden = true;
     $('expand-btn').hidden = true;
@@ -378,7 +378,7 @@ $('expand-btn').addEventListener('click', () => {
   expanded = !expanded;
   $('list-more').hidden = !expanded;
   $('expand-btn').classList.toggle('open', expanded);
-  $('expand-label').textContent = expanded ? 'Show top 10 only' : `View full list (${restCount} more)`;
+  $('expand-label').textContent = expanded ? 'Show top 10' : `View all ${restCount + 10} chapters`;
 });
 
 $('tabs').querySelectorAll('button').forEach((b) => {
