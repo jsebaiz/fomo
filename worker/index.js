@@ -266,6 +266,10 @@ function parseContact(body) {
 // Clan artwork. Kept in its own KV entry per clan so the leaderboard read
 // (one JSON blob of every clan) stays small and fast.
 const MEDIA_KEY = (id) => `clanmedia:${id}`;
+// Outreach log per chapter, kept out of the main clans blob so the public
+// leaderboard read stays small. The clan record only carries lastContact.
+const NOTES_KEY = (id) => `clannotes:${id}`;
+const MAX_NOTES = 200;
 const MAX_IMAGE_BYTES = 400 * 1024;
 function parseDataUrl(value) {
   const v = String(value || '');
@@ -508,6 +512,7 @@ export default {
           bestTrader: c.bestTrader || '', worstTrader: c.worstTrader || '',
           referredBy: c.referredBy || null,
           paidOut: c.paidOut || null,
+          lastContact: c.lastContact || null, noteCount: c.noteCount || 0,
           referralUrl: `${url.origin}/fomo/referral/${c.code}`,
           members: totalApproved(c), chapterSize: c.chapterSize || null,
           createdAt: c.createdAt,
@@ -565,6 +570,49 @@ export default {
       clan.paidOut = paid ? new Date().toISOString() : null;
       await env.FLIGHTS.put(CLANS_KEY, JSON.stringify(clans));
       return json({ id, paidOut: clan.paidOut });
+    }
+
+    // Outreach log for a chapter. Admin-only — it holds what was said to whom.
+    const notesReq = path.match(/^\/api\/clans\/internal\/notes\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/);
+    if (notesReq) {
+      const denied = await guard(request, env);
+      if (denied) return denied;
+      const id = notesReq[1];
+
+      if (request.method === 'GET') {
+        const notes = (await env.FLIGHTS.get(NOTES_KEY(id), 'json')) || [];
+        return json({ notes });
+      }
+
+      if (request.method === 'POST' || request.method === 'DELETE') {
+        const text = await request.text();
+        if (text.length > 4096) return json({ error: 'Request too large' }, 413);
+        let body;
+        try { body = JSON.parse(text || '{}'); } catch { return json({ error: 'Invalid JSON' }, 400); }
+
+        const clans = await readList(env, CLANS_KEY);
+        const clan = clans.find((c) => c.id === id);
+        if (!clan) return json({ error: 'Not found' }, 404);
+
+        let notes = (await env.FLIGHTS.get(NOTES_KEY(id), 'json')) || [];
+
+        if (request.method === 'POST') {
+          const note = String(body.text || '').trim().slice(0, 1000);
+          if (!note) return json({ error: 'Write something first' }, 400);
+          const channel = ['call', 'text', 'email', 'dm', 'note'].includes(body.channel) ? body.channel : 'note';
+          notes.unshift({ at: new Date().toISOString(), text: note, channel });
+          notes = notes.slice(0, MAX_NOTES);
+        } else {
+          const at = String(body.at || '');
+          notes = notes.filter((n) => n.at !== at);
+        }
+
+        await env.FLIGHTS.put(NOTES_KEY(id), JSON.stringify(notes));
+        clan.lastContact = notes.length ? notes[0].at : null;
+        clan.noteCount = notes.length;
+        await env.FLIGHTS.put(CLANS_KEY, JSON.stringify(clans));
+        return json({ notes, lastContact: clan.lastContact });
+      }
     }
 
     // One-time admin import for chapter-level totals from an external roster (e.g. an
@@ -673,6 +721,7 @@ export default {
       if (next.length === clans.length) return json({ error: 'Not found' }, 404);
       await env.FLIGHTS.put(CLANS_KEY, JSON.stringify(next));
       await env.FLIGHTS.delete(MEDIA_KEY(clanId[1]));
+      await env.FLIGHTS.delete(NOTES_KEY(clanId[1]));
       return empty(204);
     }
 
@@ -703,7 +752,7 @@ export default {
       return json({ name: clan.name, members: clan.members.length }, 201);
     }
 
-    if (path === '/api/flights' || path === '/api/auth' || path === '/api/clans' || path === '/api/clans/internal' || path === '/api/clans/internal/approve' || path === '/api/clans/internal/payout' || path === '/api/clans/seed' || lookup || join || clanId || mediaReq || del) {
+    if (path === '/api/flights' || path === '/api/auth' || path === '/api/clans' || path === '/api/clans/internal' || path === '/api/clans/internal/approve' || path === '/api/clans/internal/payout' || path === '/api/clans/seed' || lookup || join || clanId || mediaReq || notesReq || del) {
       return json({ error: 'Method not allowed' }, 405);
     }
     return json({ error: 'Not found' }, 404);

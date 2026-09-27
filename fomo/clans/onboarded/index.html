@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Onboarded · fomo greek wars</title>
+<link rel="icon" href="/fomo-favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#08080F; --surface:#0F0F17; --surface-2:#15151F; --surface-3:#1B1B26;
+  --border:rgba(255,255,255,0.08); --border-2:rgba(255,255,255,0.16);
+  --white:#FFFFFF; --text:#E8E8F0; --text-dim:#9B9BAD; --text-faint:#6A6A7C;
+  --blue:#516AF6; --blue-hi:#6A80F8; --blue-dim:#8E9CF7;
+  --green:#2ED47A; --amber:#F2B23E; --red:#F2555A;
+  --radius:14px; --radius-lg:18px;
+}
+*{box-sizing:border-box;}
+[hidden]{display:none !important;}
+html,body{margin:0;}
+body{background:var(--bg); color:var(--text); font-family:'Schibsted Grotesk','Inter',-apple-system,sans-serif; line-height:1.5; min-height:100vh; display:flex; flex-direction:column; -webkit-font-smoothing:antialiased;}
+button{font-family:inherit;} a{color:inherit; text-decoration:none;} svg{display:block;}
+textarea{font-family:inherit;}
+.wrap{max-width:1180px; margin:0 auto; padding:0 40px 80px; flex:1; width:100%;}
+@media (max-width:720px){ .wrap{padding:0 20px 56px;} }
+
+.nav{display:flex; align-items:center; justify-content:space-between; padding:26px 0 0; gap:12px; flex-wrap:wrap;}
+.nav-brand{font-size:1.18rem; font-weight:800; color:var(--white); letter-spacing:-0.02em;}
+.nav-brand .slash{color:var(--text-faint); font-weight:600;}
+.nav-actions{display:flex; gap:9px;}
+.nav-btn{border:1px solid var(--border); background:var(--surface); color:var(--text); border-radius:10px; padding:10px 18px; font-size:0.88rem; font-weight:600; cursor:pointer;}
+.nav-btn:hover{background:var(--surface-2); border-color:var(--border-2);}
+
+.head{display:grid; grid-template-columns:1fr 470px; gap:48px; align-items:center; padding:64px 0 40px;}
+@media (max-width:1040px){ .head{grid-template-columns:1fr; gap:32px; padding:44px 0 30px;} }
+h1{font-size:clamp(2.2rem,4.4vw,3rem); font-weight:800; letter-spacing:-0.04em; line-height:1.02; margin:0 0 16px; color:var(--white);}
+.lede{font-size:1.02rem; color:var(--text-dim); margin:0; max-width:46ch;}
+.stats{display:grid; grid-template-columns:repeat(2,1fr); gap:12px;}
+.stat{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px 18px;}
+.stat .num{font-size:1.65rem; font-weight:800; color:var(--white); letter-spacing:-0.03em; line-height:1.1;}
+.stat .lbl{font-size:0.72rem; color:var(--text-faint); margin-top:3px; text-transform:uppercase; letter-spacing:0.08em; font-weight:700;}
+.stat.good .num{color:var(--green);} .stat.warn .num{color:var(--amber);}
+
+.gate{max-width:370px; margin:110px auto 0; text-align:center;}
+.gate h2{font-size:1.2rem; margin:0 0 8px; color:var(--white);}
+.gate p{font-size:0.9rem; margin:0 0 22px; color:var(--text-dim);}
+.gate input{width:100%; background:var(--surface); border:1px solid var(--border); border-radius:11px; padding:14px; color:var(--text); font-family:inherit; font-size:0.96rem; outline:none; text-align:center; margin-bottom:12px;}
+.gate input:focus{border-color:var(--blue);}
+.btn-primary{width:100%; background:var(--blue); color:#fff; border:none; border-radius:11px; padding:14px; font-weight:700; font-size:0.95rem; cursor:pointer;}
+.btn-primary:hover{background:var(--blue-hi);}
+.btn-primary:disabled{opacity:.5; cursor:default;}
+.msg{font-size:0.85rem; margin:12px 0 0; min-height:1.2em;}
+.msg.err{color:var(--red);}
+
+.bar{display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; margin-bottom:18px;}
+.tabs{display:inline-flex; gap:3px; background:var(--surface); border:1px solid var(--border); border-radius:11px; padding:4px;}
+.tabs button{background:none; border:none; color:var(--text-faint); font-weight:600; font-size:0.85rem; padding:8px 16px; border-radius:8px; cursor:pointer;}
+.tabs button:hover{color:var(--text);}
+.tabs button.on{background:var(--blue); color:#fff;}
+.search{background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:10px 14px; color:var(--text); font-size:0.88rem; outline:none; min-width:220px;}
+.search:focus{border-color:var(--blue);}
+
+/* chapter cards */
+.list{display:flex; flex-direction:column; gap:12px;}
+.card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden;}
+.card.open{border-color:var(--border-2);}
+.row{display:grid; grid-template-columns:1fr 210px 150px 128px 34px; gap:16px; align-items:center; padding:17px 20px; cursor:pointer; transition:background .12s ease;}
+@media (max-width:920px){ .row{grid-template-columns:1fr 34px; gap:10px;} .row .hide-sm{display:none;} }
+.row:hover{background:var(--surface-2);}
+.who{min-width:0;}
+.ch{font-weight:700; color:var(--white); font-size:1.04rem; display:flex; align-items:center; gap:9px; flex-wrap:wrap;}
+.sch{font-size:0.85rem; color:var(--text-faint); margin-top:2px;}
+.person{font-size:0.88rem; color:var(--text-dim);}
+.person span{display:block; color:var(--text-faint); font-size:0.79rem; margin-top:2px;}
+.prog{text-align:right;}
+.pct{font-size:0.8rem; font-weight:800;}
+.pct.over{color:var(--green);} .pct.under{color:var(--red);}
+.count{font-size:0.85rem; color:var(--text-dim); margin-top:1px;}
+.touch{font-size:0.78rem; color:var(--text-faint); text-align:right;}
+.touch b{display:block; color:var(--text-dim); font-weight:600;}
+.touch.stale b{color:var(--amber);}
+.chev{color:var(--text-faint); transition:transform .2s ease; justify-self:end;}
+.chev svg{width:16px; height:16px;}
+.card.open .chev{transform:rotate(180deg);}
+
+.tag{display:inline-block; font-size:0.6rem; font-weight:800; letter-spacing:0.09em; text-transform:uppercase; padding:3px 7px; border-radius:5px;}
+.tag.paid{background:var(--green); color:#062B18;}
+.tag.goal{background:rgba(46,212,122,0.15); color:var(--green);}
+
+/* detail */
+.detail{border-top:1px solid var(--border); padding:20px; display:grid; grid-template-columns:270px 1fr; gap:24px;}
+@media (max-width:920px){ .detail{grid-template-columns:1fr; gap:18px;} }
+.contact h4, .log h4{font-size:0.64rem; text-transform:uppercase; letter-spacing:0.11em; color:var(--text-faint); margin:0 0 12px; font-weight:700;}
+.cline{display:flex; align-items:center; gap:9px; margin-bottom:9px; font-size:0.89rem;}
+.cline svg{width:14px; height:14px; color:var(--text-faint); flex-shrink:0;}
+.cline a{color:var(--blue-dim);} .cline a:hover{text-decoration:underline;}
+.cline .muted{color:var(--text-faint);}
+
+.compose{display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap;}
+.compose select{background:var(--surface-2); border:1px solid var(--border); border-radius:9px; padding:9px 11px; color:var(--text); font-family:inherit; font-size:0.84rem; outline:none;}
+.compose select:focus{border-color:var(--blue);}
+.compose textarea{flex:1; min-width:220px; background:var(--surface-2); border:1px solid var(--border); border-radius:9px; padding:10px 12px; color:var(--text); font-size:0.89rem; outline:none; resize:vertical; min-height:42px;}
+.compose textarea:focus{border-color:var(--blue);}
+.compose button{background:var(--blue); border:none; color:#fff; border-radius:9px; padding:9px 18px; font-size:0.86rem; font-weight:700; cursor:pointer; align-self:flex-start;}
+.compose button:hover:not(:disabled){background:var(--blue-hi);}
+.compose button:disabled{opacity:.5; cursor:default;}
+
+.notes{display:flex; flex-direction:column; gap:9px; max-height:330px; overflow-y:auto;}
+.note{background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:11px 13px; position:relative;}
+.note .meta{display:flex; align-items:center; gap:8px; margin-bottom:4px;}
+.note .chan{font-size:0.58rem; font-weight:800; letter-spacing:0.09em; text-transform:uppercase; padding:2px 6px; border-radius:4px; background:rgba(81,106,246,0.16); color:var(--blue-dim);}
+.note .at{font-size:0.75rem; color:var(--text-faint);}
+.note .txt{font-size:0.89rem; color:var(--text); white-space:pre-wrap; word-break:break-word;}
+.note .del{position:absolute; top:9px; right:9px; background:none; border:none; color:var(--text-faint); font-size:0.95rem; line-height:1; cursor:pointer; opacity:0;}
+.note:hover .del{opacity:1;}
+.note .del:hover{color:var(--red);}
+.no-notes{font-size:0.86rem; color:var(--text-faint); padding:6px 0;}
+
+.empty{padding:56px 20px; text-align:center; color:var(--text-faint); font-size:0.92rem; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg);}
+.err-box{margin:16px 0; padding:14px 16px; background:rgba(242,85,90,0.08); border:1px solid rgba(242,85,90,0.25); border-radius:12px; font-size:0.86rem; color:var(--red); display:flex; justify-content:space-between; align-items:center; gap:12px;}
+.err-box button{background:none; border:1px solid rgba(242,85,90,0.4); color:var(--red); border-radius:8px; padding:6px 12px; font-size:0.8rem; cursor:pointer; font-weight:600;}
+
+.site-footer{border-top:1px solid var(--border);}
+.footer-inner{max-width:1180px; margin:0 auto; padding:44px 40px 30px; display:flex; justify-content:space-between; gap:36px; flex-wrap:wrap;}
+@media (max-width:720px){ .footer-inner{padding:36px 20px 24px;} }
+.footer-brand .fname{font-size:1.3rem; font-weight:800; color:var(--white); letter-spacing:-0.02em;}
+.footer-brand p{font-size:0.88rem; color:var(--text-faint); margin:6px 0 0;}
+.footer-cols{display:flex; gap:52px; flex-wrap:wrap;}
+.footer-col h4{font-size:0.64rem; text-transform:uppercase; letter-spacing:0.11em; color:var(--text-faint); margin:0 0 12px; font-weight:700;}
+.footer-col a{display:block; font-size:0.87rem; color:var(--text-dim); margin-bottom:10px;}
+.footer-col a:hover{color:var(--white);}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <nav class="nav">
+    <a class="nav-brand" href="/fomo/clans/">fomo <span class="slash">/greek wars /onboarded</span></a>
+    <div class="nav-actions">
+      <a class="nav-btn" href="/fomo/clans/internal/">Roster</a>
+      <button class="nav-btn" id="lock-btn" hidden>Lock</button>
+    </div>
+  </nav>
+
+  <div class="gate" id="gate">
+    <h2>Admin only</h2>
+    <p>Enter the passcode to open the chapter portal.</p>
+    <input type="password" id="pass" autocomplete="off" placeholder="passcode">
+    <button class="btn-primary" id="gate-btn">Unlock</button>
+    <p class="msg" id="gate-msg"></p>
+  </div>
+
+  <div id="portal" hidden>
+    <header class="head">
+      <div>
+        <h1>Onboarded.</h1>
+        <p class="lede">Chapters that hit their goal, and every conversation you've had with them. Log a call, text, email or DM so nothing gets dropped.</p>
+      </div>
+      <div class="stats">
+        <div class="stat good"><div class="num" id="s-onboarded">—</div><div class="lbl">Onboarded</div></div>
+        <div class="stat"><div class="num" id="s-paid">—</div><div class="lbl">Paid out</div></div>
+        <div class="stat warn"><div class="num" id="s-stale">—</div><div class="lbl">Need follow-up</div></div>
+        <div class="stat"><div class="num" id="s-logged">—</div><div class="lbl">Touchpoints</div></div>
+      </div>
+    </header>
+
+    <div class="err-box" id="err-box" hidden>
+      <span>couldn't load chapters right now.</span>
+      <button id="retry-btn">retry</button>
+    </div>
+
+    <div class="bar">
+      <div class="tabs" id="tabs">
+        <button data-f="onboarded" class="on">Onboarded</button>
+        <button data-f="all">All chapters</button>
+        <button data-f="stale">Need follow-up</button>
+      </div>
+      <input class="search" id="search" type="search" placeholder="Search chapter, school or contact…">
+    </div>
+
+    <div class="list" id="list"></div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="fname">fomo</div>
+      <p>where traders become legends.</p>
+    </div>
+    <div class="footer-cols">
+      <div class="footer-col">
+        <h4>About</h4>
+        <a href="https://fomo.family" target="_blank" rel="noopener">Blog</a>
+        <a href="https://fomo.family" target="_blank" rel="noopener">FAQ</a>
+        <a href="https://fomo.family" target="_blank" rel="noopener">Careers</a>
+      </div>
+      <div class="footer-col">
+        <h4>Social</h4>
+        <a href="https://fomo.family" target="_blank" rel="noopener">Discord</a>
+        <a href="https://fomo.family" target="_blank" rel="noopener">X/Twitter</a>
+        <a href="https://fomo.family" target="_blank" rel="noopener">Instagram</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="https://fomo.family" target="_blank" rel="noopener">Privacy Policy</a>
+        <a href="https://fomo.family" target="_blank" rel="noopener">Terms of Service</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+let passcode = sessionStorage.getItem('internal_pass') || '';
+let chapters = [];
+let filter = 'onboarded';
+let query = '';
+let openId = null;
+const notesCache = {};
+
+// A chapter counts as onboarded once it hits the 80% goal.
+const isOnboarded = (c) => !!(c.chapterSize && c.members >= 0.8 * c.chapterSize);
+const STALE_DAYS = 14;
+const daysSince = (iso) => (iso ? Math.floor((Date.now() - new Date(iso).getTime()) / 86400000) : null);
+const isStale = (c) => { const d = daysSince(c.lastContact); return d === null || d >= STALE_DAYS; };
+
+function fmtDate(iso) {
+  return new Date(iso).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+}
+function ago(iso) {
+  const d = daysSince(iso);
+  if (d === null) return 'never contacted';
+  if (d === 0) return 'today';
+  if (d === 1) return 'yesterday';
+  return `${d} days ago`;
+}
+
+async function load() {
+  try {
+    const res = await fetch('/api/clans/internal', { headers: { 'x-passcode': passcode } });
+    if (res.status === 401 || res.status === 503) {
+      lockOut(res.status === 503 ? 'the passcode isn’t set up yet.' : 'session expired — enter the passcode again.');
+      return;
+    }
+    if (!res.ok) throw new Error('bad');
+    const data = await res.json();
+    chapters = data.chapters || [];
+    render();
+    $('err-box').hidden = true;
+  } catch (e) { $('err-box').hidden = false; }
+}
+$('retry-btn').addEventListener('click', load);
+
+function visible() {
+  let list = chapters;
+  if (filter === 'onboarded') list = list.filter(isOnboarded);
+  else if (filter === 'stale') list = list.filter(isStale);
+  if (query) {
+    const q = query.toLowerCase();
+    list = list.filter((c) => [c.chapterName, c.school, c.firstName, c.lastName, c.email, c.instagram]
+      .some((v) => String(v || '').toLowerCase().includes(q)));
+  }
+  return list;
+}
+
+function renderStats() {
+  const onboarded = chapters.filter(isOnboarded);
+  $('s-onboarded').textContent = onboarded.length;
+  $('s-paid').textContent = chapters.filter((c) => c.paidOut).length;
+  $('s-stale').textContent = onboarded.filter(isStale).length;
+  $('s-logged').textContent = chapters.reduce((n, c) => n + (c.noteCount || 0), 0);
+}
+
+function cardHtml(c) {
+  const pct = c.chapterSize ? Math.round((c.members / c.chapterSize) * 100) : null;
+  const open = openId === c.id;
+  return `<div class="card ${open ? 'open' : ''}" data-id="${esc(c.id)}">
+    <div class="row">
+      <div class="who">
+        <div class="ch">${esc(c.chapterName)}
+          ${c.paidOut ? '<span class="tag paid">Paid</span>' : (isOnboarded(c) ? '<span class="tag goal">Goal hit</span>' : '')}
+        </div>
+        <div class="sch">${esc(c.school)}</div>
+      </div>
+      <div class="person hide-sm">${esc(c.firstName)} ${esc(c.lastName)}<span>${esc(c.role || '—')}</span></div>
+      <div class="prog hide-sm">
+        ${pct === null ? '' : `<div class="pct ${pct >= 80 ? 'over' : 'under'}">${pct}%</div>`}
+        <div class="count">${c.members}${c.chapterSize ? ' / ' + c.chapterSize : ''}</div>
+      </div>
+      <div class="touch hide-sm ${isStale(c) ? 'stale' : ''}"><b>${ago(c.lastContact)}</b>${c.noteCount || 0} logged</div>
+      <div class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div>
+    </div>
+    ${open ? detailHtml(c) : ''}
+  </div>`;
+}
+
+function detailHtml(c) {
+  const notes = notesCache[c.id];
+  const tel = String(c.phone || '').replace(/[^\d+]/g, '');
+  return `<div class="detail">
+    <div class="contact">
+      <h4>Contact</h4>
+      <div class="cline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h5l2 5-3 2a12 12 0 006 6l2-3 5 2v5a16 16 0 01-17-17z"/></svg>
+        ${tel ? `<a href="tel:${esc(tel)}">${esc(c.phone)}</a>` : '<span class="muted">—</span>'}</div>
+      <div class="cline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+        ${c.email ? `<a href="mailto:${esc(c.email)}">${esc(c.email)}</a>` : '<span class="muted">—</span>'}</div>
+      <div class="cline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
+        ${c.instagram ? `<a href="https://instagram.com/${encodeURIComponent(c.instagram)}" target="_blank" rel="noopener">@${esc(c.instagram)}</a>` : '<span class="muted">—</span>'}</div>
+      <div class="cline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 15 15 9"/><path d="M10.5 6.5 12 5a4 4 0 015.7 5.7l-1.5 1.5"/><path d="M13.5 17.5 12 19a4 4 0 01-5.7-5.7l1.5-1.5"/></svg>
+        <a href="#" class="copy-ref" data-link="${esc(c.referralUrl)}">Copy referral link</a></div>
+    </div>
+
+    <div class="log">
+      <h4>Outreach log</h4>
+      <div class="compose">
+        <select class="chan">
+          <option value="call">Call</option>
+          <option value="text">Text</option>
+          <option value="email">Email</option>
+          <option value="dm">DM</option>
+          <option value="note">Note</option>
+        </select>
+        <textarea class="note-input" rows="1" placeholder="What did you talk about?"></textarea>
+        <button class="add-note">Log it</button>
+      </div>
+      <p class="msg err note-msg" hidden></p>
+      <div class="notes">${
+        notes === undefined ? '<div class="no-notes">Loading…</div>'
+        : notes.length ? notes.map(noteHtml).join('')
+        : '<div class="no-notes">Nothing logged yet.</div>'
+      }</div>
+    </div>
+  </div>`;
+}
+
+function noteHtml(n) {
+  return `<div class="note">
+    <button class="del" data-at="${esc(n.at)}" title="Delete">×</button>
+    <div class="meta"><span class="chan">${esc(n.channel || 'note')}</span><span class="at">${fmtDate(n.at)}</span></div>
+    <div class="txt">${esc(n.text)}</div>
+  </div>`;
+}
+
+function render() {
+  renderStats();
+  const list = visible();
+  $('list').innerHTML = list.length
+    ? list.map(cardHtml).join('')
+    : `<div class="empty">${chapters.length ? 'No chapters match that.' : 'No chapters registered yet.'}</div>`;
+  wire();
+}
+
+function wire() {
+  $('list').querySelectorAll('.card').forEach((card) => {
+    const id = card.dataset.id;
+    card.querySelector('.row').addEventListener('click', () => toggle(id));
+
+    const detail = card.querySelector('.detail');
+    if (!detail) return;
+    detail.addEventListener('click', (e) => e.stopPropagation());
+
+    const add = detail.querySelector('.add-note');
+    const input = detail.querySelector('.note-input');
+    const chan = detail.querySelector('.chan');
+    add.addEventListener('click', () => addNote(id, input, chan, add, detail));
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); add.click(); }
+    });
+    detail.querySelectorAll('.del').forEach((b) =>
+      b.addEventListener('click', () => delNote(id, b.dataset.at)));
+    const ref = detail.querySelector('.copy-ref');
+    ref.addEventListener('click', async (e) => {
+      e.preventDefault();
+      try {
+        await navigator.clipboard.writeText(ref.dataset.link);
+        const t = ref.textContent; ref.textContent = 'Copied!';
+        setTimeout(() => { ref.textContent = t; }, 1500);
+      } catch (err) { prompt('Referral link:', ref.dataset.link); }
+    });
+  });
+}
+
+async function toggle(id) {
+  openId = openId === id ? null : id;
+  render();
+  if (openId && notesCache[openId] === undefined) {
+    await fetchNotes(openId);
+    render();
+  }
+}
+
+async function fetchNotes(id) {
+  try {
+    const res = await fetch(`/api/clans/internal/notes/${encodeURIComponent(id)}`, { headers: { 'x-passcode': passcode } });
+    if (res.status === 401 || res.status === 503) { lockOut('session expired — enter the passcode again.'); return; }
+    notesCache[id] = res.ok ? (await res.json()).notes || [] : [];
+  } catch (e) { notesCache[id] = []; }
+}
+
+async function addNote(id, input, chan, btn, detail) {
+  const text = input.value.trim();
+  const msg = detail.querySelector('.note-msg');
+  msg.hidden = true;
+  if (!text) { msg.textContent = 'write something first.'; msg.hidden = false; return; }
+  btn.disabled = true;
+  try {
+    const res = await fetch(`/api/clans/internal/notes/${encodeURIComponent(id)}`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'x-passcode': passcode },
+      body: JSON.stringify({ text, channel: chan.value }),
+    });
+    if (res.status === 401 || res.status === 503) { lockOut('session expired — enter the passcode again.'); return; }
+    if (!res.ok) throw new Error('bad');
+    const data = await res.json();
+    notesCache[id] = data.notes;
+    const c = chapters.find((x) => x.id === id);
+    if (c) { c.lastContact = data.lastContact; c.noteCount = data.notes.length; }
+    render();
+  } catch (e) {
+    msg.textContent = 'couldn’t save that — try again.';
+    msg.hidden = false;
+    btn.disabled = false;
+  }
+}
+
+async function delNote(id, at) {
+  try {
+    const res = await fetch(`/api/clans/internal/notes/${encodeURIComponent(id)}`, {
+      method: 'DELETE',
+      headers: { 'content-type': 'application/json', 'x-passcode': passcode },
+      body: JSON.stringify({ at }),
+    });
+    if (res.status === 401 || res.status === 503) { lockOut('session expired — enter the passcode again.'); return; }
+    if (!res.ok) throw new Error('bad');
+    const data = await res.json();
+    notesCache[id] = data.notes;
+    const c = chapters.find((x) => x.id === id);
+    if (c) { c.lastContact = data.lastContact; c.noteCount = data.notes.length; }
+    render();
+  } catch (e) { /* leave the note in place if it didn't delete */ }
+}
+
+$('tabs').addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-f]');
+  if (!b) return;
+  filter = b.dataset.f;
+  $('tabs').querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b));
+  render();
+});
+$('search').addEventListener('input', () => { query = $('search').value.trim(); render(); });
+
+function showPortal() { $('gate').hidden = true; $('portal').hidden = false; $('lock-btn').hidden = false; }
+function lockOut(message) {
+  passcode = ''; sessionStorage.removeItem('internal_pass');
+  $('portal').hidden = true; $('lock-btn').hidden = true;
+  $('gate').hidden = false; $('pass').value = '';
+  $('gate-msg').className = 'msg err'; $('gate-msg').textContent = message || '';
+  $('pass').focus();
+}
+$('lock-btn').addEventListener('click', () => lockOut(''));
+$('gate-btn').addEventListener('click', unlock);
+$('pass').addEventListener('keydown', (e) => { if (e.key === 'Enter') unlock(); });
+async function unlock() {
+  const attempt = $('pass').value;
+  $('gate-btn').disabled = true;
+  $('gate-msg').className = 'msg'; $('gate-msg').textContent = '';
+  try {
+    const res = await fetch('/api/auth', { method: 'POST', headers: { 'x-passcode': attempt } });
+    if (res.status === 204) {
+      passcode = attempt; sessionStorage.setItem('internal_pass', attempt);
+      showPortal(); await load();
+    } else if (res.status === 503) {
+      $('gate-msg').className = 'msg err'; $('gate-msg').textContent = 'the passcode isn’t set up yet.';
+    } else {
+      $('gate-msg').className = 'msg err'; $('gate-msg').textContent = 'wrong passcode.';
+    }
+  } catch (e) {
+    $('gate-msg').className = 'msg err'; $('gate-msg').textContent = 'couldn’t reach the server.';
+  }
+  $('gate-btn').disabled = false;
+}
+
+if (passcode) { showPortal(); load(); }
+</script>
+</body>
+</html>
