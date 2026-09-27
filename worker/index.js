@@ -507,6 +507,7 @@ export default {
           role: c.contact.role || '', instagram: c.contact.instagram || '',
           bestTrader: c.bestTrader || '', worstTrader: c.worstTrader || '',
           referredBy: c.referredBy || null,
+          paidOut: c.paidOut || null,
           referralUrl: `${url.origin}/fomo/referral/${c.code}`,
           members: totalApproved(c), chapterSize: c.chapterSize || null,
           createdAt: c.createdAt,
@@ -544,6 +545,26 @@ export default {
       }
       if (approved > 0) await env.FLIGHTS.put(CLANS_KEY, JSON.stringify(clans));
       return json({ approved });
+    }
+
+    // Marks a chapter as paid out. Admin-only bookkeeping — it never reaches the
+    // public board, it's just so the roster remembers who's already been paid.
+    if (path === '/api/clans/internal/payout' && request.method === 'POST') {
+      const denied = await guard(request, env);
+      if (denied) return denied;
+      const text = await request.text();
+      if (text.length > 1024) return json({ error: 'Request too large' }, 413);
+      let body;
+      try { body = JSON.parse(text); } catch { return json({ error: 'Invalid JSON' }, 400); }
+
+      const id = String((body && body.id) || '');
+      const paid = body && body.paid === true;
+      const clans = await readList(env, CLANS_KEY);
+      const clan = clans.find((c) => c.id === id);
+      if (!clan) return json({ error: 'Not found' }, 404);
+      clan.paidOut = paid ? new Date().toISOString() : null;
+      await env.FLIGHTS.put(CLANS_KEY, JSON.stringify(clans));
+      return json({ id, paidOut: clan.paidOut });
     }
 
     // One-time admin import for chapter-level totals from an external roster (e.g. an
@@ -682,7 +703,7 @@ export default {
       return json({ name: clan.name, members: clan.members.length }, 201);
     }
 
-    if (path === '/api/flights' || path === '/api/auth' || path === '/api/clans' || path === '/api/clans/internal' || path === '/api/clans/internal/approve' || path === '/api/clans/seed' || lookup || join || clanId || mediaReq || del) {
+    if (path === '/api/flights' || path === '/api/auth' || path === '/api/clans' || path === '/api/clans/internal' || path === '/api/clans/internal/approve' || path === '/api/clans/internal/payout' || path === '/api/clans/seed' || lookup || join || clanId || mediaReq || del) {
       return json({ error: 'Method not allowed' }, 405);
     }
     return json({ error: 'Not found' }, 404);

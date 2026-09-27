@@ -117,6 +117,14 @@ tbody tr.picked{background:rgba(242,85,90,0.16) !important; box-shadow:inset 3px
 .tabs button:hover{color:var(--text);}
 .tabs button.on{background:var(--blue); color:#fff;}
 .refby{color:var(--white); font-weight:700;}
+.pct-sm{display:block; font-size:0.78rem; font-weight:800; letter-spacing:-0.01em; margin-bottom:2px;}
+.pct-sm.under{color:var(--red);}
+.pct-sm.over{color:var(--green);}
+.payout{margin-top:7px; background:none; border:1px solid var(--border-2); color:var(--text-faint); border-radius:6px; padding:4px 9px; font-size:0.6rem; font-weight:800; letter-spacing:0.09em; text-transform:uppercase; cursor:pointer; transition:background .12s ease, color .12s ease, border-color .12s ease;}
+.payout:hover:not(:disabled){border-color:var(--text-dim); color:var(--text-dim);}
+.payout.on{background:var(--green); border-color:transparent; color:#062B18;}
+.payout.on:hover:not(:disabled){filter:brightness(1.08);}
+.payout:disabled{opacity:.5; cursor:default;}
 
 .empty{padding:52px 20px; text-align:center; color:var(--text-faint); font-size:0.9rem;}
 .err-box{margin:16px 0; padding:14px 16px; background:rgba(242,85,90,0.08); border:1px solid rgba(242,85,90,0.25); border-radius:12px; font-size:0.86rem; color:var(--red); display:flex; justify-content:space-between; align-items:center; gap:12px;}
@@ -349,10 +357,40 @@ function renderSubs() {
   syncApply();
 }
 
+function pctCell(c) {
+  if (!c.chapterSize) return '';
+  const pct = Math.round((c.members / c.chapterSize) * 100);
+  return `<span class="pct-sm ${pct >= 80 ? 'over' : 'under'}">${pct}%</span>`;
+}
+
+async function togglePayout(btn) {
+  const id = btn.dataset.payout;
+  const nowPaid = !btn.dataset.paid;
+  btn.disabled = true;
+  try {
+    const res = await fetch('/api/clans/internal/payout', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'x-passcode': passcode },
+      body: JSON.stringify({ id, paid: nowPaid }),
+    });
+    if (res.status === 401 || res.status === 503) { lockOut('session expired — enter the passcode again.'); return; }
+    if (!res.ok) throw new Error('bad');
+    const chapter = chapters.find((c) => c.id === id);
+    if (chapter) chapter.paidOut = nowPaid ? new Date().toISOString() : null;
+    btn.dataset.paid = nowPaid ? '1' : '';
+    btn.classList.toggle('on', nowPaid);
+  } catch (e) {
+    show('ch-msg', 'couldn’t update the payout — try again.');
+  }
+  btn.disabled = false;
+}
+
 function renderChapters() {
   $('ch-count').textContent = `${chapters.length} registered`;
   $('ch-rows').innerHTML = chapters.length ? chapters.map((c) => `<tr data-id="${esc(c.id)}" class="${pickedId === c.id ? 'picked' : ''}">
-    <td class="uname">${esc(c.chapterName)}</td>
+    <td class="uname">${esc(c.chapterName)}
+      <button class="payout${c.paidOut ? ' on' : ''}" data-payout="${esc(c.id)}" data-paid="${c.paidOut ? '1' : ''}">Paid out</button>
+    </td>
     <td>${esc(c.school)}</td>
     <td>${esc(c.firstName)} ${esc(c.lastName)}<span class="sub">${esc(c.role || '—')}</span></td>
     <td>${esc(c.phone)}<span class="sub">${esc(c.email)}</span><span class="sub">${c.instagram ? `<a class="ig" href="https://instagram.com/${encodeURIComponent(c.instagram)}" target="_blank" rel="noopener">@${esc(c.instagram)}</a>` : '—'}</span></td>
@@ -361,9 +399,12 @@ function renderChapters() {
       <div class="stack"><span class="lbl-sm">Worst</span>${esc(c.worstTrader || '—')}</div>
     </td>
     <td><button class="act link-btn" data-link="${esc(c.referralUrl)}">Copy link</button></td>
-    <td class="right">${c.members}${c.chapterSize ? ' / ' + c.chapterSize : ''}<span class="sub">${fmtWhen(c.createdAt)}</span></td>
+    <td class="right">${pctCell(c)}${c.members}${c.chapterSize ? ' / ' + c.chapterSize : ''}<span class="sub">${fmtWhen(c.createdAt)}</span></td>
   </tr>`).join('') : '<tr><td colspan="7"><div class="empty">No chapters registered yet.</div></td></tr>';
 
+  $('ch-rows').querySelectorAll('.payout').forEach((b) => {
+    b.addEventListener('click', (e) => { e.stopPropagation(); if (!pickMode) togglePayout(b); });
+  });
   $('ch-rows').querySelectorAll('.link-btn').forEach((b) => {
     b.addEventListener('click', async (e) => {
       e.stopPropagation();
@@ -500,10 +541,10 @@ $('copy-subs').addEventListener('click', () => csv('copy-subs',
   'username,email,school,chapter,status,verified,joined_at',
   rows.map((r) => [r.username, r.email, r.school, r.chapterName, r.status, r.verified ? 'verified' : 'unverified', r.joinedAt].map(q).join(','))));
 $('copy-chapters').addEventListener('click', () => csv('copy-chapters',
-  'chapter,school,first_name,last_name,role,instagram,email,phone,best_trader,worst_trader,referred_by_chapter,referred_by_school,referred_by_instagram,referral_link,members,actives,registered_at',
+  'chapter,school,first_name,last_name,role,instagram,email,phone,best_trader,worst_trader,referred_by_chapter,referred_by_school,referred_by_instagram,payout,referral_link,members,actives,registered_at',
   chapters.map((c) => [c.chapterName, c.school, c.firstName, c.lastName, c.role, c.instagram, c.email, c.phone,
     c.bestTrader, c.worstTrader,
-    c.referredBy ? c.referredBy.chapterName : '', c.referredBy ? c.referredBy.schoolLabel : '', c.referredBy ? c.referredBy.instagram : '',
+    c.referredBy ? c.referredBy.chapterName : '', c.referredBy ? c.referredBy.schoolLabel : '', c.referredBy ? c.referredBy.instagram : '', c.paidOut ? 'paid' : 'unpaid',
     c.referralUrl, c.members, c.chapterSize || '', c.createdAt].map(q).join(','))));
 
 function showRoster() { $('gate').hidden = true; $('roster').hidden = false; $('lock-btn').hidden = false; }
