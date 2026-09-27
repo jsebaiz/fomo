@@ -123,8 +123,9 @@ h1{font-size:clamp(2.6rem,6.2vw,4.2rem); font-weight:800; letter-spacing:-0.04em
 /* how it works */
 .flow-section{margin-top:82px;}
 .flow-caption{font-size:0.88rem; color:var(--text-faint); margin:0 0 22px;}
-.steps{display:grid; grid-template-columns:repeat(3,1fr); gap:18px;}
-@media (max-width:760px){ .steps{grid-template-columns:1fr; gap:12px;} }
+.steps{display:grid; grid-template-columns:repeat(4,1fr); gap:18px;}
+@media (max-width:1100px){ .steps{grid-template-columns:repeat(2,1fr);} }
+@media (max-width:660px){ .steps{grid-template-columns:1fr; gap:12px;} }
 .fcard{position:relative; display:block; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:22px 24px; transition:border-color .15s ease, background .15s ease, transform .15s ease;}
 a.fcard:hover{border-color:var(--border-2); background:var(--surface-2); transform:translateY(-2px);}
 .fcard-tag{font-size:0.65rem; text-transform:uppercase; letter-spacing:0.11em; color:var(--blue-dim); font-weight:700; margin-bottom:10px;}
@@ -132,6 +133,10 @@ a.fcard:hover{border-color:var(--border-2); background:var(--surface-2); transfo
 .fcard-note{font-size:0.86rem; color:var(--text-faint); margin-top:8px; line-height:1.45;}
 .fcard .corner{position:absolute; top:21px; right:22px; width:14px; height:14px; color:var(--text-faint);}
 .step-goal{background:var(--surface-3); border-color:var(--border-2);}
+.step-more{background:var(--surface-3); border-color:var(--border-2);}
+.learn-btn{display:inline-flex; align-items:center; gap:7px; margin-top:14px; background:var(--blue); color:#fff; border-radius:9px; padding:9px 15px; font-size:0.84rem; font-weight:700;}
+.learn-btn:hover{background:var(--blue-hi);}
+.learn-btn svg{width:13px; height:13px;}
 
 /* modal */
 .modal-overlay{position:fixed; inset:0; background:rgba(4,6,16,0.72); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; z-index:30; padding:20px;}
@@ -169,7 +174,7 @@ a.fcard:hover{border-color:var(--border-2); background:var(--surface-2); transfo
 
 <div class="wrap">
   <nav class="nav">
-    <a class="nav-brand" href="/">fomo <span class="slash">/greek wars</span></a>
+    <a class="nav-brand" href="/fomo/clans/">fomo <span class="slash">/greek wars</span></a>
     <div class="nav-actions">
       <a class="nav-btn secondary" id="get-app" href="#" target="_blank" rel="noopener">Get the app</a>
       <a class="nav-btn" href="create/">Register chapter</a>
@@ -249,6 +254,15 @@ a.fcard:hover{border-color:var(--border-2); background:var(--surface-2); transfo
         <div class="fcard-tag">Step 03</div>
         <div class="fcard-title">Hit 80% → $500</div>
         <div class="fcard-note">$500 is guaranteed once 80% of your actives are onboarded.</div>
+      </div>
+      <div class="fcard step step-more">
+        <div class="fcard-tag">Step 04</div>
+        <div class="fcard-title">Want to earn more?</div>
+        <div class="fcard-note">$100 for every frat you refer to this site that registers, plus more on-campus earning opportunities.</div>
+        <a class="learn-btn" href="https://milomessina.com/fomo" target="_blank" rel="noopener">
+          Learn more
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </a>
       </div>
     </div>
   </section>

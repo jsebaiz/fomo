@@ -4,172 +4,220 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>fomo / clans / internal</title>
+<title>Admin · fomo greek wars</title>
 <link rel="icon" href="/fomo-favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#080B1A; --bg-lift:#0A0E20;
-  --card:#0F1430; --card-2:#121835; --card-hl:#151C42;
-  --border:rgba(125,145,255,0.14); --border-strong:rgba(110,135,255,0.34);
-  --panel-tint:rgba(125,145,255,0.05); --panel-strong:rgba(125,145,255,0.10);
-  --field:#0A0E20;
-  --white:#FFFFFF; --text:#E8EBFA; --text-dim:#A8B2E0; --text-faint:#6E7AA8;
-  --blue:#516AF6; --blue-electric:#4A36FF; --blue-light:#8C9BFF; --red:#FF7A7A;
-  --radius:16px; --radius-sm:12px;
-  --shadow:none;
+  --bg:#08080F; --surface:#0F0F17; --surface-2:#15151F; --surface-3:#1B1B26;
+  --border:rgba(255,255,255,0.08); --border-2:rgba(255,255,255,0.16);
+  --white:#FFFFFF; --text:#E8E8F0; --text-dim:#9B9BAD; --text-faint:#6A6A7C;
+  --blue:#516AF6; --blue-hi:#6A80F8; --blue-dim:#8E9CF7;
+  --green:#2ED47A; --red:#F2555A;
+  --radius:14px; --radius-lg:18px;
 }
 *{box-sizing:border-box;}
 [hidden]{display:none !important;}
 html,body{margin:0;}
-body{background:var(--bg); color:var(--text); font-family:'Schibsted Grotesk','Inter',-apple-system,sans-serif; line-height:1.45; min-height:100vh; display:flex; flex-direction:column;}
+body{background:var(--bg); color:var(--text); font-family:'Schibsted Grotesk','Inter',-apple-system,sans-serif; line-height:1.5; min-height:100vh; display:flex; flex-direction:column; -webkit-font-smoothing:antialiased;}
 button{font-family:inherit;}
 a{color:inherit; text-decoration:none;}
 svg{display:block;}
-.wrap{max-width:1000px; margin:0 auto; padding:0 32px 80px; flex:1; width:100%;}
+.wrap{max-width:1180px; margin:0 auto; padding:0 40px 80px; flex:1; width:100%;}
+@media (max-width:720px){ .wrap{padding:0 20px 56px;} }
 
-header{display:flex; align-items:center; justify-content:space-between; padding:28px 0 8px;}
-.brandmark{display:flex; align-items:center; gap:10px; font-weight:800; font-size:0.95rem; color:var(--text);}
-.lock-btn{background:none; border:1px solid var(--border-strong); color:var(--text-dim); border-radius:999px; padding:9px 18px; font-size:0.84rem; cursor:pointer; font-weight:600;}
-.lock-btn:hover{background:var(--panel-tint);}
+/* nav */
+.nav{display:flex; align-items:center; justify-content:space-between; padding:26px 0 0;}
+.nav-brand{font-size:1.18rem; font-weight:800; color:var(--white); letter-spacing:-0.02em;}
+.nav-brand .slash{color:var(--text-faint); font-weight:600;}
+.nav-btn{border:1px solid var(--border); background:var(--surface); color:var(--text); border-radius:10px; padding:10px 18px; font-size:0.88rem; font-weight:600; cursor:pointer; transition:background .15s ease, border-color .15s ease;}
+.nav-btn:hover{background:var(--surface-2); border-color:var(--border-2);}
 
-h1{font-size:clamp(1.9rem,3.4vw,2.6rem); font-weight:800; margin:20px 0 6px; letter-spacing:-0.04em; color:var(--white);}
-.sub{font-size:0.98rem; color:var(--text-dim); margin:0 0 32px; max-width:60ch;}
+/* head + stats */
+.head{display:grid; grid-template-columns:1fr 470px; gap:48px; align-items:center; padding:64px 0 46px;}
+@media (max-width:1040px){ .head{grid-template-columns:1fr; gap:32px; padding:44px 0 34px;} }
+h1{font-size:clamp(2.2rem,4.4vw,3rem); font-weight:800; letter-spacing:-0.04em; line-height:1.02; margin:0 0 16px; color:var(--white);}
+.lede{font-size:1.02rem; color:var(--text-dim); margin:0; max-width:46ch;}
+.stats{display:grid; grid-template-columns:repeat(2,1fr); gap:12px;}
+.stat{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px 18px;}
+.stat .num{font-size:1.65rem; font-weight:800; color:var(--white); letter-spacing:-0.03em; line-height:1.1;}
+.stat .lbl{font-size:0.72rem; color:var(--text-faint); margin-top:3px; text-transform:uppercase; letter-spacing:0.08em; font-weight:700;}
+.stat.good .num{color:var(--green);}
 
 /* gate */
-.gate{max-width:380px; margin:100px auto 0; text-align:center;}
-.gate h2{font-size:1.2rem; margin-bottom:8px; color:var(--white);}
-.gate p{font-size:0.88rem; margin-bottom:22px; color:var(--text-dim);}
-.gate input{width:100%; background:var(--field); border:1px solid var(--border-strong); border-radius:12px; padding:13px 14px; color:var(--text); font-family:inherit; font-size:0.95rem; outline:none; text-align:center; margin-bottom:14px;}
+.gate{max-width:370px; margin:110px auto 0; text-align:center;}
+.gate h2{font-size:1.2rem; margin:0 0 8px; color:var(--white);}
+.gate p{font-size:0.9rem; margin:0 0 22px; color:var(--text-dim);}
+.gate input{width:100%; background:var(--surface); border:1px solid var(--border); border-radius:11px; padding:14px; color:var(--text); font-family:inherit; font-size:0.96rem; outline:none; text-align:center; margin-bottom:12px;}
 .gate input:focus{border-color:var(--blue);}
-.btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:14px; border-radius:14px; font-weight:700; font-size:0.95rem; cursor:pointer; border:none;}
-.btn-primary{background:var(--blue-electric); color:#fff;}
-.btn-primary:hover{filter:brightness(1.12);}
-.btn-primary:disabled{opacity:.5; cursor:default; filter:none;}
-.msg{font-size:0.84rem; margin:12px 0 0; min-height:1.2em;}
+.btn-primary{width:100%; background:var(--blue); color:#fff; border:none; border-radius:11px; padding:14px; font-weight:700; font-size:0.95rem; cursor:pointer;}
+.btn-primary:hover{background:var(--blue-hi);}
+.btn-primary:disabled{opacity:.5; cursor:default;}
+.msg{font-size:0.85rem; margin:12px 0 0; min-height:1.2em;}
 .msg.err{color:var(--red);}
 
-/* roster */
-.toolbar{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px; flex-wrap:wrap;}
-.count{font-size:0.88rem; color:var(--text-faint); font-weight:600;}
-.toolbar-actions{display:flex; align-items:center; gap:10px;}
-.apply-btn{background:var(--blue-electric); border:1px solid transparent; color:#fff; border-radius:999px; padding:10px 20px; font-size:0.86rem; font-weight:700; cursor:pointer; transition:filter .12s ease, opacity .12s ease;}
-.apply-btn:hover:not(:disabled){filter:brightness(1.12);}
-.apply-btn:disabled{opacity:.5; cursor:default; background:var(--panel-strong); color:var(--text-faint);}
-.copy-btn{background:var(--card); border:1px solid var(--border-strong); color:var(--text); border-radius:999px; padding:10px 18px; font-size:0.86rem; cursor:pointer; display:inline-flex; align-items:center; gap:7px; transition:background .12s ease; font-weight:600;}
-.copy-btn:hover{background:var(--panel-tint);}
-.copy-btn svg{width:14px; height:14px;}
-.toolbar-msg{font-size:0.84rem; color:var(--red); margin:0 0 14px;}
+/* sections */
+.sec{margin-top:52px;}
+.sec-head{display:flex; align-items:flex-end; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:16px;}
+.sec-head h2{font-size:1.35rem; font-weight:800; color:var(--white); letter-spacing:-0.03em; margin:0;}
+.sec-head p{font-size:0.86rem; color:var(--text-faint); margin:4px 0 0;}
+.tools{display:flex; align-items:center; gap:9px;}
+.tool{background:var(--surface); border:1px solid var(--border); color:var(--text); border-radius:10px; padding:9px 15px; font-size:0.85rem; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:7px; transition:background .12s ease, border-color .12s ease, color .12s ease;}
+.tool:hover{background:var(--surface-2); border-color:var(--border-2);}
+.tool svg{width:14px; height:14px;}
+.tool.primary{background:var(--blue); border-color:transparent; color:#fff;}
+.tool.primary:hover{background:var(--blue-hi);}
+.tool.primary:disabled{opacity:.45; cursor:default; background:var(--surface-2); color:var(--text-faint); border-color:var(--border);}
+.tool.danger{background:var(--red); border-color:transparent; color:#fff;}
+.tool.danger:hover{filter:brightness(1.1);}
+.tool.armed{border-color:var(--red); color:var(--red);}
 
-.table-wrap{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow);}
-table{width:100%; border-collapse:collapse; font-size:0.92rem;}
-th,td{text-align:left; padding:14px 20px;}
-th.col-check, td.col-check{padding-right:0; width:40px;}
-th.col-action, td.col-action{text-align:right; white-space:nowrap;}
-thead th{font-size:0.74rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-faint); border-bottom:1px solid var(--border); font-weight:700;}
-tbody tr:not(:last-child) td{border-bottom:1px solid var(--border);}
-tbody tr{transition:background .12s ease;}
-tbody tr:hover{background:var(--panel-tint);}
-tbody tr.is-approved{opacity:.55;}
-td.username{font-weight:700; color:var(--white);}
-td.when{color:var(--text-faint); font-size:0.82rem; white-space:nowrap;}
-input[type="checkbox"]{width:17px; height:17px; accent-color:var(--blue-electric); cursor:pointer;}
-input[type="checkbox"]:disabled{cursor:default; opacity:.3;}
-.status-badge{display:inline-flex; align-items:center; gap:5px; font-size:0.76rem; font-weight:700; padding:4px 10px; border-radius:999px;}
-.status-badge.pending{background:rgba(125,145,255,0.10); color:var(--text-faint);}
-.status-badge.approved{background:rgba(81,106,246,0.20); color:var(--blue-light);}
-.status-badge svg{width:11px; height:11px;}
-.approve-btn{background:var(--panel-strong); border:1px solid var(--border-strong); color:var(--blue-light); border-radius:999px; padding:7px 16px; font-size:0.82rem; font-weight:700; cursor:pointer; transition:background .12s ease, opacity .12s ease, color .12s ease;}
-.approve-btn:hover:not(:disabled){background:var(--blue-electric); color:#fff; border-color:transparent;}
-.approve-btn:disabled{opacity:.5; cursor:default;}
-.section-h{font-size:1.4rem; font-weight:800; color:var(--white); letter-spacing:-0.03em; margin:56px 0 4px;}
-td.muted{color:var(--text-faint); font-size:0.85rem;}
-td.stack small{display:block; color:var(--text-faint); font-size:0.79rem; margin-top:2px;}
-.link-btn{background:var(--panel-strong); border:1px solid var(--border-strong); color:var(--blue-light); border-radius:8px; padding:6px 12px; font-size:0.79rem; font-weight:700; cursor:pointer; white-space:nowrap;}
-.link-btn:hover{background:var(--blue-electric); color:#fff; border-color:transparent;}
-.empty{padding:50px 20px; text-align:center; color:var(--text-faint); font-size:0.9rem;}
-.load-error{margin-top:20px; padding:14px 16px; background:rgba(255,122,122,0.07); border:1px solid rgba(255,122,122,0.22); border-radius:12px; font-size:0.86rem; color:var(--red); display:flex; justify-content:space-between; align-items:center; gap:12px;}
-.load-error button{background:none; border:1px solid rgba(255,122,122,0.35); color:var(--red); border-radius:999px; padding:6px 12px; font-size:0.8rem; cursor:pointer; font-weight:600;}
+/* tables */
+.panel{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden;}
+.scroll{overflow-x:auto;}
+table{width:100%; border-collapse:collapse; font-size:0.9rem; min-width:760px;}
+th,td{text-align:left; padding:13px 18px; vertical-align:middle;}
+th.chk, td.chk{width:42px; padding-right:0;}
+th.right, td.right{text-align:right; white-space:nowrap;}
+thead th{font-size:0.68rem; text-transform:uppercase; letter-spacing:0.09em; color:var(--text-faint); border-bottom:1px solid var(--border); font-weight:700;}
+tbody tr{border-bottom:1px solid var(--border); transition:background .12s ease;}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:var(--surface-2);}
+tbody tr.done{opacity:.5;}
+.uname{font-weight:700; color:var(--white);}
+.dim{color:var(--text-faint); font-size:0.84rem;}
+.when{color:var(--text-faint); font-size:0.8rem; white-space:nowrap;}
+input[type="checkbox"]{width:16px; height:16px; accent-color:var(--blue); cursor:pointer;}
+input[type="checkbox"]:disabled{opacity:.3; cursor:default;}
+
+.lbl-sm{display:block; font-size:0.62rem; text-transform:uppercase; letter-spacing:0.09em; color:var(--text-faint); font-weight:700; margin-bottom:1px;}
+.stack + .stack{margin-top:8px;}
+td .sub{display:block; color:var(--text-faint); font-size:0.8rem; margin-top:2px;}
+
+.pill{display:inline-block; font-size:0.7rem; font-weight:700; padding:4px 9px; border-radius:6px; white-space:nowrap;}
+.pill.pending{background:rgba(255,255,255,0.07); color:var(--text-faint);}
+.pill.approved{background:rgba(46,212,122,0.14); color:var(--green);}
+.verify{display:block; font-size:0.66rem; font-weight:700; margin-bottom:6px; white-space:nowrap;}
+.verify.yes{color:var(--green);}
+.verify.no{color:var(--red);}
+.act{background:var(--surface-3); border:1px solid var(--border-2); color:var(--blue-dim); border-radius:8px; padding:6px 14px; font-size:0.8rem; font-weight:700; cursor:pointer;}
+.act:hover:not(:disabled){background:var(--blue); color:#fff; border-color:transparent;}
+.act:disabled{opacity:.5; cursor:default;}
+.ig{color:var(--blue-dim);}
+.ig:hover{text-decoration:underline;}
+
+tbody.picking tr{cursor:pointer;}
+tbody.picking tr:hover{background:rgba(242,85,90,0.10); box-shadow:inset 3px 0 0 var(--red);}
+tbody tr.picked{background:rgba(242,85,90,0.16) !important; box-shadow:inset 3px 0 0 var(--red);}
+.hint{font-size:0.83rem; color:var(--red); margin:0 0 12px;}
+
+.empty{padding:52px 20px; text-align:center; color:var(--text-faint); font-size:0.9rem;}
+.err-box{margin:16px 0; padding:14px 16px; background:rgba(242,85,90,0.08); border:1px solid rgba(242,85,90,0.25); border-radius:12px; font-size:0.86rem; color:var(--red); display:flex; justify-content:space-between; align-items:center; gap:12px;}
+.err-box button{background:none; border:1px solid rgba(242,85,90,0.4); color:var(--red); border-radius:8px; padding:6px 12px; font-size:0.8rem; cursor:pointer; font-weight:600;}
 
 /* footer */
-.site-footer{border-top:1px solid var(--border); color:var(--text-dim);}
-.footer-inner{max-width:1080px; margin:0 auto; padding:56px 32px 32px; display:flex; justify-content:space-between; gap:40px; flex-wrap:wrap;}
-.footer-brand .fname{font-size:1.4rem; font-weight:800; color:var(--white); letter-spacing:-0.02em;}
-.footer-brand p{font-size:0.9rem; color:var(--text-faint); margin:8px 0 0; max-width:26ch;}
-.footer-cols{display:flex; gap:56px; flex-wrap:wrap;}
-.footer-col h4{font-size:0.66rem; text-transform:uppercase; letter-spacing:0.11em; color:var(--text-faint); margin:0 0 14px; font-weight:700;}
-.footer-col a{display:block; font-size:0.89rem; color:var(--text-dim); margin-bottom:11px; transition:color .12s ease;}
+.site-footer{border-top:1px solid var(--border);}
+.footer-inner{max-width:1180px; margin:0 auto; padding:44px 40px 30px; display:flex; justify-content:space-between; gap:36px; flex-wrap:wrap;}
+@media (max-width:720px){ .footer-inner{padding:36px 20px 24px;} }
+.footer-brand .fname{font-size:1.3rem; font-weight:800; color:var(--white); letter-spacing:-0.02em;}
+.footer-brand p{font-size:0.88rem; color:var(--text-faint); margin:6px 0 0;}
+.footer-cols{display:flex; gap:52px; flex-wrap:wrap;}
+.footer-col h4{font-size:0.64rem; text-transform:uppercase; letter-spacing:0.11em; color:var(--text-faint); margin:0 0 12px; font-weight:700;}
+.footer-col a{display:block; font-size:0.87rem; color:var(--text-dim); margin-bottom:10px;}
 .footer-col a:hover{color:var(--white);}
-.footer-bottom{max-width:1080px; margin:0 auto; padding:18px 32px 32px; border-top:1px solid var(--border); font-size:0.8rem; color:var(--text-faint);}
 </style>
 </head>
 <body>
 
 <div class="wrap">
-  <header>
-    <div class="brandmark">fomo / clans / internal</div>
-    <button class="lock-btn" id="lock-btn" hidden>lock</button>
-  </header>
+  <nav class="nav">
+    <a class="nav-brand" href="/fomo/clans/">fomo <span class="slash">/greek wars /admin</span></a>
+    <button class="nav-btn" id="lock-btn" hidden>Lock</button>
+  </nav>
 
   <div class="gate" id="gate">
     <h2>Admin only</h2>
-    <p>Enter the passcode to see who's submitted a username to join a frat.</p>
+    <p>Enter the passcode to open the roster.</p>
     <input type="password" id="pass" autocomplete="off" placeholder="passcode">
-    <button class="btn btn-primary" id="gate-btn">Unlock</button>
+    <button class="btn-primary" id="gate-btn">Unlock</button>
     <p class="msg" id="gate-msg"></p>
   </div>
 
   <div id="roster" hidden>
-    <h1>Roster</h1>
-    <p class="sub">Everyone who has fomo and submitted a username to join a frat. Cross-reference against each clan and add them manually.</p>
+    <header class="head">
+      <div>
+        <h1>Roster.</h1>
+        <p class="lede">Everyone who submitted a fomo username to join a chapter, and who registered each chapter. None of this is shown anywhere public.</p>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="num" id="s-chapters">—</div><div class="lbl">Chapters</div></div>
+        <div class="stat"><div class="num" id="s-members">—</div><div class="lbl">Members joined</div></div>
+        <div class="stat good"><div class="num" id="s-hit80">—</div><div class="lbl">Hit 80%</div></div>
+        <div class="stat"><div class="num" id="s-actives">—</div><div class="lbl">Actives covered</div></div>
+      </div>
+    </header>
 
-    <div class="load-error" id="load-error" hidden>
+    <div class="err-box" id="err-box" hidden>
       <span>couldn't load the roster right now.</span>
       <button id="retry-btn">retry</button>
     </div>
 
-    <div class="toolbar">
-      <span class="count" id="count"></span>
-      <div class="toolbar-actions">
-        <button class="apply-btn" id="apply-btn" disabled>Apply</button>
-        <button class="copy-btn" id="copy-csv">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>
-          Copy as CSV
-        </button>
+    <section class="sec">
+      <div class="sec-head">
+        <div>
+          <h2>Submissions</h2>
+          <p id="sub-count"></p>
+        </div>
+        <div class="tools">
+          <button class="tool primary" id="apply-btn" disabled>Apply</button>
+          <button class="tool" id="copy-subs">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>
+            Copy as CSV
+          </button>
+        </div>
       </div>
-    </div>
+      <p class="msg err" id="sub-msg" hidden></p>
+      <div class="panel scroll">
+        <table>
+          <thead><tr>
+            <th class="chk"><input type="checkbox" id="select-all" title="Select all pending"></th>
+            <th>Username</th><th>Email</th><th>School</th><th>Chapter</th><th>Joined</th><th>Status</th><th class="right"></th>
+          </tr></thead>
+          <tbody id="sub-rows"></tbody>
+        </table>
+      </div>
+    </section>
 
-    <p class="toolbar-msg" id="toolbar-msg" hidden></p>
-
-    <div class="table-wrap">
-      <table>
-        <thead><tr>
-          <th class="col-check"><input type="checkbox" id="select-all" title="Select all pending"></th>
-          <th>Username</th><th>Email</th><th>School</th><th>Chapter</th><th>Joined</th><th>Status</th><th class="col-action"></th>
-        </tr></thead>
-        <tbody id="rows"></tbody>
-      </table>
-    </div>
-
-    <h2 class="section-h">Chapter contacts</h2>
-    <p class="sub">Who registered each chapter. Not shown anywhere public.</p>
-    <div class="toolbar">
-      <span class="count" id="chapter-count"></span>
-      <button class="copy-btn" id="copy-chapters">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>
-        Copy as CSV
-      </button>
-    </div>
-    <div class="table-wrap" id="chapters-wrap">
-      <table>
-        <thead><tr>
-          <th>Chapter</th><th>School</th><th>Who registered</th><th>Contact</th><th>Traders</th><th>Referral link</th><th>Progress</th>
-        </tr></thead>
-        <tbody id="chapter-rows"></tbody>
-      </table>
-    </div>
+    <section class="sec">
+      <div class="sec-head">
+        <div>
+          <h2>Chapter contacts</h2>
+          <p id="ch-count"></p>
+        </div>
+        <div class="tools">
+          <button class="tool" id="copy-chapters">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>
+            Copy as CSV
+          </button>
+          <button class="tool" id="trash-btn" title="Delete a chapter">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><path d="M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13"/><path d="M10 11v6M14 11v6"/></svg>
+            <span id="trash-label"></span>
+          </button>
+        </div>
+      </div>
+      <p class="hint" id="pick-hint" hidden>Click a chapter row to select it, then hit the trash again to delete. Esc to cancel.</p>
+      <p class="msg err" id="ch-msg" hidden></p>
+      <div class="panel scroll">
+        <table>
+          <thead><tr>
+            <th>Chapter</th><th>School</th><th>Who registered</th><th>Contact</th><th>Traders</th><th>Referral link</th><th class="right">Progress</th>
+          </tr></thead>
+          <tbody id="ch-rows"></tbody>
+        </table>
+      </div>
+    </section>
   </div>
 </div>
 
@@ -184,7 +232,6 @@ td.stack small{display:block; color:var(--text-faint); font-size:0.79rem; margin
         <h4>About</h4>
         <a href="https://fomo.family" target="_blank" rel="noopener">Blog</a>
         <a href="https://fomo.family" target="_blank" rel="noopener">FAQ</a>
-        <a href="https://fomo.family" target="_blank" rel="noopener">Affiliates</a>
         <a href="https://fomo.family" target="_blank" rel="noopener">Careers</a>
       </div>
       <div class="footer-col">
@@ -192,8 +239,6 @@ td.stack small{display:block; color:var(--text-faint); font-size:0.79rem; margin
         <a href="https://fomo.family" target="_blank" rel="noopener">Discord</a>
         <a href="https://fomo.family" target="_blank" rel="noopener">X/Twitter</a>
         <a href="https://fomo.family" target="_blank" rel="noopener">Instagram</a>
-        <a href="https://fomo.family" target="_blank" rel="noopener">Youtube</a>
-        <a href="https://fomo.family" target="_blank" rel="noopener">LinkedIn</a>
       </div>
       <div class="footer-col">
         <h4>Legal</h4>
@@ -202,165 +247,142 @@ td.stack small{display:block; color:var(--text-faint); font-size:0.79rem; margin
       </div>
     </div>
   </div>
-  <div class="footer-bottom">© 2026 FOMO Labs Inc.</div>
 </footer>
 
 <script>
 const $ = (id) => document.getElementById(id);
-const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const key = (r) => r.code + '|' + r.username.toLowerCase();
+
 let passcode = sessionStorage.getItem('internal_pass') || '';
 let rows = [];
 let chapters = [];
 let selected = new Set();
+let pickMode = false;
+let pickedId = null;
 
-function fmtWhen(iso) {
-  return new Date(iso).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
-}
+const fmtWhen = (iso) => new Date(iso).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+const show = (id, text) => { const e = $(id); e.textContent = text || ''; e.hidden = !text; };
 
-async function loadRoster() {
+async function load() {
   try {
     const res = await fetch('/api/clans/internal', { headers: { 'x-passcode': passcode } });
-    if (res.status === 401 || res.status === 503) { lockOut(res.status === 503 ? 'the passcode hasn’t been set up yet.' : 'session expired — enter the passcode again.'); return; }
+    if (res.status === 401 || res.status === 503) {
+      lockOut(res.status === 503 ? 'the passcode isn’t set up yet.' : 'session expired — enter the passcode again.');
+      return;
+    }
     if (!res.ok) throw new Error('bad status');
     const data = await res.json();
     rows = data.rows || [];
     chapters = data.chapters || [];
     selected = new Set([...selected].filter((k) => rows.some((r) => key(r) === k && r.status !== 'approved')));
+    if (!chapters.some((c) => c.id === pickedId)) pickedId = null;
     render();
-    $('load-error').hidden = true;
+    $('err-box').hidden = true;
   } catch (e) {
-    $('load-error').hidden = false;
+    $('err-box').hidden = false;
   }
 }
-$('retry-btn').addEventListener('click', loadRoster);
+$('retry-btn').addEventListener('click', load);
 
-function showToolbarMsg(text) {
-  const el = $('toolbar-msg');
-  el.textContent = text;
-  el.hidden = !text;
+function renderStats() {
+  const members = chapters.reduce((n, c) => n + c.members, 0);
+  const actives = chapters.reduce((n, c) => n + (c.chapterSize || 0), 0);
+  const hit80 = chapters.filter((c) => c.chapterSize && c.members >= 0.8 * c.chapterSize).length;
+  $('s-chapters').textContent = chapters.length;
+  $('s-members').textContent = members.toLocaleString();
+  $('s-hit80').textContent = hit80;
+  $('s-actives').textContent = actives.toLocaleString();
 }
 
-function updateApplyBtn() {
-  const btn = $('apply-btn');
-  btn.disabled = selected.size === 0;
-  btn.textContent = selected.size ? `Apply (${selected.size})` : 'Apply';
-}
+function renderSubs() {
+  $('sub-count').textContent = rows.length
+    ? `${rows.length} ${rows.length === 1 ? 'person has' : 'people have'} submitted a username`
+    : 'Nobody has submitted a username yet';
+  $('sub-rows').innerHTML = rows.length ? rows.map((r) => {
+    const k = key(r);
+    const done = r.status === 'approved';
+    return `<tr class="${done ? 'done' : ''}" data-key="${esc(k)}">
+      <td class="chk"><input type="checkbox" class="row-check" ${done ? 'disabled' : ''} ${selected.has(k) ? 'checked' : ''}></td>
+      <td class="uname">@${esc(r.username)}</td>
+      <td class="dim">${esc(r.email || '—')}</td>
+      <td>${esc(r.school)}</td>
+      <td>${esc(r.chapterName)}</td>
+      <td class="when">${fmtWhen(r.joinedAt)}</td>
+      <td><span class="pill ${done ? 'approved' : 'pending'}">${done ? 'Approved' : 'Pending'}</span></td>
+      <td class="right">
+        <span class="verify ${r.verified ? 'yes' : 'no'}">${r.verified ? 'Verified User' : 'Unverified User'}</span>
+        ${done ? '' : '<button class="act">Approve</button>'}
+      </td>
+    </tr>`;
+  }).join('') : '<tr><td colspan="8"><div class="empty">No submissions yet.</div></td></tr>';
 
-const STATUS_ICON = {
-  approved: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
-};
-
-function render() {
-  $('count').textContent = rows.length + (rows.length === 1 ? ' submission' : ' submissions');
-  document.querySelector('.table-wrap').hidden = rows.length === 0;
-  $('rows').innerHTML = rows.length
-    ? rows.map((r) => {
-        const k = key(r);
-        const isApproved = r.status === 'approved';
-        return `<tr class="${isApproved ? 'is-approved' : ''}" data-key="${esc(k)}">
-          <td class="col-check"><input type="checkbox" class="row-check" ${isApproved ? 'disabled' : ''} ${selected.has(k) ? 'checked' : ''}></td>
-          <td class="username">@${esc(r.username)}</td>
-          <td class="muted">${esc(r.email || '—')}</td>
-          <td>${esc(r.school)}</td>
-          <td>${esc(r.chapterName)}</td>
-          <td class="when">${fmtWhen(r.joinedAt)}</td>
-          <td><span class="status-badge ${r.status}">${isApproved ? STATUS_ICON.approved + ' Approved' : 'Pending'}</span></td>
-          <td class="col-action">${isApproved ? '' : '<button class="approve-btn">Approve</button>'}</td>
-        </tr>`;
-      }).join('')
-    : '';
-
-  $('rows').querySelectorAll('tr').forEach((tr) => {
-    const k = tr.dataset.key;
-    const row = rows.find((r) => key(r) === k);
-    const checkbox = tr.querySelector('.row-check');
-    if (checkbox) {
-      checkbox.addEventListener('change', () => {
-        if (checkbox.checked) selected.add(k); else selected.delete(k);
-        updateApplyBtn();
-        updateSelectAll();
-      });
-    }
-    const approveBtn = tr.querySelector('.approve-btn');
-    if (approveBtn) {
-      approveBtn.addEventListener('click', () => applyApprovals([row], approveBtn));
-    }
+  $('sub-rows').querySelectorAll('tr[data-key]').forEach((tr) => {
+    const row = rows.find((r) => key(r) === tr.dataset.key);
+    const box = tr.querySelector('.row-check');
+    if (box) box.addEventListener('change', () => {
+      if (box.checked) selected.add(tr.dataset.key); else selected.delete(tr.dataset.key);
+      syncApply();
+    });
+    const btn = tr.querySelector('.act');
+    if (btn) btn.addEventListener('click', () => approve([row], btn));
   });
-  updateApplyBtn();
-  updateSelectAll();
-
-  renderChapters();
-
-  let e = document.getElementById('empty-state');
-  if (!rows.length) {
-    if (!e) {
-      e = document.createElement('div');
-      e.id = 'empty-state';
-      e.className = 'empty';
-      e.textContent = 'No submissions yet.';
-      $('roster').appendChild(e);
-    }
-  } else if (e) {
-    e.remove();
-  }
+  syncApply();
 }
 
 function renderChapters() {
-  $('chapter-count').textContent = chapters.length + (chapters.length === 1 ? ' chapter' : ' chapters');
-  $('chapters-wrap').hidden = chapters.length === 0;
-  $('chapter-rows').innerHTML = chapters.map((c) => `<tr>
-    <td class="username">${esc(c.chapterName)}</td>
+  $('ch-count').textContent = `${chapters.length} registered`;
+  $('ch-rows').innerHTML = chapters.length ? chapters.map((c) => `<tr data-id="${esc(c.id)}" class="${pickedId === c.id ? 'picked' : ''}">
+    <td class="uname">${esc(c.chapterName)}</td>
     <td>${esc(c.school)}</td>
-    <td class="stack">${esc(c.firstName)} ${esc(c.lastName)}<small>${esc(c.role || '—')}</small></td>
-    <td class="stack">${esc(c.phone)}<small>${esc(c.email)}</small><small>@${esc(c.instagram || '—')}</small></td>
-    <td class="stack muted">${esc(c.bestTrader || '—')}<small>worst: ${esc(c.worstTrader || '—')}</small></td>
-    <td><button class="link-btn" data-link="${esc(c.referralUrl)}">Copy link</button></td>
-    <td class="muted">${c.members}${c.chapterSize ? ' / ' + c.chapterSize : ''}<small style="display:block;color:var(--text-faint);">${fmtWhen(c.createdAt)}</small></td>
-  </tr>`).join('');
+    <td>${esc(c.firstName)} ${esc(c.lastName)}<span class="sub">${esc(c.role || '—')}</span></td>
+    <td>${esc(c.phone)}<span class="sub">${esc(c.email)}</span><span class="sub">${c.instagram ? `<a class="ig" href="https://instagram.com/${encodeURIComponent(c.instagram)}" target="_blank" rel="noopener">@${esc(c.instagram)}</a>` : '—'}</span></td>
+    <td>
+      <div class="stack"><span class="lbl-sm">Best</span>${esc(c.bestTrader || '—')}</div>
+      <div class="stack"><span class="lbl-sm">Worst</span>${esc(c.worstTrader || '—')}</div>
+    </td>
+    <td><button class="act link-btn" data-link="${esc(c.referralUrl)}">Copy link</button></td>
+    <td class="right">${c.members}${c.chapterSize ? ' / ' + c.chapterSize : ''}<span class="sub">${fmtWhen(c.createdAt)}</span></td>
+  </tr>`).join('') : '<tr><td colspan="7"><div class="empty">No chapters registered yet.</div></td></tr>';
 
-  $('chapter-rows').querySelectorAll('.link-btn').forEach((b) => {
-    b.addEventListener('click', async () => {
+  $('ch-rows').querySelectorAll('.link-btn').forEach((b) => {
+    b.addEventListener('click', async (e) => {
+      e.stopPropagation();
       try {
         await navigator.clipboard.writeText(b.dataset.link);
         const t = b.textContent; b.textContent = 'Copied!';
         setTimeout(() => { b.textContent = t; }, 1500);
-      } catch (e) { prompt('Referral link:', b.dataset.link); }
+      } catch (err) { prompt('Referral link:', b.dataset.link); }
     });
   });
+  $('ch-rows').querySelectorAll('tr[data-id]').forEach((tr) => {
+    tr.addEventListener('click', () => {
+      if (!pickMode) return;
+      pickedId = pickedId === tr.dataset.id ? null : tr.dataset.id;
+      renderChapters();
+      syncTrash();
+    });
+  });
+  $('ch-rows').classList.toggle('picking', pickMode);
 }
 
-$('copy-chapters').addEventListener('click', async () => {
-  const header = 'chapter,school,first_name,last_name,role,instagram,email,phone,best_trader,worst_trader,referral_link,members,actives,registered_at';
-  const lines = chapters.map((c) => [c.chapterName, c.school, c.firstName, c.lastName, c.role, c.instagram, c.email, c.phone, c.bestTrader, c.worstTrader, c.referralUrl, c.members, c.chapterSize || '', c.createdAt]
-    .map((v) => `"${String(v).replace(/"/g, '""')}"`).join(','));
-  const csv = [header, ...lines].join('\n');
-  try {
-    await navigator.clipboard.writeText(csv);
-    const btn = $('copy-chapters');
-    const original = btn.innerHTML;
-    btn.textContent = 'Copied!';
-    setTimeout(() => { btn.innerHTML = original; }, 1600);
-  } catch (e) { prompt('Copy this CSV:', csv); }
-});
+function render() { renderStats(); renderSubs(); renderChapters(); syncTrash(); }
 
-function updateSelectAll() {
-  const pending = rows.filter((r) => r.status !== 'approved');
-  const all = $('select-all');
-  all.disabled = pending.length === 0;
-  all.checked = pending.length > 0 && pending.every((r) => selected.has(key(r)));
+function syncApply() {
+  const b = $('apply-btn');
+  b.disabled = selected.size === 0;
+  b.textContent = selected.size ? `Apply (${selected.size})` : 'Apply';
 }
 $('select-all').addEventListener('change', () => {
   const pending = rows.filter((r) => r.status !== 'approved');
   if ($('select-all').checked) pending.forEach((r) => selected.add(key(r)));
   else pending.forEach((r) => selected.delete(key(r)));
-  render();
+  renderSubs();
 });
-
-async function applyApprovals(list, triggerBtn) {
+async function approve(list, btn) {
   if (!list.length) return;
-  showToolbarMsg('');
-  if (triggerBtn) triggerBtn.disabled = true;
+  show('sub-msg', '');
+  if (btn) btn.disabled = true;
   $('apply-btn').disabled = true;
   try {
     const res = await fetch('/api/clans/internal/approve', {
@@ -368,34 +390,69 @@ async function applyApprovals(list, triggerBtn) {
       headers: { 'content-type': 'application/json', 'x-passcode': passcode },
       body: JSON.stringify({ approvals: list.map((r) => ({ code: r.code, username: r.username })) }),
     });
-    if (res.status === 401 || res.status === 503) { lockOut(res.status === 503 ? 'the passcode hasn’t been set up yet.' : 'session expired — enter the passcode again.'); return; }
-    if (!res.ok) throw new Error('bad status');
+    if (res.status === 401 || res.status === 503) { lockOut('session expired — enter the passcode again.'); return; }
+    if (!res.ok) throw new Error('bad');
     list.forEach((r) => selected.delete(key(r)));
-    await loadRoster();
+    await load();
   } catch (e) {
-    showToolbarMsg('couldn’t approve right now — try again.');
-    updateApplyBtn();
+    show('sub-msg', 'couldn’t approve right now — try again.');
+    syncApply();
   }
 }
-$('apply-btn').addEventListener('click', () => {
-  const list = rows.filter((r) => selected.has(key(r)));
-  applyApprovals(list, null);
-});
+$('apply-btn').addEventListener('click', () => approve(rows.filter((r) => selected.has(key(r))), null));
 
-$('copy-csv').addEventListener('click', async () => {
-  const header = 'username,email,school,chapter,status,joined_at';
-  const lines = rows.map((r) => [r.username, r.email || '', r.school, r.chapterName, r.status, r.joinedAt].map((v) => `"${String(v).replace(/"/g, '""')}"`).join(','));
-  const csv = [header, ...lines].join('\n');
+// Delete a chapter: arm the trash, click a row to pick it, hit the trash again.
+function syncTrash() {
+  const btn = $('trash-btn');
+  const label = $('trash-label');
+  btn.classList.toggle('armed', pickMode && !pickedId);
+  btn.classList.toggle('danger', !!pickedId);
+  $('pick-hint').hidden = !pickMode;
+  if (!pickMode) { label.textContent = ''; return; }
+  if (!pickedId) { label.textContent = 'Pick a chapter'; return; }
+  const c = chapters.find((x) => x.id === pickedId);
+  label.textContent = c ? `Delete ${c.chapterName}` : 'Delete';
+}
+function exitPick() { pickMode = false; pickedId = null; renderChapters(); syncTrash(); }
+
+$('trash-btn').addEventListener('click', async () => {
+  if (!pickMode) { pickMode = true; pickedId = null; renderChapters(); syncTrash(); return; }
+  if (!pickedId) { exitPick(); return; }
+  const c = chapters.find((x) => x.id === pickedId);
+  show('ch-msg', '');
+  $('trash-btn').disabled = true;
   try {
-    await navigator.clipboard.writeText(csv);
-    const btn = $('copy-csv');
+    const res = await fetch('/api/clans/' + encodeURIComponent(pickedId), {
+      method: 'DELETE', headers: { 'x-passcode': passcode },
+    });
+    if (res.status === 401 || res.status === 503) { lockOut('session expired — enter the passcode again.'); return; }
+    if (res.status !== 204 && res.status !== 404) throw new Error('bad');
+    exitPick();
+    await load();
+  } catch (e) {
+    show('ch-msg', `couldn’t delete ${c ? c.chapterName : 'that chapter'} — try again.`);
+  }
+  $('trash-btn').disabled = false;
+});
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && pickMode) exitPick(); });
+
+function csv(btnId, header, lines) {
+  const text = [header, ...lines].join('\n');
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = $(btnId);
     const original = btn.innerHTML;
     btn.textContent = 'Copied!';
     setTimeout(() => { btn.innerHTML = original; }, 1600);
-  } catch (e) {
-    prompt('Copy this CSV:', csv);
-  }
-});
+  }).catch(() => prompt('Copy this CSV:', text));
+}
+const q = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`;
+$('copy-subs').addEventListener('click', () => csv('copy-subs',
+  'username,email,school,chapter,status,verified,joined_at',
+  rows.map((r) => [r.username, r.email, r.school, r.chapterName, r.status, r.verified ? 'verified' : 'unverified', r.joinedAt].map(q).join(','))));
+$('copy-chapters').addEventListener('click', () => csv('copy-chapters',
+  'chapter,school,first_name,last_name,role,instagram,email,phone,best_trader,worst_trader,referral_link,members,actives,registered_at',
+  chapters.map((c) => [c.chapterName, c.school, c.firstName, c.lastName, c.role, c.instagram, c.email, c.phone,
+    c.bestTrader, c.worstTrader, c.referralUrl, c.members, c.chapterSize || '', c.createdAt].map(q).join(','))));
 
 function showRoster() { $('gate').hidden = true; $('roster').hidden = false; $('lock-btn').hidden = false; }
 function lockOut(message) {
@@ -406,7 +463,6 @@ function lockOut(message) {
   $('pass').focus();
 }
 $('lock-btn').addEventListener('click', () => lockOut(''));
-
 $('gate-btn').addEventListener('click', unlock);
 $('pass').addEventListener('keydown', (e) => { if (e.key === 'Enter') unlock(); });
 async function unlock() {
@@ -417,9 +473,9 @@ async function unlock() {
     const res = await fetch('/api/auth', { method: 'POST', headers: { 'x-passcode': attempt } });
     if (res.status === 204) {
       passcode = attempt; sessionStorage.setItem('internal_pass', attempt);
-      showRoster(); await loadRoster();
+      showRoster(); await load();
     } else if (res.status === 503) {
-      $('gate-msg').className = 'msg err'; $('gate-msg').textContent = 'the passcode hasn’t been set up yet.';
+      $('gate-msg').className = 'msg err'; $('gate-msg').textContent = 'the passcode isn’t set up yet.';
     } else {
       $('gate-msg').className = 'msg err'; $('gate-msg').textContent = 'wrong passcode.';
     }
@@ -429,7 +485,7 @@ async function unlock() {
   $('gate-btn').disabled = false;
 }
 
-if (passcode) { showRoster(); loadRoster(); }
+if (passcode) { showRoster(); load(); }
 </script>
 </body>
 </html>

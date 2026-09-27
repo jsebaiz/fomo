@@ -63,6 +63,12 @@ h1 .hl{color:var(--blue);}
 .msg{font-size:0.86rem; margin:14px 0 0; min-height:1.2em; text-align:center;}
 .msg.err{color:var(--red);}
 .msg.ok{color:var(--blue-dim);}
+.joined{text-align:center; padding:6px 0 2px;}
+.joined .tick{width:42px; height:42px; margin:0 auto 14px; border-radius:50%; background:rgba(46,212,122,0.14); color:#2ED47A; display:flex; align-items:center; justify-content:center;}
+.joined .tick svg{width:20px; height:20px;}
+.joined h3{margin:0 0 6px; font-size:1.06rem; font-weight:800; color:var(--white); letter-spacing:-0.02em;}
+.joined p{margin:0; font-size:0.9rem; color:var(--text-dim); line-height:1.5;}
+.joined .ch{color:var(--white); font-weight:700;}
 
 /* footer */
 .site-footer{border-top:1px solid var(--border); position:relative; z-index:1;}
@@ -90,7 +96,7 @@ h1 .hl{color:var(--blue);}
     <h1 id="headline">Join your frat in <span class="hl">Greek Wars.</span></h1>
     <p class="sub">Trade with your brothers. Climb the board.<br>Bring the house.</p>
 
-    <a class="btn btn-primary" id="join-now" href="https://fomo.family" target="_blank" rel="noopener">Join now</a>
+    <a class="btn btn-primary" id="join-now" href="https://apps.apple.com/us/app/fomo-never-miss-out/id6741115427" target="_blank" rel="noopener">Join now</a>
 
     <div id="username-wrap" hidden>
       <div class="divider">already have fomo?</div>
@@ -144,9 +150,8 @@ h1 .hl{color:var(--blue);}
 </footer>
 
 <script>
-// The App Store link for the fomo iOS app. fomo.family carries the real
-// App Store / Google Play badges; swap this for the direct store URL when we have it.
-const APP_URL = 'https://fomo.family';
+// fomo on the iOS App Store.
+const APP_URL = 'https://apps.apple.com/us/app/fomo-never-miss-out/id6741115427';
 document.getElementById('join-now').href = APP_URL;
 
 const EMAIL_RE = /^[^\s@]{1,64}@[^\s@.]+(\.[^\s@.]+)+$/;
@@ -182,10 +187,14 @@ document.getElementById('join-btn').addEventListener('click', async () => {
     });
     if (res.status === 201) {
       const data = await res.json();
-      msg.className = 'msg ok';
-      msg.textContent = `thanks — you're submitted to ${data.name}. we'll get you approved into the frat soon.`;
-      input.value = ''; emailInput.value = '';
-      input.disabled = true; emailInput.disabled = true; btn.disabled = true;
+      const chapter = String(data.name).split(' — ')[0];
+      document.querySelector('.username-block').innerHTML =
+        '<div class="joined">' +
+        '<div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>' +
+        '<h3>You\u2019re in.</h3>' +
+        '<p>We\u2019ll approve you into <span class="ch">' + chapter.replace(/[&<>"]/g, '') + '</span> shortly. ' +
+        'Keep an eye on the chapter leaderboard.</p>' +
+        '</div>';
     } else {
       const body = await res.json().catch(() => ({}));
       msg.className = 'msg err'; msg.textContent = (body.error || 'something went wrong.').toLowerCase();

@@ -142,7 +142,7 @@ h1{font-size:clamp(2.3rem,4.6vw,3.4rem); font-weight:800; letter-spacing:-0.04em
 
 <div class="wrap">
   <nav class="nav">
-    <a class="nav-brand" href="/">fomo <span class="slash">/greek wars</span></a>
+    <a class="nav-brand" href="/fomo/clans/">fomo <span class="slash">/greek wars</span></a>
     <div class="nav-actions">
       <a class="nav-btn secondary" id="get-app" href="#" target="_blank" rel="noopener">Get the app</a>
       <a class="nav-btn" href="../">← Back to Greek Wars</a>
@@ -191,7 +191,10 @@ h1{font-size:clamp(2.3rem,4.6vw,3.4rem); font-weight:800; letter-spacing:-0.04em
         <div class="row-two">
           <div class="field">
             <label for="f-role">Role in the chapter</label>
-            <div class="cb-wrap"><input type="text" id="f-role" maxlength="40" placeholder="President"></div>
+            <select id="f-role">
+              <option value="" disabled selected>Choose your role</option>
+            </select>
+            <input type="text" id="f-role-other" maxlength="40" placeholder="Type your role" hidden style="margin-top:10px;">
           </div>
           <div class="field">
             <label for="f-ig">Instagram</label>
@@ -347,11 +350,20 @@ const chapterItems = FRATERNITIES.map(([name, letters]) => ({ value: name, label
   .concat(SORORITIES.map(([name, letters]) => ({ value: name, label: name, sub: letters, keywords: 'sorority ' + letters })))
   .sort((a, b) => a.label.localeCompare(b.label));
 
-const roleItems = ROLES.map((r) => ({ value: r, label: r }));
 
 attachCombobox($('c-school'), schoolItems, { strict: true, limit: 8 });
 attachCombobox($('c-chapter'), chapterItems, { strict: true, limit: 9 });
-attachCombobox($('f-role'), roleItems, { strict: false, limit: 7 });
+(function fillRoles() {
+  $('f-role').insertAdjacentHTML('beforeend',
+    ROLES.map((r) => `<option value="${r}">${r}</option>`).join('') +
+    '<option value="Other">Other</option>');
+})();
+$('f-role').addEventListener('change', () => {
+  const other = $('f-role').value === 'Other';
+  $('f-role-other').hidden = !other;
+  if (other) $('f-role-other').focus();
+});
+const roleValue = () => ($('f-role').value === 'Other' ? $('f-role-other').value.trim() : $('f-role').value);
 
 // ---- validation helpers --------------------------------------------------
 const EMAIL_RE = /^[^\s@]{1,64}@[^\s@.]+(\.[^\s@.]+)+$/;
@@ -365,14 +377,14 @@ function validateStep1() {
   const last = $('f-last').value.trim();
   const phone = $('f-phone').value.trim();
   const email = $('f-email').value.trim();
-  const role = $('f-role').value.trim();
+  const role = roleValue();
   const ig = $('f-ig').value.trim().replace(/^@/, '');
   if (!NAME_RE.test(first)) return 'enter your first name.';
   if (!NAME_RE.test(last)) return 'enter your last name.';
   const digits = phone.replace(/\D/g, '');
   if (digits.length < 10 || digits.length > 15) return 'enter a valid phone number.';
   if (!EMAIL_RE.test(email)) return 'enter a valid email.';
-  if (role.length < 2) return 'enter your role in the chapter.';
+  if (role.length < 2) return $('f-role').value === 'Other' ? 'type your role in the chapter.' : 'choose your role in the chapter.';
   if (!/^[A-Za-z0-9._]{1,30}$/.test(ig)) return 'enter your instagram handle.';
   return null;
 }
@@ -388,7 +400,7 @@ function goStep2() {
 $('next-btn').addEventListener('click', goStep2);
 $('back-btn').addEventListener('click', () => { $('step-2').hidden = true; $('step-1').hidden = false; });
 
-['f-first', 'f-last', 'f-phone', 'f-email', 'f-ig'].forEach((id) => {
+['f-first', 'f-last', 'f-phone', 'f-email', 'f-ig', 'f-role-other'].forEach((id) => {
   $(id).addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); goStep2(); } });
 });
 
@@ -479,7 +491,7 @@ $('clan-form').addEventListener('submit', async (e) => {
         lastName: $('f-last').value.trim(),
         phone: $('f-phone').value.trim(),
         email: $('f-email').value.trim(),
-        role: $('f-role').value.trim(),
+        role: roleValue(),
         instagram: $('f-ig').value.trim().replace(/^@/, ''),
         school, chapterName,
         chapterSize: $('c-size').value,
