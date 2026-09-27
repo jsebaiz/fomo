@@ -89,6 +89,24 @@ h1{font-size:clamp(2.2rem,4.4vw,3rem); font-weight:800; letter-spacing:-0.04em; 
 .tag{display:inline-block; font-size:0.6rem; font-weight:800; letter-spacing:0.09em; text-transform:uppercase; padding:3px 7px; border-radius:5px;}
 .tag.paid{background:var(--green); color:#062B18;}
 .tag.goal{background:rgba(46,212,122,0.15); color:var(--green);}
+.tag.s1{background:rgba(255,255,255,0.08); color:var(--text-dim);}
+.tag.s2{background:rgba(46,212,122,0.15); color:var(--green);}
+.tag.s3{background:rgba(81,106,246,0.18); color:var(--blue-dim);}
+.tag.cont{background:var(--green); color:#062B18;}
+.tag.risk{background:rgba(242,178,62,0.18); color:var(--amber);}
+.tag.gone{background:rgba(242,85,90,0.16); color:var(--red);}
+
+.cont-box{margin-top:16px; padding-top:14px; border-top:1px solid var(--border);}
+.cont-box h4{margin-bottom:9px;}
+.reads{font-size:0.84rem; color:var(--text-dim); margin:0 0 11px; line-height:1.5;}
+.reads .sig{color:var(--white); font-weight:600;}
+.reads .hedge{color:var(--text-faint); font-size:0.79rem; display:block; margin-top:3px;}
+.cont-pick{display:flex; gap:7px; flex-wrap:wrap;}
+.cont-pick button{background:var(--surface-2); border:1px solid var(--border); color:var(--text-dim); border-radius:8px; padding:7px 13px; font-size:0.8rem; font-weight:700; cursor:pointer;}
+.cont-pick button:hover{border-color:var(--border-2); color:var(--text);}
+.cont-pick button.on[data-v="continuing"]{background:var(--green); border-color:transparent; color:#062B18;}
+.cont-pick button.on[data-v="at-risk"]{background:var(--amber); border-color:transparent; color:#2B1E06;}
+.cont-pick button.on[data-v="dropped"]{background:var(--red); border-color:transparent; color:#fff;}
 
 /* detail */
 .detail{border-top:1px solid var(--border); padding:20px; display:grid; grid-template-columns:270px 1fr; gap:24px;}
@@ -157,13 +175,13 @@ h1{font-size:clamp(2.2rem,4.4vw,3rem); font-weight:800; letter-spacing:-0.04em; 
     <header class="head">
       <div>
         <h1>Onboarded.</h1>
-        <p class="lede">Chapters that hit their goal, and every conversation you've had with them. Log a call, text, email or DM so nothing gets dropped.</p>
+        <p class="lede">Every chapter by stage, and every conversation you've had with them. Log a call, text, email or DM so nothing gets dropped.</p>
       </div>
       <div class="stats">
-        <div class="stat good"><div class="num" id="s-onboarded">—</div><div class="lbl">Onboarded</div></div>
-        <div class="stat"><div class="num" id="s-paid">—</div><div class="lbl">Paid out</div></div>
-        <div class="stat warn"><div class="num" id="s-stale">—</div><div class="lbl">Need follow-up</div></div>
-        <div class="stat"><div class="num" id="s-logged">—</div><div class="lbl">Touchpoints</div></div>
+        <div class="stat"><div class="num" id="s-1">—</div><div class="lbl">Stage 1 · onboarding</div></div>
+        <div class="stat good"><div class="num" id="s-2">—</div><div class="lbl">Stage 2 · goal hit</div></div>
+        <div class="stat"><div class="num" id="s-3">—</div><div class="lbl">Stage 3 · in contact</div></div>
+        <div class="stat warn"><div class="num" id="s-risk">—</div><div class="lbl">At risk / dropped</div></div>
       </div>
     </header>
 
@@ -174,9 +192,11 @@ h1{font-size:clamp(2.2rem,4.4vw,3rem); font-weight:800; letter-spacing:-0.04em; 
 
     <div class="bar">
       <div class="tabs" id="tabs">
-        <button data-f="onboarded" class="on">Onboarded</button>
-        <button data-f="all">All chapters</button>
-        <button data-f="stale">Need follow-up</button>
+        <button data-f="all" class="on">All</button>
+        <button data-f="1">Stage 1</button>
+        <button data-f="2">Stage 2</button>
+        <button data-f="3">Stage 3</button>
+        <button data-f="stale">Follow-up</button>
       </div>
       <input class="search" id="search" type="search" placeholder="Search chapter, school or contact…">
     </div>
@@ -219,13 +239,43 @@ const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '
 
 let passcode = sessionStorage.getItem('internal_pass') || '';
 let chapters = [];
-let filter = 'onboarded';
+let filter = 'all';
 let query = '';
 let openId = null;
 const notesCache = {};
 
 // A chapter counts as onboarded once it hits the 80% goal.
 const isOnboarded = (c) => !!(c.chapterSize && c.members >= 0.8 * c.chapterSize);
+
+// Stage 1 registered but short of goal · Stage 2 hit goal, not yet contacted
+// since · Stage 3 hit goal and we've talked to them since.
+function stageOf(c) {
+  if (!isOnboarded(c)) return 1;
+  const since = c.goalHitAt ? new Date(c.goalHitAt).getTime() : 0;
+  const talked = c.lastContact && new Date(c.lastContact).getTime() >= since;
+  return talked ? 3 : 2;
+}
+const STAGE_LABEL = { 1: 'Stage 1 · Onboarding', 2: 'Stage 2 · Goal hit', 3: 'Stage 3 · In contact' };
+
+// Rough read of the outreach log. Plain keyword matching — it cannot actually
+// understand what was said, so it only ever suggests, and the call below is
+// whatever a human set.
+const NEG = ['not continuing', 'not going to continue', 'no longer', 'dropping', 'dropped out', 'drop out',
+  'backed out', 'pulled out', 'not interested', 'declined', 'said no', 'passed on', 'ghosted',
+  'unresponsive', 'no response', 'never heard back', 'done with', 'wants out', 'opting out'];
+const POS = ['continuing', 'will continue', 'renewed', 'renewing', 'signed', 'locked in', 'confirmed',
+  'they\u2019re in', 'theyre in', 'we\u2019re in', 'were in', 'on board', 'next semester', 'staying on',
+  'good to go', 'all set', 'committed', 'wants to keep', 'keeping going'];
+
+function readLog(notes) {
+  if (!notes || !notes.length) return null;
+  const text = notes.map((n) => n.text.toLowerCase()).join(' \n ');
+  const neg = NEG.find((p) => text.includes(p));
+  if (neg) return { verdict: 'at risk', phrase: neg };
+  const pos = POS.find((p) => text.includes(p));
+  if (pos) return { verdict: 'continuing', phrase: pos };
+  return { verdict: 'unclear', phrase: null };
+}
 const STALE_DAYS = 14;
 const daysSince = (iso) => (iso ? Math.floor((Date.now() - new Date(iso).getTime()) / 86400000) : null);
 const isStale = (c) => { const d = daysSince(c.lastContact); return d === null || d >= STALE_DAYS; };
@@ -259,7 +309,7 @@ $('retry-btn').addEventListener('click', load);
 
 function visible() {
   let list = chapters;
-  if (filter === 'onboarded') list = list.filter(isOnboarded);
+  if (filter === '1' || filter === '2' || filter === '3') list = list.filter((c) => stageOf(c) === Number(filter));
   else if (filter === 'stale') list = list.filter(isStale);
   if (query) {
     const q = query.toLowerCase();
@@ -270,11 +320,10 @@ function visible() {
 }
 
 function renderStats() {
-  const onboarded = chapters.filter(isOnboarded);
-  $('s-onboarded').textContent = onboarded.length;
-  $('s-paid').textContent = chapters.filter((c) => c.paidOut).length;
-  $('s-stale').textContent = onboarded.filter(isStale).length;
-  $('s-logged').textContent = chapters.reduce((n, c) => n + (c.noteCount || 0), 0);
+  $('s-1').textContent = chapters.filter((c) => stageOf(c) === 1).length;
+  $('s-2').textContent = chapters.filter((c) => stageOf(c) === 2).length;
+  $('s-3').textContent = chapters.filter((c) => stageOf(c) === 3).length;
+  $('s-risk').textContent = chapters.filter((c) => c.continuation === 'at-risk' || c.continuation === 'dropped').length;
 }
 
 function cardHtml(c) {
@@ -284,7 +333,11 @@ function cardHtml(c) {
     <div class="row">
       <div class="who">
         <div class="ch">${esc(c.chapterName)}
-          ${c.paidOut ? '<span class="tag paid">Paid</span>' : (isOnboarded(c) ? '<span class="tag goal">Goal hit</span>' : '')}
+          <span class="tag s${stageOf(c)}">Stage ${stageOf(c)}</span>
+          ${c.paidOut ? '<span class="tag paid">Paid</span>' : ''}
+          ${c.continuation === 'continuing' ? '<span class="tag cont">Continuing</span>' : ''}
+          ${c.continuation === 'at-risk' ? '<span class="tag risk">At risk</span>' : ''}
+          ${c.continuation === 'dropped' ? '<span class="tag gone">Dropped</span>' : ''}
         </div>
         <div class="sch">${esc(c.school)}</div>
       </div>
@@ -330,11 +383,33 @@ function detailHtml(c) {
         <button class="add-note">Log it</button>
       </div>
       <p class="msg err note-msg" hidden></p>
+      ${isOnboarded(c) ? contHtml(c) : ''}
       <div class="notes">${
         notes === undefined ? '<div class="no-notes">Loading…</div>'
         : notes.length ? notes.map(noteHtml).join('')
         : '<div class="no-notes">Nothing logged yet.</div>'
       }</div>
+    </div>
+  </div>`;
+}
+
+function contHtml(c) {
+  const read = readLog(notesCache[c.id]);
+  const set = c.continuation;
+  const label = { continuing: 'Continuing', 'at-risk': 'At risk', dropped: 'Dropped' };
+  return `<div class="cont-box">
+    <h4>Continuing the program?</h4>
+    <p class="reads">${
+      read === null ? 'Nothing logged yet — talk to them first.'
+      : read.phrase
+        ? `The log reads as <span class="sig">${esc(read.verdict)}</span> — it contains \u201c${esc(read.phrase)}\u201d.`
+        : 'The log doesn\u2019t say either way yet.'
+    }<span class="hedge">Keyword match, not comprehension. ${set ? `You marked this <strong>${esc(label[set])}</strong>.` : 'Set the real answer below.'}</span></p>
+    <div class="cont-pick" data-id="${esc(c.id)}">
+      <button data-v="continuing" class="${set === 'continuing' ? 'on' : ''}">Continuing</button>
+      <button data-v="at-risk" class="${set === 'at-risk' ? 'on' : ''}">At risk</button>
+      <button data-v="dropped" class="${set === 'dropped' ? 'on' : ''}">Dropped</button>
+      <button data-v="" class="${!set ? 'on' : ''}">Unset</button>
     </div>
   </div>`;
 }
@@ -374,6 +449,9 @@ function wire() {
     });
     detail.querySelectorAll('.del').forEach((b) =>
       b.addEventListener('click', () => delNote(id, b.dataset.at)));
+    const pick = detail.querySelector('.cont-pick');
+    if (pick) pick.querySelectorAll('button').forEach((b) =>
+      b.addEventListener('click', () => setContinuation(id, b.dataset.v)));
     const ref = detail.querySelector('.copy-ref');
     ref.addEventListener('click', async (e) => {
       e.preventDefault();
@@ -427,6 +505,22 @@ async function addNote(id, input, chan, btn, detail) {
     msg.hidden = false;
     btn.disabled = false;
   }
+}
+
+async function setContinuation(id, value) {
+  try {
+    const res = await fetch('/api/clans/internal/continuation', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'x-passcode': passcode },
+      body: JSON.stringify({ id, continuation: value || null }),
+    });
+    if (res.status === 401 || res.status === 503) { lockOut('session expired — enter the passcode again.'); return; }
+    if (!res.ok) throw new Error('bad');
+    const data = await res.json();
+    const c = chapters.find((x) => x.id === id);
+    if (c) c.continuation = data.continuation;
+    render();
+  } catch (e) { /* leave it as-is if it didn't save */ }
 }
 
 async function delNote(id, at) {

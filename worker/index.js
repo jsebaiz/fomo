@@ -485,6 +485,18 @@ export default {
       const denied = await guard(request, env);
       if (denied) return denied;
       const clans = await readList(env, CLANS_KEY);
+
+      // First time we observe a chapter at/over its goal, stamp it. Approximate
+      // (it's first-seen-at-goal, not the exact crossing) but it's what makes
+      // "contacted since hitting goal" answerable at all.
+      let stamped = false;
+      clans.forEach((c) => {
+        const atGoal = c.chapterSize && totalApproved(c) >= 0.8 * c.chapterSize;
+        if (atGoal && !c.goalHitAt) { c.goalHitAt = new Date().toISOString(); stamped = true; }
+        if (!atGoal && c.goalHitAt) { c.goalHitAt = null; stamped = true; }
+      });
+      if (stamped) await env.FLIGHTS.put(CLANS_KEY, JSON.stringify(clans));
+
       const rows = [];
       clans.forEach((c) => {
         (c.members || []).forEach((m) => {
@@ -513,6 +525,7 @@ export default {
           referredBy: c.referredBy || null,
           paidOut: c.paidOut || null,
           lastContact: c.lastContact || null, noteCount: c.noteCount || 0,
+          goalHitAt: c.goalHitAt || null, continuation: c.continuation || null,
           referralUrl: `${url.origin}/fomo/referral/${c.code}`,
           members: totalApproved(c), chapterSize: c.chapterSize || null,
           createdAt: c.createdAt,
@@ -570,6 +583,26 @@ export default {
       clan.paidOut = paid ? new Date().toISOString() : null;
       await env.FLIGHTS.put(CLANS_KEY, JSON.stringify(clans));
       return json({ id, paidOut: clan.paidOut });
+    }
+
+    // Whether a chapter is continuing the program. Set by a human — the portal
+    // only ever *suggests* a read of the log, it never decides this on its own.
+    if (path === '/api/clans/internal/continuation' && request.method === 'POST') {
+      const denied = await guard(request, env);
+      if (denied) return denied;
+      const text = await request.text();
+      if (text.length > 1024) return json({ error: 'Request too large' }, 413);
+      let body;
+      try { body = JSON.parse(text); } catch { return json({ error: 'Invalid JSON' }, 400); }
+
+      const allowed = ['continuing', 'at-risk', 'dropped'];
+      const value = allowed.includes(body.continuation) ? body.continuation : null;
+      const clans = await readList(env, CLANS_KEY);
+      const clan = clans.find((c) => c.id === String(body.id || ''));
+      if (!clan) return json({ error: 'Not found' }, 404);
+      clan.continuation = value;
+      await env.FLIGHTS.put(CLANS_KEY, JSON.stringify(clans));
+      return json({ id: clan.id, continuation: value });
     }
 
     // Outreach log for a chapter. Admin-only — it holds what was said to whom.
@@ -752,7 +785,7 @@ export default {
       return json({ name: clan.name, members: clan.members.length }, 201);
     }
 
-    if (path === '/api/flights' || path === '/api/auth' || path === '/api/clans' || path === '/api/clans/internal' || path === '/api/clans/internal/approve' || path === '/api/clans/internal/payout' || path === '/api/clans/seed' || lookup || join || clanId || mediaReq || notesReq || del) {
+    if (path === '/api/flights' || path === '/api/auth' || path === '/api/clans' || path === '/api/clans/internal' || path === '/api/clans/internal/approve' || path === '/api/clans/internal/payout' || path === '/api/clans/internal/continuation' || path === '/api/clans/seed' || lookup || join || clanId || mediaReq || notesReq || del) {
       return json({ error: 'Method not allowed' }, 405);
     }
     return json({ error: 'Not found' }, 404);
