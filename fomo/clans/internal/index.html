@@ -120,7 +120,7 @@ tbody tr.picked{background:rgba(242,85,90,0.16) !important; box-shadow:inset 3px
 .pct-sm{display:block; font-size:0.78rem; font-weight:800; letter-spacing:-0.01em; margin-bottom:2px;}
 .pct-sm.under{color:var(--red);}
 .pct-sm.over{color:var(--green);}
-.payout{margin-top:7px; background:none; border:1px solid var(--border-2); color:var(--text-faint); border-radius:6px; padding:4px 9px; font-size:0.6rem; font-weight:800; letter-spacing:0.09em; text-transform:uppercase; cursor:pointer; transition:background .12s ease, color .12s ease, border-color .12s ease;}
+.payout{display:block; width:fit-content; margin-top:7px; background:none; border:1px solid var(--border-2); color:var(--text-faint); border-radius:6px; padding:4px 9px; font-size:0.6rem; font-weight:800; letter-spacing:0.09em; text-transform:uppercase; cursor:pointer; transition:background .12s ease, color .12s ease, border-color .12s ease;}
 .payout:hover:not(:disabled){border-color:var(--text-dim); color:var(--text-dim);}
 .payout.on{background:var(--green); border-color:transparent; color:#062B18;}
 .payout.on:hover:not(:disabled){filter:brightness(1.08);}
@@ -389,7 +389,7 @@ function renderChapters() {
   $('ch-count').textContent = `${chapters.length} registered`;
   $('ch-rows').innerHTML = chapters.length ? chapters.map((c) => `<tr data-id="${esc(c.id)}" class="${pickedId === c.id ? 'picked' : ''}">
     <td class="uname">${esc(c.chapterName)}
-      <button class="payout${c.paidOut ? ' on' : ''}" data-payout="${esc(c.id)}" data-paid="${c.paidOut ? '1' : ''}">Paid out</button>
+      <button class="payout${c.paidOut ? ' on' : ''}" data-payout="${esc(c.id)}" data-paid="${c.paidOut ? '1' : ''}">Paid</button>
     </td>
     <td>${esc(c.school)}</td>
     <td>${esc(c.firstName)} ${esc(c.lastName)}<span class="sub">${esc(c.role || '—')}</span></td>
