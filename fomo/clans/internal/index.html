@@ -112,6 +112,11 @@ tbody.picking tr{cursor:pointer;}
 tbody.picking tr:hover{background:rgba(242,85,90,0.10); box-shadow:inset 3px 0 0 var(--red);}
 tbody tr.picked{background:rgba(242,85,90,0.16) !important; box-shadow:inset 3px 0 0 var(--red);}
 .hint{font-size:0.83rem; color:var(--red); margin:0 0 12px;}
+.tabs{display:inline-flex; gap:3px; background:var(--surface); border:1px solid var(--border); border-radius:11px; padding:4px; margin-bottom:16px;}
+.tabs button{background:none; border:none; color:var(--text-faint); font-weight:600; font-size:0.85rem; padding:8px 16px; border-radius:8px; cursor:pointer;}
+.tabs button:hover{color:var(--text);}
+.tabs button.on{background:var(--blue); color:#fff;}
+.refby{color:var(--white); font-weight:700;}
 
 .empty{padding:52px 20px; text-align:center; color:var(--text-faint); font-size:0.9rem;}
 .err-box{margin:16px 0; padding:14px 16px; background:rgba(242,85,90,0.08); border:1px solid rgba(242,85,90,0.25); border-radius:12px; font-size:0.86rem; color:var(--red); display:flex; justify-content:space-between; align-items:center; gap:12px;}
@@ -207,14 +212,27 @@ tbody tr.picked{background:rgba(242,85,90,0.16) !important; box-shadow:inset 3px
           </button>
         </div>
       </div>
+      <div class="tabs" id="ch-tabs">
+        <button data-tab="all" class="on">All chapters</button>
+        <button data-tab="ref">Referrals</button>
+      </div>
       <p class="hint" id="pick-hint" hidden>Click a chapter row to select it, then hit the trash again to delete. Esc to cancel.</p>
       <p class="msg err" id="ch-msg" hidden></p>
-      <div class="panel scroll">
+      <div class="panel scroll" id="pane-all">
         <table>
           <thead><tr>
             <th>Chapter</th><th>School</th><th>Who registered</th><th>Contact</th><th>Traders</th><th>Referral link</th><th class="right">Progress</th>
           </tr></thead>
           <tbody id="ch-rows"></tbody>
+        </table>
+      </div>
+
+      <div class="panel scroll" id="pane-ref" hidden>
+        <table>
+          <thead><tr>
+            <th>Chapter</th><th>School</th><th>Referred by</th><th>Their school</th><th>Their Instagram</th><th class="right">Registered</th>
+          </tr></thead>
+          <tbody id="ref-rows"></tbody>
         </table>
       </div>
     </section>
@@ -260,6 +278,7 @@ let chapters = [];
 let selected = new Set();
 let pickMode = false;
 let pickedId = null;
+let chTab = 'all';
 
 const fmtWhen = (iso) => new Date(iso).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
 const show = (id, text) => { const e = $(id); e.textContent = text || ''; e.hidden = !text; };
@@ -366,7 +385,38 @@ function renderChapters() {
   $('ch-rows').classList.toggle('picking', pickMode);
 }
 
-function render() { renderStats(); renderSubs(); renderChapters(); syncTrash(); }
+function renderReferrals() {
+  const referred = chapters.filter((c) => c.referredBy);
+  $('ch-tabs').querySelector('[data-tab="ref"]').textContent =
+    referred.length ? `Referrals (${referred.length})` : 'Referrals';
+  $('ref-rows').innerHTML = referred.length ? referred.map((c) => {
+    const r = c.referredBy;
+    return `<tr>
+      <td class="uname">${esc(c.chapterName)}</td>
+      <td>${esc(c.school)}</td>
+      <td class="refby">${esc(r.chapterName)}</td>
+      <td>${esc(r.schoolLabel)}</td>
+      <td>${r.instagram ? `<a class="ig" href="https://instagram.com/${encodeURIComponent(r.instagram)}" target="_blank" rel="noopener">@${esc(r.instagram)}</a>` : '—'}</td>
+      <td class="right when">${fmtWhen(c.createdAt)}</td>
+    </tr>`;
+  }).join('') : '<tr><td colspan="6"><div class="empty">No referrals yet. Chapters that name a referrer on signup show up here.</div></td></tr>';
+}
+
+function setChTab(tab) {
+  chTab = tab;
+  $('ch-tabs').querySelectorAll('button').forEach((b) => b.classList.toggle('on', b.dataset.tab === tab));
+  $('pane-all').hidden = tab !== 'all';
+  $('pane-ref').hidden = tab !== 'ref';
+  // deleting is only offered on the full list
+  $('trash-btn').hidden = tab !== 'all';
+  if (tab !== 'all' && pickMode) exitPick();
+}
+$('ch-tabs').addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-tab]');
+  if (b) setChTab(b.dataset.tab);
+});
+
+function render() { renderStats(); renderSubs(); renderChapters(); renderReferrals(); syncTrash(); }
 
 function syncApply() {
   const b = $('apply-btn');
@@ -450,9 +500,11 @@ $('copy-subs').addEventListener('click', () => csv('copy-subs',
   'username,email,school,chapter,status,verified,joined_at',
   rows.map((r) => [r.username, r.email, r.school, r.chapterName, r.status, r.verified ? 'verified' : 'unverified', r.joinedAt].map(q).join(','))));
 $('copy-chapters').addEventListener('click', () => csv('copy-chapters',
-  'chapter,school,first_name,last_name,role,instagram,email,phone,best_trader,worst_trader,referral_link,members,actives,registered_at',
+  'chapter,school,first_name,last_name,role,instagram,email,phone,best_trader,worst_trader,referred_by_chapter,referred_by_school,referred_by_instagram,referral_link,members,actives,registered_at',
   chapters.map((c) => [c.chapterName, c.school, c.firstName, c.lastName, c.role, c.instagram, c.email, c.phone,
-    c.bestTrader, c.worstTrader, c.referralUrl, c.members, c.chapterSize || '', c.createdAt].map(q).join(','))));
+    c.bestTrader, c.worstTrader,
+    c.referredBy ? c.referredBy.chapterName : '', c.referredBy ? c.referredBy.schoolLabel : '', c.referredBy ? c.referredBy.instagram : '',
+    c.referralUrl, c.members, c.chapterSize || '', c.createdAt].map(q).join(','))));
 
 function showRoster() { $('gate').hidden = true; $('roster').hidden = false; $('lock-btn').hidden = false; }
 function lockOut(message) {

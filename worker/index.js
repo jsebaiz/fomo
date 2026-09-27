@@ -276,6 +276,24 @@ function parseDataUrl(value) {
   return { mime: m[1], data: m[2] };
 }
 
+// Optional: the chapter that referred this one. All three parts are required
+// together — a half-filled referral is rejected rather than silently dropped.
+function parseReferral(body) {
+  const clean = (v) => String(v ?? '').trim().replace(/\s+/g, ' ');
+  const school = clean(body.refSchool).toLowerCase();
+  const chapterRaw = clean(body.refChapter);
+  const instagram = clean(body.refInstagram).replace(/^@/, '').toLowerCase();
+
+  if (!school && !chapterRaw && !instagram) return { referredBy: null };
+
+  if (!SCHOOL_LABELS[school]) return { error: 'Pick the school of the chapter that referred you' };
+  const canonical = ORG_LOOKUP[normOrg(chapterRaw)];
+  if (!canonical) return { error: 'Pick the chapter that referred you from the list' };
+  if (!/^[A-Za-z0-9._]{1,30}$/.test(instagram)) return { error: 'Enter the Instagram of who referred you' };
+
+  return { referredBy: { school, schoolLabel: SCHOOL_LABELS[school], chapterName: canonical, instagram } };
+}
+
 function parseClan(body) {
   const school = String(body.school || '').trim().toLowerCase();
   if (!SCHOOL_LABELS[school]) return { error: 'Choose a school from the list' };
@@ -417,6 +435,8 @@ export default {
 
       const person = parseContact(body || {});
       if (person.error) return json({ error: person.error }, 400);
+      const ref = parseReferral(body || {});
+      if (ref.error) return json({ error: ref.error }, 400);
       const parsed = parseClan(body || {});
       if (parsed.error) return json({ error: parsed.error }, 400);
       if (await tooMany(env, 'clan', ipOf(request), 5)) return json({ error: 'Too many clans created — try again in a minute' }, 429);
@@ -442,6 +462,7 @@ export default {
         name: parsed.clan.name, chapterSize: parsed.clan.chapterSize,
         bestTrader: parsed.clan.bestTrader, worstTrader: parsed.clan.worstTrader,
         contact: person.contact,
+        referredBy: ref.referredBy,
         media: { avatar: !!avatar, banner: !!banner },
         members: [], createdAt: new Date().toISOString(),
       };
@@ -485,6 +506,7 @@ export default {
           email: c.contact.email, phone: c.contact.phone,
           role: c.contact.role || '', instagram: c.contact.instagram || '',
           bestTrader: c.bestTrader || '', worstTrader: c.worstTrader || '',
+          referredBy: c.referredBy || null,
           referralUrl: `${url.origin}/fomo/referral/${c.code}`,
           members: totalApproved(c), chapterSize: c.chapterSize || null,
           createdAt: c.createdAt,
