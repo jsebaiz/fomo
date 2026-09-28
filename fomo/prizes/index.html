@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Chapter rewards · fomo</title>
+<link rel="icon" href="/fomo-favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#08080F; --surface:#0F0F17; --surface-2:#15151F; --surface-3:#1B1B26;
+  --border:rgba(255,255,255,0.08); --border-2:rgba(255,255,255,0.16);
+  --white:#FFFFFF; --text:#E8E8F0; --text-dim:#9B9BAD; --text-faint:#6A6A7C;
+  --blue:#516AF6; --blue-hi:#6A80F8; --blue-dim:#8E9CF7;
+  --red:#F2555A; --green:#2ED47A; --gold:#E0B25C;
+  --radius:14px; --radius-lg:18px;
+}
+*{box-sizing:border-box;}
+[hidden]{display:none !important;}
+html,body{margin:0;}
+body{background:var(--bg); color:var(--text); font-family:'Schibsted Grotesk','Inter',-apple-system,sans-serif; line-height:1.5; min-height:100vh; -webkit-font-smoothing:antialiased;}
+button,input,select{font-family:inherit;}
+a{color:inherit; text-decoration:none;}
+svg{display:block;}
+
+.wrap{max-width:1120px; margin:0 auto; padding:0 40px 80px; position:relative; z-index:1;}
+@media (max-width:720px){ .wrap{padding:0 20px 56px;} }
+
+/* nav */
+.nav{display:flex; align-items:center; justify-content:space-between; padding:26px 0 0;}
+.nav-brand{display:flex; align-items:center; gap:10px; font-size:1.18rem; font-weight:800; color:var(--white); letter-spacing:-0.02em;}
+.nav-brand .slash{color:var(--text-faint); font-weight:600;}
+.nav-actions{display:flex; align-items:center; gap:10px;}
+.nav-btn{border:1px solid var(--border); background:var(--surface); color:var(--text); border-radius:10px; padding:10px 18px; font-size:0.88rem; font-weight:600; cursor:pointer; transition:background .15s ease, border-color .15s ease;}
+.nav-btn:hover{background:var(--surface-2); border-color:var(--border-2);}
+.nav-btn.primary{background:var(--blue); border-color:var(--blue); color:#fff;}
+.nav-btn.primary:hover{background:var(--blue-hi); border-color:var(--blue-hi);}
+@media (max-width:560px){ .nav-actions .nav-btn.secondary{display:none;} }
+
+/* hero */
+.hero{padding:86px 0 0; max-width:760px;}
+@media (max-width:720px){ .hero{padding:52px 0 0;} }
+.eyebrow{font-size:0.86rem; font-weight:600; color:var(--text-faint); margin-bottom:22px;}
+h1{font-size:clamp(2.6rem,6.2vw,4.2rem); font-weight:800; letter-spacing:-0.04em; line-height:1.02; margin:0 0 26px; color:var(--white);}
+.lede{font-size:clamp(1.05rem,1.7vw,1.35rem); color:var(--text-dim); margin:0 0 34px; max-width:46ch; font-weight:500; line-height:1.5;}
+.lede strong{color:var(--white); font-weight:700;}
+.hero-cta{display:flex; align-items:center; gap:12px; flex-wrap:wrap;}
+.cta{display:inline-flex; align-items:center; gap:10px; background:var(--blue); color:#fff; border:none; border-radius:12px; padding:17px 26px; font-size:1rem; font-weight:700; cursor:pointer; transition:background .15s ease;}
+.cta:hover{background:var(--blue-hi);}
+.cta svg{width:16px; height:16px;}
+.cta-ghost{display:inline-flex; align-items:center; gap:9px; border:1px solid var(--border-2); background:var(--surface); color:var(--text); border-radius:12px; padding:17px 24px; font-size:1rem; font-weight:700; transition:background .15s ease;}
+.cta-ghost:hover{background:var(--surface-2);}
+
+/* headline numbers */
+.figures{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top:52px;}
+@media (max-width:860px){ .figures{grid-template-columns:repeat(2,1fr);} }
+.fig{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:20px 22px;}
+.fig .n{font-size:1.9rem; font-weight:800; color:var(--white); letter-spacing:-0.035em; line-height:1;}
+.fig .n.blue{color:var(--blue-dim);} .fig .n.green{color:var(--green);} .fig .n.gold{color:var(--gold);}
+.fig .l{font-size:0.8rem; color:var(--text-faint); margin-top:9px; line-height:1.35;}
+
+/* section furniture */
+.section{margin-top:96px;}
+.section-head{margin-bottom:26px;}
+.section-kicker{font-size:0.86rem; color:var(--text-faint); margin:0 0 14px;}
+.section-title{font-size:clamp(1.8rem,3.4vw,2.5rem); font-weight:800; color:var(--white); letter-spacing:-0.035em; line-height:1.06; margin:0;}
+.section-lede{font-size:1rem; color:var(--text-dim); margin:14px 0 0; max-width:62ch; line-height:1.55;}
+
+/* roster-size control */
+.sizer{display:flex; align-items:center; gap:14px; flex-wrap:wrap; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px 20px; margin-bottom:26px;}
+.sizer label{font-size:0.88rem; font-weight:600; color:var(--text-dim);}
+.sizer select,.sizer input{background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:11px 13px; color:var(--text); font-size:0.92rem; font-weight:600; outline:none;}
+.sizer select{min-width:230px; cursor:pointer;}
+.sizer input{width:92px; font-variant-numeric:tabular-nums;}
+.sizer select:focus,.sizer input:focus{border-color:var(--blue);}
+.sizer .hint{font-size:0.82rem; color:var(--text-faint); margin-left:auto;}
+@media (max-width:720px){ .sizer .hint{margin-left:0; width:100%;} }
+
+/* ---- the ladder: spine + nodes + cards ---- */
+.ladder{position:relative; padding-left:74px;}
+@media (max-width:720px){ .ladder{padding-left:0;} }
+.ladder::before{content:''; position:absolute; left:23px; top:26px; bottom:26px; width:2px; background:var(--border); }
+@media (max-width:720px){ .ladder::before{display:none;} }
+.rung{position:relative; margin-bottom:16px;}
+.rung:last-child{margin-bottom:0;}
+.node{position:absolute; left:-74px; top:22px; width:48px; height:48px; border-radius:14px; background:var(--surface-2); border:1px solid var(--border-2); display:flex; align-items:center; justify-content:center; font-size:0.9rem; font-weight:800; color:var(--text-faint); font-variant-numeric:tabular-nums; z-index:1;}
+@media (max-width:720px){ .node{display:none;} }
+.rung.lit .node{background:var(--blue); border-color:var(--blue); color:#fff;}
+.rung.gold.lit .node{background:var(--gold); border-color:var(--gold); color:#2A1D05;}
+/* The rung you're aiming at next — so a chapter sitting below Tier 01 still has
+   something marked on the ladder instead of four flat grey cards. */
+.rung.target .node{background:var(--surface-3); border-color:var(--blue); color:var(--blue-dim);}
+.rung.target .tier{border-color:rgba(81,106,246,0.28);}
+.rung.target .tier-tag{color:var(--blue-dim);}
+
+.tier{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; transition:border-color .15s ease;}
+.rung.lit .tier{border-color:rgba(81,106,246,0.4);}
+.rung.gold.lit .tier{border-color:rgba(224,178,92,0.4);}
+.tier-head{display:flex; align-items:center; gap:20px; padding:22px 26px; cursor:pointer; user-select:none;}
+.tier-head:hover{background:var(--surface-2);}
+.tier-id{flex:1; min-width:0;}
+.tier-tag{font-size:0.65rem; text-transform:uppercase; letter-spacing:0.11em; font-weight:700; color:var(--text-faint); margin-bottom:7px;}
+.rung.lit .tier-tag{color:var(--blue-dim);}
+.rung.gold.lit .tier-tag{color:var(--gold);}
+.tier-name{font-size:1.32rem; font-weight:800; color:var(--white); letter-spacing:-0.025em; display:flex; align-items:center; gap:11px; flex-wrap:wrap;}
+.tier-req{font-size:0.88rem; color:var(--text-faint); margin-top:6px;}
+.tier-req b{color:var(--text-dim); font-weight:700; font-variant-numeric:tabular-nums;}
+.tier-cash{text-align:right; flex-shrink:0;}
+.tier-cash .amt{font-size:1.55rem; font-weight:800; color:var(--white); letter-spacing:-0.035em; line-height:1;}
+.rung.lit .tier-cash .amt{color:var(--blue-dim);}
+.rung.gold.lit .tier-cash .amt{color:var(--gold);}
+.tier-cash .run{font-size:0.74rem; color:var(--text-faint); margin-top:7px;}
+.tier-chev{width:16px; height:16px; color:var(--text-faint); flex-shrink:0; transition:transform .2s ease;}
+.tier.open .tier-chev{transform:rotate(180deg);}
+@media (max-width:560px){
+  .tier-head{flex-wrap:wrap; gap:14px; padding:20px;}
+  .tier-cash{text-align:left;}
+}
+
+.tier-body{border-top:1px solid var(--border); padding:24px 26px; background:var(--surface-2);}
+@media (max-width:560px){ .tier-body{padding:20px;} }
+.tier-body .why{font-size:0.94rem; color:var(--text-dim); margin:0 0 20px; max-width:64ch; line-height:1.6;}
+.gets{display:grid; grid-template-columns:repeat(2,1fr); gap:11px;}
+@media (max-width:660px){ .gets{grid-template-columns:1fr;} }
+.get{display:flex; gap:11px; align-items:flex-start; background:var(--bg); border:1px solid var(--border); border-radius:11px; padding:14px 16px;}
+.get .tick{width:16px; height:16px; color:var(--green); flex-shrink:0; margin-top:2px;}
+.get .gt{font-size:0.9rem; font-weight:700; color:var(--white);}
+.get .gd{font-size:0.82rem; color:var(--text-faint); margin-top:3px; line-height:1.45;}
+
+.pill{display:inline-block; padding:4px 9px; border-radius:6px; font-size:0.62rem; font-weight:800; letter-spacing:0.09em; text-transform:uppercase;}
+.pill.here{background:var(--blue); color:#fff;}
+.pill.cleared{background:rgba(46,212,122,0.14); color:var(--green);}
+.pill.manual{background:var(--surface-3); color:var(--text-faint); border:1px solid var(--border);}
+.pill.count{background:var(--surface-3); color:var(--text-dim); border:1px solid var(--border); letter-spacing:0.04em; text-transform:none; font-weight:700; font-size:0.68rem;}
+
+/* bonus cards */
+.bonuses{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px;}
+@media (max-width:860px){ .bonuses{grid-template-columns:1fr;} }
+.bonus{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:24px 26px;}
+.bonus-top{display:flex; align-items:baseline; justify-content:space-between; gap:14px; margin-bottom:8px;}
+.bonus h3{margin:0; font-size:1.15rem; font-weight:800; color:var(--white); letter-spacing:-0.02em;}
+.bonus .amt{font-size:1.4rem; font-weight:800; color:var(--green); letter-spacing:-0.03em; flex-shrink:0;}
+.bonus p{margin:0 0 14px; font-size:0.9rem; color:var(--text-dim); line-height:1.55;}
+.bonus ul{margin:0; padding-left:18px; font-size:0.86rem; color:var(--text-faint); line-height:1.7;}
+.bonus ul b{color:var(--text-dim); font-weight:700;}
+
+/* live board */
+.board{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden;}
+.board-bar{display:flex; align-items:center; gap:3px; padding:12px 14px; border-bottom:1px solid var(--border); flex-wrap:wrap;}
+.board-bar button{background:none; border:none; color:var(--text-faint); font-weight:600; font-size:0.85rem; padding:8px 14px; border-radius:8px; cursor:pointer; transition:background .15s ease, color .15s ease;}
+.board-bar button:hover{color:var(--text);}
+.board-bar button.active{background:var(--blue); color:#fff;}
+.row{display:flex; align-items:center; gap:18px; padding:16px 22px; border-bottom:1px solid var(--border);}
+.row:last-child{border-bottom:none;}
+.row:hover{background:var(--surface-2);}
+.icon{width:42px; height:42px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.94rem; color:#fff; flex-shrink:0; object-fit:cover;}
+.icon.small-glyph{font-size:0.76rem;}
+.rmeta{flex:1; min-width:0;}
+.rmeta .name{font-weight:700; font-size:1.02rem; color:var(--white); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.rmeta .sub{font-size:0.82rem; color:var(--text-faint); margin-top:3px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.gap{font-size:0.8rem; color:var(--text-dim); text-align:right; flex-shrink:0; min-width:156px;}
+.gap b{color:var(--white); font-weight:700; font-variant-numeric:tabular-nums;}
+.gap.max{color:var(--gold);}
+@media (max-width:820px){ .gap{display:none;} }
+.rprog{width:118px; flex-shrink:0;}
+@media (max-width:620px){ .rprog{display:none;} }
+.bar{height:5px; border-radius:99px; background:rgba(125,145,255,0.14); overflow:hidden;}
+.bar span{display:block; height:100%; border-radius:99px; background:var(--blue);}
+.bar.done span{background:var(--green);}
+.bar.gold span{background:var(--gold);}
+.rprog .pct{font-size:0.72rem; color:var(--text-faint); margin-top:6px; text-align:right; font-variant-numeric:tabular-nums;}
+.rprog .pct.done{color:var(--green);} .rprog .pct.gold{color:var(--gold);}
+.earned{text-align:right; flex-shrink:0; min-width:70px;}
+.earned .e{font-weight:800; font-size:1rem; color:var(--green);}
+.earned .e.zero{color:var(--text-faint);}
+.earned .el{font-size:0.68rem; color:var(--text-faint); margin-top:3px; text-transform:uppercase; letter-spacing:0.06em;}
+.empty{padding:56px 20px; text-align:center; color:var(--text-faint); font-size:0.92rem;}
+.skeleton{padding:16px 22px; display:flex; align-items:center; gap:18px; border-bottom:1px solid var(--border);}
+.sk{background:linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.09) 37%, rgba(255,255,255,0.04) 63%); background-size:400% 100%; animation:shimmer 1.4s ease infinite; border-radius:8px;}
+@keyframes shimmer{0%{background-position:100% 0;}100%{background-position:0 0;}}
+.sk-icon{width:42px; height:42px; border-radius:12px; flex-shrink:0;}
+.sk-lines{flex:1;}
+.sk-line1{width:28%; height:13px; margin-bottom:9px;}
+.sk-line2{width:18%; height:10px;}
+.load-error{margin-bottom:16px; padding:15px 18px; background:rgba(255,122,122,0.07); border:1px solid rgba(255,122,122,0.22); border-radius:var(--radius); font-size:0.9rem; color:var(--red); display:flex; justify-content:space-between; align-items:center; gap:12px;}
+.load-error button{background:none; border:1px solid rgba(255,122,122,0.35); color:var(--red); border-radius:8px; padding:7px 14px; font-size:0.82rem; cursor:pointer; font-weight:600;}
+
+/* welcome package */
+.pack{display:grid; grid-template-columns:repeat(3,1fr); gap:14px;}
+@media (max-width:900px){ .pack{grid-template-columns:repeat(2,1fr);} }
+@media (max-width:620px){ .pack{grid-template-columns:1fr;} }
+.item{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:22px 24px; transition:border-color .15s ease, background .15s ease;}
+.item:hover{border-color:var(--border-2); background:var(--surface-2);}
+.item .ic{width:34px; height:34px; border-radius:10px; background:var(--surface-3); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; margin-bottom:15px;}
+.item .ic svg{width:17px; height:17px; color:var(--blue-dim);}
+.item h4{margin:0 0 7px; font-size:1.02rem; font-weight:700; color:var(--white); letter-spacing:-0.015em;}
+.item p{margin:0; font-size:0.86rem; color:var(--text-faint); line-height:1.5;}
+.item .qty{display:inline-block; margin-top:11px; font-size:0.7rem; font-weight:700; color:var(--text-dim); background:var(--surface-3); border:1px solid var(--border); border-radius:6px; padding:3px 8px; letter-spacing:0.02em;}
+
+/* rules */
+.rules{display:grid; grid-template-columns:1fr 1fr; gap:0 44px;}
+@media (max-width:860px){ .rules{grid-template-columns:1fr;} }
+.rule{padding:20px 0; border-top:1px solid var(--border);}
+.rule-n{font-size:0.66rem; font-weight:800; letter-spacing:0.11em; color:var(--text-faint); margin-bottom:9px; font-variant-numeric:tabular-nums;}
+.rule h4{margin:0 0 8px; font-size:1rem; font-weight:700; color:var(--white); letter-spacing:-0.015em;}
+.rule p{margin:0; font-size:0.89rem; color:var(--text-dim); line-height:1.62;}
+.rule p b{color:var(--white); font-weight:700;}
+
+/* faq */
+.faq{border-top:1px solid var(--border);}
+.faq details{border-bottom:1px solid var(--border);}
+.faq summary{list-style:none; cursor:pointer; padding:20px 0; font-size:1.02rem; font-weight:700; color:var(--white); display:flex; align-items:center; justify-content:space-between; gap:20px; letter-spacing:-0.015em;}
+.faq summary::-webkit-details-marker{display:none;}
+.faq summary:hover{color:var(--blue-dim);}
+.faq summary .pm{width:15px; height:15px; color:var(--text-faint); flex-shrink:0; transition:transform .2s ease;}
+.faq details[open] summary .pm{transform:rotate(45deg);}
+.faq .ans{padding:0 0 22px; font-size:0.92rem; color:var(--text-dim); line-height:1.65; max-width:72ch;}
+.faq .ans b{color:var(--white); font-weight:700;}
+.faq .ans a{color:var(--blue-dim); font-weight:600;}
+.faq .ans a:hover{text-decoration:underline;}
+
+/* closing cta */
+.closer{margin-top:88px; background:var(--surface); border:1px solid var(--border-2); border-radius:var(--radius-lg); padding:46px 44px; display:flex; align-items:center; justify-content:space-between; gap:32px; flex-wrap:wrap;}
+@media (max-width:720px){ .closer{padding:34px 26px;} }
+.closer h3{margin:0 0 10px; font-size:clamp(1.5rem,3vw,2rem); font-weight:800; color:var(--white); letter-spacing:-0.03em; line-height:1.1;}
+.closer p{margin:0; font-size:0.96rem; color:var(--text-dim); max-width:44ch;}
+
+.note{font-size:0.82rem; color:var(--text-faint); margin-top:18px; line-height:1.55;}
+
+/* footer */
+.site-footer{border-top:1px solid var(--border); margin-top:96px;}
+.footer-inner{max-width:1120px; margin:0 auto; padding:52px 40px 28px; display:flex; justify-content:space-between; gap:40px; flex-wrap:wrap;}
+@media (max-width:720px){ .footer-inner{padding:44px 20px 24px;} }
+.footer-brand .fname{font-size:1.4rem; font-weight:800; color:var(--white); letter-spacing:-0.02em;}
+.footer-brand p{font-size:0.9rem; color:var(--text-faint); margin:7px 0 0; max-width:26ch;}
+.footer-cols{display:flex; gap:56px; flex-wrap:wrap;}
+.footer-col h4{font-size:0.66rem; text-transform:uppercase; letter-spacing:0.11em; color:var(--text-faint); margin:0 0 14px; font-weight:700;}
+.footer-col a{display:block; font-size:0.89rem; color:var(--text-dim); margin-bottom:11px; transition:color .12s ease;}
+.footer-col a:hover{color:var(--white);}
+.footer-bottom{max-width:1120px; margin:0 auto; padding:18px 40px 34px; border-top:1px solid var(--border); font-size:0.8rem; color:var(--text-faint);}
+@media (max-width:720px){ .footer-bottom{padding:18px 20px 30px;} }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <nav class="nav">
+    <a class="nav-brand" href="/fomo/clans/">fomo <span class="slash">/prizes</span></a>
+    <div class="nav-actions">
+      <a class="nav-btn secondary" href="/fomo/clans/">Leaderboard</a>
+      <a class="nav-btn primary" href="/fomo/clans/create/">Register chapter</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="eyebrow">fomo greek wars · chapter rewards</div>
+    <h1>Get your house paid.</h1>
+    <p class="lede">Onboard <strong>80% of your roster</strong> and we wire your chapter <strong>$500</strong> and ship a package to the house. That’s the floor, not the ceiling — there are three rungs above it.</p>
+    <div class="hero-cta">
+      <a class="cta" href="/fomo/clans/create/">
+        Register your chapter
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <a class="cta-ghost" href="#ladder">See the ladder</a>
+    </div>
+
+    <div class="figures">
+      <div class="fig"><div class="n" id="fig-floor">$500</div><div class="l">Guaranteed at 80% of your roster</div></div>
+      <div class="fig"><div class="n blue" id="fig-ceiling">$2,000</div><div class="l">Top of the ladder, per chapter</div></div>
+      <div class="fig"><div class="n green" id="fig-ref">$100</div><div class="l">Per chapter you refer that onboards</div></div>
+      <div class="fig"><div class="n gold" id="fig-max">$3,250</div><div class="l">Everything stacked, one chapter</div></div>
+    </div>
+  </header>
+
+  <!-- ===================== THE LADDER ===================== -->
+  <section class="section" id="ladder">
+    <div class="section-head">
+      <p class="section-kicker">The ladder</p>
+      <h2 class="section-title">Four rungs. One number moves you up all of them.</h2>
+      <p class="section-lede">Every tier is measured the same way: approved fomo accounts divided by your chapter roster — the exact percentage already showing next to your name on the leaderboard. Nothing else is scored. Tiers stack, so clearing Tier 02 pays on top of the $500 you already have.</p>
+    </div>
+
+    <div class="sizer">
+      <label for="pick">Show the ladder for</label>
+      <select id="pick"><option value="">a chapter of…</option></select>
+      <input type="number" id="size" min="5" max="500" step="1" value="90" aria-label="Chapter roster size">
+      <span style="font-size:0.88rem;color:var(--text-dim);font-weight:600;">actives</span>
+      <span class="hint" id="sizer-hint">Pick your chapter to see exactly where you stand.</span>
+    </div>
+
+    <div class="ladder" id="ladder-list"></div>
+
+    <div class="bonuses">
+      <div class="bonus">
+        <div class="bonus-top"><h3>Move fast</h3><div class="amt" id="speed-amt">+$250</div></div>
+        <p>Clear Tier 01 within <b id="speed-days">14</b> days of registering and we add a speed bonus on top. Most chapters that hit 80% do it in the first two weeks or never — this pays the ones who treat it like a sprint.</p>
+        <ul>
+          <li>Clock starts the day your registration is <b>approved</b>, not submitted.</li>
+          <li>Paid together with your Tier 01 $500.</li>
+          <li>One per chapter, ever.</li>
+        </ul>
+      </div>
+      <div class="bonus">
+        <div class="bonus-top"><h3>Bring another house</h3><div class="amt" id="ref-amt">+$100</div></div>
+        <p>Refer another chapter and you get paid <b>when they reach Tier 01</b> — not when they register. A signup that goes nowhere earns nothing, which is the whole point.</p>
+        <ul>
+          <li>They name you on step 3 of registration.</li>
+          <li>Capped at <b id="ref-cap">10</b> chapters per semester — <b id="ref-cap-cash">$1,000</b>.</li>
+          <li>Stacks with everything on the ladder.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== LIVE BOARD ===================== -->
+  <section class="section">
+    <div class="section-head">
+      <p class="section-kicker">Live</p>
+      <h2 class="section-title">Where every chapter sits right now.</h2>
+      <p class="section-lede">Pulled from the same board as the leaderboard, updated the moment an account is approved. The right column is the only number that matters: how many more people you need for the next rung.</p>
+    </div>
+
+    <div class="load-error" id="load-error" hidden>
+      <span>couldn’t load chapters right now.</span>
+      <button id="retry-btn">retry</button>
+    </div>
+
+    <div class="figures" style="margin-top:0;margin-bottom:16px;">
+      <div class="fig"><div class="n" id="s-chapters">—</div><div class="l">Chapters registered</div></div>
+      <div class="fig"><div class="n green" id="s-onboarded">—</div><div class="l">At Tier 01 or better</div></div>
+      <div class="fig"><div class="n blue" id="s-earned">—</div><div class="l">Earned on the ladder so far</div></div>
+      <div class="fig"><div class="n" id="s-table">—</div><div class="l">Still on the table</div></div>
+    </div>
+
+    <div class="board">
+      <div class="board-bar" id="board-bar">
+        <button data-t="all" class="active">All</button>
+        <button data-t="0">Climbing</button>
+        <button data-t="1">Tier 01</button>
+        <button data-t="2">Tier 02</button>
+        <button data-t="3">Tier 03</button>
+      </div>
+      <div id="rows">
+        <div class="skeleton"><div class="sk sk-icon"></div><div class="sk-lines"><div class="sk sk-line1"></div><div class="sk sk-line2"></div></div></div>
+        <div class="skeleton"><div class="sk sk-icon"></div><div class="sk-lines"><div class="sk sk-line1"></div><div class="sk sk-line2"></div></div></div>
+        <div class="skeleton"><div class="sk sk-icon"></div><div class="sk-lines"><div class="sk sk-line1"></div><div class="sk sk-line2"></div></div></div>
+      </div>
+    </div>
+    <p class="note">Tier 04 isn’t shown here — it’s a 30-day hold confirmed by the fomo team, not something a live count can prove on its own.</p>
+  </section>
+
+  <!-- ===================== THE PACKAGE ===================== -->
+  <section class="section">
+    <div class="section-head">
+      <p class="section-kicker">Tier 01 · the drop</p>
+      <h2 class="section-title">What’s actually in the box.</h2>
+      <p class="section-lede">One box, shipped to the house address on your registration, inside 10 business days of your tier being confirmed. Sizes and quantities come off your roster, so we need your exec board’s sizes before it ships.</p>
+    </div>
+    <div class="pack">
+      <div class="item">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v11H4z"/><path d="M4 15v5M20 15v5"/></svg></div>
+        <h4>Chapter banner</h4>
+        <p>3ft × 5ft, your letters over the fomo mark, grommeted for the house.</p>
+        <span class="qty">1</span>
+      </div>
+      <div class="item">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3 5 5v5h3v11h8V10h3V5l-4-2a3 3 0 0 1-6 0Z"/></svg></div>
+        <h4>Exec board hoodies</h4>
+        <p>Heavyweight, embroidered letters. Sized off the roles on your registration.</p>
+        <span class="qty">6</span>
+      </div>
+      <div class="item">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4 4 6v5h3v9h10v-9h3V6l-5-2a3 3 0 0 1-6 0Z"/></svg></div>
+        <h4>House tee run</h4>
+        <p>One tee for every member who actually onboarded. The bigger the turnout, the bigger the run.</p>
+        <span class="qty" id="tee-qty">1 per onboarded member</span>
+      </div>
+      <div class="item">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M15 3v6h6"/></svg></div>
+        <h4>Sticker &amp; decal pack</h4>
+        <p>200 pieces — laptops, bottles, the front door of the house.</p>
+        <span class="qty">200</span>
+      </div>
+      <div class="item">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h4"/></svg></div>
+        <h4>Chapter trading card</h4>
+        <p>Printed and numbered: your letters, your school, your rank and member count the day you onboarded. Never reprinted.</p>
+        <span class="qty">Numbered, 1 of 1</span>
+      </div>
+      <div class="item">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 7 9 6 9-6"/><rect x="3" y="5" width="18" height="14" rx="2"/></svg></div>
+        <h4>A note from us</h4>
+        <p>Handwritten, not printed. Whoever on our team ran your onboarding signs it.</p>
+        <span class="qty">1</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== RULES ===================== -->
+  <section class="section">
+    <div class="section-head">
+      <p class="section-kicker">The rules</p>
+      <h2 class="section-title">How the money actually works.</h2>
+      <p class="section-lede">Written out so nobody has to guess, and so no chapter ever argues about a payout after the fact. If something here isn’t clear, that’s our problem — email us before you start and we’ll fix the wording.</p>
+    </div>
+    <div class="rules">
+      <div class="rule">
+        <div class="rule-n">01</div>
+        <h4>What counts as a member</h4>
+        <p>Someone counts when they’ve created a fomo account, submitted that username and fomo email through your chapter link, and been <b>approved</b> on the roster. A submitted username is a claim, not a member — pending rows don’t move your bar.</p>
+      </div>
+      <div class="rule">
+        <div class="rule-n">02</div>
+        <h4>Your roster size is locked at registration</h4>
+        <p>The active count you entered is the denominator for every tier. Only the fomo team can change it, and only with proof — a nationals listing or an exec board confirmation. This exists so no chapter clears 100% by declaring itself eight people deep.</p>
+      </div>
+      <div class="rule">
+        <div class="rule-n">03</div>
+        <h4>Tiers stack, and each one pays once</h4>
+        <p>Clearing 90% pays Tier 02 <b>on top of</b> the $500 you already received — you’re not being re-paid, you’re being topped up. A tier already paid can’t be earned again, including after a reset.</p>
+      </div>
+      <div class="rule">
+        <div class="rule-n">04</div>
+        <h4>Dropping back takes nothing away</h4>
+        <p>If members leave and your percentage falls, <b>you keep everything already paid.</b> Tiers above your current level just pause until you’re back over the line. We don’t claw back.</p>
+      </div>
+      <div class="rule">
+        <div class="rule-n">05</div>
+        <h4>The chapter gets paid, not a person</h4>
+        <p>Money goes to the chapter account, arranged through the treasurer or president named on your registration. If your chapter can’t take an ACH transfer, we’ll cut a check to the house. We won’t send a tier payout to a personal Venmo.</p>
+      </div>
+      <div class="rule">
+        <div class="rule-n">06</div>
+        <h4>Timing</h4>
+        <p>A tier is confirmed by the fomo team within <b>3 business days</b> of being hit, and paid within <b>7 business days</b> of confirmation. Packages ship inside <b>10 business days</b> of Tier 01 confirmation. You’ll get an email at each step.</p>
+      </div>
+      <div class="rule">
+        <div class="rule-n">07</div>
+        <h4>Duplicates and dead accounts</h4>
+        <p>Before a tier is confirmed we remove accounts that share a device, email alias or payment method with another account, and accounts that never opened the app after signing up. This is the only part of the process that can move your number down without anyone leaving.</p>
+      </div>
+      <div class="rule">
+        <div class="rule-n">08</div>
+        <h4>Referrals pay on results</h4>
+        <p>A referral pays when the chapter you sent reaches <b>Tier 01</b>, not when they register. They have to name you on step 3 of their registration — we can’t backfill a referral from memory. Ten per chapter per semester.</p>
+      </div>
+      <div class="rule">
+        <div class="rule-n">09</div>
+        <h4>One chapter per school, per organization</h4>
+        <p>Two registrations for the same letters at the same school are merged into whichever came first, and the member counts are combined. Colonies and interest groups are eligible; alumni chapters are not.</p>
+      </div>
+      <div class="rule">
+        <div class="rule-n">10</div>
+        <h4>Paperwork over $600</h4>
+        <p>Once a chapter passes <b>$600</b> from us in a calendar year, US tax rules require a W-9 before we can send more. Tier 01 alone stays under that line; Tier 02 crosses it. We’ll send the form — it’s one page and it goes in the chapter’s name.</p>
+      </div>
+      <div class="rule">
+        <div class="rule-n">11</div>
+        <h4>Sororities, same program</h4>
+        <p>Every number on this page applies identically to sororities, co-ed and professional chapters. Nothing about the tiers, the package or the referral bonus changes.</p>
+      </div>
+      <div class="rule">
+        <div class="rule-n">12</div>
+        <h4>This is a program, not a contract</h4>
+        <p>fomo can change these amounts or end the program with notice on this page. <b>Any tier you’ve already hit is honored at the amount posted when you hit it</b> — changes only ever apply forward.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FAQ ===================== -->
+  <section class="section">
+    <div class="section-head">
+      <p class="section-kicker">Questions we actually get</p>
+      <h2 class="section-title">Before you ask.</h2>
+    </div>
+    <div class="faq">
+      <details>
+        <summary>Do pledges count toward our roster?<svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+        <div class="ans">Yes, as long as they’re on the roster number you registered with. Use the figure you’d give your nationals — actives plus the current pledge class. What you can’t do is count pledges in the numerator and leave them out of the denominator.</div>
+      </details>
+      <details>
+        <summary>Our roster changed mid-semester. Now what?<svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+        <div class="ans">Email us with the new number and something that backs it up. We’ll update the denominator and recalculate. If the change pushes you over a threshold you hadn’t hit, the tier pays normally. If it pushes you under one you’d already been paid for, <b>rule 04 applies</b> — you keep the money.</div>
+      </details>
+      <details>
+        <summary>How fast do chapters usually hit 80%?<svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+        <div class="ans">The ones who get there almost always do it in the first two weeks, off a single push — chapter GroupMe, one meeting announcement, link in the bio. Chapters that drip it out over a month tend to stall in the fifties. That’s the entire reason the speed bonus exists.</div>
+      </details>
+      <details>
+        <summary>Can the money go to an individual instead?<svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+        <div class="ans">No. Tier payouts go to the chapter account only. It protects you as much as us — a few thousand dollars landing in a student’s personal account is a problem for your nationals, your university and that student’s taxes.</div>
+      </details>
+      <details>
+        <summary>What if someone deletes their fomo account?<svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+        <div class="ans">Your count drops by one. If that takes you under a threshold you haven’t been paid for yet, the tier waits until you’re back over. If you’d already been paid, nothing happens.</div>
+      </details>
+      <details>
+        <summary>We already have a nationals sponsor. Is that a conflict?<svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+        <div class="ans">Not from our side — this is a chapter-level program and we don’t ask for exclusivity. Check your own bylaws, though. Some nationals require chapter-level sponsorships to be disclosed, and a few cap what a chapter can accept in a year.</div>
+      </details>
+      <details>
+        <summary>Does the leaderboard rank change what we get paid?<svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+        <div class="ans">No. The <a href="/fomo/clans/">leaderboard</a> is bragging rights — it ranks by raw members brought in, so big chapters dominate it. The ladder on this page is a <b>percentage</b> of your own roster, so a 40-person house and a 200-person house have exactly the same shot at every tier.</div>
+      </details>
+      <details>
+        <summary>What’s Greek Village?<svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+        <div class="ans">The 3D campus map every onboarded chapter gets a house on. Clearing Tier 01 is what puts you on it. <a href="https://milomessina.com/fomo/campuswars/" target="_blank" rel="noopener">Have a look →</a></div>
+      </details>
+      <details>
+        <summary>Who do we email?<svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+        <div class="ans">Whoever onboarded your chapter — they’re the signature on the note in your box. If you’re not registered yet, start at <a href="/fomo/clans/create/">registration</a> and we’ll reach out within a day.</div>
+      </details>
+    </div>
+  </section>
+
+  <div class="closer">
+    <div>
+      <h3>Two minutes to register. $500 to finish.</h3>
+      <p>Three steps, one link for the whole chapter, and the bar starts moving the same day.</p>
+    </div>
+    <a class="cta" href="/fomo/clans/create/">
+      Register your chapter
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="fname">fomo</div>
+      <p>where traders become legends.</p>
+    </div>
+    <div class="footer-cols">
+      <div class="footer-col">
+        <h4>Greek Wars</h4>
+        <a href="/fomo/clans/">Leaderboard</a>
+        <a href="/fomo/clans/create/">Register a chapter</a>
+        <a href="/fomo/prizes/">Chapter rewards</a>
+        <a href="https://milomessina.com/fomo/campuswars/" target="_blank" rel="noopener">Greek Village</a>
+      </div>
+      <div class="footer-col">
+        <h4>Social</h4>
+        <a href="https://fomo.family" target="_blank" rel="noopener">Discord</a>
+        <a href="https://fomo.family" target="_blank" rel="noopener">X/Twitter</a>
+        <a href="https://fomo.family" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://fomo.family" target="_blank" rel="noopener">Youtube</a>
+        <a href="https://fomo.family" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="https://fomo.family" target="_blank" rel="noopener">Privacy Policy</a>
+        <a href="https://fomo.family" target="_blank" rel="noopener">Terms of Service</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2026 FOMO Labs Inc. · Chapter rewards are a program, not a contract — see rule 12.</div>
+</footer>
+
+<script src="/fomo/greek-data.js"></script>
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const { schoolColors, glyphFor } = GreekData;
+
+// ---------------------------------------------------------------------------
+// THE PROGRAM. Every dollar figure and threshold on this page is read from
+// here — nothing is hardcoded in the markup above, so changing an amount is a
+// one-line edit and the hero figures, ladder, live board and bonus cards all
+// follow. `pct` is the share of a chapter’s registered roster that must hold
+// approved fomo accounts; `cash` is what that rung pays ON TOP of the ones
+// below it (rule 03). `auto:false` means a live member count can't prove the
+// tier on its own, so the board never claims a chapter has it.
+// ---------------------------------------------------------------------------
+const PROGRAM = {
+  tiers: [
+    {
+      n: 1, name: 'Onboarded', pct: 80, cash: 500, auto: true,
+      why: 'The one everybody is aiming at. Four out of five actives holding a fomo account is the point where a chapter stops being a signup list and starts being a trading floor — so it’s where the money starts.',
+      gets: [
+        ['$500 to the chapter', 'Wired to the chapter account inside 7 business days of confirmation.'],
+        ['The welcome package', 'Banner, exec hoodies, a tee run, stickers and your numbered chapter card.'],
+        ['Your house on Greek Village', 'You appear on the 3D campus map with your letters and your colors.'],
+        ['Paid badge on the leaderboard', 'Your bar turns green and the PAID sticker goes up next to your name.'],
+      ],
+    },
+    {
+      n: 2, name: 'Locked in', pct: 90, cash: 250, auto: true,
+      why: 'Going from 80 to 90 is the hardest ten points in the program — it means chasing the people who ignored the first three asks. That work is worth paying for separately.',
+      gets: [
+        ['+$250 on top of the $500', 'Sent as a second transfer, not a replacement.'],
+        ['Merch recut in your colors', 'The hoodie and tee run get reprinted in your school’s actual palette.'],
+        ['Direct line to the team', 'A named contact and a private thread instead of the general inbox.'],
+      ],
+    },
+    {
+      n: 3, name: 'Full house', pct: 100, cash: 500, auto: true,
+      why: 'Every single active on the roster. No chapter gets here by accident, and very few get here at all — which is exactly why it’s worth another five hundred.',
+      gets: [
+        ['+$500 on top of Tier 02', 'Running total: $1,250.'],
+        ['$500 house fund', 'Earmarked for one chapter event. We pay the vendor directly.'],
+        ['Engraved house plaque', 'Wood and brass — your letters, the date you went full house, permanent.'],
+      ],
+    },
+    {
+      n: 4, name: 'Dynasty', pct: 100, hold: 30, cash: 750, auto: false,
+      why: 'Hold a full house for thirty straight days. This is the only tier that measures whether the chapter actually stuck with it after the money landed, so it’s the only one confirmed by a person rather than a counter.',
+      gets: [
+        ['+$750', 'Running total: $2,000 before bonuses.'],
+        ['Exec board varsity jackets', 'Chenille letters, chapter and year on the sleeve.'],
+        ['Permanent Greek Wars wall spot', 'Your chapter stays listed even after the semester closes out.'],
+        ['First look at every campus program', 'You get asked before anything new opens to the rest of the board.'],
+      ],
+    },
+  ],
+  speed: { days: 14, cash: 250 },
+  referral: { cash: 100, cap: 10 },
+};
+
+const money = (n) => '$' + n.toLocaleString('en-US');
+const TIERS = PROGRAM.tiers;
+// Running total at each rung — tiers stack (rule 03).
+const RUNNING = TIERS.reduce((acc, t) => (acc.push((acc[acc.length - 1] || 0) + t.cash), acc), []);
+const LADDER_MAX = RUNNING[RUNNING.length - 1];
+const STACK_MAX = LADDER_MAX + PROGRAM.speed.cash + PROGRAM.referral.cash * PROGRAM.referral.cap;
+
+// Members needed for a rung, given a roster size. Ceil, because 79.6% is not 80%.
+const needFor = (tier, size) => Math.ceil((tier.pct / 100) * size);
+// Highest rung a live member count can prove on its own (auto tiers only).
+function autoTier(members, size) {
+  if (!size) return 0;
+  let best = 0;
+  TIERS.forEach((t) => { if (t.auto && members >= needFor(t, size)) best = t.n; });
+  return best;
+}
+const earnedBy = (tierN) => (tierN ? RUNNING[tierN - 1] : 0);
+
+// ---- hero + bonus figures, all derived from PROGRAM ----
+$('fig-floor').textContent = money(TIERS[0].cash);
+$('fig-ceiling').textContent = money(LADDER_MAX);
+$('fig-ref').textContent = money(PROGRAM.referral.cash);
+$('fig-max').textContent = money(STACK_MAX);
+$('speed-amt').textContent = '+' + money(PROGRAM.speed.cash);
+$('speed-days').textContent = PROGRAM.speed.days;
+$('ref-amt').textContent = '+' + money(PROGRAM.referral.cash);
+$('ref-cap').textContent = PROGRAM.referral.cap;
+$('ref-cap-cash').textContent = money(PROGRAM.referral.cash * PROGRAM.referral.cap);
+
+// ---------------------------------------------------------------------------
+// The ladder. Renders once, then re-labels in place as the roster size changes
+// so the thresholds read in people rather than percentages — "72 members", not
+// "80%". If a real chapter is selected, each rung also says where they stand.
+// ---------------------------------------------------------------------------
+let rosterSize = 90;
+let selected = null; // a live chapter, when one is picked
+
+function renderLadder() {
+  const size = rosterSize;
+  const here = selected ? autoTier(selected.members, selected.chapterSize) : null;
+
+  $('ladder-list').innerHTML = TIERS.map((t, i) => {
+    const need = needFor(t, size);
+    const cleared = here !== null && here >= t.n;
+    const isNext = here !== null && here + 1 === t.n;
+    const lit = here === null ? i === 0 : cleared;
+
+    let mark = '';
+    if (here !== null && here === t.n) mark = '<span class="pill here">You are here</span>';
+    else if (cleared) mark = '<span class="pill cleared">Cleared</span>';
+    else if (isNext && selected) {
+      const away = Math.max(0, need - selected.members);
+      mark = `<span class="pill count">${away} more member${away === 1 ? '' : 's'}</span>`;
+    }
+    if (!t.auto) mark += ' <span class="pill manual">Team confirmed</span>';
+
+    const req = t.hold
+      ? `<b>${need}</b> of ${size} members, held for <b>${t.hold} days</b>`
+      : `<b>${need}</b> of ${size} members &nbsp;·&nbsp; ${t.pct}% of your roster`;
+
+    return `<div class="rung${lit ? ' lit' : ''}${isNext && selected ? ' target' : ''}${t.n === 4 ? ' gold' : ''}">
+      <div class="node">${String(t.n).padStart(2, '0')}</div>
+      <div class="tier" data-tier="${t.n}">
+        <div class="tier-head" role="button" tabindex="0" aria-expanded="false">
+          <div class="tier-id">
+            <div class="tier-tag">Tier ${String(t.n).padStart(2, '0')}</div>
+            <div class="tier-name">${esc(t.name)}${mark}</div>
+            <div class="tier-req">${req}</div>
+          </div>
+          <div class="tier-cash">
+            <div class="amt">+${money(t.cash)}</div>
+            <div class="run">${money(RUNNING[i])} total</div>
+          </div>
+          <svg class="tier-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="tier-body" hidden>
+          <p class="why">${esc(t.why)}</p>
+          <div class="gets">${t.gets.map(([g, d]) => `<div class="get">
+            <svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            <div><div class="gt">${esc(g)}</div><div class="gd">${esc(d)}</div></div>
+          </div>`).join('')}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Tier 01 opens by default — it's the one almost everyone is reading for.
+  const first = $('ladder-list').querySelector('.tier');
+  if (first) toggleTier(first, true);
+
+  $('ladder-list').querySelectorAll('.tier-head').forEach((h) => {
+    h.addEventListener('click', () => toggleTier(h.parentElement));
+    h.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleTier(h.parentElement); }
+    });
+  });
+}
+
+function toggleTier(tier, force) {
+  const open = force !== undefined ? force : !tier.classList.contains('open');
+  tier.classList.toggle('open', open);
+  tier.querySelector('.tier-body').hidden = !open;
+  tier.querySelector('.tier-head').setAttribute('aria-expanded', String(open));
+}
+
+$('size').addEventListener('input', () => {
+  const v = parseInt($('size').value, 10);
+  if (!Number.isFinite(v) || v < 5 || v > 500) return;
+  rosterSize = v;
+  // Typing a size by hand means you're no longer looking at a specific chapter.
+  if (selected && selected.chapterSize !== v) {
+    selected = null;
+    $('pick').value = '';
+    $('sizer-hint').textContent = 'Pick your chapter to see exactly where you stand.';
+  }
+  renderLadder();
+});
+
+// ---------------------------------------------------------------------------
+// Live board. Reads the same public endpoint as the leaderboard — it returns
+// chapter-level counts only, so there is nothing here that isn't already on
+// the public board.
+// ---------------------------------------------------------------------------
+let chapters = [];
+let filter = 'all';
+
+async function load() {
+  try {
+    const res = await fetch('/api/clans', { cache: 'no-store' });
+    if (!res.ok) throw new Error('bad status');
+    const { clans } = await res.json();
+    chapters = clans.filter((c) => c.chapterSize > 0);
+    $('load-error').hidden = true;
+    fillPicker();
+    paintStats();
+    paintRows();
+  } catch (e) {
+    $('load-error').hidden = false;
+    $('rows').innerHTML = '';
+  }
+}
+$('retry-btn').addEventListener('click', load);
+
+function fillPicker() {
+  const sorted = [...chapters].sort((a, b) =>
+    a.chapterName.localeCompare(b.chapterName) || a.schoolLabel.localeCompare(b.schoolLabel));
+  $('pick').innerHTML = '<option value="">a chapter of…</option>' +
+    sorted.map((c) => `<option value="${esc(c.id)}">${esc(c.chapterName)} — ${esc(c.schoolLabel)}</option>`).join('');
+}
+
+$('pick').addEventListener('change', () => {
+  const c = chapters.find((x) => x.id === $('pick').value);
+  selected = c || null;
+  if (c) {
+    rosterSize = c.chapterSize;
+    $('size').value = c.chapterSize;
+    const t = autoTier(c.members, c.chapterSize);
+    const next = TIERS.find((x) => x.auto && x.n > t);
+    $('sizer-hint').textContent = next
+      ? `${c.members} of ${c.chapterSize} on fomo · ${Math.max(0, needFor(next, c.chapterSize) - c.members)} more for Tier ${String(next.n).padStart(2, '0')}`
+      : `${c.members} of ${c.chapterSize} on fomo · every automatic tier cleared`;
+  } else {
+    $('sizer-hint').textContent = 'Pick your chapter to see exactly where you stand.';
+  }
+  renderLadder();
+});
+
+function paintStats() {
+  const onboarded = chapters.filter((c) => autoTier(c.members, c.chapterSize) >= 1).length;
+  const earned = chapters.reduce((s, c) => s + earnedBy(autoTier(c.members, c.chapterSize)), 0);
+  // What the registered field could still pay out if every chapter went full house.
+  const table = chapters.reduce((s, c) => s + (LADDER_MAX - earnedBy(autoTier(c.members, c.chapterSize))), 0);
+  $('s-chapters').textContent = chapters.length;
+  $('s-onboarded').textContent = onboarded;
+  $('s-earned').textContent = money(earned);
+  $('s-table').textContent = money(table);
+}
+
+function rowHtml(c) {
+  const [a] = schoolColors(c.school);
+  const glyph = glyphFor(c.chapterName);
+  const pct = Math.min(100, Math.round((c.members / c.chapterSize) * 100));
+  const t = autoTier(c.members, c.chapterSize);
+  const next = TIERS.find((x) => x.auto && x.n > t);
+  const away = next ? Math.max(0, needFor(next, c.chapterSize) - c.members) : 0;
+  const tone = t >= 3 ? ' gold' : t >= 1 ? ' done' : '';
+
+  return `<div class="row">
+    ${c.hasAvatar
+      ? `<img class="icon" src="/api/clans/${esc(c.id)}/avatar" alt="" loading="lazy">`
+      : `<div class="icon ${glyph.length >= 3 ? 'small-glyph' : ''}" style="background:${a}">${esc(glyph)}</div>`}
+    <div class="rmeta">
+      <div class="name">${esc(c.chapterName)}</div>
+      <div class="sub">${esc(c.schoolLabel)} · ${c.members} of ${c.chapterSize} on fomo</div>
+    </div>
+    <div class="rprog">
+      <div class="bar${tone}"><span style="width:${pct}%"></span></div>
+      <div class="pct${tone}">${pct}%</div>
+    </div>
+    <div class="gap${next ? '' : ' max'}">${next
+      ? `<b>${away}</b> more → Tier ${String(next.n).padStart(2, '0')}`
+      : 'Every auto tier cleared'}</div>
+    <div class="earned">
+      <div class="e${t ? '' : ' zero'}">${money(earnedBy(t))}</div>
+      <div class="el">${t ? 'Tier ' + String(t).padStart(2, '0') : 'Climbing'}</div>
+    </div>
+  </div>`;
+}
+
+function paintRows() {
+  const list = chapters
+    .filter((c) => {
+      if (filter === 'all') return true;
+      return autoTier(c.members, c.chapterSize) === Number(filter);
+    })
+    .sort((a, b) => (b.members / b.chapterSize) - (a.members / a.chapterSize));
+
+  $('rows').innerHTML = list.length
+    ? list.map(rowHtml).join('')
+    : '<div class="empty">No chapters at this tier yet.</div>';
+}
+
+$('board-bar').querySelectorAll('button').forEach((b) => {
+  b.addEventListener('click', () => {
+    filter = b.dataset.t;
+    $('board-bar').querySelectorAll('button').forEach((x) => x.classList.toggle('active', x === b));
+    paintRows();
+  });
+});
+
+renderLadder();
+load();
+</script>
+</body>
+</html>

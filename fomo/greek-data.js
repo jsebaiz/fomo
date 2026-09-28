@@ -427,7 +427,9 @@
       open(input.value);
       if (!strict) input.dispatchEvent(new CustomEvent('cb:change', { detail: null, bubbles: true }));
     });
-    input.addEventListener('focus', () => open(input.value));
+    // Only open on focus if they've already typed — autofocusing a step
+    // shouldn't dump the whole list over the form. ArrowDown still opens it.
+    input.addEventListener('focus', () => { if (input.value.trim()) open(input.value); });
     input.addEventListener('keydown', (e) => {
       if (box.hidden && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) { open(input.value); return; }
       if (box.hidden) return;

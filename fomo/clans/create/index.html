@@ -53,6 +53,23 @@ h1{font-size:clamp(2.3rem,4.6vw,3.4rem); font-weight:800; letter-spacing:-0.04em
 /* step card */
 .panel{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:30px 32px;}
 @media (max-width:560px){ .panel{padding:24px 20px;} }
+/* persistent stepper above the card */
+.stepper{display:flex; align-items:center; gap:10px; margin-bottom:14px;}
+.stepper button{display:flex; align-items:center; gap:8px; background:none; border:none; padding:0; color:var(--text-faint); font-size:0.84rem; font-weight:700; cursor:default;}
+.stepper button i{display:flex; align-items:center; justify-content:center; width:23px; height:23px; border-radius:50%; border:1px solid var(--border-2); font-style:normal; font-size:0.74rem; font-weight:800; transition:background .15s ease, color .15s ease, border-color .15s ease;}
+.stepper button.done{color:var(--text-dim); cursor:pointer;}
+.stepper button.done:hover{color:var(--white);}
+.stepper button.done i{background:rgba(81,106,246,0.18); border-color:transparent; color:var(--blue-dim);}
+.stepper button.now{color:var(--white);}
+.stepper button.now i{background:var(--blue); border-color:transparent; color:#fff;}
+.stepper .line{flex:1; height:1px; background:var(--border); min-width:12px;}
+.stepper .line.lit{background:var(--blue);}
+@media (max-width:560px){ .stepper button span{display:none;} }
+
+/* steps cross-fade instead of snapping */
+.panel.step{animation:stepIn .22s ease both;}
+@keyframes stepIn{from{opacity:0; transform:translateY(6px);}to{opacity:1; transform:none;}}
+
 .step-count{font-size:0.78rem; font-weight:700; color:var(--text-faint); letter-spacing:0.06em; font-variant-numeric:tabular-nums; margin-bottom:8px;}
 .step-title{font-size:1.45rem; font-weight:800; color:var(--white); letter-spacing:-0.025em; margin:0 0 24px;}
 .field{margin-bottom:20px;}
@@ -165,9 +182,16 @@ h1{font-size:clamp(2.3rem,4.6vw,3.4rem); font-weight:800; letter-spacing:-0.04em
     </div>
 
     <form id="clan-form" novalidate>
+      <div class="stepper" id="stepper">
+        <button type="button" data-go="1"><i>1</i><span>You</span></button>
+        <span class="line" data-line="1"></span>
+        <button type="button" data-go="2"><i>2</i><span>Chapter</span></button>
+        <span class="line" data-line="2"></span>
+        <button type="button" data-go="3"><i>3</i><span>Referral</span></button>
+      </div>
+
       <!-- step 1 -->
-      <div class="panel" id="step-1">
-        <div class="step-count">01 / 03</div>
+      <div class="panel step" id="step-1">
         <h2 class="step-title">Who's registering</h2>
 
         <div class="row-two">
@@ -214,8 +238,7 @@ h1{font-size:clamp(2.3rem,4.6vw,3.4rem); font-weight:800; letter-spacing:-0.04em
       </div>
 
       <!-- step 2 -->
-      <div class="panel" id="step-2" hidden>
-        <div class="step-count">02 / 03</div>
+      <div class="panel step" id="step-2" hidden>
         <h2 class="step-title">Your chapter</h2>
 
         <div class="field">
@@ -280,8 +303,7 @@ h1{font-size:clamp(2.3rem,4.6vw,3.4rem); font-weight:800; letter-spacing:-0.04em
       </div>
 
       <!-- step 3 -->
-      <div class="panel" id="step-3" hidden>
-        <div class="step-count">03 / 03</div>
+      <div class="panel step" id="step-3" hidden>
         <h2 class="step-title">Were you referred?</h2>
         <p class="lede" style="font-size:0.96rem; margin:-14px 0 24px; max-width:none;">If another chapter sent you here, tell us who — they get credit for the referral.</p>
 
@@ -305,7 +327,7 @@ h1{font-size:clamp(2.3rem,4.6vw,3.4rem); font-weight:800; letter-spacing:-0.04em
             Create clan
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </button>
-          <button type="button" class="btn-ghost" id="skip-btn">Skip — nobody referred me</button>
+          <button type="button" class="btn-back" id="skip-btn">Nobody referred me — skip</button>
           <button type="button" class="btn-back" id="back2-btn">← Back</button>
         </div>
       </div>
@@ -422,34 +444,76 @@ function validateStep1() {
   return null;
 }
 
-function goStep2() {
-  const problem = validateStep1();
-  if (problem) { err('msg-1', problem); return; }
-  clearErr('msg-1');
-  $('step-1').hidden = true;
-  $('step-2').hidden = false;
-  $('c-school').focus();
-}
-$('next-btn').addEventListener('click', goStep2);
-$('back-btn').addEventListener('click', () => { $('step-2').hidden = true; $('step-1').hidden = false; });
-$('back2-btn').addEventListener('click', () => { $('step-3').hidden = true; $('step-2').hidden = false; });
+// ---- one place owns which step you're on -------------------------------
+let step = 1;
+let furthest = 1;
 
-function goStep3() {
-  const school = $('c-school').dataset.value || '';
-  const chapterName = $('c-chapter').dataset.value || '';
-  if (!school) { err('msg-2', 'pick your school from the list.'); return; }
-  if (!chapterName) { err('msg-2', 'pick your fraternity or sorority from the list.'); return; }
-  clearErr('msg-2');
-  $('step-2').hidden = true;
-  $('step-3').hidden = false;
-  $('r-school').focus();
+function validate(n) {
+  if (n === 1) return validateStep1();
+  if (n === 2) {
+    if (!($('c-school').dataset.value || '')) return 'pick your school from the list.';
+    if (!($('c-chapter').dataset.value || '')) return 'pick your fraternity or sorority from the list.';
+  }
+  return null;
 }
-$('next2-btn').addEventListener('click', goStep3);
-$('c-size').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); goStep3(); } });
 
-['f-first', 'f-last', 'f-phone', 'f-email', 'f-ig', 'f-role-other'].forEach((id) => {
-  $(id).addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); goStep2(); } });
+const FIRST_FIELD = { 1: 'f-first', 2: 'c-school', 3: 'r-school' };
+
+function goTo(n) {
+  // moving forward has to clear every step in between
+  if (n > step) {
+    for (let i = step; i < n; i++) {
+      const problem = validate(i);
+      if (problem) { showStep(i); err('msg-' + i, problem); return; }
+    }
+  }
+  clearErr('msg-' + step);
+  showStep(n);
+}
+
+function showStep(n) {
+  [1, 2, 3].forEach((i) => { $('step-' + i).hidden = i !== n; });
+  step = n;
+  furthest = Math.max(furthest, n);
+  paintStepper();
+  const f = $(FIRST_FIELD[n]);
+  if (f) setTimeout(() => f.focus({ preventScroll: true }), 40);
+}
+
+function paintStepper() {
+  [1, 2, 3].forEach((i) => {
+    const b = $('stepper').querySelector(`[data-go="${i}"]`);
+    b.classList.toggle('now', i === step);
+    b.classList.toggle('done', i !== step && i <= furthest);
+  });
+  [1, 2].forEach((i) => {
+    $('stepper').querySelector(`[data-line="${i}"]`).classList.toggle('lit', step > i);
+  });
+}
+
+$('stepper').addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-go]');
+  if (!b) return;
+  const n = Number(b.dataset.go);
+  if (n <= furthest) goTo(n);   // never jump ahead of what's been filled in
 });
+
+$('next-btn').addEventListener('click', () => goTo(2));
+$('next2-btn').addEventListener('click', () => goTo(3));
+$('back-btn').addEventListener('click', () => goTo(1));
+$('back2-btn').addEventListener('click', () => goTo(2));
+
+// Enter carries you forward from any field instead of dead-ending
+const advance = (ids, to) => ids.forEach((id) => {
+  const el = $(id);
+  if (el) el.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); goTo(to); }
+  });
+});
+advance(['f-first', 'f-last', 'f-phone', 'f-email', 'f-ig', 'f-role-other'], 2);
+advance(['c-size'], 3);
+
+paintStepper();
 
 // ---- artwork -------------------------------------------------------------
 const art = { avatar: null, banner: null };
@@ -534,7 +598,7 @@ async function submitClan(skipReferral) {
 
   const school = $('c-school').dataset.value || '';
   const chapterName = $('c-chapter').dataset.value || '';
-  if (!school || !chapterName) { $('step-3').hidden = true; $('step-2').hidden = false; return; }
+  if (!school || !chapterName) { goTo(2); return; }
 
   const ref = referralFields(skipReferral);
   if (!skipReferral) {
@@ -592,6 +656,7 @@ $('skip-btn').addEventListener('click', () => submitClan(true));
 $('r-ig').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); submitClan(false); } });
 
 function showCreated(clan) {
+  $('stepper').hidden = true;
   $('step-3').hidden = true;
   $('step-done').hidden = false;
   $('done-name').textContent = clan.name;
