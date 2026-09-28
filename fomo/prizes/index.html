@@ -30,17 +30,6 @@ svg{display:block;}
 .wrap{max-width:1120px; margin:0 auto; padding:0 40px 60px;}
 @media (max-width:720px){ .wrap{padding:0 20px 44px;} }
 
-/* nav */
-.nav{display:flex; align-items:center; justify-content:space-between; padding:22px 0 0;}
-.nav-brand{font-size:1.18rem; font-weight:800; color:var(--white); letter-spacing:-0.02em;}
-.nav-brand .slash{color:var(--text-faint); font-weight:600;}
-.nav-actions{display:flex; align-items:center; gap:10px;}
-.nav-btn{border:1px solid var(--border); background:var(--surface); color:var(--text); border-radius:10px; padding:9px 16px; font-size:0.86rem; font-weight:600; transition:background .15s ease, border-color .15s ease;}
-.nav-btn:hover{background:var(--surface-2); border-color:var(--border-2);}
-.nav-btn.primary{background:var(--blue); border-color:var(--blue); color:#fff;}
-.nav-btn.primary:hover{background:var(--blue-hi);}
-@media (max-width:620px){ .nav-actions .nav-btn.secondary{display:none;} }
-
 /* ---------- HERO: compact, the picker is the main event ---------- */
 .hero{display:grid; grid-template-columns:1fr 250px; gap:48px; align-items:center; padding:44px 0 34px;}
 @media (max-width:920px){ .hero{grid-template-columns:1fr; gap:28px; padding:32px 0 26px;} }
@@ -59,7 +48,7 @@ h1{font-size:clamp(2.3rem,5.4vw,3.5rem); font-weight:800; letter-spacing:-0.04em
 /* live status strip — the payoff line */
 .status{display:flex; gap:12px; margin-top:18px; flex-wrap:wrap; min-height:62px;}
 .stat{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:11px 18px; animation:popIn .3s cubic-bezier(.2,.8,.3,1);}
-.stat .v{font-size:1.4rem; font-weight:800; letter-spacing:-0.03em; line-height:1.1; font-variant-numeric:tabular-nums;}
+.stat .v{font-size:1.4rem; font-weight:800; letter-spacing:-0.03em; line-height:1.1;}
 .stat .k{font-size:0.72rem; color:var(--text-faint); margin-top:3px; font-weight:600;}
 .stat.ghost{border-style:dashed; background:none;}
 .stat.ghost .v{color:var(--text-faint);}
@@ -245,29 +234,98 @@ h1{font-size:clamp(2.3rem,5.4vw,3.5rem); font-weight:800; letter-spacing:-0.04em
 .footer-links a{font-size:0.85rem; color:var(--text-dim);}
 .footer-links a:hover{color:var(--white);}
 .footer-note{font-size:0.76rem; color:var(--text-faint); width:100%;}
+/* ---------- TOP BAR: brand, live ticker, actions ---------- */
+.topbar{position:sticky; top:0; z-index:20; background:rgba(8,8,15,.82); backdrop-filter:blur(14px); border-bottom:1px solid var(--border);}
+.topbar-in{max-width:1120px; margin:0 auto; padding:12px 40px; display:flex; align-items:center; gap:18px;}
+@media (max-width:720px){ .topbar-in{padding:10px 20px; gap:12px;} }
+.brand{display:flex; align-items:center; gap:9px; font-size:1.1rem; font-weight:800; color:var(--white); letter-spacing:-0.02em; flex-shrink:0;}
+.brand svg{width:24px; height:24px;}
+.brand .slash{color:var(--text-faint); font-weight:600;}
+.ticker{flex:1; display:flex; align-items:center; gap:0; overflow:hidden; min-width:0;}
+.tick{display:flex; align-items:center; gap:7px; padding:0 16px; border-left:1px solid var(--border); white-space:nowrap;}
+.tick:first-child{border-left:none;}
+.tick .dot{width:6px; height:6px; border-radius:50%; background:var(--green); box-shadow:0 0 0 0 rgba(46,212,122,.6); animation:live 2.4s ease-out infinite;}
+@keyframes live{0%{box-shadow:0 0 0 0 rgba(46,212,122,.55);}70%{box-shadow:0 0 0 8px rgba(46,212,122,0);}100%{box-shadow:0 0 0 0 rgba(46,212,122,0);}}
+.tick b{font-size:0.92rem; font-weight:800; color:var(--white);}
+.tick span{font-size:0.76rem; color:var(--text-faint);}
+@media (max-width:980px){ .ticker{display:none;} }
+.topbar .acts{display:flex; gap:9px; flex-shrink:0; margin-left:auto;}
+.nav-btn{border:1px solid var(--border); background:var(--surface); color:var(--text); border-radius:10px; padding:9px 15px; font-size:0.85rem; font-weight:600; transition:background .15s ease, border-color .15s ease;}
+.nav-btn:hover{background:var(--surface-2); border-color:var(--border-2);}
+.nav-btn.primary{background:var(--blue); border-color:var(--blue); color:#fff;}
+.nav-btn.primary:hover{background:var(--blue-hi);}
+@media (max-width:620px){ .nav-btn.secondary{display:none;} }
+
+/* ---------- TRACK SWITCHER ---------- */
+.switch{display:flex; gap:4px; background:var(--surface); border:1px solid var(--border); border-radius:13px; padding:5px; margin:26px 0 0; width:fit-content;}
+.switch button{background:none; border:none; color:var(--text-faint); font-weight:700; font-size:0.92rem; padding:11px 22px; border-radius:9px; cursor:pointer; display:flex; align-items:center; gap:9px; transition:background .18s ease, color .18s ease;}
+.switch button:hover{color:var(--text);}
+.switch button.on{background:var(--blue); color:#fff;}
+.switch button svg{width:15px; height:15px;}
+@media (max-width:520px){ .switch{width:100%;} .switch button{flex:1; justify-content:center; padding:11px 8px; font-size:0.85rem;} }
+
+/* earnings tab */
+.earn{padding:20px 26px 26px;}
+@media (max-width:560px){ .earn{padding:18px;} }
+.earn-lede{margin:0 0 16px; font-size:0.92rem; color:var(--text-dim); max-width:66ch;}
+.earn-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px;}
+.earn-row{background:var(--bg); border:1px solid var(--border); border-radius:12px; padding:14px 16px; transition:border-color .15s ease, transform .15s ease;}
+.earn-row:hover{border-color:var(--border-2); transform:translateY(-3px);}
+.earn-row.hit{border-color:rgba(46,212,122,.35); background:rgba(46,212,122,.05);}
+.earn-row .en{font-size:1.25rem; font-weight:800; color:var(--white); letter-spacing:-0.03em; font-variant-numeric:tabular-nums;}
+.earn-row .ek{font-size:0.7rem; color:var(--text-faint); margin-bottom:9px;}
+.earn-row .ev{font-size:1.1rem; font-weight:800; color:var(--green); letter-spacing:-0.025em;}
+.earn-row .el{font-size:0.7rem; color:var(--text-faint); margin-top:2px;}
+.earn-note{margin:16px 0 0; font-size:0.8rem; color:var(--text-faint); line-height:1.6;}
+
+/* apply tab */
+.apply{padding:22px 26px 26px;}
+@media (max-width:560px){ .apply{padding:18px;} }
+.steps{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:20px;}
+@media (max-width:820px){ .steps{grid-template-columns:repeat(2,1fr);} }
+@media (max-width:480px){ .steps{grid-template-columns:1fr;} }
+.step{background:var(--bg); border:1px solid var(--border); border-radius:12px; padding:18px 18px 20px;}
+.step .sn{font-size:0.64rem; font-weight:800; letter-spacing:0.11em; color:var(--blue-dim); margin-bottom:9px;}
+.step h4{margin:0 0 6px; font-size:0.98rem; font-weight:700; color:var(--white); letter-spacing:-0.015em;}
+.step p{margin:0; font-size:0.83rem; color:var(--text-faint); line-height:1.5;}
+.apply-cta{display:flex; align-items:center; gap:14px; flex-wrap:wrap; background:var(--bg); border:1px solid var(--border-2); border-radius:12px; padding:18px 22px;}
+.apply-cta p{margin:0; flex:1; min-width:200px; font-size:0.88rem; color:var(--text-dim);}
 </style>
 </head>
 <body>
 
-<div class="wrap">
-  <nav class="nav">
-    <a class="nav-brand" href="/fomo/clans/">fomo <span class="slash">/prizes</span></a>
-    <div class="nav-actions">
+<div class="topbar">
+  <div class="topbar-in">
+    <a class="brand" href="/fomo/clans/">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="26" fill="#12121C"/><g fill="#EAEDFF"><path d="M36.9747 24.3586C44.1067 24.3587 49.7941 27.9515 52.9484 33.5959C48.7626 38.0418 45.6617 43.7612 44.4679 50.0002C43.2743 56.2391 44.1865 61.9572 46.67 66.4026C41.3555 72.0468 34.2931 75.6408 27.1613 75.6409C18.432 75.6407 11.8659 70.2588 9.46204 62.3196H26.8478C27.4159 62.3193 28.0059 61.8593 28.1691 61.2932L34.6486 38.7043C34.8098 38.1381 34.4815 37.6782 33.9152 37.678H14.1788C19.6213 29.7404 28.2465 24.3588 36.9747 24.3586Z"/><path d="M72.3285 24.3586C85.0779 24.3586 93.2156 35.8374 90.5062 49.9993C87.7966 64.1596 75.2646 75.6409 62.515 75.6409C53.7856 75.6408 47.2196 70.2589 44.8158 62.3196H64.1537C64.7218 62.3194 65.3127 61.8594 65.476 61.2932L71.9545 38.7043C72.1157 38.138 71.7876 37.678 71.2211 37.678H49.5316C54.9741 29.7401 63.5999 24.3587 72.3285 24.3586Z"/></g></svg>
+      fomo <span class="slash">/prizes</span>
+    </a>
+    <div class="ticker" id="ticker" hidden></div>
+    <div class="acts">
       <a class="nav-btn secondary" href="/fomo/clans/">Leaderboard</a>
       <a class="nav-btn primary" href="/fomo/clans/create/">Register chapter</a>
     </div>
-  </nav>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="switch" id="switch">
+    <button data-track="chapters" class="on">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/></svg>
+      Chapters
+    </button>
+    <button data-track="ambassadors">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 7a4 4 0 1 0 0 8 4 4 0 0 0 0-8M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Ambassadors
+    </button>
+  </div>
 
   <header class="hero">
     <div>
-      <div class="eyebrow">Greek Wars · chapter rewards</div>
-      <h1>Get your house paid.</h1>
-      <p class="lede">Get <b>80% of your roster</b> on fomo and we wire the chapter <b>$500</b> and ship a cooler of gear. Four stops, up to <b>$2,000</b>.</p>
-      <div class="picker">
-        <select id="pick" aria-label="Your chapter"><option value="">Pick your chapter…</option></select>
-        <input type="number" id="size" min="5" max="500" step="1" value="90" aria-label="Chapter roster size">
-        <span class="unit">actives</span>
-      </div>
+      <div class="eyebrow" id="h-kicker"></div>
+      <h1 id="h-title"></h1>
+      <p class="lede" id="h-lede"></p>
+      <div class="picker" id="h-picker"></div>
       <div class="status" id="status"></div>
     </div>
     <div class="card-stage"><div class="tcard" id="tcard"></div></div>
@@ -281,12 +339,7 @@ h1{font-size:clamp(2.3rem,5.4vw,3.5rem); font-weight:800; letter-spacing:-0.04em
   </div>
 
   <div class="deck">
-    <div class="deck-tabs" id="deck-tabs">
-      <button data-tab="crate" class="on">What you get</button>
-      <button data-tab="board">Live board</button>
-      <button data-tab="bonus">Bonuses</button>
-      <button data-tab="fine">Fine print</button>
-    </div>
+    <div class="deck-tabs" id="deck-tabs"></div>
 
     <div class="deck-body" id="tab-crate"></div>
 
@@ -307,8 +360,8 @@ h1{font-size:clamp(2.3rem,5.4vw,3.5rem); font-weight:800; letter-spacing:-0.04em
     <div class="deck-body" id="tab-bonus" hidden>
       <div class="bonuses">
         <div class="bonus">
-          <div class="bonus-top"><h3>Move fast</h3><div class="amt" id="speed-amt">+$250</div></div>
-          <p>Clear stop one within <b id="speed-days">14</b> days of registering and we add a speed bonus on top. Most chapters that hit 80% do it in the first two weeks or never.</p>
+          <div class="bonus-top"><h3>Move fast</h3><div class="amt" id="bonus-speed">+$250</div></div>
+          <p>Clear stop one within <b id="bonus-days">14</b> days of registering and we add a speed bonus on top. Most chapters that hit 80% do it in the first two weeks or never.</p>
           <ul>
             <li>Clock starts the day your registration is <b>approved</b>.</li>
             <li>Paid together with your stop-one $500.</li>
@@ -316,58 +369,96 @@ h1{font-size:clamp(2.3rem,5.4vw,3.5rem); font-weight:800; letter-spacing:-0.04em
           </ul>
         </div>
         <div class="bonus">
-          <div class="bonus-top"><h3>Bring another house</h3><div class="amt" id="ref-amt">+$100</div></div>
+          <div class="bonus-top"><h3>Bring another house</h3><div class="amt" id="bonus-ref">+$100</div></div>
           <p>Refer another chapter and you get paid <b>when they reach stop one</b> — not when they register. A signup that goes nowhere earns nothing.</p>
           <ul>
             <li>They name you on step 3 of registration.</li>
-            <li>Capped at <b id="ref-cap">10</b> per semester — <b id="ref-cap-cash">$1,000</b>.</li>
+            <li>Capped at <b id="bonus-cap">10</b> per semester — <b id="bonus-capcash">$1,000</b>.</li>
             <li>Stacks with everything on the roadmap.</li>
           </ul>
         </div>
       </div>
     </div>
 
+    <div class="deck-body" id="tab-earn" hidden></div>
+
+    <div class="deck-body" id="tab-apply" hidden>
+      <div class="apply">
+        <div class="steps">
+          <div class="step"><div class="sn">STEP 01</div><h4>Send us your campus</h4><p>School, year, and what you already run — a chapter position, a club, a group chat with reach. We read all of them.</p></div>
+          <div class="step"><div class="sn">STEP 02</div><h4>Fifteen-minute call</h4><p>Not an interview. We walk you through the link, the kit and the rate, and you tell us what your campus actually responds to.</p></div>
+          <div class="step"><div class="sn">STEP 03</div><h4>Kit ships, link goes live</h4><p>Your referral link is live the same day. The starter kit lands inside ten business days and you earn from signup one.</p></div>
+          <div class="step"><div class="sn">STEP 04</div><h4>Get paid monthly</h4><p>Per-head earnings and any level bonus land on the 1st, for everything verified the month before.</p></div>
+        </div>
+        <div class="apply-cta">
+          <p><b style="color:var(--white)">Applications are open for the semester.</b> One rep per campus to start, two once the first clears Campus lead.</p>
+          <a class="cta" href="https://fomo.family" target="_blank" rel="noopener">
+            Apply
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+
     <div class="deck-body" id="tab-fine" hidden>
       <div class="fine">
-        <h3>The rules</h3>
-        <details><summary><span><span class="n">01</span>What counts as a member</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
-          <div class="ans">Someone counts when they've created a fomo account, submitted that username and fomo email through your chapter link, and been <b>approved</b> on the roster. A submitted username is a claim, not a member.</div></details>
-        <details><summary><span><span class="n">02</span>Your roster size is locked at registration</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
-          <div class="ans">The active count you entered is the denominator for every stop. Only the fomo team can change it, and only with proof — a nationals listing or an exec board confirmation. This exists so no chapter clears 100% by declaring itself eight people deep.</div></details>
-        <details><summary><span><span class="n">03</span>Stops stack, and each one pays once</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
-          <div class="ans">Clearing 90% pays stop two <b>on top of</b> the $500 you already received — you're not being re-paid, you're being topped up. A stop already paid can't be earned again.</div></details>
-        <details><summary><span><span class="n">04</span>Dropping back takes nothing away</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
-          <div class="ans">If members leave and your percentage falls, <b>you keep everything already paid.</b> Stops above your current level just pause until you're back over the line. We don't claw back.</div></details>
-        <details><summary><span><span class="n">05</span>The chapter gets paid, not a person</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
-          <div class="ans">Money goes to the chapter account, arranged through the treasurer or president named on your registration. If your chapter can't take an ACH transfer, we'll cut a check to the house. We won't send a payout to a personal Venmo.</div></details>
-        <details><summary><span><span class="n">06</span>Timing</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
-          <div class="ans">A stop is confirmed within <b>3 business days</b> of being hit, and paid within <b>7 business days</b> of confirmation. Crates ship inside <b>10 business days</b> of stop-one confirmation.</div></details>
-        <details><summary><span><span class="n">07</span>Duplicates and dead accounts</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
-          <div class="ans">Before a stop is confirmed we remove accounts that share a device, email alias or payment method with another account, and accounts that never opened the app after signing up.</div></details>
-        <details><summary><span><span class="n">08</span>Referrals pay on results</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
-          <div class="ans">A referral pays when the chapter you sent reaches <b>stop one</b>, not when they register. They have to name you on step 3 of their registration — we can't backfill a referral from memory.</div></details>
-        <details><summary><span><span class="n">09</span>One chapter per school, per organization</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
-          <div class="ans">Two registrations for the same letters at the same school are merged into whichever came first, and the counts combined. Colonies and interest groups are eligible; alumni chapters are not.</div></details>
-        <details><summary><span><span class="n">10</span>Paperwork over $600</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
-          <div class="ans">Once a chapter passes <b>$600</b> from us in a calendar year, US tax rules require a W-9 before we can send more. Stop one alone stays under that line; stop two crosses it.</div></details>
-        <details><summary><span><span class="n">11</span>Sororities, same program</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
-          <div class="ans">Every number here applies identically to sororities, co-ed and professional chapters. Nothing about the stops, the crate or the referral bonus changes.</div></details>
-        <details><summary><span><span class="n">12</span>This is a program, not a contract</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
-          <div class="ans">fomo can change these amounts or end the program with notice on this page. <b>Any stop you've already hit is honored at the amount posted when you hit it</b> — changes only apply forward.</div></details>
+        <div class="fine-chapters">
+          <h3>Chapter rules</h3>
+          <details><summary><span><span class="n">01</span>What counts as a member</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+            <div class="ans">Someone counts when they've created a fomo account, submitted that username and fomo email through your chapter link, and been <b>approved</b> on the roster. A submitted username is a claim, not a member.</div></details>
+          <details><summary><span><span class="n">02</span>Your roster size is locked at registration</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+            <div class="ans">The active count you entered is the denominator for every stop. Only the fomo team can change it, and only with proof — a nationals listing or an exec board confirmation. This exists so no chapter clears 100% by declaring itself eight people deep.</div></details>
+          <details><summary><span><span class="n">03</span>Stops stack, and each one pays once</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+            <div class="ans">Clearing 90% pays stop two <b>on top of</b> the $500 you already received — you're not being re-paid, you're being topped up. A stop already paid can't be earned again.</div></details>
+          <details><summary><span><span class="n">04</span>Dropping back takes nothing away</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+            <div class="ans">If members leave and your percentage falls, <b>you keep everything already paid.</b> Stops above your current level just pause until you're back over the line. We don't claw back.</div></details>
+          <details><summary><span><span class="n">05</span>The chapter gets paid, not a person</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+            <div class="ans">Money goes to the chapter account, arranged through the treasurer or president named on your registration. If your chapter can't take an ACH transfer, we'll cut a check to the house. We won't send a payout to a personal Venmo.</div></details>
+          <details><summary><span><span class="n">06</span>Timing</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+            <div class="ans">A stop is confirmed within <b>3 business days</b> of being hit, and paid within <b>7 business days</b> of confirmation. Crates ship inside <b>10 business days</b> of stop-one confirmation.</div></details>
+          <details><summary><span><span class="n">07</span>Duplicates and dead accounts</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+            <div class="ans">Before a stop is confirmed we remove accounts that share a device, email alias or payment method with another account, and accounts that never opened the app after signing up.</div></details>
+          <details><summary><span><span class="n">08</span>Referrals pay on results</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+            <div class="ans">A referral pays when the chapter you sent reaches <b>stop one</b>, not when they register. They have to name you on step 3 of their registration — we can't backfill a referral from memory.</div></details>
+          <details><summary><span><span class="n">09</span>One chapter per school, per organization</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+            <div class="ans">Two registrations for the same letters at the same school are merged into whichever came first, and the counts combined. Colonies and interest groups are eligible; alumni chapters are not.</div></details>
+          <details><summary><span><span class="n">10</span>Paperwork over $600</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+            <div class="ans">Once a chapter passes <b>$600</b> from us in a calendar year, US tax rules require a W-9 before we can send more. Stop one alone stays under that line; stop two crosses it.</div></details>
+          <details><summary><span><span class="n">11</span>Sororities, same program</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+            <div class="ans">Every number here applies identically to sororities, co-ed and professional chapters. Nothing about the stops, the crate or the referral bonus changes.</div></details>
+          <details><summary><span><span class="n">12</span>This is a program, not a contract</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+            <div class="ans">fomo can change these amounts or end the program with notice on this page. <b>Any stop you've already hit is honored at the amount posted when you hit it</b> — changes only apply forward.</div></details>
 
-        <h3>Questions we actually get</h3>
-        <details><summary><span>Are these photos of the real merch?</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
-          <div class="ans">No — everything in the crate is a <b>design mockup</b>, not a product shot. The letters, the fomo mark and the placement are what you'll get, and picking your chapter repaints the gear in your school's colours. Real photos replace these once the first run ships.</div></details>
-        <details><summary><span>Do pledges count toward our roster?</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
-          <div class="ans">Yes, as long as they're on the roster number you registered with. Use the figure you'd give your nationals. What you can't do is count pledges in the numerator and leave them out of the denominator.</div></details>
-        <details><summary><span>How fast do chapters usually hit 80%?</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
-          <div class="ans">The ones who get there almost always do it in the first two weeks, off a single push — chapter GroupMe, one meeting announcement, link in the bio. Chapters that drip it out over a month tend to stall in the fifties.</div></details>
-        <details><summary><span>Can the money go to an individual instead?</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
-          <div class="ans">No. Payouts go to the chapter account only. A few thousand dollars landing in a student's personal account is a problem for your nationals, your university and that student's taxes.</div></details>
-        <details><summary><span>Does our leaderboard rank change what we get paid?</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
-          <div class="ans">No. The <a href="/fomo/clans/">leaderboard</a> ranks by raw members, so big chapters dominate it. This roadmap is a <b>percentage</b> of your own roster, so a 40-person house and a 200-person house have the same shot at every stop.</div></details>
-        <details><summary><span>What's Greek Village?</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
-          <div class="ans">The 3D campus map every onboarded chapter gets a house on. Clearing stop one puts you on it. <a href="https://milomessina.com/fomo/campuswars/" target="_blank" rel="noopener">Have a look →</a></div></details>
+          <h3>Questions we actually get</h3>
+          <details><summary><span>Are these photos of the real merch?</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+            <div class="ans">No — everything here is a <b>design mockup</b>, not a product shot. The marks, colours and placement are what you'll get, and picking your school repaints the whole kit. Real photos replace these once the first run ships.</div></details>
+          <details><summary><span>Do pledges count toward our roster?</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+            <div class="ans">Yes, as long as they're on the roster number you registered with. Use the figure you'd give your nationals. What you can't do is count pledges in the numerator and leave them out of the denominator.</div></details>
+          <details><summary><span>Does our leaderboard rank change what we get paid?</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+            <div class="ans">No. The <a href="/fomo/clans/">leaderboard</a> ranks by raw members, so big chapters dominate it. This roadmap is a <b>percentage</b> of your own roster, so a 40-person house and a 200-person house have the same shot at every stop.</div></details>
+          <details><summary><span>What's Greek Village?</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+            <div class="ans">The 3D campus map every onboarded chapter gets a house on. Clearing stop one puts you on it. <a href="https://milomessina.com/fomo/campuswars/" target="_blank" rel="noopener">Have a look →</a></div></details>
+        </div>
+
+        <div class="fine-amb" hidden>
+          <h3>Ambassador rules</h3>
+          <details><summary><span><span class="n">01</span>What counts as a signup</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+            <div class="ans">A person who created a fomo account through <b>your</b> link, verified their email, and opened the app at least once after signing up. Installs that never open don't count, and neither does a second account for someone already on your list.</div></details>
+          <details><summary><span><span class="n">02</span>Levels are permanent, the rate is not retroactive</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+            <div class="ans">Cross 50 and you're Campus lead for good. The higher rate applies to signups <b>from that point forward</b> — we don't reprice the first fifty. The level bonus is paid once.</div></details>
+          <details><summary><span><span class="n">03</span>You get paid monthly</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+            <div class="ans">On the 1st, for everything verified in the month before. Direct to you — this is the one part of the program that pays an individual rather than a chapter, because you're doing the work as an individual.</div></details>
+          <details><summary><span><span class="n">04</span>You're a contractor, not an employee</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+            <div class="ans">No set hours, no minimum. Past <b>$600</b> in a calendar year we need a W-9 and you'll get a 1099 — that's ordinary for this kind of work, but it's your income to report.</div></details>
+          <details><summary><span><span class="n">05</span>Ambassador signups still count for a chapter</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+            <div class="ans">If someone you sign up is in a registered chapter, they move that chapter's bar too. You get paid and they get closer to their stop. Nothing double-dips out of your pocket.</div></details>
+          <details><summary><span><span class="n">06</span>Fake signups end the arrangement</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+            <div class="ans">Self-referrals, burner emails and accounts created on your own device are removed before payout. Do it at any scale and the arrangement ends, including unpaid balance. This is the only hard line in the program.</div></details>
+          <details><summary><span><span class="n">07</span>The internship is an interview, not a payout</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+            <div class="ans">Three hundred verified signups across a full semester gets you in front of the team and the <b>$1,500</b> stipend if you're taken on. It is the one level a counter can't hand you.</div></details>
+          <details><summary><span><span class="n">08</span>This is a program, not a contract</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+            <div class="ans">fomo can change the rates or end the program with notice on this page. <b>Anything you've already earned is paid at the rate posted when you earned it.</b></div></details>
+        </div>
       </div>
     </div>
   </div>
@@ -393,7 +484,7 @@ h1{font-size:clamp(2.3rem,5.4vw,3.5rem); font-weight:800; letter-spacing:-0.04em
       <a href="https://milomessina.com/fomo/campuswars/" target="_blank" rel="noopener">Greek Village</a>
       <a href="https://fomo.family" target="_blank" rel="noopener">fomo.family</a>
     </div>
-    <div class="footer-note">© 2026 FOMO Labs Inc. · Merch shown is a design mockup. Chapter rewards are a program, not a contract — see rule 12.</div>
+    <div class="footer-note">© 2026 FOMO Labs Inc. · All gear shown is a design mockup. Chapter and ambassador rewards are programs, not contracts.</div>
   </div>
 </footer>
 
@@ -403,7 +494,7 @@ const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const { schoolColors, glyphFor } = GreekData;
 
-// The fomo mark, lifted straight from /fomo-favicon.svg so the merch carries the
+// The fomo mark, lifted straight from /fomo-favicon.svg so the gear carries the
 // real logo rather than an approximation of it.
 const MARK_PATHS =
   '<path d="M36.9747 24.3586C44.1067 24.3587 49.7941 27.9515 52.9484 33.5959C48.7626 38.0418 45.6617 43.7612 44.4679 50.0002C43.2743 56.2391 44.1865 61.9572 46.67 66.4026C41.3555 72.0468 34.2931 75.6408 27.1613 75.6409C18.432 75.6407 11.8659 70.2588 9.46204 62.3196H26.8478C27.4159 62.3193 28.0059 61.8593 28.1691 61.2932L34.6486 38.7043C34.8098 38.1381 34.4815 37.6782 33.9152 37.678H14.1788C19.6213 29.7404 28.2465 24.3588 36.9747 24.3586Z"/>' +
@@ -479,8 +570,8 @@ const ART = {
     <circle cx="108" cy="93" r="2.2" fill="${c.dark2}"/><circle cx="132" cy="93" r="2.2" fill="${c.dark2}"/>
     <path d="M94 134 H146 V160 H94 Z" fill="#000" fill-opacity=".1"/>
     <path d="M94 134 H146 V160" stroke="#000" stroke-opacity=".22" stroke-width="2.2" fill="none"/>
-    ${mark(92, 100, 24, c.ink, .95)}
-    <text x="124" y="121" font-family="Schibsted Grotesk,sans-serif" font-size="16" font-weight="800" fill="${c.ink}" opacity=".95">${c.letters}</text>
+    ${mark(148, 88, 17, c.ink, .8)}
+    <text x="118" y="118" text-anchor="middle" font-family="Schibsted Grotesk,sans-serif" font-size="${(c.school||'F').length > 3 ? 16 : 20}" font-weight="800" fill="${c.ink}" opacity=".95">${c.school}</text>
   </svg>`; },
 
   tee: (c) => { const u = uid(); return `<svg viewBox="0 0 240 200" fill="none">${defs(u, c)}
@@ -492,8 +583,8 @@ const ART = {
     <path d="M84 164 H156" stroke="#000" stroke-opacity=".18" stroke-width="4"/>
     <path d="M103 60 Q120 78 137 60" fill="${c.dark2}"/>
     <path d="M103 60 Q120 76 137 60" stroke="${c.dark}" stroke-width="7.5" stroke-linecap="round"/>
-    ${mark(104, 88, 32, c.ink, .95)}
-    <text x="120" y="146" text-anchor="middle" font-family="Schibsted Grotesk,sans-serif" font-size="15" font-weight="800" fill="${c.ink}" opacity=".9">${c.letters}</text>
+    <text x="120" y="110" text-anchor="middle" font-family="Schibsted Grotesk,sans-serif" font-size="${(c.school||'F').length > 3 ? 18 : 23}" font-weight="800" fill="${c.ink}" opacity=".95">${c.school}</text>
+    ${mark(107, 122, 26, c.ink, .8)}
   </svg>`; },
 
   banner: (c) => { const u = uid(); return `<svg viewBox="0 0 240 200" fill="none">${defs(u, c)}
@@ -599,7 +690,7 @@ const ART = {
     <path d="M78 62 H162 V78 H78 Z M78 158 H162" stroke="#000" stroke-opacity=".14" stroke-width="1.6"/>
     <path d="M120 78 V158" stroke="#000" stroke-opacity=".28" stroke-width="2.2"/>
     <circle cx="120" cy="96" r="3" fill="#F6F3EA"/><circle cx="120" cy="118" r="3" fill="#F6F3EA"/><circle cx="120" cy="140" r="3" fill="#F6F3EA"/>
-    <text x="99" y="126" text-anchor="middle" font-family="Schibsted Grotesk,sans-serif" font-size="27" font-weight="800" fill="#E0B25C" stroke="#FBF8EF" stroke-width="1.4" paint-order="stroke">${(c.letters || 'Φ').slice(0, 1)}</text>
+    <text x="99" y="126" text-anchor="middle" font-family="Schibsted Grotesk,sans-serif" font-size="${(c.school||'F').length > 3 ? 14 : 21}" font-weight="800" fill="#E0B25C" stroke="#FBF8EF" stroke-width="1.3" paint-order="stroke">${c.school}</text>
     ${mark(132, 104, 20, '#F6F3EA', .9)}
   </svg>`; },
 
@@ -629,82 +720,326 @@ const ART = {
     <text x="84" y="113" text-anchor="middle" font-family="Schibsted Grotesk,sans-serif" font-size="7.5" font-weight="700" fill="${c.ink}" opacity=".75" letter-spacing="1.4">HOUSE FUND</text>
     ${mark(157, 84, 26, c.ink, .85)}
   </svg>`; },
+
+  giftcard: (c) => { const u = uid(); return `<svg viewBox="0 0 240 200" fill="none">${defs(u, c)}
+    <defs><linearGradient id="${u}chip" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F3DFA2"/><stop offset="48%" stop-color="#C9A64A"/><stop offset="100%" stop-color="#8E6F26"/></linearGradient>
+    <linearGradient id="${u}sw" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFF" stop-opacity="0"/><stop offset="44%" stop-color="#FFF" stop-opacity=".22"/><stop offset="58%" stop-color="#FFF" stop-opacity="0"/></linearGradient></defs>
+    ${shadow(u, 122, 168, 82, 10)}
+    <rect x="34" y="48" width="172" height="108" rx="13" fill="url(#${u}f)"/>
+    <rect x="34" y="48" width="172" height="108" rx="13" fill="url(#${u}g)"/>
+    <rect x="52" y="70" width="30" height="23" rx="4" fill="url(#${u}chip)"/>
+    <path d="M52 78 H82 M52 86 H82 M67 70 V93" stroke="#8E6F26" stroke-width="1.2" opacity=".65"/>
+    <text x="52" y="128" font-family="Schibsted Grotesk,sans-serif" font-size="32" font-weight="800" fill="${c.ink}">$100</text>
+    <text x="52" y="144" font-family="Schibsted Grotesk,sans-serif" font-size="7.5" font-weight="700" fill="${c.ink}" opacity=".7" letter-spacing="1.5">FOMO GIFT CARD</text>
+    ${mark(160, 62, 30, c.ink, .95)}
+    <rect x="34" y="48" width="172" height="108" rx="13" fill="url(#${u}sw)"/>
+  </svg>`; },
+
+  lighter: (c) => { const u = uid(); return `<svg viewBox="0 0 240 200" fill="none">${defs(u, c)}
+    <defs><linearGradient id="${u}met" x1="0" y1="0" x2="1" y2="0.8">
+      <stop offset="0%" stop-color="#E9ECF3"/><stop offset="45%" stop-color="#A9AFBE"/><stop offset="100%" stop-color="#6C7180"/></linearGradient>
+    <radialGradient id="${u}fl" cx="50%" cy="72%" r="60%">
+      <stop offset="0%" stop-color="#FFF3B0"/><stop offset="48%" stop-color="#FFB13D"/><stop offset="100%" stop-color="#F2703A" stop-opacity=".25"/></radialGradient></defs>
+    ${shadow(u, 120, 182, 42, 8)}
+    <path d="M112 30 q8 14 0 24 q-8 -10 0 -24 Z" fill="url(#${u}fl)"/>
+    <rect x="98" y="54" width="44" height="20" rx="4" fill="url(#${u}met)"/>
+    <path d="M98 62 H142" stroke="#5A6070" stroke-width="1.6" opacity=".7"/>
+    <circle cx="131" cy="60" r="5.5" fill="#8B909E" stroke="#5A6070" stroke-width="1.4"/>
+    <rect x="94" y="72" width="52" height="102" rx="15" fill="url(#${u}f)"/>
+    <rect x="94" y="72" width="52" height="102" rx="15" fill="url(#${u}g)"/>
+    <rect x="102" y="120" width="36" height="42" rx="6" fill="#000" fill-opacity=".2"/>
+    ${mark(106, 82, 28, c.ink, .95)}
+    <text x="120" y="152" text-anchor="middle" font-family="Schibsted Grotesk,sans-serif" font-size="9" font-weight="800" fill="${c.ink}" opacity=".8">${c.letters}</text>
+  </svg>`; },
+
+  bottleopener: (c) => { const u = uid(); return `<svg viewBox="0 0 240 200" fill="none">${defs(u, c)}
+    <defs><linearGradient id="${u}st" x1="0" y1="0" x2="0.5" y2="1">
+      <stop offset="0%" stop-color="#F2F4F9"/><stop offset="42%" stop-color="#B8BECC"/><stop offset="100%" stop-color="#787E8D"/></linearGradient></defs>
+    ${shadow(u, 122, 146, 76, 9)}
+    <path d="M44 86 h140 a22 22 0 0 1 0 44 H44 a22 22 0 0 1 0 -44 Z" fill="url(#${u}f)"/>
+    <path d="M44 86 h140 a22 22 0 0 1 0 44 H44 a22 22 0 0 1 0 -44 Z" fill="url(#${u}g)"/>
+    <circle cx="168" cy="108" r="15" fill="#0A0A12" fill-opacity=".55"/>
+    <circle cx="168" cy="108" r="15" fill="none" stroke="url(#${u}st)" stroke-width="4"/>
+    <path d="M158 100 h10 v8 h-10 Z" fill="url(#${u}st)"/>
+    <circle cx="58" cy="108" r="7" fill="#0A0A12" fill-opacity=".5"/>
+    ${mark(76, 94, 28, c.ink, .95)}
+    <text x="126" y="114" text-anchor="middle" font-family="Schibsted Grotesk,sans-serif" font-size="13" font-weight="800" fill="${c.ink}" opacity=".9">${c.letters}</text>
+  </svg>`; },
+
+  keychain: (c) => { const u = uid(); return `<svg viewBox="0 0 240 200" fill="none">${defs(u, c)}
+    <defs><linearGradient id="${u}ring" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#EEF1F7"/><stop offset="50%" stop-color="#A5ABBA"/><stop offset="100%" stop-color="#6E7482"/></linearGradient></defs>
+    ${shadow(u, 126, 172, 56, 9)}
+    <circle cx="96" cy="52" r="24" fill="none" stroke="url(#${u}ring)" stroke-width="7"/>
+    <path d="M112 68 L124 84" stroke="url(#${u}ring)" stroke-width="6" stroke-linecap="round"/>
+    <rect x="80" y="84" width="88" height="80" rx="16" fill="url(#${u}f)"/>
+    <rect x="80" y="84" width="88" height="80" rx="16" fill="url(#${u}g)"/>
+    <circle cx="124" cy="96" r="4" fill="#0A0A12" fill-opacity=".45"/>
+    ${mark(104, 104, 40, c.ink, .95)}
+    <text x="124" y="154" text-anchor="middle" font-family="Schibsted Grotesk,sans-serif" font-size="11" font-weight="800" fill="${c.ink}" opacity=".85">${c.letters}</text>
+  </svg>`; },
+
+  moneygun: (c) => { const u = uid(); return `<svg viewBox="0 0 240 200" fill="none">${defs(u, c)}
+    <defs><linearGradient id="${u}bill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#C8E6C9"/><stop offset="100%" stop-color="#7FB383"/></linearGradient></defs>
+    ${shadow(u, 108, 176, 66, 9)}
+    <g opacity=".95">
+      <g transform="rotate(-24 178 48)"><rect x="158" y="36" width="40" height="24" rx="3" fill="url(#${u}bill)"/><text x="178" y="52" text-anchor="middle" font-family="Schibsted Grotesk,sans-serif" font-size="12" font-weight="800" fill="#2F6B34">$</text></g>
+      <g transform="rotate(16 202 84)"><rect x="182" y="72" width="40" height="24" rx="3" fill="url(#${u}bill)"/><text x="202" y="88" text-anchor="middle" font-family="Schibsted Grotesk,sans-serif" font-size="12" font-weight="800" fill="#2F6B34">$</text></g>
+      <g transform="rotate(-8 190 120)"><rect x="170" y="108" width="40" height="24" rx="3" fill="url(#${u}bill)"/><text x="190" y="124" text-anchor="middle" font-family="Schibsted Grotesk,sans-serif" font-size="12" font-weight="800" fill="#2F6B34">$</text></g>
+    </g>
+    <path d="M44 74 H154 V106 H96 L86 160 H50 L62 106 H44 Z" fill="url(#${u}f)"/>
+    <path d="M44 74 H154 V106 H96 L86 160 H50 L62 106 H44 Z" fill="url(#${u}g)"/>
+    <rect x="150" y="80" width="18" height="20" rx="4" fill="${c.dark2}"/>
+    <path d="M96 106 H120" stroke="#000" stroke-opacity=".22" stroke-width="4"/>
+    ${mark(56, 80, 22, c.ink, .95)}
+    <text x="110" y="96" font-family="Schibsted Grotesk,sans-serif" font-size="12" font-weight="800" fill="${c.ink}" opacity=".85">${c.letters}</text>
+  </svg>`; },
+
+  pingpong: (c) => { const u = uid(); return `<svg viewBox="0 0 240 200" fill="none">${defs(u, c)}
+    <defs><linearGradient id="${u}wd" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#D8B98A"/><stop offset="100%" stop-color="#9A7A4F"/></linearGradient></defs>
+    ${shadow(u, 112, 178, 62, 9)}
+    <rect x="98" y="120" width="26" height="58" rx="11" fill="url(#${u}wd)"/>
+    <path d="M98 132 H124" stroke="#000" stroke-opacity=".18" stroke-width="2"/>
+    <ellipse cx="111" cy="80" rx="52" ry="54" fill="url(#${u}f)"/>
+    <ellipse cx="111" cy="80" rx="52" ry="54" fill="url(#${u}g)"/>
+    <ellipse cx="111" cy="80" rx="52" ry="54" fill="none" stroke="${c.dark2}" stroke-width="3.5"/>
+    ${mark(94, 52, 34, c.ink, .95)}
+    <text x="111" y="112" text-anchor="middle" font-family="Schibsted Grotesk,sans-serif" font-size="13" font-weight="800" fill="${c.ink}" opacity=".85">${c.letters}</text>
+    <circle cx="192" cy="140" r="17" fill="#F7F7F2"/>
+    <circle cx="186" cy="134" r="5" fill="#FFF"/>
+  </svg>`; },
+
+  pickleball: (c) => { const u = uid(); return `<svg viewBox="0 0 240 200" fill="none">${defs(u, c)}
+    <defs><linearGradient id="${u}gr" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#3A3F4D"/><stop offset="100%" stop-color="#1D212B"/></linearGradient></defs>
+    ${shadow(u, 112, 180, 62, 9)}
+    <rect x="98" y="122" width="26" height="56" rx="10" fill="url(#${u}gr)"/>
+    <path d="M100 132 H122 M100 142 H122 M100 152 H122" stroke="#4E5464" stroke-width="1.6"/>
+    <rect x="60" y="24" width="102" height="104" rx="16" fill="url(#${u}f)"/>
+    <rect x="60" y="24" width="102" height="104" rx="16" fill="url(#${u}g)"/>
+    <rect x="60" y="24" width="102" height="104" rx="16" fill="none" stroke="${c.dark2}" stroke-width="3.5"/>
+    ${mark(94, 40, 34, c.ink, .95)}
+    <text x="111" y="106" text-anchor="middle" font-family="Schibsted Grotesk,sans-serif" font-size="13" font-weight="800" fill="${c.ink}" opacity=".85">${c.letters}</text>
+    <circle cx="196" cy="140" r="20" fill="#E8E453"/>
+    <circle cx="190" cy="132" r="3.4" fill="#B8B43C"/><circle cx="203" cy="136" r="3.4" fill="#B8B43C"/>
+    <circle cx="194" cy="147" r="3.4" fill="#B8B43C"/><circle cx="205" cy="149" r="3.4" fill="#B8B43C"/>
+  </svg>`; },
+
+  dice: (c) => { const u = uid(); return `<svg viewBox="0 0 240 200" fill="none">${defs(u, c)}
+    ${shadow(u, 120, 168, 72, 10)}
+    <g>
+      <path d="M44 88 L82 68 L120 88 L82 108 Z" fill="url(#${u}t)"/>
+      <path d="M44 88 V130 L82 150 V108 Z" fill="url(#${u}f)"/>
+      <path d="M120 88 V130 L82 150 V108 Z" fill="url(#${u}d)"/>
+      <circle cx="62" cy="110" r="4.6" fill="${c.ink}" opacity=".92"/><circle cx="62" cy="130" r="4.6" fill="${c.ink}" opacity=".92"/>
+      <circle cx="100" cy="106" r="4.6" fill="${c.ink}" opacity=".7"/><circle cx="100" cy="126" r="4.6" fill="${c.ink}" opacity=".7"/>
+      <circle cx="82" cy="88" r="5" fill="${c.ink}" opacity=".95"/>
+    </g>
+    <g>
+      <path d="M118 66 L156 46 L194 66 L156 86 Z" fill="url(#${u}t)"/>
+      <path d="M118 66 V108 L156 128 V86 Z" fill="url(#${u}f)"/>
+      <path d="M194 66 V108 L156 128 V86 Z" fill="url(#${u}d)"/>
+      <circle cx="136" cy="86" r="4.2" fill="${c.ink}" opacity=".92"/><circle cx="136" cy="106" r="4.2" fill="${c.ink}" opacity=".92"/>
+      <circle cx="174" cy="82" r="4.2" fill="${c.ink}" opacity=".7"/>
+      ${mark(144, 54, 24, c.ink, .9)}
+    </g>
+  </svg>`; },
+
+  funnel: (c) => { const u = uid(); return `<svg viewBox="0 0 240 200" fill="none">${defs(u, c)}
+    ${shadow(u, 128, 184, 52, 7)}
+    <ellipse cx="112" cy="46" rx="58" ry="17" fill="url(#${u}t)"/>
+    <path d="M54 46 a58 17 0 0 0 116 0 L124 118 h-24 Z" fill="url(#${u}f)"/>
+    <path d="M54 46 a58 17 0 0 0 116 0 L124 118 h-24 Z" fill="url(#${u}g)"/>
+    <ellipse cx="112" cy="46" rx="58" ry="17" fill="none" stroke="${c.dark2}" stroke-width="3"/>
+    <ellipse cx="112" cy="46" rx="44" ry="12" fill="${c.dark2}" opacity=".55"/>
+    <path d="M100 118 h24 v10 q0 40 34 46" stroke="url(#${u}d)" stroke-width="15" fill="none" stroke-linecap="round"/>
+    <path d="M100 118 h24 v10 q0 40 34 46" stroke="${c.lit}" stroke-width="5" fill="none" stroke-linecap="round" opacity=".28"/>
+    ${mark(96, 62, 32, c.ink, .9)}
+  </svg>`; },
+
+  basketball: (c) => { const u = uid(); return `<svg viewBox="0 0 240 200" fill="none">
+    <defs>
+      <radialGradient id="${u}b" cx="36%" cy="30%" r="78%">
+        <stop offset="0%" stop-color="${c.lit2}"/><stop offset="52%" stop-color="${c.base}"/><stop offset="100%" stop-color="${c.dark2}"/></radialGradient>
+      <radialGradient id="${u}s" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#000" stop-opacity=".6"/><stop offset="100%" stop-color="#000" stop-opacity="0"/></radialGradient>
+    </defs>
+    ${shadow(u, 120, 180, 60, 9)}
+    <circle cx="120" cy="100" r="72" fill="url(#${u}b)"/>
+    <g stroke="#17110C" stroke-opacity=".8" stroke-width="3.4" fill="none">
+      <path d="M48 100 H192"/><path d="M120 28 V172"/>
+      <path d="M68 48 q34 52 0 104"/><path d="M172 48 q-34 52 0 104"/>
+    </g>
+    <ellipse cx="94" cy="66" rx="26" ry="16" fill="#FFF" opacity=".14" transform="rotate(-28 94 66)"/>
+    ${mark(104, 84, 32, c.ink, .95)}
+  </svg>`; },
+
+  fidget: (c) => { const u = uid(); return `<svg viewBox="0 0 240 200" fill="none">${defs(u, c)}
+    <defs><linearGradient id="${u}br" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#EDF0F6"/><stop offset="55%" stop-color="#A8AEBD"/><stop offset="100%" stop-color="#6B7280"/></linearGradient></defs>
+    ${shadow(u, 120, 172, 60, 9)}
+    <g>
+      <circle cx="120" cy="52" r="32" fill="url(#${u}f)"/>
+      <circle cx="72" cy="128" r="32" fill="url(#${u}f)"/>
+      <circle cx="168" cy="128" r="32" fill="url(#${u}f)"/>
+      <path d="M120 52 L72 128 L168 128 Z" fill="url(#${u}f)"/>
+      <path d="M120 52 L72 128 L168 128 Z" fill="url(#${u}g)"/>
+      <circle cx="120" cy="52" r="14" fill="${c.dark2}"/>
+      <circle cx="72" cy="128" r="14" fill="${c.dark2}"/>
+      <circle cx="168" cy="128" r="14" fill="${c.dark2}"/>
+      <circle cx="120" cy="104" r="26" fill="url(#${u}br)"/>
+      <circle cx="120" cy="104" r="14" fill="${c.dark2}"/>
+      ${mark(108, 92, 24, c.ink, .9)}
+    </g>
+  </svg>`; },
+
+  stressball: (c) => { const u = uid(); return `<svg viewBox="0 0 240 200" fill="none">
+    <defs>
+      <radialGradient id="${u}sb" cx="34%" cy="28%" r="80%">
+        <stop offset="0%" stop-color="${c.lit2}"/><stop offset="46%" stop-color="${c.base}"/><stop offset="100%" stop-color="${c.dark2}"/></radialGradient>
+      <radialGradient id="${u}s" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#000" stop-opacity=".6"/><stop offset="100%" stop-color="#000" stop-opacity="0"/></radialGradient>
+    </defs>
+    ${shadow(u, 120, 172, 58, 9)}
+    <ellipse cx="120" cy="104" rx="70" ry="62" fill="url(#${u}sb)"/>
+    <ellipse cx="96" cy="72" rx="24" ry="16" fill="#FFF" opacity=".2" transform="rotate(-26 96 72)"/>
+    <path d="M62 132 q58 26 116 0" stroke="#000" stroke-opacity=".14" stroke-width="7" fill="none" stroke-linecap="round"/>
+    ${mark(102, 86, 36, c.ink, .95)}
+  </svg>`; },
+};
+// ---------------------------------------------------------------------------
+// THE PROGRAM. Two tracks — chapters and ambassadors — share one shape so the
+// roadmap, crate and status strip render both. `metric:'pct'` scores a share of
+// the chapter roster; `metric:'count'` scores absolute signups by one person.
+// Every amount and every piece of loot lives here: changing a number is a
+// one-line edit and the nav, hero, track and crate all follow.
+// `auto:false` means a live count can't prove the stop, so nothing claims it.
+// ---------------------------------------------------------------------------
+const TRACKS = {
+  chapters: {
+    label: 'Chapters', icon: '<path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/>',
+    kicker: 'Greek Wars · chapter rewards',
+    h1: 'Get your house paid.',
+    lede: 'Get <b>80% of your roster</b> on fomo and we wire the chapter <b>$500</b> and ship a cooler of gear. Four stops, up to <b>$2,000</b>.',
+    metric: 'pct', noun: 'stop', unit: 'members',
+    stops: [
+      { n: 1, name: 'Onboarded', pct: 80, cash: 500, auto: true, accent: '#516AF6',
+        why: 'The one everybody is aiming at. Four out of five actives holding a fomo account is the point where a chapter stops being a signup list and starts being a trading floor — so it’s where the money starts.',
+        loot: [
+          { kind: 'cooler',   name: 'The fomo cooler',      qty: '45 qt',     desc: 'A hard cooler in your colours — and the crate itself. Everything else ships packed inside it.', photo: null },
+          { kind: 'giftcard', name: '$100 fomo gift card',  qty: '$100',      desc: 'Loaded and handed to the chapter on top of the $500 wire. Spend it in-app.', photo: null },
+          { kind: 'hoodie',   name: 'Exec board hoodies',   qty: '×6',   desc: 'Heavyweight, your school mark embroidered on the chest, fomo mark on the sleeve.', photo: null },
+          { kind: 'banner',   name: 'Chapter banner',       qty: '3ft × 5ft', desc: 'Your letters over the fomo mark, grommeted for the house.', photo: null },
+          { kind: 'stickers', name: 'Sticker & decal pack', qty: '200 pcs',   desc: 'Laptops, bottles, the front door. The one thing here that reaches people who never opened the app.', photo: null },
+          { kind: 'card',     name: 'Chapter trading card', qty: '1 of 1',    desc: 'Printed and numbered with your letters, school, rank and member count the day you onboarded. Never reprinted.', photo: null },
+        ],
+        perks: ['Your house on Greek Village', 'PAID badge on the leaderboard', 'Wired inside 7 business days'] },
+      { n: 2, name: 'Locked in', pct: 90, cash: 250, auto: true, accent: '#23B5D3',
+        why: 'Going from 80 to 90 is the hardest ten points in the program — it means chasing the people who ignored the first three asks. That work is worth paying for separately.',
+        loot: [
+          { kind: 'tee',    name: 'House tee run',   qty: '×25',  desc: 'A fixed run of 25, sizes split however your exec board wants them — not one per member. A 200-man chapter would be shipping a pallet.', photo: null },
+          { kind: 'hoodie', name: 'Colourway recut', qty: '×6',   desc: 'The hoodie run reprinted in your school’s actual palette instead of fomo house colours.', photo: null },
+          { kind: 'banner', name: 'Away banner',     qty: '2ft × 3ft', desc: 'A smaller second banner for tailgates and away games.', photo: null },
+        ],
+        perks: ['Named contact instead of the general inbox', 'Private thread with the fomo team'] },
+      { n: 3, name: 'Full house', pct: 100, cash: 500, auto: true, accent: '#2ED47A',
+        why: 'Every single active on the roster. No chapter gets here by accident, and very few get here at all — which is exactly why it’s worth another five hundred.',
+        loot: [
+          { kind: 'plaque', name: 'Engraved house plaque', qty: '1',    desc: 'Wood and brass — your letters and the date you went full house. Permanent.', photo: null },
+          { kind: 'ticket', name: '$500 house fund',       qty: '$500', desc: 'Earmarked for one chapter event. We pay the vendor directly.', photo: null },
+        ],
+        perks: ['Running total $1,250', 'Top of the percentage board'] },
+      { n: 4, name: 'Dynasty', pct: 100, hold: 30, cash: 750, auto: false, accent: '#E0B25C',
+        why: 'Hold a full house for thirty straight days. This is the only stop that measures whether the chapter actually stuck with it after the money landed, so it’s the only one confirmed by a person rather than a counter.',
+        loot: [
+          { kind: 'varsity', name: 'Exec board varsity jackets', qty: '×6', desc: 'Chenille school mark, contrast sleeves, chapter and year down the sleeve.', photo: null },
+        ],
+        perks: ['Permanent Greek Wars wall spot', 'First look at every campus program', 'Running total $2,000'] },
+    ],
+  },
+
+  ambassadors: {
+    label: 'Ambassadors', icon: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 7a4 4 0 1 0 0 8 4 4 0 0 0 0-8M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+    kicker: 'Greek Wars · campus team',
+    h1: 'Run your campus.',
+    lede: 'Get paid <b>per person you sign up</b>, not per hour. Four levels, a kit at every one, and a paid internship at the top.',
+    metric: 'count', noun: 'level', unit: 'signups',
+    stops: [
+      { n: 1, name: 'Rep', at: 1, cash: 0, rate: 5, auto: true, accent: '#516AF6',
+        why: 'You apply, we approve you, and the starter kit ships. From your first verified signup you earn $5 a head — there is no quota to clear before the money starts.',
+        loot: [
+          { kind: 'tee',      name: 'Rep tee',        qty: '×2',   desc: 'Your school mark on the front, fomo on the back. Wear it when you table.', photo: null },
+          { kind: 'stickers', name: 'Sticker pack',   qty: '100 pcs',   desc: 'The cheapest thing we make and the one that actually spreads.', photo: null },
+          { kind: 'keychain', name: 'fomo keychain',  qty: '×10',  desc: 'Nine to hand out, one for you.', photo: null },
+          { kind: 'lighter',  name: 'fomo lighter',   qty: '×10',  desc: 'The single most borrowed object on any campus. Branded.', photo: null },
+        ],
+        perks: ['$5 per verified signup', 'Your own referral link', 'No quota to start earning'] },
+      { n: 2, name: 'Campus lead', at: 50, cash: 250, rate: 6, auto: true, accent: '#23B5D3',
+        why: 'Fifty verified signups means you are not just posting a link — you are running the campus. The rate goes up and stays up, and the bonus lands the week you cross.',
+        loot: [
+          { kind: 'hoodie',       name: 'Lead hoodie',      qty: '×1',  desc: 'Same heavyweight build as the chapter crate, school mark on the chest.', photo: null },
+          { kind: 'bottleopener', name: 'Bottle opener',    qty: '×25', desc: 'Flat, keyring-sized, fomo cut through the middle. Giveaway stock.', photo: null },
+          { kind: 'dice',         name: 'fomo dice',        qty: '×20', desc: 'Two-packs for tables and tailgates.', photo: null },
+          { kind: 'stressball',   name: 'Stress balls',     qty: '×25', desc: 'Finals week is the single best week of the year to hand these out.', photo: null },
+        ],
+        perks: ['+$250 bonus', 'Rate rises to $6 per signup', 'Named contact at fomo'] },
+      { n: 3, name: 'Campus director', at: 150, cash: 750, rate: 8, auto: true, accent: '#2ED47A',
+        why: 'A hundred and fifty signups is a real slice of a campus. You get the event kit, a budget to run your own activations, and the highest per-head rate in the program.',
+        loot: [
+          { kind: 'moneygun',   name: 'fomo money gun',  qty: '×1',  desc: 'Loaded with branded notes. It exists because it works.', photo: null },
+          { kind: 'funnel',     name: 'Branded funnel',   qty: '×2',  desc: 'Tailgate stock. Your letters down the cone.', photo: null },
+          { kind: 'pingpong',   name: 'Pong paddle set',  qty: '×4',  desc: 'Paddles and balls, school colours.', photo: null },
+          { kind: 'pickleball', name: 'Pickleball set',   qty: '×4',  desc: 'The fastest-growing thing on every campus lawn.', photo: null },
+          { kind: 'basketball', name: 'fomo basketball',  qty: '×1',  desc: 'Full size, school colours, fomo mark on the panel.', photo: null },
+        ],
+        perks: ['+$750 bonus', 'Rate rises to $8 per signup', '$300 event budget per semester'] },
+      { n: 4, name: 'Intern', at: 300, cash: 1500, rate: 8, auto: false, accent: '#E0B25C',
+        why: 'Three hundred verified signups across a full semester puts you in front of the team for a paid internship. This is the only level a counter cannot hand you — it comes with an interview.',
+        loot: [
+          { kind: 'giftcard', name: '$100 fomo gift card', qty: '$100', desc: 'On top of the stipend.', photo: null },
+          { kind: 'card',     name: 'Numbered rep card',   qty: '1 of 1', desc: 'Your name, your campus and your final count, printed and numbered.', photo: null },
+          { kind: 'fidget',   name: 'Desk kit',            qty: '×5', desc: 'Spinners for the desk you are about to get.', photo: null },
+        ],
+        perks: ['$1,500 semester stipend', 'Paid internship interview', 'Letter of recommendation'] },
+    ],
+  },
 };
 
-// ---------------------------------------------------------------------------
-// THE PROGRAM. Every amount, threshold and piece of loot lives here — the hero
-// figures, roadmap, panel and live board all derive from it, so changing a
-// number is a one-line edit. `auto:false` means a live member count can't prove
-// the stop on its own, so the board never claims a chapter has it.
-// ---------------------------------------------------------------------------
-const PROGRAM = {
-  tiers: [
-    { n: 1, name: 'Onboarded', pct: 80, cash: 500, auto: true, accent: '#516AF6',
-      why: 'The one everybody is aiming at. Four out of five actives holding a fomo account is the point where a chapter stops being a signup list and starts being a trading floor — so it’s where the money starts.',
-      loot: [
-        { kind: 'cooler',   name: 'The fomo cooler',      qty: '45 qt',     desc: 'A hard cooler in your colours with your letters on the side — and the crate itself. Everything else ships packed inside it.', photo: null },
-        { kind: 'hoodie',   name: 'Exec board hoodies',   qty: '×6',   desc: 'Heavyweight, embroidered letters, fomo mark on the chest. Sized off the roles on your registration.', photo: null },
-        { kind: 'banner',   name: 'Chapter banner',       qty: '3ft × 5ft', desc: 'Your letters over the fomo mark, grommeted for the house.', photo: null },
-        { kind: 'stickers', name: 'Sticker & decal pack', qty: '200 pcs',   desc: 'Laptops, bottles, the front door of the house. The one thing here that reaches people who never opened the app.', photo: null },
-        { kind: 'card',     name: 'Chapter trading card', qty: '1 of 1',    desc: 'Printed and numbered with your letters, school, rank and member count the day you onboarded. Never reprinted.', photo: null },
-        { kind: 'note',     name: 'A note from us',       qty: '1',         desc: 'Handwritten, not printed. Whoever on our team ran your onboarding signs it.', photo: null },
-      ],
-      perks: ['Your house on Greek Village', 'PAID badge on the leaderboard', 'Wired inside 7 business days'] },
+// Bonuses apply to the chapter track only.
+const BONUS = { speed: { days: 14, cash: 250 }, referral: { cash: 100, cap: 10 } };
 
-    { n: 2, name: 'Locked in', pct: 90, cash: 250, auto: true, accent: '#23B5D3',
-      why: 'Going from 80 to 90 is the hardest ten points in the program — it means chasing the people who ignored the first three asks. That work is worth paying for separately.',
-      loot: [
-        { kind: 'tee',    name: 'House tee run',   qty: '×25',  desc: 'A fixed run of 25, sizes split however your exec board wants them — not one per member. A 200-man chapter would be shipping a pallet.', photo: null },
-        { kind: 'hoodie', name: 'Colourway recut', qty: '×6',   desc: 'The hoodie run reprinted in your school’s actual palette instead of fomo house colours.', photo: null },
-        { kind: 'banner', name: 'Away banner',     qty: '2ft × 3ft', desc: 'A smaller second banner for tailgates and away games.', photo: null },
-      ],
-      perks: ['Named contact instead of the general inbox', 'Private thread with the fomo team'] },
+const money = (n) => '$' + Math.round(n).toLocaleString('en-US');
 
-    { n: 3, name: 'Full house', pct: 100, cash: 500, auto: true, accent: '#2ED47A',
-      why: 'Every single active on the roster. No chapter gets here by accident, and very few get here at all — which is exactly why it’s worth another five hundred.',
-      loot: [
-        { kind: 'plaque', name: 'Engraved house plaque', qty: '1',    desc: 'Wood and brass — your letters and the date you went full house. Permanent.', photo: null },
-        { kind: 'ticket', name: '$500 house fund',       qty: '$500', desc: 'Earmarked for one chapter event. We pay the vendor directly.', photo: null },
-      ],
-      perks: ['Running total $1,250', 'Top of the percentage board'] },
-
-    { n: 4, name: 'Dynasty', pct: 100, hold: 30, cash: 750, auto: false, accent: '#E0B25C',
-      why: 'Hold a full house for thirty straight days. This is the only stop that measures whether the chapter actually stuck with it after the money landed, so it’s the only one confirmed by a person rather than a counter.',
-      loot: [
-        { kind: 'varsity', name: 'Exec board varsity jackets', qty: '×6', desc: 'Chenille letter, contrast sleeves, chapter and year down the sleeve.', photo: null },
-      ],
-      perks: ['Permanent Greek Wars wall spot', 'First look at every campus program', 'Running total $2,000'] },
-  ],
-  speed: { days: 14, cash: 250 },
-  referral: { cash: 100, cap: 10 },
-};
-
-const money = (n) => '$' + n.toLocaleString('en-US');
-const TIERS = PROGRAM.tiers;
-const RUNNING = TIERS.reduce((acc, t) => (acc.push((acc[acc.length - 1] || 0) + t.cash), acc), []);
-const LADDER_MAX = RUNNING[RUNNING.length - 1];
-
-const needFor = (tier, size) => Math.ceil((tier.pct / 100) * size);
-function autoTier(members, size) {
-  if (!size) return 0;
-  let best = 0;
-  TIERS.forEach((t) => { if (t.auto && members >= needFor(t, size)) best = t.n; });
-  return best;
+// A school's mark: initials of the label, which reads the way a school actually
+// brands itself (San Diego State University -> SDSU, University of Michigan -> UM).
+const SKIP = { of: 1, the: 1, at: 1, and: 1, 'in': 1 };
+function schoolMark(label) {
+  if (!label) return 'FOMO';
+  const w = String(label).split(/[\s\-–—]+/).filter((x) => x && !SKIP[x.toLowerCase()]);
+  if (!w.length) return 'FOMO';
+  // One significant word (UCLA, Baylor) has no initials to take — use the word
+  // itself, or it comes out as a single letter on the chest of a hoodie.
+  if (w.length === 1) return w[0].toUpperCase().slice(0, 6);
+  return w.map((x) => x[0]).join('').toUpperCase().slice(0, 5);
 }
-const earnedBy = (n) => (n ? RUNNING[n - 1] : 0);
 
-$('speed-amt').textContent = '+' + money(PROGRAM.speed.cash);
-$('speed-days').textContent = PROGRAM.speed.days;
-$('ref-amt').textContent = '+' + money(PROGRAM.referral.cash);
-$('ref-cap').textContent = PROGRAM.referral.cap;
-$('ref-cap-cash').textContent = money(PROGRAM.referral.cash * PROGRAM.referral.cap);
-
+let track = 'chapters';
 let rosterSize = 90;
-let selected = null;   // a live chapter, when one is picked
-let openTier = 1;      // which stop's crate is showing
+let selected = null;    // a live chapter (chapters track)
+let signups = 0;        // self-reported (ambassadors track)
+let ambSchool = '';     // school code (ambassadors track)
+let openStop = 1;
 let chapters = [];
 let tab = 'crate';
 let filter = 'all';
+
+const T = () => TRACKS[track];
+const STOPS = () => T().stops;
+const VALS = () => STOPS().map((s) => (T().metric === 'pct' ? s.pct : s.at));
 
 function shadeHex(hex, amt) {
   const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex || '');
@@ -712,16 +1047,23 @@ function shadeHex(hex, amt) {
   const f = (h) => Math.max(0, Math.min(255, parseInt(h, 16) + amt)).toString(16).padStart(2, '0');
   return '#' + f(m[1]) + f(m[2]) + f(m[3]);
 }
-// A selected chapter paints its own school colours and letters onto the gear.
+// Gear takes the school's colours. Garments carry the school mark; the chapter's
+// Greek letters go on the chapter-specific pieces only.
 function lootColors() {
-  const base = selected ? schoolColors(selected.school)[0] : '#516AF6';
-  return {
-    base,
-    lit: shadeHex(base, 26), lit2: shadeHex(base, 52),
-    dark: shadeHex(base, -30), dark2: shadeHex(base, -56),
-    ink: '#FFFFFF',
-    letters: selected ? glyphFor(selected.chapterName) : 'ΦΔΘ',
-  };
+  let base = '#516AF6', school = 'FOMO', letters = 'FOMO';
+  if (track === 'chapters' && selected) {
+    base = schoolColors(selected.school)[0];
+    school = schoolMark(selected.schoolLabel);
+    letters = glyphFor(selected.chapterName);
+  } else if (track === 'ambassadors' && ambSchool) {
+    base = schoolColors(ambSchool)[0];
+    school = schoolMark((GreekData.SCHOOLS[ambSchool] || [])[0]);
+    letters = school;
+  } else if (track === 'chapters') {
+    letters = 'ΦΔΘ';
+  }
+  return { base, lit: shadeHex(base, 26), lit2: shadeHex(base, 52),
+    dark: shadeHex(base, -30), dark2: shadeHex(base, -56), ink: '#FFFFFF', school, letters };
 }
 
 // ---- hero card, tilting to the pointer ----
@@ -737,15 +1079,13 @@ function paintHeroCard() { $('tcard').innerHTML = ART.card(lootColors()); }
   reset();
 })();
 
-// Count a number up to its new value — the payoff line should feel like it moves.
 function countTo(el, to, prefix) {
   const from = Number(el.dataset.v || 0);
   el.dataset.v = to;
   if (from === to) { el.textContent = (prefix || '') + to.toLocaleString('en-US'); return; }
-  const t0 = performance.now(), dur = 550;
+  const t0 = performance.now();
   const step = (t) => {
-    const k = Math.min(1, (t - t0) / dur);
-    const e = 1 - Math.pow(1 - k, 3);
+    const k = Math.min(1, (t - t0) / 600), e = 1 - Math.pow(1 - k, 3);
     el.textContent = (prefix || '') + Math.round(from + (to - from) * e).toLocaleString('en-US');
     if (k < 1) requestAnimationFrame(step);
   };
@@ -753,124 +1093,196 @@ function countTo(el, to, prefix) {
 }
 
 // ---------------------------------------------------------------------------
-// ROADMAP. The stops share the track evenly rather than sitting at their true
-// percentages — 0→80% would otherwise eat three quarters of the line.
+// Shared scoring. Chapters score a share of their roster; ambassadors score
+// absolute signups. Everything below reads through these four functions.
 // ---------------------------------------------------------------------------
-const STOP_X = [25, 50, 75, 100];
-function trackPos(pct) {
-  if (pct <= 0) return 0;
-  if (pct < TIERS[0].pct) return (pct / TIERS[0].pct) * STOP_X[0];
-  for (let i = 0; i < TIERS.length - 1; i++) {
-    const lo = TIERS[i].pct, hi = TIERS[i + 1].pct;
-    if (hi > lo && pct < hi) return STOP_X[i] + ((pct - lo) / (hi - lo)) * (STOP_X[i + 1] - STOP_X[i]);
-  }
-  return STOP_X[2];
+const needFor = (s) => (T().metric === 'pct' ? Math.ceil((s.pct / 100) * rosterSize) : s.at);
+const scoreNow = () => (track === 'chapters' ? (selected ? selected.members : -1) : signups);
+function reachedStop() {
+  const v = scoreNow();
+  if (v < 0) return 0;
+  let best = 0;
+  STOPS().forEach((s) => { if (s.auto && v >= needFor(s)) best = s.n; });
+  return best;
 }
-const reachedTier = () => (selected ? autoTier(selected.members, selected.chapterSize) : 0);
-const nextTier = () => TIERS.find((x) => x.auto && x.n > reachedTier());
+const nextStop = () => STOPS().find((s) => s.auto && s.n > reachedStop());
+// For the status line: the next stop worth counting toward, including one the
+// team has to confirm, as long as it has a number rather than a time hold.
+const nextShown = () => nextStop() || STOPS().find((s) => s.n > reachedStop() && !s.hold);
 
-function renderRoadmap() {
-  const reached = reachedTier();
-  const next = selected ? nextTier() : null;
+// Cumulative bonus cash through stop n.
+function earnedBy(n) {
+  let t = 0;
+  STOPS().forEach((s) => { if (s.n <= n) t += s.cash; });
+  return t;
+}
+// Ambassadors also earn per head, banded by the rate in force at each level.
+function ambEarnings(count) {
+  const st = TRACKS.ambassadors.stops;
+  let total = 0;
+  st.forEach((s, i) => {
+    const hi = st[i + 1] ? st[i + 1].at - 1 : Infinity;
+    total += Math.max(0, Math.min(count, hi) - s.at + 1) * s.rate;
+  });
+  st.forEach((s) => { if (s.auto && count >= s.at) total += s.cash; });
+  return total;
+}
+const earnedNow = () => (track === 'ambassadors' ? ambEarnings(signups) : earnedBy(reachedStop()));
+
+// Stops sit evenly along the track; their true values are wildly uneven and
+// would squash the interesting part into one end.
+function posFor(x) {
+  const V = VALS();
+  if (x <= 0) return 0;
+  if (x < V[0]) return (x / V[0]) * 25;
+  for (let i = 0; i < V.length - 1; i++) {
+    if (V[i + 1] > V[i] && x < V[i + 1]) return 25 * (i + 1) + ((x - V[i]) / (V[i + 1] - V[i])) * 25;
+  }
+  let last = V.length - 1;
+  while (last > 0 && V[last] === V[last - 1]) last--;
+  return 25 * (last + 1);
+}
+
+// ---------------------------------------------------------------------------
+// Render
+// ---------------------------------------------------------------------------
+function renderHero() {
+  const t = T();
+  $('h-kicker').textContent = t.kicker;
+  $('h-title').textContent = t.h1;
+  $('h-lede').innerHTML = t.lede;
+  if (track === 'chapters') {
+    $('h-picker').innerHTML =
+      `<select id="pick" aria-label="Your chapter"><option value="">Pick your chapter…</option></select>`
+      + `<input type="number" id="size" min="5" max="500" step="1" value="${rosterSize}" aria-label="Chapter roster size">`
+      + `<span class="unit">actives</span>`;
+    fillChapterPicker();
+    $('pick').value = selected ? selected.id : '';
+    $('pick').addEventListener('change', onPickChapter);
+    $('size').addEventListener('input', onSize);
+  } else {
+    const opts = Object.keys(GreekData.SCHOOLS).sort((a, b) =>
+      GreekData.SCHOOLS[a][0].localeCompare(GreekData.SCHOOLS[b][0]))
+      .map((k) => `<option value="${esc(k)}"${k === ambSchool ? ' selected' : ''}>${esc(GreekData.SCHOOLS[k][0])}</option>`).join('');
+    $('h-picker').innerHTML =
+      `<select id="amb-school" aria-label="Your school"><option value="">Pick your school…</option>${opts}</select>`
+      + `<input type="number" id="amb-n" min="0" max="2000" step="1" value="${signups}" aria-label="Signups so far">`
+      + `<span class="unit">signups</span>`;
+    $('amb-school').addEventListener('change', () => { ambSchool = $('amb-school').value; repaint(); });
+    $('amb-n').addEventListener('input', () => {
+      const v = parseInt($('amb-n').value, 10);
+      if (!Number.isFinite(v) || v < 0 || v > 2000) return;
+      signups = v;
+      const nx = nextStop(); openStop = nx ? nx.n : 4;
+      renderTrack(); renderCrate(); renderStatus(); paintHeroCard(); renderEarn();
+    });
+  }
+}
+
+function renderStatus() {
+  const box = $('status');
+  const reached = reachedStop(), next = nextStop(), v = scoreNow();
+
+  if (track === 'chapters' && !selected) {
+    box.innerHTML = `<div class="stat ghost"><div class="v">$500</div><div class="k">at 80% of your roster</div></div>`
+      + `<div class="stat ghost"><div class="v">${money(earnedBy(4))}</div><div class="k">all four stops</div></div>`;
+    return;
+  }
+  if (track === 'ambassadors' && signups === 0) {
+    box.innerHTML = `<div class="stat ghost"><div class="v">$5</div><div class="k">per signup, from the first one</div></div>`
+      + `<div class="stat ghost"><div class="v">${money(ambEarnings(300))}</div><div class="k">at 300 signups</div></div>`;
+    return;
+  }
+  const shown = nextShown();
+  const away = shown ? Math.max(0, needFor(shown) - v) : 0;
+  box.innerHTML =
+    `<div class="stat"><div class="v" id="v-earned" style="color:${earnedNow() ? 'var(--green)' : 'var(--text-faint)'}">$0</div>`
+    + `<div class="k">${earnedNow() ? 'earned so far' : 'not there yet'}</div></div>`
+    + (shown && away === 0 && !shown.auto
+      // Count cleared on a stop only a person can award — say so rather than
+      // showing "0 more", which reads like nothing is left to do.
+      ? `<div class="stat"><div class="v" style="color:var(--gold)">Ready</div><div class="k">${esc(shown.name)} is yours to claim — we reach out</div></div>`
+      : shown
+        ? `<div class="stat"><div class="v" id="v-away">0</div><div class="k">more ${esc(T().unit)} → ${esc(shown.name)}${shown.auto ? '' : ' (team confirmed)'}</div></div>`
+        : `<div class="stat"><div class="v" style="color:var(--gold)">Maxed</div><div class="k">every counted ${esc(T().noun)} cleared</div></div>`);
+  countTo($('v-earned'), earnedNow(), '$');
+  if (shown && !(away === 0 && !shown.auto)) countTo($('v-away'), away, '');
+}
+
+function renderTrack() {
+  const reached = reachedStop(), next = nextStop();
   const wrap = $('track-wrap');
   wrap.querySelectorAll('.station').forEach((s) => s.remove());
+  const live = track === 'chapters' ? !!selected : signups > 0;
 
-  TIERS.forEach((t, i) => {
+  STOPS().forEach((s, i) => {
     const b = document.createElement('button');
-    b.className = 'station' + (reached >= t.n ? ' reached' : '') + (openTier === t.n ? ' active' : '')
-      + (next && next.n === t.n ? ' target' : '');
-    b.style.left = STOP_X[i] + '%';
-    b.dataset.stop = String(t.n);
-    b.setAttribute('aria-label', `Stop ${t.n}: ${t.name}`);
-    const dot = reached >= t.n ? `background:${t.accent};border-color:${t.accent}`
-      : (openTier === t.n ? `border-color:${t.accent};color:${t.accent}` : '');
-    b.innerHTML = `<div class="dot" style="${dot}">${String(t.n).padStart(2, '0')}</div>`
-      + `<div class="st-name">${esc(t.name)}</div><div class="st-cash">${money(RUNNING[i])}</div>`;
-    b.addEventListener('click', () => { openTier = t.n; show('crate'); renderRoadmap(); renderCrate(); });
+    b.className = 'station' + (reached >= s.n ? ' reached' : '') + (openStop === s.n ? ' active' : '')
+      + (live && next && next.n === s.n ? ' target' : '');
+    b.style.left = (25 * (i + 1)) + '%';
+    b.dataset.stop = String(s.n);
+    b.setAttribute('aria-label', `${T().noun} ${s.n}: ${s.name}`);
+    const dot = reached >= s.n ? `background:${s.accent};border-color:${s.accent}`
+      : (openStop === s.n ? `border-color:${s.accent};color:${s.accent}` : '');
+    const sub = track === 'chapters' ? money(earnedBy(s.n)) : (s.cash ? '+' + money(s.cash) : '$' + s.rate + '/head');
+    b.innerHTML = `<div class="dot" style="${dot}">${String(s.n).padStart(2, '0')}</div>`
+      + `<div class="st-name">${esc(s.name)}</div><div class="st-cash">${sub}</div>`;
+    b.addEventListener('click', () => { openStop = s.n; show('crate'); renderTrack(); renderCrate(); });
     wrap.appendChild(b);
   });
 
-  const pct = selected && selected.chapterSize ? (selected.members / selected.chapterSize) * 100 : 0;
-  const pos = trackPos(pct);
-  $('track-fill').style.clipPath = `inset(0 ${100 - (selected ? pos : 0)}% 0 0)`;
+  const pos = live ? posFor(scoreNow()) : 0;
+  $('track-fill').style.clipPath = `inset(0 ${100 - pos}% 0 0)`;
   const rider = $('rider');
-  rider.classList.toggle('on', !!selected);
-  if (selected) {
+  rider.classList.toggle('on', live);
+  if (live) {
     rider.style.left = pos + '%';
-    rider.style.background = schoolColors(selected.school)[0];
-    $('rider-glyph').textContent = glyphFor(selected.chapterName);
-    $('rider-flag').textContent = Math.round(pct) + '%';
+    const c = lootColors();
+    rider.style.background = c.base;
+    $('rider-glyph').textContent = track === 'chapters' ? glyphFor(selected.chapterName) : (ambSchool ? c.school : '★');
+    $('rider-flag').textContent = track === 'chapters'
+      ? Math.round((selected.members / selected.chapterSize) * 100) + '%'
+      : signups + ' signups';
   }
 }
-
-// The hero status strip: what they have, and what the next stop costs them.
-function renderStatus() {
-  const box = $('status');
-  if (!selected) {
-    box.innerHTML = `<div class="stat ghost"><div class="v">$500</div><div class="k">at 80% of your roster</div></div>`
-      + `<div class="stat ghost"><div class="v">${money(LADDER_MAX)}</div><div class="k">all four stops</div></div>`;
-    return;
-  }
-  const reached = reachedTier(), next = nextTier();
-  const away = next ? Math.max(0, needFor(next, selected.chapterSize) - selected.members) : 0;
-  box.innerHTML =
-    `<div class="stat"><div class="v" id="v-earned" style="color:${reached ? 'var(--green)' : 'var(--text-faint)'}">$0</div>`
-    + `<div class="k">${reached ? 'earned so far' : 'not there yet'}</div></div>`
-    + (next
-      ? `<div class="stat"><div class="v" id="v-away" style="color:var(--white)">0</div>`
-        + `<div class="k">more members → ${money(RUNNING[next.n - 1])}</div></div>`
-      : `<div class="stat"><div class="v" style="color:var(--gold)">Maxed</div><div class="k">every automatic stop cleared</div></div>`);
-  countTo($('v-earned'), earnedBy(reached), '$');
-  if (next) countTo($('v-away'), away, '');
-}
-
-// ---------------------------------------------------------------------------
-// The deck. Only one tab is in the document flow at a time, which is what keeps
-// the page short — the rules and FAQ cost nothing until someone opens them.
-// ---------------------------------------------------------------------------
-function show(name) {
-  tab = name;
-  ['crate', 'board', 'bonus', 'fine'].forEach((t) => { $('tab-' + t).hidden = t !== name; });
-  $('deck-tabs').querySelectorAll('button').forEach((b) => b.classList.toggle('on', b.dataset.tab === name));
-  const body = $('tab-' + name);
-  body.style.animation = 'none'; void body.offsetWidth; body.style.animation = '';
-}
-$('deck-tabs').querySelectorAll('button').forEach((b) => b.addEventListener('click', () => show(b.dataset.tab)));
 
 function renderCrate() {
-  const t = TIERS.find((x) => x.n === openTier);
-  const i = TIERS.indexOf(t);
-  const need = needFor(t, rosterSize);
-  const reached = selected ? reachedTier() : null;
+  const t = T();
+  const s = STOPS().find((x) => x.n === openStop) || STOPS()[0];
+  const need = needFor(s);
+  const reached = reachedStop(), v = scoreNow();
+  const live = track === 'chapters' ? !!selected : signups > 0;
   const c = lootColors();
 
   let badge = '';
-  if (reached !== null && reached === t.n) badge = '<span class="pill here">You are here</span>';
-  else if (reached !== null && reached > t.n) badge = '<span class="pill cleared">Cleared</span>';
-  else if (selected && reached !== null && reached + 1 === t.n) {
-    const away = Math.max(0, need - selected.members);
-    badge = `<span class="pill count">${away} more member${away === 1 ? '' : 's'}</span>`;
-  }
-  if (!t.auto) badge += ' <span class="pill manual">Team confirmed</span>';
+  if (live && reached === s.n) badge = '<span class="pill here">You are here</span>';
+  else if (live && reached > s.n) badge = '<span class="pill cleared">Cleared</span>';
+  else if (live && reached + 1 === s.n) badge = `<span class="pill count">${Math.max(0, need - v)} more ${t.unit}</span>`;
+  if (!s.auto) badge += ' <span class="pill manual">Team confirmed</span>';
 
-  const req = t.hold
-    ? `<b>${need}</b> of ${rosterSize} members, held <b>${t.hold} days</b>`
-    : `<b>${need}</b> of ${rosterSize} members · ${t.pct}% of your roster`;
+  const req = t.metric === 'pct'
+    ? (s.hold ? `<b>${need}</b> of ${rosterSize} members, held <b>${s.hold} days</b>`
+              : `<b>${need}</b> of ${rosterSize} members · ${s.pct}% of your roster`)
+    : (s.at <= 1 ? `Application approved · <b>$${s.rate}</b> per verified signup`
+                 : `<b>${s.at}</b> verified signups · <b>$${s.rate}</b> per head from here`);
+  const amt = s.cash ? '+' + money(s.cash) : '$' + s.rate + '/head';
+  const run = t.metric === 'pct' ? money(earnedBy(s.n)) + ' running total'
+    : (s.at <= 1 ? 'starts immediately' : money(ambEarnings(s.at)) + ' by this point');
 
   $('tab-crate').innerHTML = `
     <div class="crate-head">
       <div class="ci">
-        <div class="crate-tag" style="color:${t.accent}">Stop ${String(t.n).padStart(2, '0')}</div>
-        <div class="crate-name">${esc(t.name)}${badge}</div>
+        <div class="crate-tag" style="color:${s.accent}">${esc(t.noun)} ${String(s.n).padStart(2, '0')}</div>
+        <div class="crate-name">${esc(s.name)}${badge}</div>
         <div class="crate-req">${req}</div>
       </div>
       <div class="crate-cash">
-        <div class="amt" style="color:${t.accent}">+${money(t.cash)}</div>
-        <div class="run">${money(RUNNING[i])} running total</div>
+        <div class="amt" style="color:${s.accent}">${amt}</div>
+        <div class="run">${run}</div>
       </div>
     </div>
-    <div class="loot"${t.loot.length >= 3 ? '' : ` data-few="${t.loot.length}"`}>
-      ${t.loot.map((l) => `<div class="li">
+    <div class="loot"${s.loot.length >= 3 ? '' : ` data-few="${s.loot.length}"`}>
+      ${s.loot.map((l) => `<div class="li">
         <div class="li-art">
           ${l.photo ? `<img src="${esc(l.photo)}" alt="${esc(l.name)}" loading="lazy">` : ART[l.kind](c)}
           <span class="li-qty">${esc(l.qty)}</span>
@@ -878,47 +1290,102 @@ function renderCrate() {
         <div class="li-txt"><h4>${esc(l.name)}</h4><p>${esc(l.desc)}</p></div>
       </div>`).join('')}
     </div>
-    <div class="perks">${t.perks.map((p) => `<span class="perk">
+    <div class="perks">${s.perks.map((p) => `<span class="perk">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
       ${esc(p)}</span>`).join('')}</div>`;
 }
 
-function repaint() { renderRoadmap(); renderCrate(); renderStatus(); paintHeroCard(); }
+// Earnings table — ambassadors only.
+function renderEarn() {
+  const st = TRACKS.ambassadors.stops;
+  const marks = [10, 25, 50, 100, 150, 200, 300];
+  $('tab-earn').innerHTML = `<div class="earn">
+    <p class="earn-lede">Per-head rate rises as you clear levels, and the bonus at each level lands on top. This is what a semester actually pays.</p>
+    <div class="earn-grid">
+      ${marks.map((m) => {
+        const lvl = st.filter((s) => s.auto && m >= s.at).length;
+        return `<div class="earn-row${signups >= m ? ' hit' : ''}">
+          <div class="en">${m}</div><div class="ek">signups</div>
+          <div class="ev">${money(ambEarnings(m))}</div>
+          <div class="el">${lvl ? esc(st[lvl - 1].name) : 'Rep'}</div>
+        </div>`;
+      }).join('')}
+    </div>
+    <p class="earn-note">Rate bands: ${st.map((s, i) => `$${s.rate} from ${s.at}`).join(' · ')}. Bonuses: ${st.filter((s) => s.cash).map((s) => money(s.cash) + ' at ' + s.at).join(' · ')}. The Intern stipend is separate and comes with an interview.</p>
+  </div>`;
+}
 
-$('size').addEventListener('input', () => {
+function repaint() { renderHero(); renderTrack(); renderCrate(); renderStatus(); paintHeroCard(); if (track === 'ambassadors') renderEarn(); }
+
+// ---------------------------------------------------------------------------
+// Track switch + deck
+// ---------------------------------------------------------------------------
+const TABS = {
+  chapters: [['crate', 'What you get'], ['board', 'Live board'], ['bonus', 'Bonuses'], ['fine', 'Fine print']],
+  ambassadors: [['crate', 'What you get'], ['earn', 'Earnings'], ['apply', 'How to apply'], ['fine', 'Fine print']],
+};
+const ALL_TABS = ['crate', 'board', 'bonus', 'fine', 'earn', 'apply'];
+
+function renderTabs() {
+  $('deck-tabs').innerHTML = TABS[track].map(([id, label]) =>
+    `<button data-tab="${id}"${id === tab ? ' class="on"' : ''}>${esc(label)}</button>`).join('');
+  $('deck-tabs').querySelectorAll('button').forEach((b) => b.addEventListener('click', () => show(b.dataset.tab)));
+}
+function show(name) {
+  tab = name;
+  ALL_TABS.forEach((t) => { $('tab-' + t).hidden = t !== name; });
+  $('deck-tabs').querySelectorAll('button').forEach((b) => b.classList.toggle('on', b.dataset.tab === name));
+  const body = $('tab-' + name);
+  body.style.animation = 'none'; void body.offsetWidth; body.style.animation = '';
+}
+function setTrack(name) {
+  track = name; tab = 'crate'; openStop = 1;
+  $('switch').querySelectorAll('button').forEach((b) => b.classList.toggle('on', b.dataset.track === name));
+  document.querySelectorAll('.fine-chapters').forEach((e) => { e.hidden = name !== 'chapters'; });
+  document.querySelectorAll('.fine-amb').forEach((e) => { e.hidden = name !== 'ambassadors'; });
+  renderTabs(); show('crate'); repaint();
+}
+$('switch').querySelectorAll('button').forEach((b) => b.addEventListener('click', () => setTrack(b.dataset.track)));
+
+// Arrow keys walk the stops.
+document.addEventListener('keydown', (e) => {
+  if (/^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement.tagName)) return;
+  if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+  const n = Math.min(4, Math.max(1, openStop + (e.key === 'ArrowRight' ? 1 : -1)));
+  if (n === openStop) return;
+  openStop = n; show('crate'); renderTrack(); renderCrate();
+});
+
+function onSize() {
   const v = parseInt($('size').value, 10);
   if (!Number.isFinite(v) || v < 5 || v > 500) return;
   rosterSize = v;
   // Typing a size by hand means you're no longer looking at a specific chapter.
-  if (selected && selected.chapterSize !== v) { selected = null; $('pick').value = ''; }
-  repaint();
-});
-
-$('pick').addEventListener('change', () => {
+  if (selected && selected.chapterSize !== v) selected = null;
+  renderTrack(); renderCrate(); renderStatus(); paintHeroCard();
+  if (!selected) $('pick').value = '';
+}
+function onPickChapter() {
   const c = chapters.find((x) => x.id === $('pick').value);
   selected = c || null;
   if (c) {
     rosterSize = c.chapterSize;
     $('size').value = c.chapterSize;
-    const next = nextTier();
-    openTier = next ? next.n : 3;   // jump to the stop they're chasing
+    const nx = nextStop(); openStop = nx ? nx.n : 3;
     show('crate');
   }
-  repaint();
-});
-
-// Arrow keys walk the roadmap.
-document.addEventListener('keydown', (e) => {
-  if (/^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement.tagName)) return;
-  if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
-  const n = Math.min(4, Math.max(1, openTier + (e.key === 'ArrowRight' ? 1 : -1)));
-  if (n === openTier) return;
-  openTier = n; show('crate'); renderRoadmap(); renderCrate();
-});
+  renderTrack(); renderCrate(); renderStatus(); paintHeroCard();
+}
+function fillChapterPicker() {
+  const sorted = [...chapters].sort((a, b) =>
+    a.chapterName.localeCompare(b.chapterName) || a.schoolLabel.localeCompare(b.schoolLabel));
+  $('pick').innerHTML = '<option value="">Pick your chapter…</option>' +
+    sorted.map((c) => `<option value="${esc(c.id)}">${esc(c.chapterName)} — ${esc(c.schoolLabel)}</option>`).join('');
+}
 
 // ---------------------------------------------------------------------------
-// Live board — the same public endpoint the leaderboard reads. Chapter-level
-// counts only; there is nothing here that isn't already on the public board.
+// Live data — the same public endpoint the leaderboard reads. Chapter-level
+// counts only; nothing here isn't already on the public board.
 // ---------------------------------------------------------------------------
 async function load() {
   try {
@@ -927,25 +1394,42 @@ async function load() {
     const { clans } = await res.json();
     chapters = clans.filter((c) => c.chapterSize > 0);
     $('load-error').hidden = true;
-    const sorted = [...chapters].sort((a, b) =>
-      a.chapterName.localeCompare(b.chapterName) || a.schoolLabel.localeCompare(b.schoolLabel));
-    $('pick').innerHTML = '<option value="">Pick your chapter…</option>' +
-      sorted.map((c) => `<option value="${esc(c.id)}">${esc(c.chapterName)} — ${esc(c.schoolLabel)}</option>`).join('');
-    paintRows();
+    if (track === 'chapters') { fillChapterPicker(); }
+    paintRows(); paintTicker();
   } catch (e) {
     $('load-error').hidden = false;
     $('rows').innerHTML = '';
+    $('ticker').hidden = true;
   }
 }
 $('retry-btn').addEventListener('click', load);
+
+function chapterTier(c) {
+  let best = 0;
+  TRACKS.chapters.stops.forEach((s) => {
+    if (s.auto && c.members >= Math.ceil((s.pct / 100) * c.chapterSize)) best = s.n;
+  });
+  return best;
+}
+const chapterEarned = (n) => { let t = 0; TRACKS.chapters.stops.forEach((s) => { if (s.n <= n) t += s.cash; }); return t; };
+
+function paintTicker() {
+  const paid = chapters.filter((c) => chapterTier(c) >= 1).length;
+  const out = chapters.reduce((s, c) => s + chapterEarned(chapterTier(c)), 0);
+  $('ticker').hidden = false;
+  $('ticker').innerHTML =
+    `<div class="tick"><span class="dot"></span><b>${chapters.length}</b><span>chapters in</span></div>`
+    + `<div class="tick"><b>${paid}</b><span>getting paid</span></div>`
+    + `<div class="tick"><b>${money(out)}</b><span>committed</span></div>`;
+}
 
 function rowHtml(c) {
   const [a] = schoolColors(c.school);
   const glyph = glyphFor(c.chapterName);
   const pct = Math.min(100, Math.round((c.members / c.chapterSize) * 100));
-  const t = autoTier(c.members, c.chapterSize);
-  const next = TIERS.find((x) => x.auto && x.n > t);
-  const away = next ? Math.max(0, needFor(next, c.chapterSize) - c.members) : 0;
+  const t = chapterTier(c);
+  const next = TRACKS.chapters.stops.find((x) => x.auto && x.n > t);
+  const away = next ? Math.max(0, Math.ceil((next.pct / 100) * c.chapterSize) - c.members) : 0;
   const tone = t >= 3 ? ' gold' : t >= 1 ? ' done' : '';
   return `<div class="row">
     ${c.hasAvatar
@@ -954,19 +1438,17 @@ function rowHtml(c) {
     <div class="rmeta"><div class="name">${esc(c.chapterName)}</div>
       <div class="sub">${esc(c.schoolLabel)} · ${c.members} of ${c.chapterSize} on fomo</div></div>
     <div class="rprog"><div class="bar${tone}"><span style="width:${pct}%"></span></div><div class="pct${tone}">${pct}%</div></div>
-    <div class="gap${next ? '' : ' max'}">${next ? `<b>${away}</b> more → stop ${String(next.n).padStart(2, '0')}` : 'Every auto stop cleared'}</div>
-    <div class="earned"><div class="e${t ? '' : ' zero'}">${money(earnedBy(t))}</div>
+    <div class="gap${next ? '' : ' max'}">${next ? `<b>${away}</b> more → ${esc(next.name)}` : 'Every auto stop cleared'}</div>
+    <div class="earned"><div class="e${t ? '' : ' zero'}">${money(chapterEarned(t))}</div>
       <div class="el">${t ? 'Stop ' + String(t).padStart(2, '0') : 'Climbing'}</div></div>
   </div>`;
 }
-
 function paintRows() {
   const list = chapters
-    .filter((c) => (filter === 'all' ? true : autoTier(c.members, c.chapterSize) === Number(filter)))
+    .filter((c) => (filter === 'all' ? true : chapterTier(c) === Number(filter)))
     .sort((a, b) => (b.members / b.chapterSize) - (a.members / a.chapterSize));
   $('rows').innerHTML = list.length ? list.map(rowHtml).join('') : '<div class="empty">No chapters at this stop yet.</div>';
 }
-
 $('board-filter').querySelectorAll('button').forEach((b) => {
   b.addEventListener('click', () => {
     filter = b.dataset.t;
@@ -975,7 +1457,13 @@ $('board-filter').querySelectorAll('button').forEach((b) => {
   });
 });
 
-repaint();
+$('bonus-speed').textContent = '+' + money(BONUS.speed.cash);
+$('bonus-days').textContent = BONUS.speed.days;
+$('bonus-ref').textContent = '+' + money(BONUS.referral.cash);
+$('bonus-cap').textContent = BONUS.referral.cap;
+$('bonus-capcash').textContent = money(BONUS.referral.cash * BONUS.referral.cap);
+
+setTrack('chapters');
 load();
 </script>
 </body>
