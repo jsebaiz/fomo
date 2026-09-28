@@ -226,6 +226,14 @@ h1{font-size:clamp(2.3rem,4.6vw,3.4rem); font-weight:800; letter-spacing:-0.04em
           </div>
         </div>
 
+        <div class="field">
+          <label for="f-pw">Create a password</label>
+          <input type="password" id="f-pw" maxlength="200" autocomplete="new-password" placeholder="at least 10 characters">
+          <div class="note" style="margin-top:7px;font-size:0.78rem;color:var(--text-faint);">
+            This is your login for <b style="color:var(--text-dim)">jessebaizer.com/fomo/dashboard</b> — your chapter's progress and your link, any time. At least 10 characters with a letter and a number.
+          </div>
+        </div>
+
         <p class="msg" id="msg-1"></p>
 
         <div class="step-actions">
@@ -441,6 +449,9 @@ function validateStep1() {
   if (!EMAIL_RE.test(email)) return 'enter a valid email.';
   if (role.length < 2) return $('f-role').value === 'Other' ? 'type your role in the chapter.' : 'choose your role in the chapter.';
   if (!/^[A-Za-z0-9._]{1,30}$/.test(ig)) return 'enter your instagram handle.';
+  const pw = $('f-pw').value;
+  if (pw.length < 10) return 'choose a password of at least 10 characters.';
+  if (!/[a-zA-Z]/.test(pw) || !/[0-9]/.test(pw)) return 'your password needs a letter and a number.';
   return null;
 }
 
@@ -510,7 +521,12 @@ const advance = (ids, to) => ids.forEach((id) => {
     if (e.key === 'Enter') { e.preventDefault(); goTo(to); }
   });
 });
-advance(['f-first', 'f-last', 'f-phone', 'f-email', 'f-ig', 'f-role-other'], 2);
+advance(['f-first', 'f-last', 'f-phone', 'f-email', 'f-ig', 'f-role-other', 'f-pw'], 2);
+
+// An ambassador's link lands here with ?amb=<code>; the code rides along with
+// the registration so their dashboard can credit the chapter to them.
+const ambRaw = (new URLSearchParams(location.search).get('amb') || '').toLowerCase();
+const AMB_CODE = /^[a-z0-9]{8}$/.test(ambRaw) ? ambRaw : '';
 advance(['c-size'], 3);
 
 paintStepper();
@@ -622,6 +638,8 @@ async function submitClan(skipReferral) {
         email: $('f-email').value.trim(),
         role: roleValue(),
         instagram: $('f-ig').value.trim().replace(/^@/, ''),
+        password: $('f-pw').value,
+        ambCode: AMB_CODE,
         school, chapterName,
         chapterSize: $('c-size').value,
         bestTrader: $('c-best').value.trim(),

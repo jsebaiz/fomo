@@ -398,7 +398,10 @@ function renderChapters() {
       <div class="stack"><span class="lbl-sm">Best</span>${esc(c.bestTrader || '—')}</div>
       <div class="stack"><span class="lbl-sm">Worst</span>${esc(c.worstTrader || '—')}</div>
     </td>
-    <td><button class="act link-btn" data-link="${esc(c.referralUrl)}">Copy link</button></td>
+    <td>
+      <button class="act link-btn" data-link="${esc(c.referralUrl)}">Copy link</button>
+      <button class="act claim-btn" data-id="${esc(c.id)}" style="margin-top:6px;">Login code</button>
+    </td>
     <td class="right">${pctCell(c)}${c.members}${c.chapterSize ? ' / ' + c.chapterSize : ''}<span class="sub">${fmtWhen(c.createdAt)}</span></td>
   </tr>`).join('') : '<tr><td colspan="7"><div class="empty">No chapters registered yet.</div></td></tr>';
 
@@ -413,6 +416,34 @@ function renderChapters() {
         const t = b.textContent; b.textContent = 'Copied!';
         setTimeout(() => { b.textContent = t; }, 1500);
       } catch (err) { prompt('Referral link:', b.dataset.link); }
+    });
+  });
+  $('ch-rows').querySelectorAll('.claim-btn').forEach((b) => {
+    b.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      if (pickMode) return;
+      const label = b.textContent;
+      b.disabled = true; b.textContent = '…';
+      try {
+        const res = await fetch('/api/clans/internal/claimcode', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json', 'x-passcode': passcode },
+          body: JSON.stringify({ id: b.dataset.id }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) { alert(data.error || 'Could not create a code.'); }
+        else {
+          // Shown once. Text it to the chapter contact — they enter it on
+          // /fomo/login under "Claim chapter" and it dies on first use.
+          const msg = 'One-time login code for this chapter:\n\n' + data.code
+            + '\n\nThey enter it at jessebaizer.com/fomo/login (Claim chapter tab).'
+            + '\nExpires ' + new Date(data.expires).toLocaleDateString()
+            + ' and stops working the moment it is used.';
+          try { await navigator.clipboard.writeText(data.code); } catch (err) {}
+          alert(msg);
+        }
+      } catch (err) { alert('Could not reach the server.'); }
+      b.disabled = false; b.textContent = label;
     });
   });
   $('ch-rows').querySelectorAll('tr[data-id]').forEach((tr) => {

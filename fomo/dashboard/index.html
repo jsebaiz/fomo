@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Your dashboard · fomo</title>
+<link rel="icon" href="/fomo-favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#08080F; --surface:#0F0F17; --surface-2:#15151F; --surface-3:#1B1B26;
+  --border:rgba(255,255,255,0.08); --border-2:rgba(255,255,255,0.16);
+  --white:#FFFFFF; --text:#E8E8F0; --text-dim:#9B9BAD; --text-faint:#6A6A7C;
+  --blue:#516AF6; --blue-hi:#6A80F8; --blue-dim:#8E9CF7;
+  --red:#F2555A; --green:#2ED47A; --gold:#E0B25C; --cyan:#23B5D3;
+  --radius:14px; --radius-lg:18px;
+}
+*{box-sizing:border-box;}
+[hidden]{display:none !important;}
+html,body{margin:0;}
+body{background:var(--bg); color:var(--text); font-family:'Schibsted Grotesk','Inter',-apple-system,sans-serif; line-height:1.5; min-height:100vh; -webkit-font-smoothing:antialiased;}
+button,input{font-family:inherit;}
+a{color:inherit; text-decoration:none;}
+svg{display:block;}
+@media (prefers-reduced-motion:reduce){ *{animation:none !important; transition:none !important;} }
+
+.topbar{border-bottom:1px solid var(--border); position:sticky; top:0; z-index:20; background:rgba(8,8,15,.85); backdrop-filter:blur(14px);}
+.topbar-in{max-width:1000px; margin:0 auto; padding:13px 40px; display:flex; align-items:center; gap:14px;}
+@media (max-width:720px){ .topbar-in{padding:11px 20px;} }
+.brand{display:flex; align-items:center; gap:9px; font-size:1.08rem; font-weight:800; color:var(--white); letter-spacing:-0.02em;}
+.brand svg{width:23px; height:23px;}
+.brand .slash{color:var(--text-faint); font-weight:600;}
+.spacer{flex:1;}
+.who{font-size:0.84rem; color:var(--text-faint); white-space:nowrap;}
+@media (max-width:640px){ .who{display:none;} }
+.nav-btn{border:1px solid var(--border); background:var(--surface); color:var(--text); border-radius:10px; padding:8px 14px; font-size:0.84rem; font-weight:600; cursor:pointer;}
+.nav-btn:hover{background:var(--surface-2); border-color:var(--border-2);}
+
+.wrap{max-width:1000px; margin:0 auto; padding:32px 40px 72px;}
+@media (max-width:720px){ .wrap{padding:24px 20px 52px;} }
+
+.skel{padding:80px 20px; text-align:center; color:var(--text-faint); font-size:0.94rem;}
+.err-box{margin:24px 0; padding:16px 18px; background:rgba(255,122,122,0.07); border:1px solid rgba(255,122,122,0.22); border-radius:var(--radius); font-size:0.9rem; color:var(--red); display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;}
+.err-box button{background:none; border:1px solid rgba(255,122,122,0.35); color:var(--red); border-radius:8px; padding:7px 14px; font-size:0.82rem; cursor:pointer; font-weight:600;}
+
+.head{display:flex; align-items:center; gap:18px; margin-bottom:26px; flex-wrap:wrap;}
+.crest{width:60px; height:60px; border-radius:16px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.2rem; color:#fff; flex-shrink:0;}
+.crest.small{font-size:0.9rem;}
+.head-txt{flex:1; min-width:200px;}
+.head h1{margin:0; font-size:clamp(1.7rem,3.6vw,2.4rem); font-weight:800; color:var(--white); letter-spacing:-0.035em; line-height:1.08;}
+.head .where{font-size:0.95rem; color:var(--text-faint); margin-top:5px;}
+.chip{display:inline-block; padding:5px 11px; border-radius:7px; font-size:0.66rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase;}
+.chip.live{background:rgba(46,212,122,.14); color:var(--green);}
+.chip.pend{background:rgba(224,178,92,.14); color:var(--gold);}
+
+/* progress */
+.prog-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:26px 28px; margin-bottom:16px;}
+@media (max-width:560px){ .prog-card{padding:20px;} }
+.prog-top{display:flex; align-items:flex-end; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:16px;}
+.prog-num{font-size:2.6rem; font-weight:800; color:var(--white); letter-spacing:-0.04em; line-height:1;}
+.prog-num small{font-size:1.1rem; color:var(--text-faint); font-weight:700; letter-spacing:-0.02em;}
+.prog-lab{font-size:0.84rem; color:var(--text-faint); margin-top:7px;}
+.prog-pct{font-size:2.2rem; font-weight:800; letter-spacing:-0.04em; line-height:1;}
+.bar{height:10px; border-radius:99px; background:var(--surface-3); overflow:hidden;}
+.bar span{display:block; height:100%; border-radius:99px; background:var(--blue); transition:width 1s cubic-bezier(.3,.8,.3,1);}
+.bar.done span{background:var(--green);}
+.marks{display:flex; justify-content:space-between; margin-top:9px; font-size:0.72rem; color:var(--text-faint);}
+.next-line{margin-top:16px; font-size:0.95rem; color:var(--text-dim);}
+.next-line b{color:var(--white); font-weight:800;}
+
+.grid{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:16px;}
+@media (max-width:760px){ .grid{grid-template-columns:repeat(2,1fr);} }
+.stat{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:18px 20px; transition:border-color .15s ease, transform .15s ease;}
+.stat:hover{border-color:var(--border-2); transform:translateY(-2px);}
+.stat .v{font-size:1.65rem; font-weight:800; color:var(--white); letter-spacing:-0.035em; line-height:1;}
+.stat .v.green{color:var(--green);} .stat .v.blue{color:var(--blue-dim);} .stat .v.gold{color:var(--gold);}
+.stat .k{font-size:0.78rem; color:var(--text-faint); margin-top:8px; line-height:1.35;}
+
+/* referral link */
+.link-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:24px 26px; margin-bottom:16px;}
+@media (max-width:560px){ .link-card{padding:20px;} }
+.link-card h3{margin:0 0 5px; font-size:1.08rem; font-weight:800; color:var(--white); letter-spacing:-0.02em;}
+.link-card p{margin:0 0 16px; font-size:0.87rem; color:var(--text-faint); line-height:1.5;}
+.link-row{display:flex; gap:10px; flex-wrap:wrap;}
+.link-row input{flex:1; min-width:220px; background:var(--bg); border:1px solid var(--border); border-radius:11px; padding:13px 14px; color:var(--text); font-size:0.9rem; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; outline:none;}
+.link-row input:focus{border-color:var(--blue);}
+.copy{display:inline-flex; align-items:center; gap:8px; background:var(--blue); color:#fff; border:none; border-radius:11px; padding:13px 20px; font-size:0.9rem; font-weight:700; cursor:pointer; transition:background .15s ease; white-space:nowrap;}
+.copy:hover{background:var(--blue-hi);}
+.copy.done{background:var(--green); color:#062B18;}
+.copy svg{width:15px; height:15px;}
+.share{display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;}
+.share a{font-size:0.82rem; font-weight:600; color:var(--text-dim); border:1px solid var(--border); border-radius:9px; padding:8px 14px;}
+.share a:hover{color:var(--white); border-color:var(--border-2);}
+
+/* lists */
+.list-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; margin-bottom:16px;}
+.list-head{padding:18px 24px; border-bottom:1px solid var(--border); font-size:1.02rem; font-weight:800; color:var(--white); letter-spacing:-0.02em; display:flex; justify-content:space-between; gap:12px; align-items:baseline;}
+.list-head span{font-size:0.8rem; font-weight:600; color:var(--text-faint);}
+.row{display:flex; align-items:center; gap:14px; padding:13px 24px; border-bottom:1px solid var(--border);}
+.row:last-child{border-bottom:none;}
+.row .nm{flex:1; min-width:0; font-weight:700; color:var(--white); font-size:0.94rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.row .sub{font-size:0.8rem; color:var(--text-faint); margin-top:2px;}
+.row .rt{font-size:0.82rem; color:var(--text-faint); white-space:nowrap;}
+.row .rt b{color:var(--white); font-weight:700;}
+.empty{padding:34px 24px; text-align:center; color:var(--text-faint); font-size:0.88rem; line-height:1.6;}
+
+.note{font-size:0.82rem; color:var(--text-faint); line-height:1.6; margin-top:20px;}
+.note a{color:var(--blue-dim); font-weight:600;}
+.note a:hover{text-decoration:underline;}
+.pending-banner{background:rgba(224,178,92,.07); border:1px solid rgba(224,178,92,.26); border-radius:var(--radius); padding:15px 18px; font-size:0.88rem; color:var(--text-dim); margin-bottom:16px; line-height:1.55;}
+.pending-banner b{color:var(--gold);}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-in">
+    <a class="brand" href="/fomo/clans/">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="26" fill="#12121C"/><g fill="#EAEDFF"><path d="M36.9747 24.3586C44.1067 24.3587 49.7941 27.9515 52.9484 33.5959C48.7626 38.0418 45.6617 43.7612 44.4679 50.0002C43.2743 56.2391 44.1865 61.9572 46.67 66.4026C41.3555 72.0468 34.2931 75.6408 27.1613 75.6409C18.432 75.6407 11.8659 70.2588 9.46204 62.3196H26.8478C27.4159 62.3193 28.0059 61.8593 28.1691 61.2932L34.6486 38.7043C34.8098 38.1381 34.4815 37.6782 33.9152 37.678H14.1788C19.6213 29.7404 28.2465 24.3588 36.9747 24.3586Z"/><path d="M72.3285 24.3586C85.0779 24.3586 93.2156 35.8374 90.5062 49.9993C87.7966 64.1596 75.2646 75.6409 62.515 75.6409C53.7856 75.6408 47.2196 70.2589 44.8158 62.3196H64.1537C64.7218 62.3194 65.3127 61.8594 65.476 61.2932L71.9545 38.7043C72.1157 38.138 71.7876 37.678 71.2211 37.678H49.5316C54.9741 29.7401 63.5999 24.3587 72.3285 24.3586Z"/></g></svg>
+      fomo <span class="slash">/dashboard</span>
+    </a>
+    <div class="spacer"></div>
+    <span class="who" id="who"></span>
+    <a class="nav-btn" href="/fomo/prizes/">Prizes</a>
+    <button class="nav-btn" id="out">Sign out</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="skel" id="skel">Loading your dashboard…</div>
+  <div class="err-box" id="err" hidden><span id="err-txt">Couldn't load your dashboard.</span><button id="retry">Retry</button></div>
+  <div id="body" hidden></div>
+</div>
+
+<script src="/fomo/greek-data.js"></script>
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const { schoolColors, glyphFor } = GreekData;
+const money = (n) => '$' + Math.round(n).toLocaleString('en-US');
+
+// Mirrors the stops on /fomo/prizes. Kept in sync by hand — if the amounts
+// there change, change them here too.
+const STOPS = [
+  { n: 1, name: 'Onboarded',  pct: 80,  cash: 500 },
+  { n: 2, name: 'Locked in',  pct: 90,  cash: 250 },
+  { n: 3, name: 'Full house', pct: 100, cash: 500 },
+];
+const AMB = [
+  { n: 1, name: 'Rep',             at: 1,   cash: 0,   rate: 5 },
+  { n: 2, name: 'Campus lead',     at: 50,  cash: 250, rate: 6 },
+  { n: 3, name: 'Campus director', at: 150, cash: 750, rate: 8 },
+  { n: 4, name: 'Intern',          at: 300, cash: 1500, rate: 8 },
+];
+const needFor = (pct, size) => Math.ceil((pct / 100) * size);
+function chapterStop(members, size) {
+  let best = 0;
+  STOPS.forEach((s) => { if (size && members >= needFor(s.pct, size)) best = s.n; });
+  return best;
+}
+const chapterEarned = (n) => STOPS.reduce((t, s) => t + (s.n <= n ? s.cash : 0), 0);
+function ambEarnings(count) {
+  let total = 0;
+  AMB.forEach((s, i) => {
+    const hi = AMB[i + 1] ? AMB[i + 1].at - 1 : Infinity;
+    total += Math.max(0, Math.min(count, hi) - s.at + 1) * s.rate;
+  });
+  AMB.forEach((s) => { if (s.n < 4 && count >= s.at) total += s.cash; });
+  return total;
+}
+function ambLevel(count) {
+  let best = 1;
+  AMB.forEach((s) => { if (s.n > 1 && s.n < 4 && count >= s.at) best = s.n; });
+  return best;
+}
+
+function copyButton(url) {
+  return `<div class="link-row">
+      <input type="text" id="reflink" value="${esc(url)}" readonly spellcheck="false" aria-label="Your referral link">
+      <button class="copy" id="copy">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+        Copy link
+      </button>
+    </div>`;
+}
+function wireCopy(url) {
+  const btn = $('copy'); if (!btn) return;
+  btn.addEventListener('click', async () => {
+    let ok = false;
+    try { await navigator.clipboard.writeText(url); ok = true; }
+    catch (e) {
+      // Clipboard API needs a secure context and permission; fall back to the
+      // old selection trick so the button still does something useful.
+      try { const i = $('reflink'); i.select(); i.setSelectionRange(0, 99999); ok = document.execCommand('copy'); } catch (e2) { ok = false; }
+    }
+    btn.classList.toggle('done', ok);
+    btn.lastChild.textContent = ok ? ' Copied' : ' Press ⌘C';
+    setTimeout(() => { btn.classList.remove('done'); btn.lastChild.textContent = ' Copy link'; }, 2000);
+  });
+}
+
+function renderChapter(d) {
+  const c = d.chapter;
+  const [col] = schoolColors(c.school);
+  const glyph = glyphFor(c.chapterName);
+  const size = c.chapterSize || 0;
+  const pct = size ? Math.min(100, Math.round((c.members / size) * 100)) : 0;
+  const stop = chapterStop(c.members, size);
+  const next = STOPS.find((s) => s.n > stop);
+  const away = next && size ? Math.max(0, needFor(next.pct, size) - c.members) : 0;
+
+  $('body').innerHTML = `
+    <div class="head">
+      <div class="crest ${glyph.length >= 3 ? 'small' : ''}" style="background:${col}">${esc(glyph)}</div>
+      <div class="head-txt">
+        <h1>${esc(c.chapterName)}</h1>
+        <div class="where">${esc(c.schoolLabel)}</div>
+      </div>
+      ${stop >= 1 ? '<span class="chip live">Getting paid</span>' : ''}
+    </div>
+
+    <div class="prog-card">
+      <div class="prog-top">
+        <div>
+          <div class="prog-num">${c.members}<small> of ${size || '—'}</small></div>
+          <div class="prog-lab">members on fomo</div>
+        </div>
+        <div style="text-align:right">
+          <div class="prog-pct" style="color:${pct >= 80 ? 'var(--green)' : 'var(--blue-dim)'}">${pct}%</div>
+          <div class="prog-lab">of your roster</div>
+        </div>
+      </div>
+      <div class="bar${pct >= 80 ? ' done' : ''}"><span style="width:0%" id="fill"></span></div>
+      <div class="marks"><span>0</span><span>80% — $500</span><span>90%</span><span>100%</span></div>
+      <div class="next-line">${next
+        ? `<b>${away}</b> more ${away === 1 ? 'member' : 'members'} to reach <b>${esc(next.name)}</b> and unlock ${money(chapterEarned(next.n))} total.`
+        : `Every counted stop is cleared. <b>${money(chapterEarned(stop))}</b> earned.`}</div>
+    </div>
+
+    <div class="grid">
+      <div class="stat"><div class="v ${stop ? 'green' : ''}">${money(chapterEarned(stop))}</div><div class="k">Earned so far</div></div>
+      <div class="stat"><div class="v">${stop ? 'Stop ' + String(stop).padStart(2, '0') : '—'}</div><div class="k">${stop ? esc((STOPS.find((s) => s.n === stop) || {}).name) : 'Not there yet'}</div></div>
+      <div class="stat"><div class="v ${c.pending ? 'gold' : ''}">${c.pending}</div><div class="k">Waiting on approval</div></div>
+      <div class="stat"><div class="v blue">${away || 0}</div><div class="k">${next ? 'To ' + esc(next.name) : 'Nothing left to count'}</div></div>
+    </div>
+
+    <div class="link-card">
+      <h3>Your chapter link</h3>
+      <p>One link for the whole house. Anyone who joins through it counts toward your roster the moment we approve them.</p>
+      ${copyButton(d.referralUrl)}
+      <div class="share">
+        <a href="sms:?&body=${encodeURIComponent('Join ' + c.chapterName + ' on fomo: ' + d.referralUrl)}">Send as a text</a>
+        <a href="${esc(d.referralUrl)}" target="_blank" rel="noopener">Open it</a>
+        <a href="/fomo/prizes/">See what you win</a>
+      </div>
+    </div>
+
+    <div class="list-card">
+      <div class="list-head">Recently approved <span>${c.recent.length ? 'last ' + c.recent.length : ''}</span></div>
+      ${c.recent.length
+        ? c.recent.map((m) => `<div class="row">
+            <div style="flex:1;min-width:0"><div class="nm">@${esc(m.username)}</div></div>
+            <div class="rt">${esc(new Date(m.joinedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }))}</div>
+          </div>`).join('')
+        : `<div class="empty">Nobody has joined through your link yet.<br>Send it to the chapter group chat — that is how every chapter on the board started.</div>`}
+    </div>
+
+    <p class="note">Counts here match the <a href="/fomo/clans/">public leaderboard</a> exactly. A member counts once an admin approves them, which is usually same-day. Questions about a payout go to whoever onboarded your chapter.</p>`;
+  requestAnimationFrame(() => { const f = $('fill'); if (f) f.style.width = pct + '%'; });
+  wireCopy(d.referralUrl);
+}
+
+function renderAmbassador(d) {
+  const a = d.ambassador;
+  const [col] = schoolColors(a.school);
+  const mark = (a.schoolLabel || 'FOMO').split(/[\s\-]+/).filter((w) => !/^(of|the|at|and|in)$/i.test(w));
+  const glyph = mark.length === 1 ? mark[0].toUpperCase().slice(0, 4) : mark.map((w) => w[0]).join('').toUpperCase().slice(0, 4);
+  const lvl = ambLevel(a.signups);
+  const next = AMB.find((s) => s.n > 1 && s.at > a.signups) || null;
+  const away = next ? next.at - a.signups : 0;
+  const earned = ambEarnings(a.signups);
+  const rate = (AMB.find((s) => s.n === lvl) || AMB[0]).rate;
+  const prevAt = (AMB.find((s) => s.n === lvl) || AMB[0]).at;
+  const pctToNext = next
+    ? Math.min(100, Math.round(((a.signups - prevAt) / Math.max(1, next.at - prevAt)) * 100))
+    : 100;
+
+  $('body').innerHTML = `
+    ${a.status === 'pending' ? `<div class="pending-banner"><b>Application under review.</b> Your link works right now and every signup is being counted — approval just unlocks the kit and the first payout. We usually get to it within a day.</div>` : ''}
+    <div class="head">
+      <div class="crest ${glyph.length >= 3 ? 'small' : ''}" style="background:${col}">${esc(glyph)}</div>
+      <div class="head-txt">
+        <h1>${esc(d.account.firstName)} ${esc(d.account.lastName)}</h1>
+        <div class="where">${esc(a.schoolLabel)} · campus ambassador</div>
+      </div>
+      <span class="chip ${a.status === 'pending' ? 'pend' : 'live'}">${a.status === 'pending' ? 'Pending' : 'Active'}</span>
+    </div>
+
+    <div class="prog-card">
+      <div class="prog-top">
+        <div>
+          <div class="prog-num">${a.signups}<small> signups</small></div>
+          <div class="prog-lab">members brought in through your link</div>
+        </div>
+        <div style="text-align:right">
+          <div class="prog-pct" style="color:var(--green)">${money(earned)}</div>
+          <div class="prog-lab">earned so far</div>
+        </div>
+      </div>
+      <div class="bar${!next ? ' done' : ''}"><span style="width:0%" id="fill"></span></div>
+      <div class="marks">${AMB.map((s) => `<span>${s.at === 1 ? 'Start' : s.at}</span>`).join('')}</div>
+      <div class="next-line">${next
+        ? `<b>${away}</b> more ${away === 1 ? 'signup' : 'signups'} to reach <b>${esc(next.name)}</b>${next.cash ? ` and a ${money(next.cash)} bonus` : ''}.`
+        : `Every level cleared. The internship is a conversation from here.`}</div>
+    </div>
+
+    <div class="grid">
+      <div class="stat"><div class="v green">${money(earned)}</div><div class="k">Earned so far</div></div>
+      <div class="stat"><div class="v">${esc((AMB.find((s) => s.n === lvl) || AMB[0]).name)}</div><div class="k">Current level</div></div>
+      <div class="stat"><div class="v blue">$${rate}</div><div class="k">Per signup right now</div></div>
+      <div class="stat"><div class="v gold">${a.chaptersBrought}</div><div class="k">${a.chaptersBrought === 1 ? 'Chapter brought in' : 'Chapters brought in'}</div></div>
+    </div>
+
+    <div class="link-card">
+      <h3>Your referral link</h3>
+      <p>Send this to any chapter on campus. Every member they onboard counts as one of your signups, and they still get their own $500.</p>
+      ${copyButton(d.referralUrl)}
+      <div class="share">
+        <a href="sms:?&body=${encodeURIComponent('Get your chapter paid by fomo — register here: ' + d.referralUrl)}">Send as a text</a>
+        <a href="${esc(d.referralUrl)}" target="_blank" rel="noopener">Open it</a>
+        <a href="/fomo/prizes/">See your kit</a>
+      </div>
+    </div>
+
+    <div class="list-card">
+      <div class="list-head">Chapters you brought in <span>${a.chaptersBrought || ''}</span></div>
+      ${a.chapters.length
+        ? a.chapters.map((c) => {
+            const [cc] = schoolColors(c.school);
+            const g = glyphFor(c.chapterName);
+            return `<div class="row">
+              <div class="crest ${g.length >= 3 ? 'small' : ''}" style="background:${cc};width:36px;height:36px;border-radius:11px;font-size:0.78rem">${esc(g)}</div>
+              <div style="flex:1;min-width:0">
+                <div class="nm">${esc(c.chapterName)}</div>
+                <div class="sub">${esc(c.schoolLabel)}</div>
+              </div>
+              <div class="rt"><b>${c.members}</b>${c.chapterSize ? ' of ' + c.chapterSize : ''}</div>
+            </div>`;
+          }).join('')
+        : `<div class="empty">No chapters yet.<br>Send your link to a rush chair — one house is 40 to 200 signups in a week.</div>`}
+    </div>
+
+    <p class="note">Signups are counted once the chapter's members are approved, same as the <a href="/fomo/clans/">public board</a>. Rates and levels are on the <a href="/fomo/prizes/">prizes page</a>. Payouts land on the 1st for the month before.</p>`;
+  requestAnimationFrame(() => { const f = $('fill'); if (f) f.style.width = pctToNext + '%'; });
+  wireCopy(d.referralUrl);
+}
+
+async function load() {
+  $('err').hidden = true;
+  try {
+    const res = await fetch('/api/account/me', { credentials: 'same-origin', cache: 'no-store' });
+    if (res.status === 401) { location.replace('/fomo/login/?next=' + encodeURIComponent(location.pathname)); return; }
+    if (!res.ok) throw new Error('bad status');
+    const d = await res.json();
+    $('skel').hidden = true;
+    $('body').hidden = false;
+    $('who').textContent = d.account.email;
+    if (d.account.kind === 'chapter' && d.chapter) renderChapter(d);
+    else if (d.ambassador) renderAmbassador(d);
+    else throw new Error('unknown account shape');
+  } catch (e) {
+    $('skel').hidden = true;
+    $('err').hidden = false;
+  }
+}
+$('retry').addEventListener('click', load);
+
+$('out').addEventListener('click', async () => {
+  try { await fetch('/api/account/logout', { method: 'POST', credentials: 'same-origin' }); } catch (e) {}
+  location.replace('/fomo/login/');
+});
+
+load();
+</script>
+</body>
+</html>

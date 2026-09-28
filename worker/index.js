@@ -329,6 +329,115 @@ function cleanUsername(value) {
   return v;
 }
 
+// ---------------------------------------------------------------------------
+// ACCOUNTS
+//
+// Chapter contacts and campus ambassadors get a login so they can watch their
+// own progress. Everything here is written defensively because these records
+// sit next to real students' names, emails and phone numbers.
+//
+//  · Passwords are PBKDF2-SHA256 over a per-account 16-byte random salt.
+//    Workers has no bcrypt/argon2, and PBKDF2 is the WebCrypto primitive
+//    Cloudflare supports. The iteration count is a deliberate trade: high
+//    enough to be worth something, low enough to stay inside a Worker's CPU
+//    budget. Raise it if the plan allows.
+//  · Sessions are server-side. The cookie carries nothing but a random token;
+//    revoking is a KV delete, so logout is real rather than cosmetic.
+//  · Nothing in this file ever returns a hash, a salt or a claim code to a
+//    caller who didn't already have it.
+// ---------------------------------------------------------------------------
+const ACCOUNTS_KEY = 'accounts';
+const MAX_ACCOUNTS = 5000;
+const SESS_KEY = (t) => `sess:${t}`;
+const SESSION_DAYS = 30;
+const PBKDF2_ITER = 100000;
+const CLAIM_DAYS = 14;
+
+const b64 = (bytes) => btoa(String.fromCharCode(...bytes));
+const unb64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
+
+async function derive(password, salt) {
+  const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveBits']);
+  const bits = await crypto.subtle.deriveBits(
+    { name: 'PBKDF2', salt, iterations: PBKDF2_ITER, hash: 'SHA-256' }, key, 256);
+  return new Uint8Array(bits);
+}
+async function hashPassword(password) {
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  return { salt: b64(salt), hash: b64(await derive(password, salt)) };
+}
+async function verifyPassword(password, saltB64, hashB64) {
+  let want;
+  try { want = unb64(hashB64); } catch { return false; }
+  const got = await derive(password, unb64(saltB64));
+  if (got.length !== want.length) return false;
+  return crypto.subtle.timingSafeEqual(got, want);
+}
+
+// Passwords here protect a dashboard, not a bank, but these are adults being
+// sent money — a four-character password shouldn't be allowed.
+function checkPassword(pw) {
+  const p = String(pw ?? '');
+  if (p.length < 10) return 'Password must be at least 10 characters';
+  if (p.length > 200) return 'Password is too long';
+  if (!/[a-zA-Z]/.test(p) || !/[0-9]/.test(p)) return 'Password needs at least one letter and one number';
+  return null;
+}
+
+function newToken() {
+  const b = crypto.getRandomValues(new Uint8Array(32));
+  return btoa(String.fromCharCode(...b)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+const sessionCookie = (token) =>
+  `fomo_sess=${token}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=${SESSION_DAYS * 86400}`;
+const clearedCookie = 'fomo_sess=; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=0';
+
+function readCookie(request, name) {
+  const raw = request.headers.get('cookie') || '';
+  const m = raw.match(new RegExp('(?:^|;\\s*)' + name + '=([^;]*)'));
+  return m ? m[1] : '';
+}
+async function currentSession(request, env) {
+  const token = readCookie(request, 'fomo_sess');
+  if (!token || !/^[A-Za-z0-9_-]{16,64}$/.test(token)) return null;
+  const sess = await env.FLIGHTS.get(SESS_KEY(token), 'json');
+  if (!sess) return null;
+  const accounts = await readList(env, ACCOUNTS_KEY);
+  const account = accounts.find((a) => a.id === sess.accountId);
+  return account ? { account, token, accounts } : null;
+}
+// What an account is ever allowed to see about itself. Salt and hash are not
+// in this list and must never be.
+const publicAccount = (a) => ({
+  id: a.id, kind: a.kind, email: a.email,
+  firstName: a.firstName, lastName: a.lastName,
+  school: a.school || null, schoolLabel: a.schoolLabel || null,
+  chapterId: a.chapterId || null, refCode: a.refCode,
+  status: a.status || 'active', createdAt: a.createdAt,
+});
+const jsonCookie = (data, cookie, status = 200) =>
+  new Response(JSON.stringify(data), {
+    status,
+    headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store', 'set-cookie': cookie },
+  });
+
+async function makeAccount(env, accounts, fields) {
+  const { salt, hash } = await hashPassword(fields.password);
+  let refCode;
+  do { refCode = randomCode(8); }
+  while (accounts.some((a) => a.refCode === refCode));
+  const account = {
+    id: crypto.randomUUID(), kind: fields.kind, email: fields.email,
+    firstName: fields.firstName, lastName: fields.lastName,
+    chapterId: fields.chapterId || null,
+    school: fields.school || null, schoolLabel: fields.schoolLabel || null,
+    refCode, salt, hash, status: fields.status || 'active',
+    createdAt: new Date().toISOString(), lastLogin: null,
+  };
+  accounts.push(account);
+  return account;
+}
+
 // What the public clan list shows. The referral code and member usernames are
 // never included here — usernames are only exposed via the admin-gated
 // /api/clans/internal roster below. Only approved members count toward the
@@ -456,6 +565,23 @@ export default {
       const banner = parseDataUrl(body.banner);
       if (banner && banner.error) return json({ error: banner.error }, 400);
 
+      // A password on the form means "make me a login". It stays optional so a
+      // registration can still succeed if the account step fails validation.
+      const wantsAccount = typeof body.password === 'string' && body.password.length > 0;
+      const accounts = await readList(env, ACCOUNTS_KEY);
+      if (wantsAccount) {
+        const pwErr = checkPassword(body.password);
+        if (pwErr) return json({ error: pwErr }, 400);
+        if (accounts.length >= MAX_ACCOUNTS) return json({ error: 'Account limit reached' }, 409);
+        if (accounts.some((a) => a.email === person.contact.email)) {
+          return json({ error: 'An account already uses that email — sign in instead' }, 409);
+        }
+      }
+      // Credit the ambassador whose link this registration came through.
+      const ambRaw = String(body.ambCode || '').trim().toLowerCase();
+      const ambCode = /^[a-z0-9]{8}$/.test(ambRaw) && accounts.some((a) => a.kind === 'ambassador' && a.refCode === ambRaw)
+        ? ambRaw : null;
+
       let code;
       do { code = randomCode(); } while (clans.some((c) => c.code === code));
 
@@ -467,6 +593,7 @@ export default {
         bestTrader: parsed.clan.bestTrader, worstTrader: parsed.clan.worstTrader,
         contact: person.contact,
         referredBy: ref.referredBy,
+        ambCode,
         media: { avatar: !!avatar, banner: !!banner },
         members: [], createdAt: new Date().toISOString(),
       };
@@ -475,7 +602,23 @@ export default {
       }
       clans.push(clan);
       await env.FLIGHTS.put(CLANS_KEY, JSON.stringify(clans));
-      return json({ clan: { ...publicClan(clan, 0), code, referralUrl: `${url.origin}/fomo/referral/${code}` } }, 201);
+
+      let cookie = null;
+      if (wantsAccount) {
+        const account = await makeAccount(env, accounts, {
+          kind: 'chapter', email: person.contact.email,
+          firstName: person.contact.firstName, lastName: person.contact.lastName,
+          chapterId: id, school: parsed.clan.school, schoolLabel: parsed.clan.schoolLabel,
+          password: body.password,
+        });
+        await env.FLIGHTS.put(ACCOUNTS_KEY, JSON.stringify(accounts));
+        const token = newToken();
+        await env.FLIGHTS.put(SESS_KEY(token), JSON.stringify({ accountId: account.id, at: Date.now() }),
+          { expirationTtl: SESSION_DAYS * 86400 });
+        cookie = sessionCookie(token);
+      }
+      const payload = { clan: { ...publicClan(clan, 0), code, referralUrl: `${url.origin}/fomo/referral/${code}` }, account: wantsAccount };
+      return cookie ? jsonCookie(payload, cookie, 201) : json(payload, 201);
     }
 
     // Flat roster of every join across every clan, for manually crediting people who
@@ -785,7 +928,172 @@ export default {
       return json({ name: clan.name, members: clan.members.length }, 201);
     }
 
-    if (path === '/api/flights' || path === '/api/auth' || path === '/api/clans' || path === '/api/clans/internal' || path === '/api/clans/internal/approve' || path === '/api/clans/internal/payout' || path === '/api/clans/internal/continuation' || path === '/api/clans/seed' || lookup || join || clanId || mediaReq || notesReq || del) {
+    // ---------------- Accounts ----------------
+    // Sign in. The error text is identical whether the email is unknown or the
+    // password is wrong — a different message for each would turn this into an
+    // endpoint for checking which chapter contacts have registered.
+    if (path === '/api/account/login' && request.method === 'POST') {
+      if (await tooMany(env, 'login', ipOf(request), 10)) return json({ error: 'Too many attempts — try again in a minute' }, 429);
+      const text = await request.text();
+      if (text.length > 2048) return json({ error: 'Request too large' }, 413);
+      let body; try { body = JSON.parse(text); } catch { return json({ error: 'Invalid JSON' }, 400); }
+      const email = String((body && body.email) || '').trim().toLowerCase();
+      const password = String((body && body.password) || '');
+      const accounts = await readList(env, ACCOUNTS_KEY);
+      const account = accounts.find((a) => a.email === email);
+      const ok = account ? await verifyPassword(password, account.salt, account.hash) : false;
+      if (!ok) return json({ error: 'Wrong email or password' }, 401);
+
+      account.lastLogin = new Date().toISOString();
+      await env.FLIGHTS.put(ACCOUNTS_KEY, JSON.stringify(accounts));
+      const token = newToken();
+      await env.FLIGHTS.put(SESS_KEY(token), JSON.stringify({ accountId: account.id, at: Date.now() }),
+        { expirationTtl: SESSION_DAYS * 86400 });
+      return jsonCookie({ account: publicAccount(account) }, sessionCookie(token));
+    }
+
+    if (path === '/api/account/logout' && request.method === 'POST') {
+      const token = readCookie(request, 'fomo_sess');
+      if (token && /^[A-Za-z0-9_-]{16,64}$/.test(token)) await env.FLIGHTS.delete(SESS_KEY(token));
+      return jsonCookie({ ok: true }, clearedCookie);
+    }
+
+    // A chapter contact who registered before logins existed claims their
+    // account with a one-time code the fomo team hands them directly. There is
+    // no email delivery here, so a self-serve reset would just be an open door.
+    if (path === '/api/account/claim' && request.method === 'POST') {
+      if (await tooMany(env, 'claim', ipOf(request), 5)) return json({ error: 'Too many attempts — try again in a minute' }, 429);
+      const text = await request.text();
+      if (text.length > 2048) return json({ error: 'Request too large' }, 413);
+      let body; try { body = JSON.parse(text); } catch { return json({ error: 'Invalid JSON' }, 400); }
+      const code = String((body && body.code) || '').trim().toLowerCase();
+      const password = String((body && body.password) || '');
+      const pwErr = checkPassword(password);
+      if (pwErr) return json({ error: pwErr }, 400);
+      if (!/^[a-z0-9]{10}$/.test(code)) return json({ error: 'That code is not valid' }, 400);
+
+      const clans = await readList(env, CLANS_KEY);
+      const clan = clans.find((c) => c.claimCode === code);
+      if (!clan || !clan.contact) return json({ error: 'That code is not valid' }, 400);
+      if (clan.claimExpires && Date.parse(clan.claimExpires) < Date.now()) return json({ error: 'That code has expired — ask for a new one' }, 400);
+
+      const accounts = await readList(env, ACCOUNTS_KEY);
+      if (accounts.length >= MAX_ACCOUNTS) return json({ error: 'Account limit reached' }, 409);
+      if (accounts.some((a) => a.chapterId === clan.id)) return json({ error: 'This chapter already has an account' }, 409);
+      if (accounts.some((a) => a.email === clan.contact.email)) return json({ error: 'An account already uses that email' }, 409);
+
+      const account = await makeAccount(env, accounts, {
+        kind: 'chapter', email: clan.contact.email,
+        firstName: clan.contact.firstName, lastName: clan.contact.lastName,
+        chapterId: clan.id, school: clan.school, schoolLabel: clan.schoolLabel, password,
+      });
+      // One-time: burn the code so a screenshot of it is worthless afterwards.
+      clan.claimCode = null; clan.claimExpires = null;
+      await env.FLIGHTS.put(CLANS_KEY, JSON.stringify(clans));
+      await env.FLIGHTS.put(ACCOUNTS_KEY, JSON.stringify(accounts));
+
+      const token = newToken();
+      await env.FLIGHTS.put(SESS_KEY(token), JSON.stringify({ accountId: account.id, at: Date.now() }),
+        { expirationTtl: SESSION_DAYS * 86400 });
+      return jsonCookie({ account: publicAccount(account) }, sessionCookie(token), 201);
+    }
+
+    // Ambassador applications create an account immediately but land as
+    // `pending` — the dashboard says so, and approval is a human step.
+    if (path === '/api/account/ambassador' && request.method === 'POST') {
+      if (await tooMany(env, 'ambapply', ipOf(request), 5)) return json({ error: 'Too many attempts — try again in a minute' }, 429);
+      const text = await request.text();
+      if (text.length > 4096) return json({ error: 'Request too large' }, 413);
+      let body; try { body = JSON.parse(text); } catch { return json({ error: 'Invalid JSON' }, 400); }
+
+      const clean = (v) => String(v ?? '').trim().replace(/\s+/g, ' ');
+      const firstName = clean(body.firstName), lastName = clean(body.lastName);
+      const email = clean(body.email).toLowerCase();
+      const school = clean(body.school).toLowerCase();
+      const password = String(body.password || '');
+      const nameRe = /^[\p{L}][\p{L} .'-]{0,39}$/u;
+      if (!nameRe.test(firstName)) return json({ error: 'Enter your first name' }, 400);
+      if (!nameRe.test(lastName)) return json({ error: 'Enter your last name' }, 400);
+      if (email.length > 120 || !EMAIL_RE.test(email)) return json({ error: 'Enter a valid email' }, 400);
+      if (!SCHOOL_LABELS[school]) return json({ error: 'Pick your school from the list' }, 400);
+      const pwErr = checkPassword(password);
+      if (pwErr) return json({ error: pwErr }, 400);
+
+      const accounts = await readList(env, ACCOUNTS_KEY);
+      if (accounts.length >= MAX_ACCOUNTS) return json({ error: 'Account limit reached' }, 409);
+      if (accounts.some((a) => a.email === email)) return json({ error: 'An account already uses that email' }, 409);
+
+      const account = await makeAccount(env, accounts, {
+        kind: 'ambassador', email, firstName, lastName,
+        school, schoolLabel: SCHOOL_LABELS[school], password, status: 'pending',
+      });
+      await env.FLIGHTS.put(ACCOUNTS_KEY, JSON.stringify(accounts));
+      const token = newToken();
+      await env.FLIGHTS.put(SESS_KEY(token), JSON.stringify({ accountId: account.id, at: Date.now() }),
+        { expirationTtl: SESSION_DAYS * 86400 });
+      return jsonCookie({ account: publicAccount(account) }, sessionCookie(token), 201);
+    }
+
+    // The dashboard payload. Scoped hard to the signed-in account: a chapter
+    // sees its own clan and nothing else, an ambassador sees only the chapters
+    // carrying their referral code.
+    if (path === '/api/account/me' && request.method === 'GET') {
+      const sess = await currentSession(request, env);
+      if (!sess) return json({ error: 'Not signed in' }, 401);
+      const a = sess.account;
+      const out = { account: publicAccount(a), referralUrl: '', chapter: null, ambassador: null };
+
+      if (a.kind === 'chapter') {
+        const clans = await readList(env, CLANS_KEY);
+        const clan = clans.find((c) => c.id === a.chapterId);
+        if (!clan) return json({ error: 'Chapter not found' }, 404);
+        const approved = approvedMembers(clan);
+        out.referralUrl = `${url.origin}/fomo/referral/${clan.code}`;
+        out.chapter = {
+          chapterName: clan.chapterName, schoolLabel: clan.schoolLabel, school: clan.school,
+          members: totalApproved(clan), chapterSize: clan.chapterSize || null,
+          pending: (clan.members || []).filter((m) => m.status !== 'approved').length,
+          recent: approved.slice(-8).reverse().map((m) => ({ username: m.username, joinedAt: m.joinedAt })),
+          paidOut: clan.paidOut || null, createdAt: clan.createdAt,
+        };
+      } else {
+        const clans = await readList(env, CLANS_KEY);
+        const mine = clans.filter((c) => c.ambCode === a.refCode);
+        out.referralUrl = `${url.origin}/fomo/clans/create/?amb=${a.refCode}`;
+        out.ambassador = {
+          school: a.school, schoolLabel: a.schoolLabel, status: a.status,
+          signups: mine.reduce((s, c) => s + totalApproved(c), 0),
+          chaptersBrought: mine.length,
+          chapters: mine.map((c) => ({
+            chapterName: c.chapterName, schoolLabel: c.schoolLabel, school: c.school,
+            members: totalApproved(c), chapterSize: c.chapterSize || null,
+          })).sort((x, y) => y.members - x.members),
+        };
+      }
+      return json(out);
+    }
+
+    // Admin: mint a one-time claim code for a chapter that registered before
+    // logins existed. Returned once, to the admin, over the passcode-gated API.
+    if (path === '/api/clans/internal/claimcode' && request.method === 'POST') {
+      const denied = await guard(request, env);
+      if (denied) return denied;
+      const text = await request.text();
+      if (text.length > 1024) return json({ error: 'Request too large' }, 413);
+      let body; try { body = JSON.parse(text); } catch { return json({ error: 'Invalid JSON' }, 400); }
+      const id = String((body && body.id) || '');
+      const clans = await readList(env, CLANS_KEY);
+      const clan = clans.find((c) => c.id === id);
+      if (!clan) return json({ error: 'Not found' }, 404);
+      const accounts = await readList(env, ACCOUNTS_KEY);
+      if (accounts.some((x) => x.chapterId === clan.id)) return json({ error: 'This chapter already has an account' }, 409);
+      clan.claimCode = randomCode(10);
+      clan.claimExpires = new Date(Date.now() + CLAIM_DAYS * 86400000).toISOString();
+      await env.FLIGHTS.put(CLANS_KEY, JSON.stringify(clans));
+      return json({ code: clan.claimCode, expires: clan.claimExpires });
+    }
+
+    if (path === '/api/flights' || path === '/api/auth' || path === '/api/clans' || path === '/api/clans/internal' || path === '/api/clans/internal/approve' || path === '/api/clans/internal/payout' || path === '/api/clans/internal/continuation' || path === '/api/clans/seed' || path === '/api/clans/internal/claimcode' || path === '/api/account/login' || path === '/api/account/logout' || path === '/api/account/claim' || path === '/api/account/ambassador' || path === '/api/account/me' || lookup || join || clanId || mediaReq || notesReq || del) {
       return json({ error: 'Method not allowed' }, 405);
     }
     return json({ error: 'Not found' }, 404);
