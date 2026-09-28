@@ -21,254 +21,230 @@
 *{box-sizing:border-box;}
 [hidden]{display:none !important;}
 html,body{margin:0;}
-body{background:var(--bg); color:var(--text); font-family:'Schibsted Grotesk','Inter',-apple-system,sans-serif; line-height:1.5; min-height:100vh; -webkit-font-smoothing:antialiased; overflow-x:hidden;}
+body{background:var(--bg); color:var(--text); font-family:'Schibsted Grotesk','Inter',-apple-system,sans-serif; line-height:1.5; -webkit-font-smoothing:antialiased; overflow-x:hidden;}
 button,input,select{font-family:inherit;}
 a{color:inherit; text-decoration:none;}
 svg{display:block;}
 @media (prefers-reduced-motion:reduce){ *{animation:none !important; transition:none !important;} }
 
-.wrap{max-width:1120px; margin:0 auto; padding:0 40px 80px; position:relative; z-index:1;}
-@media (max-width:720px){ .wrap{padding:0 20px 56px;} }
+.wrap{max-width:1120px; margin:0 auto; padding:0 40px 60px;}
+@media (max-width:720px){ .wrap{padding:0 20px 44px;} }
 
 /* nav */
-.nav{display:flex; align-items:center; justify-content:space-between; padding:26px 0 0;}
-.nav-brand{display:flex; align-items:center; gap:10px; font-size:1.18rem; font-weight:800; color:var(--white); letter-spacing:-0.02em;}
+.nav{display:flex; align-items:center; justify-content:space-between; padding:22px 0 0;}
+.nav-brand{font-size:1.18rem; font-weight:800; color:var(--white); letter-spacing:-0.02em;}
 .nav-brand .slash{color:var(--text-faint); font-weight:600;}
 .nav-actions{display:flex; align-items:center; gap:10px;}
-.nav-btn{border:1px solid var(--border); background:var(--surface); color:var(--text); border-radius:10px; padding:10px 18px; font-size:0.88rem; font-weight:600; cursor:pointer; transition:background .15s ease, border-color .15s ease;}
+.nav-btn{border:1px solid var(--border); background:var(--surface); color:var(--text); border-radius:10px; padding:9px 16px; font-size:0.86rem; font-weight:600; transition:background .15s ease, border-color .15s ease;}
 .nav-btn:hover{background:var(--surface-2); border-color:var(--border-2);}
 .nav-btn.primary{background:var(--blue); border-color:var(--blue); color:#fff;}
-.nav-btn.primary:hover{background:var(--blue-hi); border-color:var(--blue-hi);}
-@media (max-width:560px){ .nav-actions .nav-btn.secondary{display:none;} }
+.nav-btn.primary:hover{background:var(--blue-hi);}
+@media (max-width:620px){ .nav-actions .nav-btn.secondary{display:none;} }
 
-/* hero */
-.hero{display:grid; grid-template-columns:1fr 330px; gap:56px; align-items:center; padding:74px 0 0;}
-@media (max-width:980px){ .hero{grid-template-columns:1fr; gap:44px; padding:52px 0 0;} }
-.eyebrow{font-size:0.86rem; font-weight:600; color:var(--text-faint); margin-bottom:20px;}
-h1{font-size:clamp(2.6rem,6.2vw,4.2rem); font-weight:800; letter-spacing:-0.04em; line-height:1.02; margin:0 0 24px; color:var(--white);}
-.lede{font-size:clamp(1.05rem,1.7vw,1.3rem); color:var(--text-dim); margin:0 0 30px; max-width:44ch; font-weight:500; line-height:1.5;}
-.lede strong{color:var(--white); font-weight:700;}
-.hero-cta{display:flex; align-items:center; gap:12px; flex-wrap:wrap;}
-.cta{display:inline-flex; align-items:center; gap:10px; background:var(--blue); color:#fff; border:none; border-radius:12px; padding:17px 26px; font-size:1rem; font-weight:700; cursor:pointer; transition:background .15s ease, transform .15s ease;}
-.cta:hover{background:var(--blue-hi); transform:translateY(-2px);}
-.cta svg{width:16px; height:16px;}
-.cta-ghost{display:inline-flex; align-items:center; gap:9px; border:1px solid var(--border-2); background:var(--surface); color:var(--text); border-radius:12px; padding:17px 24px; font-size:1rem; font-weight:700; transition:background .15s ease, transform .15s ease;}
-.cta-ghost:hover{background:var(--surface-2); transform:translateY(-2px);}
+/* ---------- HERO: compact, the picker is the main event ---------- */
+.hero{display:grid; grid-template-columns:1fr 250px; gap:48px; align-items:center; padding:44px 0 34px;}
+@media (max-width:920px){ .hero{grid-template-columns:1fr; gap:28px; padding:32px 0 26px;} }
+.eyebrow{font-size:0.8rem; font-weight:700; color:var(--blue-dim); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:14px;}
+h1{font-size:clamp(2.3rem,5.4vw,3.5rem); font-weight:800; letter-spacing:-0.04em; line-height:1.02; margin:0 0 14px; color:var(--white);}
+.lede{font-size:1.05rem; color:var(--text-dim); margin:0 0 22px; max-width:48ch; font-weight:500;}
+.lede b{color:var(--white); font-weight:700;}
 
-/* hero trading card — tilts to the pointer */
+.picker{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+.picker select,.picker input{background:var(--surface); border:1px solid var(--border-2); border-radius:11px; padding:13px 14px; color:var(--text); font-size:0.95rem; font-weight:600; outline:none; transition:border-color .15s ease;}
+.picker select{min-width:260px; cursor:pointer;}
+.picker input{width:84px; font-variant-numeric:tabular-nums;}
+.picker select:focus,.picker input:focus{border-color:var(--blue);}
+.picker .unit{font-size:0.88rem; color:var(--text-faint); font-weight:600;}
+
+/* live status strip — the payoff line */
+.status{display:flex; gap:12px; margin-top:18px; flex-wrap:wrap; min-height:62px;}
+.stat{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:11px 18px; animation:popIn .3s cubic-bezier(.2,.8,.3,1);}
+.stat .v{font-size:1.4rem; font-weight:800; letter-spacing:-0.03em; line-height:1.1; font-variant-numeric:tabular-nums;}
+.stat .k{font-size:0.72rem; color:var(--text-faint); margin-top:3px; font-weight:600;}
+.stat.ghost{border-style:dashed; background:none;}
+.stat.ghost .v{color:var(--text-faint);}
+@keyframes popIn{from{opacity:0; transform:translateY(8px) scale(.97);}to{opacity:1; transform:none;}}
+
 .card-stage{perspective:1000px; display:flex; justify-content:center;}
-.tcard{width:250px; transform-style:preserve-3d; transition:transform .25s cubic-bezier(.2,.7,.3,1); will-change:transform; cursor:grab;}
-.tcard svg{width:100%; height:auto; filter:drop-shadow(0 26px 46px rgba(0,0,0,.6));}
-.tcard-hint{text-align:center; font-size:0.76rem; color:var(--text-faint); margin-top:14px;}
+@media (max-width:920px){ .card-stage{display:none;} }
+.tcard{width:220px; transform-style:preserve-3d; transition:transform .25s cubic-bezier(.2,.7,.3,1); will-change:transform; cursor:grab;}
+.tcard svg{width:100%; height:auto; filter:drop-shadow(0 24px 42px rgba(0,0,0,.62));}
 
-/* headline numbers */
-.figures{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top:52px;}
-@media (max-width:860px){ .figures{grid-template-columns:repeat(2,1fr);} }
-.fig{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:20px 22px; transition:border-color .15s ease, transform .15s ease;}
-.fig:hover{border-color:var(--border-2); transform:translateY(-2px);}
-.fig .n{font-size:1.9rem; font-weight:800; color:var(--white); letter-spacing:-0.035em; line-height:1;}
-.fig .n.blue{color:var(--blue-dim);} .fig .n.green{color:var(--green);} .fig .n.gold{color:var(--gold);}
-.fig .l{font-size:0.8rem; color:var(--text-faint); margin-top:9px; line-height:1.35;}
-
-/* section furniture */
-.section{margin-top:96px;}
-.section-head{margin-bottom:26px;}
-.section-kicker{font-size:0.86rem; color:var(--text-faint); margin:0 0 14px;}
-.section-title{font-size:clamp(1.8rem,3.4vw,2.5rem); font-weight:800; color:var(--white); letter-spacing:-0.035em; line-height:1.06; margin:0;}
-.section-lede{font-size:1rem; color:var(--text-dim); margin:14px 0 0; max-width:62ch; line-height:1.55;}
-
-/* roster control */
-.sizer{display:flex; align-items:center; gap:14px; flex-wrap:wrap; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px 20px; margin-bottom:26px;}
-.sizer label{font-size:0.88rem; font-weight:600; color:var(--text-dim);}
-.sizer select,.sizer input{background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:11px 13px; color:var(--text); font-size:0.92rem; font-weight:600; outline:none;}
-.sizer select{min-width:230px; cursor:pointer;}
-.sizer input{width:92px; font-variant-numeric:tabular-nums;}
-.sizer select:focus,.sizer input:focus{border-color:var(--blue);}
-.sizer .hint{font-size:0.82rem; color:var(--text-faint); margin-left:auto;}
-@media (max-width:720px){ .sizer .hint{margin-left:0; width:100%;} }
-
-/* ================= ROADMAP TRACK ================= */
-.roadmap{position:relative; padding:34px 0 10px;}
-.track-wrap{position:relative; height:126px;}
-.track{position:absolute; left:0; right:0; top:56px; height:6px; border-radius:99px; background:var(--surface-3); overflow:hidden;}
-.track-fill{position:absolute; inset:0; border-radius:99px;
+/* ---------- ROADMAP ---------- */
+.roadmap{position:relative; padding:14px 0 0;}
+.track-wrap{position:relative; height:120px;}
+.track{position:absolute; left:0; right:0; top:52px; height:6px; border-radius:99px; background:var(--surface-3); overflow:hidden;}
+.track-fill{position:absolute; inset:0; border-radius:99px; clip-path:inset(0 100% 0 0);
   background:linear-gradient(90deg,#516AF6,#23B5D3 46%,#2ED47A 78%,#E0B25C);
-  clip-path:inset(0 100% 0 0);
-  transition:clip-path .9s cubic-bezier(.3,.8,.3,1);}
-.track-dots{position:absolute; inset:0; opacity:.45;
-  background-image:radial-gradient(circle,rgba(255,255,255,.55) 1px,transparent 1px); background-size:10px 6px;}
-
-/* the chapter marker riding the track */
-.rider{position:absolute; top:38px; width:42px; height:42px; margin-left:-21px; border-radius:13px;
+  transition:clip-path 1s cubic-bezier(.3,.8,.3,1);}
+.track-dots{position:absolute; inset:0; opacity:.45; background-image:radial-gradient(circle,rgba(255,255,255,.55) 1px,transparent 1px); background-size:10px 6px;}
+.rider{position:absolute; top:34px; width:42px; height:42px; margin-left:-21px; border-radius:13px;
   display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.8rem; color:#fff;
   border:2px solid var(--bg); box-shadow:0 8px 22px rgba(0,0,0,.6); z-index:4; opacity:0;
-  transition:left .9s cubic-bezier(.3,.8,.3,1), opacity .3s ease;}
+  transition:left 1s cubic-bezier(.3,.8,.3,1), opacity .3s ease;}
 .rider.on{opacity:1;}
-.rider .flag{position:absolute; top:-33px; left:50%; transform:translateX(-50%); white-space:nowrap;
+.rider .flag{position:absolute; top:-32px; left:50%; transform:translateX(-50%); white-space:nowrap;
   background:var(--white); color:#0A0A12; font-size:0.68rem; font-weight:800; padding:4px 9px; border-radius:6px;}
 .rider .flag::after{content:''; position:absolute; bottom:-4px; left:50%; margin-left:-4px; border:4px solid transparent; border-top-color:var(--white); border-bottom:0;}
 
-/* stations */
-.station{position:absolute; top:0; width:134px; margin-left:-67px; text-align:center; cursor:pointer; z-index:3;
+.station{position:absolute; top:0; width:130px; margin-left:-65px; text-align:center; cursor:pointer; z-index:3;
   background:none; border:none; padding:0; color:inherit; font-family:inherit;}
-.station .dot{width:34px; height:34px; margin:42px auto 0; border-radius:50%; background:var(--surface-2);
+.station .dot{width:34px; height:34px; margin:38px auto 0; border-radius:50%; background:var(--surface-2);
   border:2px solid var(--border-2); display:flex; align-items:center; justify-content:center;
   font-size:0.72rem; font-weight:800; color:var(--text-faint); font-variant-numeric:tabular-nums;
-  transition:transform .2s ease, background .2s ease, border-color .2s ease, color .2s ease;}
-.station:hover .dot{transform:scale(1.15);}
+  transition:transform .22s cubic-bezier(.2,.8,.3,1), background .22s ease, border-color .22s ease, color .22s ease;}
+.station:hover .dot{transform:scale(1.18);}
 .station.reached .dot{color:#0A0A12;}
-.station.active .dot{transform:scale(1.22); box-shadow:0 0 0 6px rgba(255,255,255,.07);}
-.station .st-name{font-size:0.84rem; font-weight:700; color:var(--text-faint); margin-top:12px; transition:color .2s ease;}
+.station.active .dot{transform:scale(1.24); box-shadow:0 0 0 6px rgba(255,255,255,.07);}
+/* only the stop you're chasing pulses — four pulsing dots would be noise */
+.station.target .dot{animation:ping 2.2s cubic-bezier(.3,.6,.4,1) infinite;}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(81,106,246,.5);}70%{box-shadow:0 0 0 15px rgba(81,106,246,0);}100%{box-shadow:0 0 0 0 rgba(81,106,246,0);}}
+.station .st-name{font-size:0.83rem; font-weight:700; color:var(--text-faint); margin-top:11px; transition:color .2s ease;}
 .station.reached .st-name,.station.active .st-name{color:var(--white);}
-.station .st-cash{font-size:0.74rem; color:var(--text-faint); margin-top:3px;}
+.station .st-cash{font-size:0.73rem; color:var(--text-faint); margin-top:2px;}
 @media (max-width:820px){
-  .roadmap{padding-top:8px;}
-  .track-wrap{height:auto; display:grid; grid-template-columns:repeat(2,1fr); gap:12px;}
+  .track-wrap{height:auto; display:grid; grid-template-columns:repeat(4,1fr); gap:8px;}
   .track,.rider{display:none;}
-  .station{position:static; width:auto; margin:0; padding:16px 10px; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface);}
-  .station .dot{margin-top:0;}
+  .station{position:static; width:auto; margin:0; padding:13px 4px; border:1px solid var(--border); border-radius:12px; background:var(--surface);}
+  .station .dot{margin-top:0; width:30px; height:30px;}
+  .station .st-name{font-size:0.72rem;}
+  .station .st-cash{font-size:0.66rem;}
   .station.active{border-color:var(--border-2); background:var(--surface-2);}
 }
 
-/* ================= TIER PANEL ================= */
-.panel{margin-top:38px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden;
-  animation:panelIn .35s cubic-bezier(.2,.7,.3,1);}
-@keyframes panelIn{from{opacity:0; transform:translateY(10px);}to{opacity:1; transform:none;}}
-.panel-head{display:flex; align-items:center; gap:24px; padding:26px 30px; border-bottom:1px solid var(--border); flex-wrap:wrap;}
-.panel-id{flex:1; min-width:220px;}
-.panel-tag{font-size:0.65rem; text-transform:uppercase; letter-spacing:0.11em; font-weight:700; margin-bottom:8px;}
-.panel-name{font-size:1.7rem; font-weight:800; color:var(--white); letter-spacing:-0.03em; display:flex; align-items:center; gap:12px; flex-wrap:wrap;}
-.panel-req{font-size:0.9rem; color:var(--text-faint); margin-top:8px;}
-.panel-req b{color:var(--text-dim); font-weight:700;}
-.panel-cash{text-align:right;}
-.panel-cash .amt{font-size:2rem; font-weight:800; letter-spacing:-0.04em; line-height:1;}
-.panel-cash .run{font-size:0.76rem; color:var(--text-faint); margin-top:7px;}
-.panel-why{padding:22px 30px 0; font-size:0.96rem; color:var(--text-dim); max-width:70ch; line-height:1.62; margin:0;}
-@media (max-width:560px){ .panel-head,.panel-why{padding-left:20px; padding-right:20px;} .panel-cash{text-align:left;} }
+/* ---------- THE DECK: one container, four tabs. Hidden tabs cost no scroll ---------- */
+.deck{margin-top:26px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden;}
+.deck-tabs{display:flex; gap:2px; padding:10px 12px; border-bottom:1px solid var(--border); overflow-x:auto; scrollbar-width:none;}
+.deck-tabs::-webkit-scrollbar{display:none;}
+.deck-tabs button{background:none; border:none; color:var(--text-faint); font-weight:700; font-size:0.88rem; padding:9px 16px; border-radius:9px; cursor:pointer; white-space:nowrap; transition:background .15s ease, color .15s ease;}
+.deck-tabs button:hover{color:var(--text); background:var(--surface-2);}
+.deck-tabs button.on{background:var(--blue); color:#fff;}
+.deck-tabs .spacer{flex:1;}
+.deck-body{animation:fadeUp .3s cubic-bezier(.2,.8,.3,1);}
+@keyframes fadeUp{from{opacity:0; transform:translateY(8px);}to{opacity:1; transform:none;}}
 
-.pill{display:inline-block; padding:4px 10px; border-radius:6px; font-size:0.62rem; font-weight:800; letter-spacing:0.09em; text-transform:uppercase;}
-.pill.here{background:var(--blue); color:#fff;}
-.pill.cleared{background:rgba(46,212,122,0.14); color:var(--green);}
-.pill.manual{background:var(--surface-3); color:var(--text-faint); border:1px solid var(--border);}
-.pill.count{background:var(--surface-3); color:var(--text-dim); border:1px solid var(--border); letter-spacing:0.03em; text-transform:none; font-size:0.7rem;}
+/* crate tab */
+.crate-head{display:flex; align-items:center; gap:20px; padding:20px 26px 0; flex-wrap:wrap;}
+.crate-head .ci{flex:1; min-width:210px;}
+.crate-tag{font-size:0.64rem; text-transform:uppercase; letter-spacing:0.11em; font-weight:800; margin-bottom:6px;}
+.crate-name{font-size:1.45rem; font-weight:800; color:var(--white); letter-spacing:-0.03em; display:flex; align-items:center; gap:11px; flex-wrap:wrap;}
+.crate-req{font-size:0.86rem; color:var(--text-faint); margin-top:5px;}
+.crate-req b{color:var(--text-dim); font-weight:700;}
+.crate-cash{text-align:right;}
+.crate-cash .amt{font-size:1.75rem; font-weight:800; letter-spacing:-0.04em; line-height:1;}
+.crate-cash .run{font-size:0.73rem; color:var(--text-faint); margin-top:5px;}
+@media (max-width:560px){ .crate-head{padding:18px 18px 0;} .crate-cash{text-align:left;} }
 
-/* ================= LOOT GRID ================= */
-.loot{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; padding:26px 30px 30px;}
-@media (max-width:900px){ .loot{grid-template-columns:repeat(2,1fr);} }
-@media (max-width:560px){ .loot{grid-template-columns:1fr; padding:20px;} }
+.loot{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; padding:20px 26px 22px; perspective:1100px;}
+.loot[data-few="1"]{grid-template-columns:minmax(0,340px); justify-content:center;}
+.loot[data-few="2"]{grid-template-columns:repeat(2,minmax(0,320px)); justify-content:center;}
+@media (max-width:900px){ .loot{grid-template-columns:repeat(2,1fr);} .loot[data-few="2"]{grid-template-columns:repeat(2,1fr);} }
+@media (max-width:560px){ .loot,.loot[data-few="1"],.loot[data-few="2"]{grid-template-columns:1fr; padding:18px;} }
+@media (max-width:560px){ .li-art{height:132px;} }
 .li{background:var(--bg); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden;
-  transition:border-color .2s ease, transform .2s ease;}
-.li:hover{border-color:var(--border-2); transform:translateY(-4px);}
-.li-art{position:relative; height:186px; display:flex; align-items:center; justify-content:center;
+  transform-style:preserve-3d; transition:border-color .22s ease, transform .3s cubic-bezier(.2,.8,.3,1), box-shadow .3s ease;}
+.li:hover{border-color:var(--border-2); transform:translateY(-7px) rotateX(5deg) rotateY(-5deg) scale(1.02); box-shadow:0 22px 44px rgba(0,0,0,.5);}
+.li-art{position:relative; height:158px; display:flex; align-items:center; justify-content:center;
   background:radial-gradient(circle at 50% 38%, rgba(255,255,255,.06), transparent 62%); overflow:hidden;}
-.li-art svg{width:100%; height:100%; padding:16px; transition:transform .35s cubic-bezier(.2,.7,.3,1);}
-.li:hover .li-art svg{transform:scale(1.07) rotate(-1.5deg);}
+.li-art svg{width:100%; height:100%; padding:14px; transition:transform .35s cubic-bezier(.2,.7,.3,1);}
+.li:hover .li-art svg{transform:scale(1.08);}
 .li-art img{width:100%; height:100%; object-fit:cover;}
-.li-qty{position:absolute; top:12px; right:12px; background:rgba(8,8,15,.82); border:1px solid var(--border);
-  color:var(--text-dim); font-size:0.68rem; font-weight:700; padding:4px 9px; border-radius:6px;}
-.li-txt{padding:16px 18px 20px; border-top:1px solid var(--border);}
-.li-txt h4{margin:0 0 6px; font-size:1rem; font-weight:700; color:var(--white); letter-spacing:-0.015em;}
-.li-txt p{margin:0; font-size:0.84rem; color:var(--text-faint); line-height:1.5;}
+.li-qty{position:absolute; top:10px; right:10px; background:rgba(8,8,15,.82); border:1px solid var(--border);
+  color:var(--text-dim); font-size:0.66rem; font-weight:700; padding:3px 8px; border-radius:6px;}
+.li-txt{padding:13px 15px 16px; border-top:1px solid var(--border);}
+.li-txt h4{margin:0 0 4px; font-size:0.95rem; font-weight:700; color:var(--white); letter-spacing:-0.015em;}
+.li-txt p{margin:0; font-size:0.8rem; color:var(--text-faint); line-height:1.45;}
 
-.perks{padding:0 30px 30px; display:flex; gap:10px; flex-wrap:wrap;}
-@media (max-width:560px){ .perks{padding:0 20px 24px;} }
-.perk{display:inline-flex; align-items:center; gap:8px; background:var(--surface-2); border:1px solid var(--border);
-  border-radius:99px; padding:9px 16px 9px 12px; font-size:0.85rem; font-weight:600; color:var(--text-dim);}
-.perk svg{width:14px; height:14px; color:var(--green); flex-shrink:0;}
+.perks{padding:0 26px 22px; display:flex; gap:9px; flex-wrap:wrap;}
+@media (max-width:560px){ .perks{padding:0 18px 18px;} }
+.perk{display:inline-flex; align-items:center; gap:7px; background:var(--surface-2); border:1px solid var(--border);
+  border-radius:99px; padding:8px 14px 8px 11px; font-size:0.81rem; font-weight:600; color:var(--text-dim);}
+.perk svg{width:13px; height:13px; color:var(--green); flex-shrink:0;}
 
-/* bonuses */
-.bonuses{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px;}
-@media (max-width:860px){ .bonuses{grid-template-columns:1fr;} }
-.bonus{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:24px 26px; transition:border-color .15s ease;}
-.bonus:hover{border-color:var(--border-2);}
-.bonus-top{display:flex; align-items:baseline; justify-content:space-between; gap:14px; margin-bottom:8px;}
-.bonus h3{margin:0; font-size:1.15rem; font-weight:800; color:var(--white); letter-spacing:-0.02em;}
-.bonus .amt{font-size:1.4rem; font-weight:800; color:var(--green); letter-spacing:-0.03em; flex-shrink:0;}
-.bonus p{margin:0 0 14px; font-size:0.9rem; color:var(--text-dim); line-height:1.55;}
-.bonus ul{margin:0; padding-left:18px; font-size:0.86rem; color:var(--text-faint); line-height:1.7;}
-.bonus ul b{color:var(--text-dim); font-weight:700;}
-
-/* live board */
-.board{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden;}
-.board-bar{display:flex; align-items:center; gap:3px; padding:12px 14px; border-bottom:1px solid var(--border); flex-wrap:wrap;}
-.board-bar button{background:none; border:none; color:var(--text-faint); font-weight:600; font-size:0.85rem; padding:8px 14px; border-radius:8px; cursor:pointer; transition:background .15s ease, color .15s ease;}
-.board-bar button:hover{color:var(--text);}
-.board-bar button.active{background:var(--blue); color:#fff;}
-.row{display:flex; align-items:center; gap:18px; padding:16px 22px; border-bottom:1px solid var(--border); transition:background .12s ease;}
+/* board tab */
+.row{display:flex; align-items:center; gap:16px; padding:13px 22px; border-bottom:1px solid var(--border); transition:background .12s ease;}
 .row:last-child{border-bottom:none;}
 .row:hover{background:var(--surface-2);}
-.icon{width:42px; height:42px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.94rem; color:#fff; flex-shrink:0; object-fit:cover;}
-.icon.small-glyph{font-size:0.76rem;}
+.icon{width:38px; height:38px; border-radius:11px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.88rem; color:#fff; flex-shrink:0; object-fit:cover;}
+.icon.small-glyph{font-size:0.72rem;}
 .rmeta{flex:1; min-width:0;}
-.rmeta .name{font-weight:700; font-size:1.02rem; color:var(--white); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
-.rmeta .sub{font-size:0.82rem; color:var(--text-faint); margin-top:3px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
-.gap{font-size:0.8rem; color:var(--text-dim); text-align:right; flex-shrink:0; min-width:160px;}
+.rmeta .name{font-weight:700; font-size:0.97rem; color:var(--white); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.rmeta .sub{font-size:0.79rem; color:var(--text-faint); margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.gap{font-size:0.79rem; color:var(--text-dim); text-align:right; flex-shrink:0; min-width:150px;}
 .gap b{color:var(--white); font-weight:700; font-variant-numeric:tabular-nums;}
 .gap.max{color:var(--gold);}
 @media (max-width:820px){ .gap{display:none;} }
-.rprog{width:118px; flex-shrink:0;}
+.rprog{width:104px; flex-shrink:0;}
 @media (max-width:620px){ .rprog{display:none;} }
 .bar{height:5px; border-radius:99px; background:rgba(125,145,255,0.14); overflow:hidden;}
 .bar span{display:block; height:100%; border-radius:99px; background:var(--blue); transition:width .6s ease;}
-.bar.done span{background:var(--green);}
-.bar.gold span{background:var(--gold);}
-.rprog .pct{font-size:0.72rem; color:var(--text-faint); margin-top:6px; text-align:right; font-variant-numeric:tabular-nums;}
+.bar.done span{background:var(--green);} .bar.gold span{background:var(--gold);}
+.rprog .pct{font-size:0.7rem; color:var(--text-faint); margin-top:5px; text-align:right; font-variant-numeric:tabular-nums;}
 .rprog .pct.done{color:var(--green);} .rprog .pct.gold{color:var(--gold);}
-.earned{text-align:right; flex-shrink:0; min-width:70px;}
-.earned .e{font-weight:800; font-size:1rem; color:var(--green);}
+.earned{text-align:right; flex-shrink:0; min-width:64px;}
+.earned .e{font-weight:800; font-size:0.95rem; color:var(--green);}
 .earned .e.zero{color:var(--text-faint);}
-.earned .el{font-size:0.68rem; color:var(--text-faint); margin-top:3px; text-transform:uppercase; letter-spacing:0.06em;}
-.empty{padding:56px 20px; text-align:center; color:var(--text-faint); font-size:0.92rem;}
-.skeleton{padding:16px 22px; display:flex; align-items:center; gap:18px; border-bottom:1px solid var(--border);}
-.sk{background:linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.09) 37%, rgba(255,255,255,0.04) 63%); background-size:400% 100%; animation:shimmer 1.4s ease infinite; border-radius:8px;}
-@keyframes shimmer{0%{background-position:100% 0;}100%{background-position:0 0;}}
-.sk-icon{width:42px; height:42px; border-radius:12px; flex-shrink:0;}
-.sk-lines{flex:1;}
-.sk-line1{width:28%; height:13px; margin-bottom:9px;}
-.sk-line2{width:18%; height:10px;}
-.load-error{margin-bottom:16px; padding:15px 18px; background:rgba(255,122,122,0.07); border:1px solid rgba(255,122,122,0.22); border-radius:var(--radius); font-size:0.9rem; color:var(--red); display:flex; justify-content:space-between; align-items:center; gap:12px;}
-.load-error button{background:none; border:1px solid rgba(255,122,122,0.35); color:var(--red); border-radius:8px; padding:7px 14px; font-size:0.82rem; cursor:pointer; font-weight:600;}
+.earned .el{font-size:0.65rem; color:var(--text-faint); margin-top:2px; text-transform:uppercase; letter-spacing:0.06em;}
+.board-filter{display:flex; gap:2px; padding:11px 18px; border-bottom:1px solid var(--border); flex-wrap:wrap;}
+.board-filter button{background:none; border:none; color:var(--text-faint); font-weight:600; font-size:0.81rem; padding:6px 12px; border-radius:8px; cursor:pointer;}
+.board-filter button:hover{color:var(--text);}
+.board-filter button.on{background:var(--surface-3); color:var(--white);}
+.scroll{max-height:440px; overflow-y:auto;}
+.empty{padding:44px 20px; text-align:center; color:var(--text-faint); font-size:0.9rem;}
+.load-error{margin:18px 22px; padding:13px 16px; background:rgba(255,122,122,0.07); border:1px solid rgba(255,122,122,0.22); border-radius:var(--radius); font-size:0.88rem; color:var(--red); display:flex; justify-content:space-between; align-items:center; gap:12px;}
+.load-error button{background:none; border:1px solid rgba(255,122,122,0.35); color:var(--red); border-radius:8px; padding:6px 13px; font-size:0.8rem; cursor:pointer; font-weight:600;}
 
-/* rules */
-.rules{display:grid; grid-template-columns:1fr 1fr; gap:0 44px;}
-@media (max-width:860px){ .rules{grid-template-columns:1fr;} }
-.rule{padding:20px 0; border-top:1px solid var(--border);}
-.rule-n{font-size:0.66rem; font-weight:800; letter-spacing:0.11em; color:var(--text-faint); margin-bottom:9px;}
-.rule h4{margin:0 0 8px; font-size:1rem; font-weight:700; color:var(--white); letter-spacing:-0.015em;}
-.rule p{margin:0; font-size:0.89rem; color:var(--text-dim); line-height:1.62;}
-.rule p b{color:var(--white); font-weight:700;}
+/* bonus tab */
+.bonuses{display:grid; grid-template-columns:1fr 1fr; gap:14px; padding:22px 26px 26px;}
+@media (max-width:820px){ .bonuses{grid-template-columns:1fr; padding:18px;} }
+.bonus{background:var(--bg); border:1px solid var(--border); border-radius:var(--radius); padding:22px 24px;}
+.bonus-top{display:flex; align-items:baseline; justify-content:space-between; gap:14px; margin-bottom:7px;}
+.bonus h3{margin:0; font-size:1.1rem; font-weight:800; color:var(--white); letter-spacing:-0.02em;}
+.bonus .amt{font-size:1.35rem; font-weight:800; color:var(--green); letter-spacing:-0.03em;}
+.bonus p{margin:0 0 12px; font-size:0.87rem; color:var(--text-dim); line-height:1.55;}
+.bonus ul{margin:0; padding-left:17px; font-size:0.83rem; color:var(--text-faint); line-height:1.65;}
+.bonus ul b{color:var(--text-dim); font-weight:700;}
 
-/* faq */
-.faq{border-top:1px solid var(--border);}
-.faq details{border-bottom:1px solid var(--border);}
-.faq summary{list-style:none; cursor:pointer; padding:20px 0; font-size:1.02rem; font-weight:700; color:var(--white); display:flex; align-items:center; justify-content:space-between; gap:20px; letter-spacing:-0.015em;}
-.faq summary::-webkit-details-marker{display:none;}
-.faq summary:hover{color:var(--blue-dim);}
-.faq summary .pm{width:15px; height:15px; color:var(--text-faint); flex-shrink:0; transition:transform .2s ease;}
-.faq details[open] summary .pm{transform:rotate(45deg);}
-.faq .ans{padding:0 0 22px; font-size:0.92rem; color:var(--text-dim); line-height:1.65; max-width:72ch;}
-.faq .ans b{color:var(--white); font-weight:700;}
-.faq .ans a{color:var(--blue-dim); font-weight:600;}
-.faq .ans a:hover{text-decoration:underline;}
+/* fine print tab */
+.fine{padding:8px 26px 26px;}
+@media (max-width:560px){ .fine{padding:8px 18px 20px;} }
+.fine h3{font-size:0.68rem; text-transform:uppercase; letter-spacing:0.11em; color:var(--text-faint); margin:20px 0 4px; font-weight:800;}
+.fine details{border-bottom:1px solid var(--border);}
+.fine summary{list-style:none; cursor:pointer; padding:14px 0; font-size:0.93rem; font-weight:700; color:var(--white); display:flex; align-items:center; justify-content:space-between; gap:16px;}
+.fine summary::-webkit-details-marker{display:none;}
+.fine summary:hover{color:var(--blue-dim);}
+.fine summary .n{font-size:0.66rem; font-weight:800; color:var(--text-faint); letter-spacing:0.08em; margin-right:10px;}
+.fine summary .pm{width:13px; height:13px; color:var(--text-faint); flex-shrink:0; transition:transform .2s ease;}
+.fine details[open] summary .pm{transform:rotate(45deg);}
+.fine .ans{padding:0 0 16px; font-size:0.87rem; color:var(--text-dim); line-height:1.62; max-width:76ch;}
+.fine .ans b{color:var(--white); font-weight:700;}
+.fine .ans a{color:var(--blue-dim); font-weight:600;}
+.fine .ans a:hover{text-decoration:underline;}
 
-.closer{margin-top:88px; background:var(--surface); border:1px solid var(--border-2); border-radius:var(--radius-lg); padding:46px 44px; display:flex; align-items:center; justify-content:space-between; gap:32px; flex-wrap:wrap;}
-@media (max-width:720px){ .closer{padding:34px 26px;} }
-.closer h3{margin:0 0 10px; font-size:clamp(1.5rem,3vw,2rem); font-weight:800; color:var(--white); letter-spacing:-0.03em; line-height:1.1;}
-.closer p{margin:0; font-size:0.96rem; color:var(--text-dim); max-width:44ch;}
-.note{font-size:0.82rem; color:var(--text-faint); margin-top:18px; line-height:1.55;}
 
-/* footer */
-.site-footer{border-top:1px solid var(--border); margin-top:96px;}
-.footer-inner{max-width:1120px; margin:0 auto; padding:52px 40px 28px; display:flex; justify-content:space-between; gap:40px; flex-wrap:wrap;}
-@media (max-width:720px){ .footer-inner{padding:44px 20px 24px;} }
-.footer-brand .fname{font-size:1.4rem; font-weight:800; color:var(--white); letter-spacing:-0.02em;}
-.footer-brand p{font-size:0.9rem; color:var(--text-faint); margin:7px 0 0; max-width:26ch;}
-.footer-cols{display:flex; gap:56px; flex-wrap:wrap;}
-.footer-col h4{font-size:0.66rem; text-transform:uppercase; letter-spacing:0.11em; color:var(--text-faint); margin:0 0 14px; font-weight:700;}
-.footer-col a{display:block; font-size:0.89rem; color:var(--text-dim); margin-bottom:11px; transition:color .12s ease;}
-.footer-col a:hover{color:var(--white);}
-.footer-bottom{max-width:1120px; margin:0 auto; padding:18px 40px 34px; border-top:1px solid var(--border); font-size:0.8rem; color:var(--text-faint);}
-@media (max-width:720px){ .footer-bottom{padding:18px 20px 30px;} }
+.pill{display:inline-block; padding:4px 9px; border-radius:6px; font-size:0.6rem; font-weight:800; letter-spacing:0.09em; text-transform:uppercase;}
+.pill.here{background:var(--blue); color:#fff;}
+.pill.cleared{background:rgba(46,212,122,0.14); color:var(--green);}
+.pill.manual{background:var(--surface-3); color:var(--text-faint); border:1px solid var(--border);}
+.pill.count{background:var(--surface-3); color:var(--text-dim); border:1px solid var(--border); letter-spacing:0.03em; text-transform:none; font-size:0.68rem;}
+
+/* closing */
+.closer{margin-top:22px; display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap;
+  background:var(--surface); border:1px solid var(--border-2); border-radius:var(--radius-lg); padding:26px 30px;}
+.closer h3{margin:0 0 4px; font-size:1.25rem; font-weight:800; color:var(--white); letter-spacing:-0.025em;}
+.closer p{margin:0; font-size:0.9rem; color:var(--text-dim);}
+.cta{display:inline-flex; align-items:center; gap:9px; background:var(--blue); color:#fff; border:none; border-radius:11px; padding:14px 22px; font-size:0.95rem; font-weight:700; cursor:pointer; transition:background .15s ease, transform .15s ease;}
+.cta:hover{background:var(--blue-hi); transform:translateY(-2px);}
+.cta svg{width:15px; height:15px;}
+
+.site-footer{border-top:1px solid var(--border); margin-top:44px;}
+.footer-inner{max-width:1120px; margin:0 auto; padding:26px 40px; display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; align-items:center;}
+@media (max-width:720px){ .footer-inner{padding:22px 20px;} }
+.footer-inner .fname{font-size:1.1rem; font-weight:800; color:var(--white); letter-spacing:-0.02em;}
+.footer-links{display:flex; gap:22px; flex-wrap:wrap;}
+.footer-links a{font-size:0.85rem; color:var(--text-dim);}
+.footer-links a:hover{color:var(--white);}
+.footer-note{font-size:0.76rem; color:var(--text-faint); width:100%;}
 </style>
 </head>
 <body>
@@ -284,181 +260,122 @@ h1{font-size:clamp(2.6rem,6.2vw,4.2rem); font-weight:800; letter-spacing:-0.04em
 
   <header class="hero">
     <div>
-      <div class="eyebrow">fomo greek wars · chapter rewards</div>
+      <div class="eyebrow">Greek Wars · chapter rewards</div>
       <h1>Get your house paid.</h1>
-      <p class="lede">Onboard <strong>80% of your roster</strong> and we wire your chapter <strong>$500</strong> and ship a crate of fomo gear to the house. That’s stop one of four.</p>
-      <div class="hero-cta">
-        <a class="cta" href="/fomo/clans/create/">
-          Register your chapter
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </a>
-        <a class="cta-ghost" href="#roadmap">See the roadmap</a>
+      <p class="lede">Get <b>80% of your roster</b> on fomo and we wire the chapter <b>$500</b> and ship a cooler of gear. Four stops, up to <b>$2,000</b>.</p>
+      <div class="picker">
+        <select id="pick" aria-label="Your chapter"><option value="">Pick your chapter…</option></select>
+        <input type="number" id="size" min="5" max="500" step="1" value="90" aria-label="Chapter roster size">
+        <span class="unit">actives</span>
       </div>
+      <div class="status" id="status"></div>
     </div>
-    <div>
-      <div class="card-stage"><div class="tcard" id="tcard"></div></div>
-      <p class="tcard-hint">Every onboarded chapter gets a numbered card. Move your mouse over it.</p>
-    </div>
+    <div class="card-stage"><div class="tcard" id="tcard"></div></div>
   </header>
 
-  <div class="figures">
-    <div class="fig"><div class="n" id="fig-floor">$500</div><div class="l">Guaranteed at 80% of your roster</div></div>
-    <div class="fig"><div class="n blue" id="fig-ceiling">$2,000</div><div class="l">End of the roadmap, per chapter</div></div>
-    <div class="fig"><div class="n green" id="fig-ref">$100</div><div class="l">Per chapter you refer that onboards</div></div>
-    <div class="fig"><div class="n gold" id="fig-max">$3,250</div><div class="l">Everything stacked, one chapter</div></div>
+  <div class="roadmap">
+    <div class="track-wrap" id="track-wrap">
+      <div class="track"><div class="track-dots"></div><div class="track-fill" id="track-fill"></div></div>
+      <div class="rider" id="rider"><span class="flag" id="rider-flag"></span><span id="rider-glyph"></span></div>
+    </div>
   </div>
 
-  <!-- ===================== ROADMAP ===================== -->
-  <section class="section" id="roadmap">
-    <div class="section-head">
-      <p class="section-kicker">The roadmap</p>
-      <h2 class="section-title">Four stops. One number gets you down the track.</h2>
-      <p class="section-lede">Every stop is measured the same way: approved fomo accounts divided by your chapter roster — the exact percentage already next to your name on the leaderboard. Pick your chapter to see where you land, and tap any stop to open the crate.</p>
+  <div class="deck">
+    <div class="deck-tabs" id="deck-tabs">
+      <button data-tab="crate" class="on">What you get</button>
+      <button data-tab="board">Live board</button>
+      <button data-tab="bonus">Bonuses</button>
+      <button data-tab="fine">Fine print</button>
     </div>
 
-    <div class="sizer">
-      <label for="pick">Show the roadmap for</label>
-      <select id="pick"><option value="">a chapter of…</option></select>
-      <input type="number" id="size" min="5" max="500" step="1" value="90" aria-label="Chapter roster size">
-      <span style="font-size:0.88rem;color:var(--text-dim);font-weight:600;">actives</span>
-      <span class="hint" id="sizer-hint">Pick your chapter to see exactly where you stand.</span>
-    </div>
+    <div class="deck-body" id="tab-crate"></div>
 
-    <div class="roadmap">
-      <div class="track-wrap" id="track-wrap">
-        <div class="track"><div class="track-dots"></div><div class="track-fill" id="track-fill"></div></div>
-        <div class="rider" id="rider"><span class="flag" id="rider-flag"></span><span id="rider-glyph"></span></div>
+    <div class="deck-body" id="tab-board" hidden>
+      <div class="load-error" id="load-error" hidden>
+        <span>couldn't load chapters right now.</span><button id="retry-btn">retry</button>
       </div>
-    </div>
-
-    <div id="panel"></div>
-
-    <div class="bonuses">
-      <div class="bonus">
-        <div class="bonus-top"><h3>Move fast</h3><div class="amt" id="speed-amt">+$250</div></div>
-        <p>Clear stop one within <b id="speed-days">14</b> days of registering and we add a speed bonus on top. Most chapters that hit 80% do it in the first two weeks or never — this pays the ones who treat it like a sprint.</p>
-        <ul>
-          <li>Clock starts the day your registration is <b>approved</b>, not submitted.</li>
-          <li>Paid together with your stop-one $500.</li>
-          <li>One per chapter, ever.</li>
-        </ul>
-      </div>
-      <div class="bonus">
-        <div class="bonus-top"><h3>Bring another house</h3><div class="amt" id="ref-amt">+$100</div></div>
-        <p>Refer another chapter and you get paid <b>when they reach stop one</b> — not when they register. A signup that goes nowhere earns nothing, which is the whole point.</p>
-        <ul>
-          <li>They name you on step 3 of registration.</li>
-          <li>Capped at <b id="ref-cap">10</b> chapters per semester — <b id="ref-cap-cash">$1,000</b>.</li>
-          <li>Stacks with everything on the roadmap.</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================== LIVE BOARD ===================== -->
-  <section class="section">
-    <div class="section-head">
-      <p class="section-kicker">Live</p>
-      <h2 class="section-title">Where every chapter sits right now.</h2>
-      <p class="section-lede">Pulled from the same board as the leaderboard, updated the moment an account is approved. The right column is the only number that matters: how many more people you need for the next stop.</p>
-    </div>
-
-    <div class="load-error" id="load-error" hidden>
-      <span>couldn’t load chapters right now.</span>
-      <button id="retry-btn">retry</button>
-    </div>
-
-    <div class="figures" style="margin-top:0;margin-bottom:16px;">
-      <div class="fig"><div class="n" id="s-chapters">—</div><div class="l">Chapters registered</div></div>
-      <div class="fig"><div class="n green" id="s-onboarded">—</div><div class="l">At stop one or better</div></div>
-      <div class="fig"><div class="n blue" id="s-earned">—</div><div class="l">Earned on the roadmap so far</div></div>
-      <div class="fig"><div class="n" id="s-table">—</div><div class="l">Still on the table</div></div>
-    </div>
-
-    <div class="board">
-      <div class="board-bar" id="board-bar">
-        <button data-t="all" class="active">All</button>
+      <div class="board-filter" id="board-filter">
+        <button data-t="all" class="on">All</button>
         <button data-t="0">Climbing</button>
         <button data-t="1">Stop 01</button>
         <button data-t="2">Stop 02</button>
         <button data-t="3">Stop 03</button>
       </div>
-      <div id="rows">
-        <div class="skeleton"><div class="sk sk-icon"></div><div class="sk-lines"><div class="sk sk-line1"></div><div class="sk sk-line2"></div></div></div>
-        <div class="skeleton"><div class="sk sk-icon"></div><div class="sk-lines"><div class="sk sk-line1"></div><div class="sk sk-line2"></div></div></div>
-        <div class="skeleton"><div class="sk sk-icon"></div><div class="sk-lines"><div class="sk sk-line1"></div><div class="sk sk-line2"></div></div></div>
+      <div class="scroll" id="rows"></div>
+    </div>
+
+    <div class="deck-body" id="tab-bonus" hidden>
+      <div class="bonuses">
+        <div class="bonus">
+          <div class="bonus-top"><h3>Move fast</h3><div class="amt" id="speed-amt">+$250</div></div>
+          <p>Clear stop one within <b id="speed-days">14</b> days of registering and we add a speed bonus on top. Most chapters that hit 80% do it in the first two weeks or never.</p>
+          <ul>
+            <li>Clock starts the day your registration is <b>approved</b>.</li>
+            <li>Paid together with your stop-one $500.</li>
+            <li>One per chapter, ever.</li>
+          </ul>
+        </div>
+        <div class="bonus">
+          <div class="bonus-top"><h3>Bring another house</h3><div class="amt" id="ref-amt">+$100</div></div>
+          <p>Refer another chapter and you get paid <b>when they reach stop one</b> — not when they register. A signup that goes nowhere earns nothing.</p>
+          <ul>
+            <li>They name you on step 3 of registration.</li>
+            <li>Capped at <b id="ref-cap">10</b> per semester — <b id="ref-cap-cash">$1,000</b>.</li>
+            <li>Stacks with everything on the roadmap.</li>
+          </ul>
+        </div>
       </div>
     </div>
-    <p class="note">Stop 04 isn’t shown here — it’s a 30-day hold confirmed by the fomo team, not something a live count can prove on its own.</p>
-  </section>
 
-  <!-- ===================== RULES ===================== -->
-  <section class="section">
-    <div class="section-head">
-      <p class="section-kicker">The rules</p>
-      <h2 class="section-title">How the money actually works.</h2>
-      <p class="section-lede">Written out so nobody has to guess, and so no chapter ever argues about a payout after the fact. If something here isn’t clear, that’s our problem — email us before you start and we’ll fix the wording.</p>
-    </div>
-    <div class="rules">
-      <div class="rule"><div class="rule-n">01</div><h4>What counts as a member</h4>
-        <p>Someone counts when they’ve created a fomo account, submitted that username and fomo email through your chapter link, and been <b>approved</b> on the roster. A submitted username is a claim, not a member — pending rows don’t move your bar.</p></div>
-      <div class="rule"><div class="rule-n">02</div><h4>Your roster size is locked at registration</h4>
-        <p>The active count you entered is the denominator for every stop. Only the fomo team can change it, and only with proof — a nationals listing or an exec board confirmation. This exists so no chapter clears 100% by declaring itself eight people deep.</p></div>
-      <div class="rule"><div class="rule-n">03</div><h4>Stops stack, and each one pays once</h4>
-        <p>Clearing 90% pays stop two <b>on top of</b> the $500 you already received — you’re not being re-paid, you’re being topped up. A stop already paid can’t be earned again, including after a reset.</p></div>
-      <div class="rule"><div class="rule-n">04</div><h4>Dropping back takes nothing away</h4>
-        <p>If members leave and your percentage falls, <b>you keep everything already paid.</b> Stops above your current level just pause until you’re back over the line. We don’t claw back.</p></div>
-      <div class="rule"><div class="rule-n">05</div><h4>The chapter gets paid, not a person</h4>
-        <p>Money goes to the chapter account, arranged through the treasurer or president named on your registration. If your chapter can’t take an ACH transfer, we’ll cut a check to the house. We won’t send a payout to a personal Venmo.</p></div>
-      <div class="rule"><div class="rule-n">06</div><h4>Timing</h4>
-        <p>A stop is confirmed by the fomo team within <b>3 business days</b> of being hit, and paid within <b>7 business days</b> of confirmation. Crates ship inside <b>10 business days</b> of stop-one confirmation. You’ll get an email at each step.</p></div>
-      <div class="rule"><div class="rule-n">07</div><h4>Duplicates and dead accounts</h4>
-        <p>Before a stop is confirmed we remove accounts that share a device, email alias or payment method with another account, and accounts that never opened the app after signing up. This is the only part of the process that can move your number down without anyone leaving.</p></div>
-      <div class="rule"><div class="rule-n">08</div><h4>Referrals pay on results</h4>
-        <p>A referral pays when the chapter you sent reaches <b>stop one</b>, not when they register. They have to name you on step 3 of their registration — we can’t backfill a referral from memory. Ten per chapter per semester.</p></div>
-      <div class="rule"><div class="rule-n">09</div><h4>One chapter per school, per organization</h4>
-        <p>Two registrations for the same letters at the same school are merged into whichever came first, and the member counts are combined. Colonies and interest groups are eligible; alumni chapters are not.</p></div>
-      <div class="rule"><div class="rule-n">10</div><h4>Paperwork over $600</h4>
-        <p>Once a chapter passes <b>$600</b> from us in a calendar year, US tax rules require a W-9 before we can send more. Stop one alone stays under that line; stop two crosses it. We’ll send the form — it’s one page and it goes in the chapter’s name.</p></div>
-      <div class="rule"><div class="rule-n">11</div><h4>Sororities, same program</h4>
-        <p>Every number on this page applies identically to sororities, co-ed and professional chapters. Nothing about the stops, the crate or the referral bonus changes.</p></div>
-      <div class="rule"><div class="rule-n">12</div><h4>This is a program, not a contract</h4>
-        <p>fomo can change these amounts or end the program with notice on this page. <b>Any stop you’ve already hit is honored at the amount posted when you hit it</b> — changes only ever apply forward.</p></div>
-    </div>
-  </section>
+    <div class="deck-body" id="tab-fine" hidden>
+      <div class="fine">
+        <h3>The rules</h3>
+        <details><summary><span><span class="n">01</span>What counts as a member</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+          <div class="ans">Someone counts when they've created a fomo account, submitted that username and fomo email through your chapter link, and been <b>approved</b> on the roster. A submitted username is a claim, not a member.</div></details>
+        <details><summary><span><span class="n">02</span>Your roster size is locked at registration</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+          <div class="ans">The active count you entered is the denominator for every stop. Only the fomo team can change it, and only with proof — a nationals listing or an exec board confirmation. This exists so no chapter clears 100% by declaring itself eight people deep.</div></details>
+        <details><summary><span><span class="n">03</span>Stops stack, and each one pays once</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+          <div class="ans">Clearing 90% pays stop two <b>on top of</b> the $500 you already received — you're not being re-paid, you're being topped up. A stop already paid can't be earned again.</div></details>
+        <details><summary><span><span class="n">04</span>Dropping back takes nothing away</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+          <div class="ans">If members leave and your percentage falls, <b>you keep everything already paid.</b> Stops above your current level just pause until you're back over the line. We don't claw back.</div></details>
+        <details><summary><span><span class="n">05</span>The chapter gets paid, not a person</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+          <div class="ans">Money goes to the chapter account, arranged through the treasurer or president named on your registration. If your chapter can't take an ACH transfer, we'll cut a check to the house. We won't send a payout to a personal Venmo.</div></details>
+        <details><summary><span><span class="n">06</span>Timing</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+          <div class="ans">A stop is confirmed within <b>3 business days</b> of being hit, and paid within <b>7 business days</b> of confirmation. Crates ship inside <b>10 business days</b> of stop-one confirmation.</div></details>
+        <details><summary><span><span class="n">07</span>Duplicates and dead accounts</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+          <div class="ans">Before a stop is confirmed we remove accounts that share a device, email alias or payment method with another account, and accounts that never opened the app after signing up.</div></details>
+        <details><summary><span><span class="n">08</span>Referrals pay on results</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+          <div class="ans">A referral pays when the chapter you sent reaches <b>stop one</b>, not when they register. They have to name you on step 3 of their registration — we can't backfill a referral from memory.</div></details>
+        <details><summary><span><span class="n">09</span>One chapter per school, per organization</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+          <div class="ans">Two registrations for the same letters at the same school are merged into whichever came first, and the counts combined. Colonies and interest groups are eligible; alumni chapters are not.</div></details>
+        <details><summary><span><span class="n">10</span>Paperwork over $600</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+          <div class="ans">Once a chapter passes <b>$600</b> from us in a calendar year, US tax rules require a W-9 before we can send more. Stop one alone stays under that line; stop two crosses it.</div></details>
+        <details><summary><span><span class="n">11</span>Sororities, same program</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+          <div class="ans">Every number here applies identically to sororities, co-ed and professional chapters. Nothing about the stops, the crate or the referral bonus changes.</div></details>
+        <details><summary><span><span class="n">12</span>This is a program, not a contract</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+          <div class="ans">fomo can change these amounts or end the program with notice on this page. <b>Any stop you've already hit is honored at the amount posted when you hit it</b> — changes only apply forward.</div></details>
 
-  <!-- ===================== FAQ ===================== -->
-  <section class="section">
-    <div class="section-head">
-      <p class="section-kicker">Questions we actually get</p>
-      <h2 class="section-title">Before you ask.</h2>
+        <h3>Questions we actually get</h3>
+        <details><summary><span>Are these photos of the real merch?</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+          <div class="ans">No — everything in the crate is a <b>design mockup</b>, not a product shot. The letters, the fomo mark and the placement are what you'll get, and picking your chapter repaints the gear in your school's colours. Real photos replace these once the first run ships.</div></details>
+        <details><summary><span>Do pledges count toward our roster?</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+          <div class="ans">Yes, as long as they're on the roster number you registered with. Use the figure you'd give your nationals. What you can't do is count pledges in the numerator and leave them out of the denominator.</div></details>
+        <details><summary><span>How fast do chapters usually hit 80%?</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+          <div class="ans">The ones who get there almost always do it in the first two weeks, off a single push — chapter GroupMe, one meeting announcement, link in the bio. Chapters that drip it out over a month tend to stall in the fifties.</div></details>
+        <details><summary><span>Can the money go to an individual instead?</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+          <div class="ans">No. Payouts go to the chapter account only. A few thousand dollars landing in a student's personal account is a problem for your nationals, your university and that student's taxes.</div></details>
+        <details><summary><span>Does our leaderboard rank change what we get paid?</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+          <div class="ans">No. The <a href="/fomo/clans/">leaderboard</a> ranks by raw members, so big chapters dominate it. This roadmap is a <b>percentage</b> of your own roster, so a 40-person house and a 200-person house have the same shot at every stop.</div></details>
+        <details><summary><span>What's Greek Village?</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
+          <div class="ans">The 3D campus map every onboarded chapter gets a house on. Clearing stop one puts you on it. <a href="https://milomessina.com/fomo/campuswars/" target="_blank" rel="noopener">Have a look →</a></div></details>
+      </div>
     </div>
-    <div class="faq">
-      <details><summary>Are these photos of the real merch?<svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
-        <div class="ans">No — everything in the crate is shown as a <b>design mockup</b>, not a product shot. The letters, the fomo mark and the placement are what you’ll get, and picking your chapter above repaints the gear in your school’s colours. The exact garment cut and print finish get locked when your crate goes into production, and real photos replace these once the first run ships.</div></details>
-      <details><summary>Do pledges count toward our roster?<svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
-        <div class="ans">Yes, as long as they’re on the roster number you registered with. Use the figure you’d give your nationals — actives plus the current pledge class. What you can’t do is count pledges in the numerator and leave them out of the denominator.</div></details>
-      <details><summary>Our roster changed mid-semester. Now what?<svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
-        <div class="ans">Email us with the new number and something that backs it up. We’ll update the denominator and recalculate. If the change pushes you over a threshold you hadn’t hit, the stop pays normally. If it pushes you under one you’d already been paid for, <b>rule 04 applies</b> — you keep the money.</div></details>
-      <details><summary>How fast do chapters usually hit 80%?<svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
-        <div class="ans">The ones who get there almost always do it in the first two weeks, off a single push — chapter GroupMe, one meeting announcement, link in the bio. Chapters that drip it out over a month tend to stall in the fifties. That’s the entire reason the speed bonus exists.</div></details>
-      <details><summary>Can the money go to an individual instead?<svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
-        <div class="ans">No. Payouts go to the chapter account only. It protects you as much as us — a few thousand dollars landing in a student’s personal account is a problem for your nationals, your university and that student’s taxes.</div></details>
-      <details><summary>What if someone deletes their fomo account?<svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
-        <div class="ans">Your count drops by one. If that takes you under a threshold you haven’t been paid for yet, the stop waits until you’re back over. If you’d already been paid, nothing happens.</div></details>
-      <details><summary>Does the leaderboard rank change what we get paid?<svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
-        <div class="ans">No. The <a href="/fomo/clans/">leaderboard</a> is bragging rights — it ranks by raw members brought in, so big chapters dominate it. The roadmap on this page is a <b>percentage</b> of your own roster, so a 40-person house and a 200-person house have exactly the same shot at every stop.</div></details>
-      <details><summary>What’s Greek Village?<svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
-        <div class="ans">The 3D campus map every onboarded chapter gets a house on. Clearing stop one is what puts you on it. <a href="https://milomessina.com/fomo/campuswars/" target="_blank" rel="noopener">Have a look →</a></div></details>
-      <details><summary>Who do we email?<svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
-        <div class="ans">Whoever onboarded your chapter — they’re the signature on the note in your crate. If you’re not registered yet, start at <a href="/fomo/clans/create/">registration</a> and we’ll reach out within a day.</div></details>
-    </div>
-  </section>
+  </div>
 
   <div class="closer">
     <div>
       <h3>Two minutes to register. $500 to finish.</h3>
-      <p>Three steps, one link for the whole chapter, and the bar starts moving the same day.</p>
+      <p>One link for the whole chapter, and the bar starts moving the same day.</p>
     </div>
     <a class="cta" href="/fomo/clans/create/">
       Register your chapter
@@ -469,34 +386,15 @@ h1{font-size:clamp(2.6rem,6.2vw,4.2rem); font-weight:800; letter-spacing:-0.04em
 
 <footer class="site-footer">
   <div class="footer-inner">
-    <div class="footer-brand">
-      <div class="fname">fomo</div>
-      <p>where traders become legends.</p>
+    <div class="fname">fomo</div>
+    <div class="footer-links">
+      <a href="/fomo/clans/">Leaderboard</a>
+      <a href="/fomo/clans/create/">Register</a>
+      <a href="https://milomessina.com/fomo/campuswars/" target="_blank" rel="noopener">Greek Village</a>
+      <a href="https://fomo.family" target="_blank" rel="noopener">fomo.family</a>
     </div>
-    <div class="footer-cols">
-      <div class="footer-col">
-        <h4>Greek Wars</h4>
-        <a href="/fomo/clans/">Leaderboard</a>
-        <a href="/fomo/clans/create/">Register a chapter</a>
-        <a href="/fomo/prizes/">Chapter rewards</a>
-        <a href="https://milomessina.com/fomo/campuswars/" target="_blank" rel="noopener">Greek Village</a>
-      </div>
-      <div class="footer-col">
-        <h4>Social</h4>
-        <a href="https://fomo.family" target="_blank" rel="noopener">Discord</a>
-        <a href="https://fomo.family" target="_blank" rel="noopener">X/Twitter</a>
-        <a href="https://fomo.family" target="_blank" rel="noopener">Instagram</a>
-        <a href="https://fomo.family" target="_blank" rel="noopener">Youtube</a>
-        <a href="https://fomo.family" target="_blank" rel="noopener">LinkedIn</a>
-      </div>
-      <div class="footer-col">
-        <h4>Legal</h4>
-        <a href="https://fomo.family" target="_blank" rel="noopener">Privacy Policy</a>
-        <a href="https://fomo.family" target="_blank" rel="noopener">Terms of Service</a>
-      </div>
-    </div>
+    <div class="footer-note">© 2026 FOMO Labs Inc. · Merch shown is a design mockup. Chapter rewards are a program, not a contract — see rule 12.</div>
   </div>
-  <div class="footer-bottom">© 2026 FOMO Labs Inc. · Merch shown is a design mockup. Chapter rewards are a program, not a contract — see rule 12.</div>
 </footer>
 
 <script src="/fomo/greek-data.js"></script>
@@ -510,114 +408,227 @@ const { schoolColors, glyphFor } = GreekData;
 const MARK_PATHS =
   '<path d="M36.9747 24.3586C44.1067 24.3587 49.7941 27.9515 52.9484 33.5959C48.7626 38.0418 45.6617 43.7612 44.4679 50.0002C43.2743 56.2391 44.1865 61.9572 46.67 66.4026C41.3555 72.0468 34.2931 75.6408 27.1613 75.6409C18.432 75.6407 11.8659 70.2588 9.46204 62.3196H26.8478C27.4159 62.3193 28.0059 61.8593 28.1691 61.2932L34.6486 38.7043C34.8098 38.1381 34.4815 37.6782 33.9152 37.678H14.1788C19.6213 29.7404 28.2465 24.3588 36.9747 24.3586Z"/>' +
   '<path d="M72.3285 24.3586C85.0779 24.3586 93.2156 35.8374 90.5062 49.9993C87.7966 64.1596 75.2646 75.6409 62.515 75.6409C53.7856 75.6408 47.2196 70.2589 44.8158 62.3196H64.1537C64.7218 62.3194 65.3127 61.8594 65.476 61.2932L71.9545 38.7043C72.1157 38.138 71.7876 37.678 71.2211 37.678H49.5316C54.9741 29.7401 63.5999 24.3587 72.3285 24.3586Z"/>';
-// Stamp the mark anywhere inside a larger drawing.
 const mark = (x, y, size, fill, op) =>
   `<g transform="translate(${x} ${y}) scale(${size / 100})" fill="${fill}" opacity="${op == null ? 1 : op}">${MARK_PATHS}</g>`;
 
-// ---------------------------------------------------------------------------
-// MERCH ARTWORK — drawn, not photographed. There is no product shot of fomo
-// gear yet, and a stock image would misrepresent what actually ships. Every
-// loot item accepts `photo:'/path.jpg'`; when that is set the photo is used and
-// the drawing below is ignored, so dropping in a real shot is a one-line change.
-// Each drawing takes the selected chapter's school colours.
-// ---------------------------------------------------------------------------
+let _uid = 0;
+const uid = () => 'a' + (++_uid);
+
+// Shared lighting furniture: a soft contact shadow, plus top/side/front ramps
+// derived from the chapter's colour so every surface reads as a lit plane
+// rather than a flat fill.
+const defs = (u, c) => `<defs>
+  <radialGradient id="${u}s" cx="50%" cy="50%" r="50%">
+    <stop offset="0%" stop-color="#000" stop-opacity=".55"/><stop offset="70%" stop-color="#000" stop-opacity=".18"/><stop offset="100%" stop-color="#000" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="${u}f" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="${c.lit}"/><stop offset="55%" stop-color="${c.base}"/><stop offset="100%" stop-color="${c.dark}"/>
+  </linearGradient>
+  <linearGradient id="${u}t" x1="0" y1="0" x2="0.6" y2="1">
+    <stop offset="0%" stop-color="${c.lit2}"/><stop offset="100%" stop-color="${c.lit}"/>
+  </linearGradient>
+  <linearGradient id="${u}m" x1="0" y1="0" x2="1" y2="0.6">
+    <stop offset="0%" stop-color="${c.base}"/><stop offset="100%" stop-color="${c.dark}"/>
+  </linearGradient>
+  <linearGradient id="${u}d" x1="0" y1="0" x2="1" y2="0.4">
+    <stop offset="0%" stop-color="${c.dark}"/><stop offset="100%" stop-color="${c.dark2}"/>
+  </linearGradient>
+  <linearGradient id="${u}g" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#FFF" stop-opacity=".30"/><stop offset="45%" stop-color="#FFF" stop-opacity=".05"/><stop offset="100%" stop-color="#FFF" stop-opacity="0"/>
+  </linearGradient>
+</defs>`;
+const shadow = (u, cx, cy, rx, ry) => `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="url(#${u}s)"/>`;
+
 const ART = {
-  hoodie: (c) => `<svg viewBox="0 0 240 200" fill="none">
-    <path d="M80 62 L38 82 L26 132 L58 143 L76 96 Z" fill="${c.dark}"/>
-    <path d="M160 62 L202 82 L214 132 L182 143 L164 96 Z" fill="${c.dark}"/>
-    <path d="M80 62 H160 V168 Q160 174 154 174 H86 Q80 174 80 168 Z" fill="${c.base}"/>
-    <path d="M96 62 Q120 30 144 62 Z" fill="${c.dark}"/>
-    <path d="M99 64 Q120 86 141 64" stroke="${c.dark}" stroke-width="10" stroke-linecap="round"/>
-    <path d="M108 78 V92 M132 78 V92" stroke="${c.ink}" stroke-width="3" stroke-linecap="round" opacity=".7"/>
-    <rect x="94" y="134" width="52" height="28" rx="4" stroke="${c.dark}" stroke-width="2.5" opacity=".7"/>
+  // The cooler doubles as the shipping crate — everything else packs inside it,
+  // which is why there is no separate box item.
+  cooler: (c) => { const u = uid(); return `<svg viewBox="0 0 240 200" fill="none">${defs(u, c)}
+    ${shadow(u, 124, 166, 84, 13)}
+    <path d="M46 68 L70 46 L204 46 L180 68 Z" fill="url(#${u}t)"/>
+    <path d="M46 68 H180 V88 H46 Z" fill="url(#${u}f)"/>
+    <path d="M180 68 L204 46 V66 L180 88 Z" fill="url(#${u}d)"/>
+    <path d="M46 84 H180 V88 H46 Z" fill="#000" fill-opacity=".22"/>
+    <path d="M52 88 H174 L169 152 H57 Z" fill="url(#${u}f)"/>
+    <path d="M174 88 L198 66 L193 130 L169 152 Z" fill="url(#${u}d)"/>
+    <path d="M52 88 H174 L169 152 H57 Z" fill="url(#${u}g)"/>
+    <rect x="106" y="80" width="26" height="18" rx="4" fill="${c.dark2}"/>
+    <rect x="110" y="84" width="18" height="7" rx="2.5" fill="${c.lit2}" opacity=".5"/>
+    <rect x="62" y="104" width="13" height="30" rx="6" fill="#000" fill-opacity=".3"/>
+    <rect x="63" y="105" width="11" height="28" rx="5" fill="${c.lit}" fill-opacity=".18"/>
+    <rect x="152" y="104" width="13" height="30" rx="6" fill="#000" fill-opacity=".3"/>
+    <rect x="153" y="105" width="11" height="28" rx="5" fill="${c.lit}" fill-opacity=".18"/>
+    <path d="M59 144 H167" stroke="#000" stroke-opacity=".16" stroke-width="3"/>
+    <circle cx="160" cy="140" r="4" fill="${c.dark2}"/>
+    ${mark(84, 100, 24, c.ink, .95)}
+    <text x="130" y="122" font-family="Schibsted Grotesk,sans-serif" font-size="18" font-weight="800" fill="${c.ink}" opacity=".95">${c.letters}</text>
+  </svg>`; },
+
+  hoodie: (c) => { const u = uid(); return `<svg viewBox="0 0 240 200" fill="none">${defs(u, c)}
+    ${shadow(u, 120, 180, 66, 10)}
+    <path d="M80 62 L38 82 L27 130 L58 141 L77 96 Z" fill="url(#${u}m)"/>
+    <path d="M160 62 L202 82 L213 130 L182 141 L163 96 Z" fill="url(#${u}m)"/>
+    <path d="M30 126 L58 135" stroke="#000" stroke-opacity=".2" stroke-width="6" stroke-linecap="round"/>
+    <path d="M210 126 L182 135" stroke="#000" stroke-opacity=".2" stroke-width="6" stroke-linecap="round"/>
+    <path d="M80 62 H160 V166 Q160 172 154 172 H86 Q80 172 80 166 Z" fill="url(#${u}f)"/>
+    <path d="M80 158 H160 V166 Q160 172 154 172 H86 Q80 172 80 166 Z" fill="#000" fill-opacity=".16"/>
+    <path d="M86 120 q6 30 2 48 M154 120 q-6 30 -2 48" stroke="#000" stroke-opacity=".13" stroke-width="4" stroke-linecap="round"/>
+    <path d="M88 64 Q120 20 152 64 Z" fill="url(#${u}m)"/>
+    <path d="M94 62 Q120 96 146 62 Z" fill="${c.dark2}"/>
+    <path d="M94 62 Q120 90 146 62" stroke="${c.dark}" stroke-width="10" stroke-linecap="round"/>
+    <path d="M108 76 V92 M132 76 V92" stroke="#F2F2F5" stroke-width="3.4" stroke-linecap="round" opacity=".92"/>
+    <circle cx="108" cy="93" r="2.2" fill="${c.dark2}"/><circle cx="132" cy="93" r="2.2" fill="${c.dark2}"/>
+    <path d="M94 134 H146 V160 H94 Z" fill="#000" fill-opacity=".1"/>
+    <path d="M94 134 H146 V160" stroke="#000" stroke-opacity=".22" stroke-width="2.2" fill="none"/>
     ${mark(92, 100, 24, c.ink, .95)}
     <text x="124" y="121" font-family="Schibsted Grotesk,sans-serif" font-size="16" font-weight="800" fill="${c.ink}" opacity=".95">${c.letters}</text>
-  </svg>`,
+  </svg>`; },
 
-  tee: (c) => `<svg viewBox="0 0 240 200" fill="none">
-    <path d="M84 60 L44 78 L32 116 L64 126 L80 96 Z" fill="${c.dark}"/>
-    <path d="M156 60 L196 78 L208 116 L176 126 L160 96 Z" fill="${c.dark}"/>
-    <path d="M84 60 H156 V170 Q156 174 152 174 H88 Q84 174 84 170 Z" fill="${c.base}"/>
-    <path d="M103 60 Q120 76 137 60" stroke="${c.dark}" stroke-width="8" stroke-linecap="round"/>
+  tee: (c) => { const u = uid(); return `<svg viewBox="0 0 240 200" fill="none">${defs(u, c)}
+    ${shadow(u, 120, 180, 60, 10)}
+    <path d="M84 60 L46 78 L34 114 L64 124 L80 96 Z" fill="url(#${u}d)"/>
+    <path d="M156 60 L194 78 L206 114 L176 124 L160 96 Z" fill="url(#${u}d)"/>
+    <path d="M84 60 H156 V168 Q156 172 152 172 H88 Q84 172 84 168 Z" fill="url(#${u}f)"/>
+    <path d="M90 118 q5 30 1 50 M150 118 q-5 30 -1 50" stroke="#000" stroke-opacity=".12" stroke-width="4" stroke-linecap="round"/>
+    <path d="M84 164 H156" stroke="#000" stroke-opacity=".18" stroke-width="4"/>
+    <path d="M103 60 Q120 78 137 60" fill="${c.dark2}"/>
+    <path d="M103 60 Q120 76 137 60" stroke="${c.dark}" stroke-width="7.5" stroke-linecap="round"/>
     ${mark(104, 88, 32, c.ink, .95)}
     <text x="120" y="146" text-anchor="middle" font-family="Schibsted Grotesk,sans-serif" font-size="15" font-weight="800" fill="${c.ink}" opacity=".9">${c.letters}</text>
-  </svg>`,
+  </svg>`; },
 
-  banner: (c) => `<svg viewBox="0 0 240 200" fill="none">
-    <rect x="28" y="36" width="184" height="128" rx="5" fill="${c.base}"/>
-    <rect x="28" y="36" width="184" height="128" rx="5" stroke="${c.dark}" stroke-width="3"/>
-    <circle cx="42" cy="50" r="4.5" fill="${c.ink}" opacity=".3"/><circle cx="198" cy="50" r="4.5" fill="${c.ink}" opacity=".3"/>
-    <circle cx="42" cy="150" r="4.5" fill="${c.ink}" opacity=".3"/><circle cx="198" cy="150" r="4.5" fill="${c.ink}" opacity=".3"/>
-    ${mark(104, 54, 34, c.ink, .95)}
+  banner: (c) => { const u = uid(); return `<svg viewBox="0 0 240 200" fill="none">${defs(u, c)}
+    ${shadow(u, 122, 172, 84, 9)}
+    <path d="M28 36 H212 V162 Q170 170 120 162 Q70 154 28 162 Z" fill="url(#${u}f)"/>
+    <path d="M28 36 H212 V96 Q120 108 28 96 Z" fill="url(#${u}g)"/>
+    <path d="M70 38 q6 60 0 122 M170 38 q-6 60 0 118" stroke="#000" stroke-opacity=".12" stroke-width="5"/>
+    <circle cx="42" cy="50" r="5" fill="#0A0A12" opacity=".5"/><circle cx="42" cy="50" r="3" fill="#C9CBD6"/>
+    <circle cx="198" cy="50" r="5" fill="#0A0A12" opacity=".5"/><circle cx="198" cy="50" r="3" fill="#C9CBD6"/>
+    <circle cx="42" cy="148" r="5" fill="#0A0A12" opacity=".5"/><circle cx="42" cy="148" r="3" fill="#C9CBD6"/>
+    <circle cx="198" cy="148" r="5" fill="#0A0A12" opacity=".5"/><circle cx="198" cy="148" r="3" fill="#C9CBD6"/>
+    ${mark(104, 52, 34, c.ink, .95)}
     <text x="120" y="126" text-anchor="middle" font-family="Schibsted Grotesk,sans-serif" font-size="23" font-weight="800" fill="${c.ink}">${c.letters}</text>
     <path d="M88 138 H152" stroke="${c.ink}" stroke-width="2" opacity=".4"/>
-  </svg>`,
+  </svg>`; },
 
-  stickers: (c) => `<svg viewBox="0 0 240 200" fill="none">
-    <g transform="rotate(-11 78 78)"><rect x="42" y="42" width="72" height="72" rx="18" fill="${c.base}" stroke="${c.ink}" stroke-width="3" stroke-opacity=".22"/>${mark(56, 56, 44, c.ink, .95)}</g>
-    <g transform="rotate(14 164 72)"><circle cx="164" cy="72" r="38" fill="${c.dark}" stroke="${c.ink}" stroke-width="3" stroke-opacity=".22"/>
-      <text x="164" y="79" text-anchor="middle" font-family="Schibsted Grotesk,sans-serif" font-size="16" font-weight="800" fill="${c.ink}">${c.letters}</text></g>
-    <g transform="rotate(-6 118 148)"><rect x="62" y="128" width="112" height="40" rx="20" fill="${c.ink}"/>
-      <text x="118" y="154" text-anchor="middle" font-family="Schibsted Grotesk,sans-serif" font-size="16" font-weight="800" fill="${c.base}">fomo</text></g>
-  </svg>`,
+  stickers: (c) => { const u = uid(); return `<svg viewBox="0 0 240 200" fill="none">${defs(u, c)}
+    ${shadow(u, 120, 178, 74, 9)}
+    <g transform="rotate(-11 80 76)">
+      <rect x="44" y="40" width="74" height="74" rx="18" fill="#0A0A12" opacity=".45" transform="translate(3 5)"/>
+      <rect x="44" y="40" width="74" height="74" rx="18" fill="url(#${u}f)" stroke="#FFF" stroke-width="3.5" stroke-opacity=".9"/>
+      ${mark(58, 54, 46, c.ink, .95)}
+    </g>
+    <g transform="rotate(14 166 70)">
+      <circle cx="169" cy="75" r="39" fill="#0A0A12" opacity=".45"/>
+      <circle cx="166" cy="70" r="39" fill="url(#${u}d)" stroke="#FFF" stroke-width="3.5" stroke-opacity=".9"/>
+      <text x="166" y="77" text-anchor="middle" font-family="Schibsted Grotesk,sans-serif" font-size="17" font-weight="800" fill="${c.ink}">${c.letters}</text>
+    </g>
+    <g transform="rotate(-6 118 150)">
+      <rect x="64" y="132" width="114" height="42" rx="21" fill="#0A0A12" opacity=".45"/>
+      <rect x="62" y="128" width="114" height="42" rx="21" fill="#FFFFFF"/>
+      <text x="119" y="156" text-anchor="middle" font-family="Schibsted Grotesk,sans-serif" font-size="17" font-weight="800" fill="${c.base}">fomo</text>
+    </g>
+  </svg>`; },
 
-  card: (c) => `<svg viewBox="0 0 240 200" fill="none">
-    <rect x="66" y="12" width="108" height="176" rx="11" fill="#12121C" stroke="${c.base}" stroke-width="2"/>
-    <path d="M66 23a11 11 0 0 1 11-11h86a11 11 0 0 1 11 11v40H66Z" fill="${c.base}"/>
-    <text x="120" y="45" text-anchor="middle" font-family="Schibsted Grotesk,sans-serif" font-size="18" font-weight="800" fill="${c.ink}">${c.letters}</text>
-    ${mark(108, 72, 24, c.base, .9)}
-    <path d="M80 110 H160 M80 126 H160 M80 142 H140" stroke="#FFFFFF" stroke-opacity=".15" stroke-width="3" stroke-linecap="round"/>
-    <text x="80" y="170" font-family="Schibsted Grotesk,sans-serif" font-size="7.5" font-weight="700" fill="#6A6A7C" letter-spacing="1.4">NO. 001 / 001</text>
-  </svg>`,
+  card: (c) => { const u = uid(); return `<svg viewBox="0 0 240 200" fill="none">
+    <defs>
+      <linearGradient id="${u}foil" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="${c.lit2}"/><stop offset="38%" stop-color="${c.base}"/>
+        <stop offset="62%" stop-color="${c.lit}"/><stop offset="100%" stop-color="${c.dark}"/>
+      </linearGradient>
+      <linearGradient id="${u}body" x1="0" y1="0" x2="0.4" y2="1">
+        <stop offset="0%" stop-color="#1C1C28"/><stop offset="100%" stop-color="#0E0E16"/>
+      </linearGradient>
+      <linearGradient id="${u}shine" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#FFF" stop-opacity="0"/><stop offset="42%" stop-color="#FFF" stop-opacity=".16"/>
+        <stop offset="56%" stop-color="#FFF" stop-opacity="0"/>
+      </linearGradient>
+      <radialGradient id="${u}s" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#000" stop-opacity=".6"/><stop offset="100%" stop-color="#000" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+    ${shadow(u, 120, 192, 52, 8)}
+    <rect x="64" y="10" width="112" height="180" rx="12" fill="url(#${u}body)" stroke="url(#${u}foil)" stroke-width="2.5"/>
+    <path d="M64 22a12 12 0 0 1 12-12h88a12 12 0 0 1 12 12v42H64Z" fill="url(#${u}foil)"/>
+    <text x="120" y="45" text-anchor="middle" font-family="Schibsted Grotesk,sans-serif" font-size="19" font-weight="800" fill="${c.ink}">${c.letters}</text>
+    <rect x="76" y="74" width="88" height="54" rx="6" fill="#000" fill-opacity=".35"/>
+    ${mark(108, 80, 26, c.base, .95)}
+    <path d="M78 140 H162 M78 154 H162 M78 168 H142" stroke="#FFFFFF" stroke-opacity=".14" stroke-width="3" stroke-linecap="round"/>
+    <text x="78" y="184" font-family="Schibsted Grotesk,sans-serif" font-size="7" font-weight="700" fill="#7A7A8C" letter-spacing="1.5">NO. 001 / 001</text>
+    <rect x="64" y="10" width="112" height="180" rx="12" fill="url(#${u}shine)"/>
+  </svg>`; },
 
-  plaque: (c) => `<svg viewBox="0 0 240 200" fill="none">
-    <rect x="52" y="20" width="136" height="160" rx="9" fill="#33241A"/>
-    <rect x="52" y="20" width="136" height="160" rx="9" stroke="#4A3526" stroke-width="3"/>
-    <rect x="70" y="48" width="100" height="94" rx="4" fill="#C9A64A"/>
-    <rect x="70" y="48" width="100" height="94" rx="4" stroke="#E4C877" stroke-width="2"/>
-    ${mark(106, 56, 28, '#33241A', .9)}
-    <text x="120" y="112" text-anchor="middle" font-family="Schibsted Grotesk,sans-serif" font-size="16" font-weight="800" fill="#33241A">${c.letters}</text>
-    <text x="120" y="130" text-anchor="middle" font-family="Schibsted Grotesk,sans-serif" font-size="7.5" font-weight="700" fill="#5A421F" letter-spacing="1.2">FULL HOUSE</text>
-    <circle cx="120" cy="161" r="5" fill="#C9A64A" opacity=".55"/>
-  </svg>`,
+  plaque: (c) => { const u = uid(); return `<svg viewBox="0 0 240 200" fill="none">
+    <defs>
+      <linearGradient id="${u}wood" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#4A3524"/><stop offset="50%" stop-color="#33241A"/><stop offset="100%" stop-color="#241810"/>
+      </linearGradient>
+      <linearGradient id="${u}brass" x1="0" y1="0" x2="0.8" y2="1">
+        <stop offset="0%" stop-color="#F0DA9A"/><stop offset="30%" stop-color="#C9A64A"/>
+        <stop offset="62%" stop-color="#E4C877"/><stop offset="100%" stop-color="#9A7B2E"/>
+      </linearGradient>
+      <radialGradient id="${u}s" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#000" stop-opacity=".6"/><stop offset="100%" stop-color="#000" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+    ${shadow(u, 120, 188, 70, 9)}
+    <rect x="50" y="18" width="140" height="164" rx="10" fill="url(#${u}wood)"/>
+    <rect x="50" y="18" width="140" height="164" rx="10" stroke="#5B4130" stroke-width="2.5"/>
+    <path d="M62 30 q60 8 116 0" stroke="#000" stroke-opacity=".2" stroke-width="3"/>
+    <path d="M62 170 q60 -8 116 0" stroke="#000" stroke-opacity=".2" stroke-width="3"/>
+    <rect x="68" y="46" width="104" height="98" rx="4" fill="#000" fill-opacity=".35" transform="translate(2 3)"/>
+    <rect x="68" y="46" width="104" height="98" rx="4" fill="url(#${u}brass)"/>
+    <rect x="72" y="50" width="96" height="90" rx="3" fill="none" stroke="#6E5520" stroke-width="1.6" opacity=".7"/>
+    ${mark(106, 56, 28, '#2B1D12', .92)}
+    <text x="120" y="110" text-anchor="middle" font-family="Schibsted Grotesk,sans-serif" font-size="17" font-weight="800" fill="#2B1D12">${c.letters}</text>
+    <text x="120" y="128" text-anchor="middle" font-family="Schibsted Grotesk,sans-serif" font-size="7.5" font-weight="700" fill="#5A421F" letter-spacing="1.3">FULL HOUSE</text>
+    <circle cx="120" cy="162" r="6" fill="url(#${u}brass)"/>
+  </svg>`; },
 
-  varsity: (c) => `<svg viewBox="0 0 240 200" fill="none">
-    <path d="M78 62 L36 82 L24 132 L56 143 L74 96 Z" fill="#E8E4D8"/>
-    <path d="M162 62 L204 82 L216 132 L184 143 L166 96 Z" fill="#E8E4D8"/>
-    <path d="M78 62 H162 V168 Q162 174 156 174 H84 Q78 174 78 168 Z" fill="${c.dark}"/>
-    <path d="M78 62 H162 V76 H78 Z" fill="#E8E4D8"/>
-    <path d="M78 160 H162 V174 H78 Z" fill="#E8E4D8" opacity=".9"/>
-    <path d="M120 76 V160" stroke="#E8E4D8" stroke-width="2" opacity=".45"/>
-    <circle cx="120" cy="96" r="2.6" fill="#E8E4D8"/><circle cx="120" cy="116" r="2.6" fill="#E8E4D8"/><circle cx="120" cy="136" r="2.6" fill="#E8E4D8"/>
-    <text x="99" y="126" text-anchor="middle" font-family="Schibsted Grotesk,sans-serif" font-size="26" font-weight="800" fill="#E0B25C">${(c.letters || 'Φ').slice(0, 1)}</text>
-    ${mark(132, 102, 20, '#E8E4D8', .85)}
-  </svg>`,
+  varsity: (c) => { const u = uid(); return `<svg viewBox="0 0 240 200" fill="none">${defs(u, c)}
+    <defs><linearGradient id="${u}lth" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FBF8EF"/><stop offset="55%" stop-color="#E8E4D8"/><stop offset="100%" stop-color="#C9C4B4"/>
+    </linearGradient></defs>
+    ${shadow(u, 120, 180, 66, 10)}
+    <path d="M78 62 L36 82 L25 130 L56 141 L75 96 Z" fill="url(#${u}lth)"/>
+    <path d="M162 62 L204 82 L215 130 L184 141 L165 96 Z" fill="url(#${u}lth)"/>
+    <path d="M28 126 L56 135" stroke="#000" stroke-opacity=".16" stroke-width="6" stroke-linecap="round"/>
+    <path d="M212 126 L184 135" stroke="#000" stroke-opacity=".16" stroke-width="6" stroke-linecap="round"/>
+    <path d="M78 62 H162 V166 Q162 172 156 172 H84 Q78 172 78 166 Z" fill="url(#${u}f)"/>
+    <path d="M78 62 H162 V78 H78 Z" fill="url(#${u}lth)"/>
+    <path d="M78 158 H162 V166 Q162 172 156 172 H84 Q78 172 78 166 Z" fill="url(#${u}lth)"/>
+    <path d="M78 62 H162 V78 H78 Z M78 158 H162" stroke="#000" stroke-opacity=".14" stroke-width="1.6"/>
+    <path d="M120 78 V158" stroke="#000" stroke-opacity=".28" stroke-width="2.2"/>
+    <circle cx="120" cy="96" r="3" fill="#F6F3EA"/><circle cx="120" cy="118" r="3" fill="#F6F3EA"/><circle cx="120" cy="140" r="3" fill="#F6F3EA"/>
+    <text x="99" y="126" text-anchor="middle" font-family="Schibsted Grotesk,sans-serif" font-size="27" font-weight="800" fill="#E0B25C" stroke="#FBF8EF" stroke-width="1.4" paint-order="stroke">${(c.letters || 'Φ').slice(0, 1)}</text>
+    ${mark(132, 104, 20, '#F6F3EA', .9)}
+  </svg>`; },
 
-  crate: (c) => `<svg viewBox="0 0 240 200" fill="none">
-    <path d="M48 76 L120 44 L192 76 L120 108 Z" fill="${c.base}"/>
-    <path d="M48 76 V142 L120 174 V108 Z" fill="${c.dark}"/>
-    <path d="M192 76 V142 L120 174 V108 Z" fill="${c.base}" opacity=".5"/>
-    <path d="M48 76 L120 108 L192 76" stroke="${c.ink}" stroke-width="2" opacity=".28"/>
-    <path d="M120 44 V108" stroke="${c.ink}" stroke-width="2" opacity=".22"/>
-    ${mark(96, 116, 30, c.ink, .5)}
-  </svg>`,
+  note: (c) => { const u = uid(); return `<svg viewBox="0 0 240 200" fill="none">
+    <defs>
+      <linearGradient id="${u}pap" x1="0" y1="0" x2="0.5" y2="1">
+        <stop offset="0%" stop-color="#FFFDF7"/><stop offset="100%" stop-color="#E7E2D4"/>
+      </linearGradient>
+      <radialGradient id="${u}s" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#000" stop-opacity=".55"/><stop offset="100%" stop-color="#000" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+    ${shadow(u, 122, 176, 64, 8)}
+    <rect x="58" y="30" width="126" height="136" rx="6" fill="url(#${u}pap)"/>
+    <path d="M58 150 q63 12 126 0 v10 a6 6 0 0 1 -6 6 H64 a6 6 0 0 1 -6 -6 Z" fill="#DCD6C6"/>
+    ${mark(70, 40, 20, c.base, .85)}
+    <path d="M74 86 H168 M74 102 H168 M74 118 H150 M74 134 H120" stroke="#A7A294" stroke-width="2.6" stroke-linecap="round"/>
+    <path d="M124 150 q12 -11 22 -1 q10 9 22 -5" stroke="${c.base}" stroke-width="2.8" stroke-linecap="round"/>
+  </svg>`; },
 
-  note: (c) => `<svg viewBox="0 0 240 200" fill="none">
-    <rect x="58" y="34" width="124" height="132" rx="6" fill="#F4F1E8"/>
-    <rect x="58" y="34" width="124" height="132" rx="6" stroke="${c.base}" stroke-width="2"/>
-    ${mark(70, 44, 20, c.base, .8)}
-    <path d="M74 88 H166 M74 104 H166 M74 120 H150 M74 136 H120" stroke="#9A9686" stroke-width="2.6" stroke-linecap="round"/>
-    <path d="M128 150 q12 -10 22 0 q10 8 20 -4" stroke="${c.base}" stroke-width="2.6" stroke-linecap="round"/>
-  </svg>`,
-
-  ticket: (c) => `<svg viewBox="0 0 240 200" fill="none">
-    <path d="M36 66h168v22a12 12 0 0 0 0 24v22H36v-22a12 12 0 0 0 0-24Z" fill="${c.base}"/>
-    <path d="M36 66h168v22a12 12 0 0 0 0 24v22H36v-22a12 12 0 0 0 0-24Z" stroke="${c.ink}" stroke-width="2" stroke-opacity=".28"/>
-    <path d="M132 70 V130" stroke="${c.ink}" stroke-width="2" stroke-dasharray="5 6" opacity=".5"/>
-    <text x="84" y="97" text-anchor="middle" font-family="Schibsted Grotesk,sans-serif" font-size="20" font-weight="800" fill="${c.ink}">$500</text>
-    <text x="84" y="113" text-anchor="middle" font-family="Schibsted Grotesk,sans-serif" font-size="7.5" font-weight="700" fill="${c.ink}" opacity=".7" letter-spacing="1.3">HOUSE FUND</text>
-    ${mark(156, 84, 26, c.ink, .8)}
-  </svg>`,
+  ticket: (c) => { const u = uid(); return `<svg viewBox="0 0 240 200" fill="none">${defs(u, c)}
+    ${shadow(u, 120, 146, 78, 9)}
+    <path d="M34 62h172v24a13 13 0 0 0 0 26v24H34v-24a13 13 0 0 0 0-26Z" fill="url(#${u}f)"/>
+    <path d="M34 62h172v24a13 13 0 0 0 0 26v24H34v-24a13 13 0 0 0 0-26Z" fill="url(#${u}g)"/>
+    <path d="M134 68 V130" stroke="#000" stroke-opacity=".28" stroke-width="2.4" stroke-dasharray="5 7"/>
+    <text x="84" y="96" text-anchor="middle" font-family="Schibsted Grotesk,sans-serif" font-size="21" font-weight="800" fill="${c.ink}">$500</text>
+    <text x="84" y="113" text-anchor="middle" font-family="Schibsted Grotesk,sans-serif" font-size="7.5" font-weight="700" fill="${c.ink}" opacity=".75" letter-spacing="1.4">HOUSE FUND</text>
+    ${mark(157, 84, 26, c.ink, .85)}
+  </svg>`; },
 };
 
 // ---------------------------------------------------------------------------
@@ -631,21 +642,21 @@ const PROGRAM = {
     { n: 1, name: 'Onboarded', pct: 80, cash: 500, auto: true, accent: '#516AF6',
       why: 'The one everybody is aiming at. Four out of five actives holding a fomo account is the point where a chapter stops being a signup list and starts being a trading floor — so it’s where the money starts.',
       loot: [
-        { kind: 'crate',    name: 'The crate',            qty: '1 box',     desc: 'Everything below, packed and shipped to the house address on your registration.', photo: null },
+        { kind: 'cooler',   name: 'The fomo cooler',      qty: '45 qt',     desc: 'A hard cooler in your colours with your letters on the side — and the crate itself. Everything else ships packed inside it.', photo: null },
         { kind: 'hoodie',   name: 'Exec board hoodies',   qty: '×6',   desc: 'Heavyweight, embroidered letters, fomo mark on the chest. Sized off the roles on your registration.', photo: null },
-        { kind: 'tee',      name: 'House tee run',        qty: '1 each',    desc: 'One tee for every member who actually onboarded. Bigger turnout, bigger run.', photo: null },
         { kind: 'banner',   name: 'Chapter banner',       qty: '3ft × 5ft', desc: 'Your letters over the fomo mark, grommeted for the house.', photo: null },
-        { kind: 'stickers', name: 'Sticker & decal pack', qty: '200 pcs',   desc: 'Laptops, bottles, the front door of the house.', photo: null },
+        { kind: 'stickers', name: 'Sticker & decal pack', qty: '200 pcs',   desc: 'Laptops, bottles, the front door of the house. The one thing here that reaches people who never opened the app.', photo: null },
         { kind: 'card',     name: 'Chapter trading card', qty: '1 of 1',    desc: 'Printed and numbered with your letters, school, rank and member count the day you onboarded. Never reprinted.', photo: null },
+        { kind: 'note',     name: 'A note from us',       qty: '1',         desc: 'Handwritten, not printed. Whoever on our team ran your onboarding signs it.', photo: null },
       ],
       perks: ['Your house on Greek Village', 'PAID badge on the leaderboard', 'Wired inside 7 business days'] },
 
     { n: 2, name: 'Locked in', pct: 90, cash: 250, auto: true, accent: '#23B5D3',
       why: 'Going from 80 to 90 is the hardest ten points in the program — it means chasing the people who ignored the first three asks. That work is worth paying for separately.',
       loot: [
-        { kind: 'hoodie', name: 'Colourway recut',  qty: '×6',  desc: 'The hoodie run reprinted in your school’s actual palette instead of fomo house colours.', photo: null },
-        { kind: 'tee',    name: 'Second tee drop',  qty: '1 each',   desc: 'A second design for the chapter, in the same colourway.', photo: null },
-        { kind: 'note',   name: 'A note from us',   qty: '1',        desc: 'Handwritten, not printed. Whoever on our team ran your onboarding signs it.', photo: null },
+        { kind: 'tee',    name: 'House tee run',   qty: '×25',  desc: 'A fixed run of 25, sizes split however your exec board wants them — not one per member. A 200-man chapter would be shipping a pallet.', photo: null },
+        { kind: 'hoodie', name: 'Colourway recut', qty: '×6',   desc: 'The hoodie run reprinted in your school’s actual palette instead of fomo house colours.', photo: null },
+        { kind: 'banner', name: 'Away banner',     qty: '2ft × 3ft', desc: 'A smaller second banner for tailgates and away games.', photo: null },
       ],
       perks: ['Named contact instead of the general inbox', 'Private thread with the fomo team'] },
 
@@ -672,7 +683,6 @@ const money = (n) => '$' + n.toLocaleString('en-US');
 const TIERS = PROGRAM.tiers;
 const RUNNING = TIERS.reduce((acc, t) => (acc.push((acc[acc.length - 1] || 0) + t.cash), acc), []);
 const LADDER_MAX = RUNNING[RUNNING.length - 1];
-const STACK_MAX = LADDER_MAX + PROGRAM.speed.cash + PROGRAM.referral.cash * PROGRAM.referral.cap;
 
 const needFor = (tier, size) => Math.ceil((tier.pct / 100) * size);
 function autoTier(members, size) {
@@ -683,10 +693,6 @@ function autoTier(members, size) {
 }
 const earnedBy = (n) => (n ? RUNNING[n - 1] : 0);
 
-$('fig-floor').textContent = money(TIERS[0].cash);
-$('fig-ceiling').textContent = money(LADDER_MAX);
-$('fig-ref').textContent = money(PROGRAM.referral.cash);
-$('fig-max').textContent = money(STACK_MAX);
 $('speed-amt').textContent = '+' + money(PROGRAM.speed.cash);
 $('speed-days').textContent = PROGRAM.speed.days;
 $('ref-amt').textContent = '+' + money(PROGRAM.referral.cash);
@@ -695,45 +701,60 @@ $('ref-cap-cash').textContent = money(PROGRAM.referral.cash * PROGRAM.referral.c
 
 let rosterSize = 90;
 let selected = null;   // a live chapter, when one is picked
-let openTier = 1;      // which stop's crate is open
+let openTier = 1;      // which stop's crate is showing
 let chapters = [];
+let tab = 'crate';
+let filter = 'all';
 
-// Darken a hex colour for shadows/second tones on the merch.
 function shadeHex(hex, amt) {
   const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex || '');
   if (!m) return hex;
   const f = (h) => Math.max(0, Math.min(255, parseInt(h, 16) + amt)).toString(16).padStart(2, '0');
   return '#' + f(m[1]) + f(m[2]) + f(m[3]);
 }
-// A selected chapter paints its own school colours and letters onto the gear;
-// with nothing selected the merch falls back to fomo blue.
+// A selected chapter paints its own school colours and letters onto the gear.
 function lootColors() {
   const base = selected ? schoolColors(selected.school)[0] : '#516AF6';
   return {
-    base, dark: shadeHex(base, -30), ink: '#FFFFFF',
+    base,
+    lit: shadeHex(base, 26), lit2: shadeHex(base, 52),
+    dark: shadeHex(base, -30), dark2: shadeHex(base, -56),
+    ink: '#FFFFFF',
     letters: selected ? glyphFor(selected.chapterName) : 'ΦΔΘ',
   };
 }
 
-// ---- hero trading card, tilting to the pointer ----
+// ---- hero card, tilting to the pointer ----
 function paintHeroCard() { $('tcard').innerHTML = ART.card(lootColors()); }
 (function tiltCard() {
   const el = $('tcard'), stage = el.parentElement;
   const reset = () => { el.style.transform = 'rotateX(0deg) rotateY(0deg)'; };
   stage.addEventListener('pointermove', (e) => {
     const r = el.getBoundingClientRect();
-    const px = (e.clientX - r.left) / r.width - 0.5;
-    const py = (e.clientY - r.top) / r.height - 0.5;
-    el.style.transform = `rotateY(${px * 26}deg) rotateX(${-py * 22}deg)`;
+    el.style.transform = `rotateY(${((e.clientX - r.left) / r.width - 0.5) * 26}deg) rotateX(${-((e.clientY - r.top) / r.height - 0.5) * 22}deg)`;
   });
   stage.addEventListener('pointerleave', reset);
   reset();
 })();
 
+// Count a number up to its new value — the payoff line should feel like it moves.
+function countTo(el, to, prefix) {
+  const from = Number(el.dataset.v || 0);
+  el.dataset.v = to;
+  if (from === to) { el.textContent = (prefix || '') + to.toLocaleString('en-US'); return; }
+  const t0 = performance.now(), dur = 550;
+  const step = (t) => {
+    const k = Math.min(1, (t - t0) / dur);
+    const e = 1 - Math.pow(1 - k, 3);
+    el.textContent = (prefix || '') + Math.round(from + (to - from) * e).toLocaleString('en-US');
+    if (k < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
 // ---------------------------------------------------------------------------
-// ROADMAP. The four stops share the track evenly rather than sitting at their
-// true percentages — 0→80% would otherwise eat three quarters of the line and
-// squash the interesting part into the end.
+// ROADMAP. The stops share the track evenly rather than sitting at their true
+// percentages — 0→80% would otherwise eat three quarters of the line.
 // ---------------------------------------------------------------------------
 const STOP_X = [25, 50, 75, 100];
 function trackPos(pct) {
@@ -745,26 +766,27 @@ function trackPos(pct) {
   }
   return STOP_X[2];
 }
+const reachedTier = () => (selected ? autoTier(selected.members, selected.chapterSize) : 0);
+const nextTier = () => TIERS.find((x) => x.auto && x.n > reachedTier());
 
 function renderRoadmap() {
-  const reached = selected ? autoTier(selected.members, selected.chapterSize) : 0;
+  const reached = reachedTier();
+  const next = selected ? nextTier() : null;
   const wrap = $('track-wrap');
   wrap.querySelectorAll('.station').forEach((s) => s.remove());
 
   TIERS.forEach((t, i) => {
     const b = document.createElement('button');
-    b.className = 'station' + (reached >= t.n ? ' reached' : '') + (openTier === t.n ? ' active' : '');
+    b.className = 'station' + (reached >= t.n ? ' reached' : '') + (openTier === t.n ? ' active' : '')
+      + (next && next.n === t.n ? ' target' : '');
     b.style.left = STOP_X[i] + '%';
     b.dataset.stop = String(t.n);
     b.setAttribute('aria-label', `Stop ${t.n}: ${t.name}`);
-    const dotStyle = reached >= t.n
-      ? `background:${t.accent};border-color:${t.accent}`
+    const dot = reached >= t.n ? `background:${t.accent};border-color:${t.accent}`
       : (openTier === t.n ? `border-color:${t.accent};color:${t.accent}` : '');
-    b.innerHTML =
-      `<div class="dot" style="${dotStyle}">${String(t.n).padStart(2, '0')}</div>` +
-      `<div class="st-name">${esc(t.name)}</div>` +
-      `<div class="st-cash">${money(RUNNING[i])}</div>`;
-    b.addEventListener('click', () => { openTier = t.n; renderRoadmap(); renderPanel(); });
+    b.innerHTML = `<div class="dot" style="${dot}">${String(t.n).padStart(2, '0')}</div>`
+      + `<div class="st-name">${esc(t.name)}</div><div class="st-cash">${money(RUNNING[i])}</div>`;
+    b.addEventListener('click', () => { openTier = t.n; show('crate'); renderRoadmap(); renderCrate(); });
     wrap.appendChild(b);
   });
 
@@ -781,11 +803,45 @@ function renderRoadmap() {
   }
 }
 
-function renderPanel() {
+// The hero status strip: what they have, and what the next stop costs them.
+function renderStatus() {
+  const box = $('status');
+  if (!selected) {
+    box.innerHTML = `<div class="stat ghost"><div class="v">$500</div><div class="k">at 80% of your roster</div></div>`
+      + `<div class="stat ghost"><div class="v">${money(LADDER_MAX)}</div><div class="k">all four stops</div></div>`;
+    return;
+  }
+  const reached = reachedTier(), next = nextTier();
+  const away = next ? Math.max(0, needFor(next, selected.chapterSize) - selected.members) : 0;
+  box.innerHTML =
+    `<div class="stat"><div class="v" id="v-earned" style="color:${reached ? 'var(--green)' : 'var(--text-faint)'}">$0</div>`
+    + `<div class="k">${reached ? 'earned so far' : 'not there yet'}</div></div>`
+    + (next
+      ? `<div class="stat"><div class="v" id="v-away" style="color:var(--white)">0</div>`
+        + `<div class="k">more members → ${money(RUNNING[next.n - 1])}</div></div>`
+      : `<div class="stat"><div class="v" style="color:var(--gold)">Maxed</div><div class="k">every automatic stop cleared</div></div>`);
+  countTo($('v-earned'), earnedBy(reached), '$');
+  if (next) countTo($('v-away'), away, '');
+}
+
+// ---------------------------------------------------------------------------
+// The deck. Only one tab is in the document flow at a time, which is what keeps
+// the page short — the rules and FAQ cost nothing until someone opens them.
+// ---------------------------------------------------------------------------
+function show(name) {
+  tab = name;
+  ['crate', 'board', 'bonus', 'fine'].forEach((t) => { $('tab-' + t).hidden = t !== name; });
+  $('deck-tabs').querySelectorAll('button').forEach((b) => b.classList.toggle('on', b.dataset.tab === name));
+  const body = $('tab-' + name);
+  body.style.animation = 'none'; void body.offsetWidth; body.style.animation = '';
+}
+$('deck-tabs').querySelectorAll('button').forEach((b) => b.addEventListener('click', () => show(b.dataset.tab)));
+
+function renderCrate() {
   const t = TIERS.find((x) => x.n === openTier);
   const i = TIERS.indexOf(t);
   const need = needFor(t, rosterSize);
-  const reached = selected ? autoTier(selected.members, selected.chapterSize) : null;
+  const reached = selected ? reachedTier() : null;
   const c = lootColors();
 
   let badge = '';
@@ -798,47 +854,43 @@ function renderPanel() {
   if (!t.auto) badge += ' <span class="pill manual">Team confirmed</span>';
 
   const req = t.hold
-    ? `<b>${need}</b> of ${rosterSize} members, held for <b>${t.hold} days</b>`
-    : `<b>${need}</b> of ${rosterSize} members &nbsp;·&nbsp; ${t.pct}% of your roster`;
+    ? `<b>${need}</b> of ${rosterSize} members, held <b>${t.hold} days</b>`
+    : `<b>${need}</b> of ${rosterSize} members · ${t.pct}% of your roster`;
 
-  $('panel').innerHTML = `<div class="panel">
-    <div class="panel-head">
-      <div class="panel-id">
-        <div class="panel-tag" style="color:${t.accent}">Stop ${String(t.n).padStart(2, '0')}</div>
-        <div class="panel-name">${esc(t.name)}${badge}</div>
-        <div class="panel-req">${req}</div>
+  $('tab-crate').innerHTML = `
+    <div class="crate-head">
+      <div class="ci">
+        <div class="crate-tag" style="color:${t.accent}">Stop ${String(t.n).padStart(2, '0')}</div>
+        <div class="crate-name">${esc(t.name)}${badge}</div>
+        <div class="crate-req">${req}</div>
       </div>
-      <div class="panel-cash">
+      <div class="crate-cash">
         <div class="amt" style="color:${t.accent}">+${money(t.cash)}</div>
         <div class="run">${money(RUNNING[i])} running total</div>
       </div>
     </div>
-    <p class="panel-why">${esc(t.why)}</p>
-    <div class="loot"${t.loot.length >= 3 ? '' : ` style="grid-template-columns:repeat(${t.loot.length},minmax(0,330px));justify-content:center"`}>${t.loot.map((l) => `<div class="li">
-      <div class="li-art">
-        ${l.photo ? `<img src="${esc(l.photo)}" alt="${esc(l.name)}" loading="lazy">` : ART[l.kind](c)}
-        <span class="li-qty">${esc(l.qty)}</span>
-      </div>
-      <div class="li-txt"><h4>${esc(l.name)}</h4><p>${esc(l.desc)}</p></div>
-    </div>`).join('')}</div>
+    <div class="loot"${t.loot.length >= 3 ? '' : ` data-few="${t.loot.length}"`}>
+      ${t.loot.map((l) => `<div class="li">
+        <div class="li-art">
+          ${l.photo ? `<img src="${esc(l.photo)}" alt="${esc(l.name)}" loading="lazy">` : ART[l.kind](c)}
+          <span class="li-qty">${esc(l.qty)}</span>
+        </div>
+        <div class="li-txt"><h4>${esc(l.name)}</h4><p>${esc(l.desc)}</p></div>
+      </div>`).join('')}
+    </div>
     <div class="perks">${t.perks.map((p) => `<span class="perk">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-      ${esc(p)}</span>`).join('')}</div>
-  </div>`;
+      ${esc(p)}</span>`).join('')}</div>`;
 }
 
-function repaint() { renderRoadmap(); renderPanel(); paintHeroCard(); }
+function repaint() { renderRoadmap(); renderCrate(); renderStatus(); paintHeroCard(); }
 
 $('size').addEventListener('input', () => {
   const v = parseInt($('size').value, 10);
   if (!Number.isFinite(v) || v < 5 || v > 500) return;
   rosterSize = v;
   // Typing a size by hand means you're no longer looking at a specific chapter.
-  if (selected && selected.chapterSize !== v) {
-    selected = null;
-    $('pick').value = '';
-    $('sizer-hint').textContent = 'Pick your chapter to see exactly where you stand.';
-  }
+  if (selected && selected.chapterSize !== v) { selected = null; $('pick').value = ''; }
   repaint();
 });
 
@@ -848,24 +900,26 @@ $('pick').addEventListener('change', () => {
   if (c) {
     rosterSize = c.chapterSize;
     $('size').value = c.chapterSize;
-    const reached = autoTier(c.members, c.chapterSize);
-    const next = TIERS.find((x) => x.auto && x.n > reached);
-    openTier = next ? next.n : 3;   // open the stop they're chasing
-    $('sizer-hint').textContent = next
-      ? `${c.members} of ${c.chapterSize} on fomo · ${Math.max(0, needFor(next, c.chapterSize) - c.members)} more for stop ${String(next.n).padStart(2, '0')}`
-      : `${c.members} of ${c.chapterSize} on fomo · every automatic stop cleared`;
-  } else {
-    $('sizer-hint').textContent = 'Pick your chapter to see exactly where you stand.';
+    const next = nextTier();
+    openTier = next ? next.n : 3;   // jump to the stop they're chasing
+    show('crate');
   }
   repaint();
+});
+
+// Arrow keys walk the roadmap.
+document.addEventListener('keydown', (e) => {
+  if (/^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement.tagName)) return;
+  if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+  const n = Math.min(4, Math.max(1, openTier + (e.key === 'ArrowRight' ? 1 : -1)));
+  if (n === openTier) return;
+  openTier = n; show('crate'); renderRoadmap(); renderCrate();
 });
 
 // ---------------------------------------------------------------------------
 // Live board — the same public endpoint the leaderboard reads. Chapter-level
 // counts only; there is nothing here that isn't already on the public board.
 // ---------------------------------------------------------------------------
-let filter = 'all';
-
 async function load() {
   try {
     const res = await fetch('/api/clans', { cache: 'no-store' });
@@ -873,30 +927,17 @@ async function load() {
     const { clans } = await res.json();
     chapters = clans.filter((c) => c.chapterSize > 0);
     $('load-error').hidden = true;
-    fillPicker(); paintStats(); paintRows();
+    const sorted = [...chapters].sort((a, b) =>
+      a.chapterName.localeCompare(b.chapterName) || a.schoolLabel.localeCompare(b.schoolLabel));
+    $('pick').innerHTML = '<option value="">Pick your chapter…</option>' +
+      sorted.map((c) => `<option value="${esc(c.id)}">${esc(c.chapterName)} — ${esc(c.schoolLabel)}</option>`).join('');
+    paintRows();
   } catch (e) {
     $('load-error').hidden = false;
     $('rows').innerHTML = '';
   }
 }
 $('retry-btn').addEventListener('click', load);
-
-function fillPicker() {
-  const sorted = [...chapters].sort((a, b) =>
-    a.chapterName.localeCompare(b.chapterName) || a.schoolLabel.localeCompare(b.schoolLabel));
-  $('pick').innerHTML = '<option value="">a chapter of…</option>' +
-    sorted.map((c) => `<option value="${esc(c.id)}">${esc(c.chapterName)} — ${esc(c.schoolLabel)}</option>`).join('');
-}
-
-function paintStats() {
-  const onboarded = chapters.filter((c) => autoTier(c.members, c.chapterSize) >= 1).length;
-  const earned = chapters.reduce((s, c) => s + earnedBy(autoTier(c.members, c.chapterSize)), 0);
-  const table = chapters.reduce((s, c) => s + (LADDER_MAX - earnedBy(autoTier(c.members, c.chapterSize))), 0);
-  $('s-chapters').textContent = chapters.length;
-  $('s-onboarded').textContent = onboarded;
-  $('s-earned').textContent = money(earned);
-  $('s-table').textContent = money(table);
-}
 
 function rowHtml(c) {
   const [a] = schoolColors(c.school);
@@ -910,10 +951,8 @@ function rowHtml(c) {
     ${c.hasAvatar
       ? `<img class="icon" src="/api/clans/${esc(c.id)}/avatar" alt="" loading="lazy">`
       : `<div class="icon ${glyph.length >= 3 ? 'small-glyph' : ''}" style="background:${a}">${esc(glyph)}</div>`}
-    <div class="rmeta">
-      <div class="name">${esc(c.chapterName)}</div>
-      <div class="sub">${esc(c.schoolLabel)} · ${c.members} of ${c.chapterSize} on fomo</div>
-    </div>
+    <div class="rmeta"><div class="name">${esc(c.chapterName)}</div>
+      <div class="sub">${esc(c.schoolLabel)} · ${c.members} of ${c.chapterSize} on fomo</div></div>
     <div class="rprog"><div class="bar${tone}"><span style="width:${pct}%"></span></div><div class="pct${tone}">${pct}%</div></div>
     <div class="gap${next ? '' : ' max'}">${next ? `<b>${away}</b> more → stop ${String(next.n).padStart(2, '0')}` : 'Every auto stop cleared'}</div>
     <div class="earned"><div class="e${t ? '' : ' zero'}">${money(earnedBy(t))}</div>
@@ -928,10 +967,10 @@ function paintRows() {
   $('rows').innerHTML = list.length ? list.map(rowHtml).join('') : '<div class="empty">No chapters at this stop yet.</div>';
 }
 
-$('board-bar').querySelectorAll('button').forEach((b) => {
+$('board-filter').querySelectorAll('button').forEach((b) => {
   b.addEventListener('click', () => {
     filter = b.dataset.t;
-    $('board-bar').querySelectorAll('button').forEach((x) => x.classList.toggle('active', x === b));
+    $('board-filter').querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b));
     paintRows();
   });
 });
