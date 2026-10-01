@@ -166,7 +166,7 @@ h1{font-size:clamp(2rem,5.4vw,3rem); font-weight:800; letter-spacing:-0.04em; li
       <svg viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="26" fill="#12121C"/><g fill="#EAEDFF"><path d="M36.9747 24.3586C44.1067 24.3587 49.7941 27.9515 52.9484 33.5959C48.7626 38.0418 45.6617 43.7612 44.4679 50.0002C43.2743 56.2391 44.1865 61.9572 46.67 66.4026C41.3555 72.0468 34.2931 75.6408 27.1613 75.6409C18.432 75.6407 11.8659 70.2588 9.46204 62.3196H26.8478C27.4159 62.3193 28.0059 61.8593 28.1691 61.2932L34.6486 38.7043C34.8098 38.1381 34.4815 37.6782 33.9152 37.678H14.1788C19.6213 29.7404 28.2465 24.3588 36.9747 24.3586Z"/><path d="M72.3285 24.3586C85.0779 24.3586 93.2156 35.8374 90.5062 49.9993C87.7966 64.1596 75.2646 75.6409 62.515 75.6409C53.7856 75.6408 47.2196 70.2589 44.8158 62.3196H64.1537C64.7218 62.3194 65.3127 61.8594 65.476 61.2932L71.9545 38.7043C72.1157 38.138 71.7876 37.678 71.2211 37.678H49.5316C54.9741 29.7401 63.5999 24.3587 72.3285 24.3586Z"/></g></svg>
       fomo <span class="slash">/greek wars</span>
     </a>
-    <a class="skip" href="#join">Skip to the form</a>
+    <a class="skip" id="skip" href="#join">Skip to the form</a>
   </div>
 </div>
 
@@ -223,25 +223,30 @@ function copyTo(btn, text, okLabel) {
 }
 
 function render(c) {
-  const [col] = schoolColors(c.school);
-  const glyph = glyphFor(c.chapterName);
-  const size = c.chapterSize || 0;
-  const goal = c.goal || 0;
-  const have = c.members || 0;
+  const known = !!c;
+  const [col] = known ? schoolColors(c.school) : ['#516AF6'];
+  const glyph = known ? glyphFor(c.chapterName) : '';
+  const size = known ? (c.chapterSize || 0) : 0;
+  const goal = known ? (c.goal || 0) : 0;
+  const have = known ? (c.members || 0) : 0;
   const left = Math.max(0, goal - have);
-  const pct = goal ? Math.min(100, Math.round((have / goal) * 100)) : 0;
   const hit = goal > 0 && have >= goal;
-  const startSize = clampSize(size || MIN_SIZE);
+  // With no chapter, open the calculator on a mid-sized house rather than the
+  // floor — it reads as an example, not as a lowball.
+  const startSize = clampSize(known ? (size || MIN_SIZE) : 100);
   PRIZE = payout(startSize);
-  const link = c.referralUrl;
-  const shareMsg = `We're getting ${c.chapterName} paid by fomo — every one of us who signs up is worth $${PER_MEMBER.toFixed(2)} to the house. Takes 2 minutes: ${link}`;
+  const link = known ? c.referralUrl : '';
+  const shareMsg = known
+    ? `We're getting ${c.chapterName} paid by fomo — every one of us who signs up is worth $${PER_MEMBER.toFixed(2)} to the house. Takes 2 minutes: ${link}`
+    : '';
+  const FOMO_MARK = '<svg viewBox="0 0 100 100" style="width:100%;height:100%"><g fill="#EAEDFF"><path d="M36.9747 24.3586C44.1067 24.3587 49.7941 27.9515 52.9484 33.5959C48.7626 38.0418 45.6617 43.7612 44.4679 50.0002C43.2743 56.2391 44.1865 61.9572 46.67 66.4026C41.3555 72.0468 34.2931 75.6408 27.1613 75.6409C18.432 75.6407 11.8659 70.2588 9.46204 62.3196H26.8478C27.4159 62.3193 28.0059 61.8593 28.1691 61.2932L34.6486 38.7043C34.8098 38.1381 34.4815 37.6782 33.9152 37.678H14.1788C19.6213 29.7404 28.2465 24.3588 36.9747 24.3586Z"/><path d="M72.3285 24.3586C85.0779 24.3586 93.2156 35.8374 90.5062 49.9993C87.7966 64.1596 75.2646 75.6409 62.515 75.6409C53.7856 75.6408 47.2196 70.2589 44.8158 62.3196H64.1537C64.7218 62.3194 65.3127 61.8594 65.476 61.2932L71.9545 38.7043C72.1157 38.138 71.7876 37.678 71.2211 37.678H49.5316C54.9741 29.7401 63.5999 24.3587 72.3285 24.3586Z"/></g></svg>';
 
   $('page').innerHTML = `
     <header class="hero">
-      <div class="crest ${glyph.length >= 3 ? 'sm' : ''}" style="background:${col}">${esc(glyph)}</div>
+      <div class="crest ${known && glyph.length >= 3 ? 'sm' : ''}" style="background:${known ? col : '#12121C'};${known ? '' : 'padding:14px;'}">${known ? esc(glyph) : FOMO_MARK}</div>
       <div class="eyebrow">fomo greek wars</div>
-      <h1>${esc(c.chapterName)}</h1>
-      <p class="school">${esc(c.schoolLabel)}</p>
+      <h1>${known ? esc(c.chapterName) : 'Get your chapter paid.'}</h1>
+      <p class="school">${known ? esc(c.schoolLabel) : 'Every member of the house who joins is worth money to the chapter.'}</p>
 
       <div class="calc">
         <div class="calc-kick">What your chapter earns</div>
@@ -264,11 +269,11 @@ function render(c) {
           <div class="calc-note">Bring another house onto fomo campus and you earn <b>${Math.round(REFERRAL_PCT * 100)}%</b> of what they earn, on top of your own.</div>
         </div>
 
-        <div class="calc-live">
+        ${known ? `<div class="calc-live">
           <span class="live"><i></i>Updates live</span>
           <span>${have} of ${goal || '—'} on fomo so far${hit ? ' · goal cleared' : left ? ` · ${left} to go` : ''}</span>
-        </div>
-        <div class="share">
+        </div>` : ''}
+        ${known ? `<div class="share">
           <button class="sbtn" id="copy-link">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             Copy the link
@@ -277,20 +282,40 @@ function render(c) {
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg>
             Copy a message
           </button>
-        </div>
+        </div>` : `<div class="share">
+          <a class="sbtn" href="/fomo/clans/create/" style="background:var(--blue);border-color:var(--blue);color:#fff;">
+            Register your chapter
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+          <a class="sbtn" href="/fomo/clans/">See the leaderboard</a>
+        </div>`}
       </div>
     </header>
 
     <section class="sec">
       <h2>What this is.</h2>
-      <p class="lede">fomo is a trading app. <b>${esc(c.chapterName)}</b> is in Greek Wars — chapters across the country racing to get their house on the app.</p>
+      <p class="lede">fomo is a trading app. ${known
+        ? `<b>${esc(c.chapterName)}</b> is in Greek Wars — chapters across the country racing to get their house on the app.`
+        : '<b>Greek Wars</b> is chapters across the country racing to get their house on the app.'}</p>
       <p class="lede">Every member of the house who joins is worth <b>$${PER_MEMBER.toFixed(2)}</b> to the chapter — <b><span data-prize>$0</span> for a house your size</b>. Not to one person, not to whoever signs up first: to the chapter. On top of that you're all trading against each other, and the board is public.</p>
     </section>
 
     <section class="sec" id="join">
-      <h2>Join your chapter.</h2>
-      <p class="lede">Download fomo, then drop your username below so you count toward the house.</p>
-      <div class="card" id="joincard">
+      <h2>${known ? 'Join your chapter.' : 'Get your chapter in.'}</h2>
+      <p class="lede">${known
+        ? 'Download fomo, then drop your username below so you count toward the house.'
+        : 'This page is per chapter. Register yours and you get a link like this one with your letters on it, plus a dashboard that tracks who has joined.'}</p>
+      ${known ? '' : `<div class="card">
+        <p style="margin:0 0 18px;font-size:0.93rem;color:var(--text-dim);line-height:1.6;">
+          Takes about two minutes. You'll set a password on the way through, and the link is live the moment you finish.
+        </p>
+        <a class="go" href="/fomo/clans/create/" style="display:block;text-align:center;text-decoration:none;">Register your chapter</a>
+        <p style="margin:16px 0 0;font-size:0.84rem;color:var(--text-faint);text-align:center;line-height:1.55;">
+          Already registered? Your chapter's link came from whoever signed you up — ask them, or
+          <a href="/fomo/login/" style="color:var(--blue-dim);font-weight:600;">sign in</a> to find it on your dashboard.
+        </p>
+      </div>`}
+      ${known ? `<div class="card" id="joincard">
         <div class="f">
           <label for="j-user">Your fomo username</label>
           <input type="text" id="j-user" maxlength="24" autocomplete="off" spellcheck="false" placeholder="yourusername">
@@ -316,7 +341,7 @@ function render(c) {
         </div>
         <button type="button" class="go" id="j-go">Count me in</button>
         <p class="msg" id="j-msg"></p>
-      </div>
+      </div>` : ''}
     </section>
 
     <section class="sec">
@@ -366,12 +391,16 @@ function render(c) {
   $('sl-ref').addEventListener('input', paintRef);
   paintMain(); paintRef();
 
-  $('copy-link').addEventListener('click', () => copyTo($('copy-link'), link, 'Copied'));
-  $('copy-msg').addEventListener('click', () => copyTo($('copy-msg'), shareMsg, 'Copied'));
-  $('j-go').addEventListener('click', () => submit(c));
-  ['j-user', 'j-email', 'j-first', 'j-last', 'j-ig'].forEach((id) => {
-    $(id).addEventListener('keydown', (e) => { if (e.key === 'Enter') submit(c); });
-  });
+  const skip = $('skip');
+  if (skip) skip.textContent = known ? 'Skip to the form' : 'Register your chapter';
+  if (known) {
+    $('copy-link').addEventListener('click', () => copyTo($('copy-link'), link, 'Copied'));
+    $('copy-msg').addEventListener('click', () => copyTo($('copy-msg'), shareMsg, 'Copied'));
+    $('j-go').addEventListener('click', () => submit(c));
+    ['j-user', 'j-email', 'j-first', 'j-last', 'j-ig'].forEach((id) => {
+      $(id).addEventListener('keydown', (e) => { if (e.key === 'Enter') submit(c); });
+    });
+  }
 }
 
 const EMAIL_RE = /^[^\s@]{1,64}@[^\s@.]+(\.[^\s@.]+)+$/;
@@ -431,8 +460,9 @@ function fail(html) { $('state').innerHTML = html; }
 
 (async function load() {
   if (!/^[a-z0-9]{4,16}$/.test(ref)) {
-    fail('This page needs a chapter link.<br>Ask whoever registered your chapter for theirs, '
-      + 'or <a href="/fomo/clans/create/">register your chapter</a> to get one.');
+    $('state').hidden = true;
+    $('page').hidden = false;
+    render(null);
     return;
   }
   try {
