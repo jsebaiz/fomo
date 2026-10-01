@@ -480,7 +480,7 @@ export default {
 
     // A referral link redirects straight to the join page; it carries no page of its own.
     const ref = path.match(/^\/fomo\/referral\/([a-z0-9]{4,16})$/);
-    if (ref) return redirect(`/fomo/join?ref=${ref[1]}`);
+    if (ref) return redirect(`/registration/?ref=${ref[1]}`);
 
     if (!path.startsWith('/api/')) return env.ASSETS.fetch(request);
 
@@ -646,6 +646,8 @@ export default {
           rows.push({
             code: c.code, username: m.username, email: m.email || '', joinedAt: m.joinedAt,
             school: c.schoolLabel, chapterName: c.chapterName,
+            name: [m.firstName, m.lastName].filter(Boolean).join(' '),
+            instagram: m.instagram || '',
             status: m.status === 'approved' ? 'approved' : 'pending',
             // Whether the fomo username and email actually match an account can only
             // be answered by the fomo app. Until that check exists, everyone reads as
@@ -869,7 +871,14 @@ export default {
       const clans = await readList(env, CLANS_KEY);
       const clan = clans.find((c) => c.code === lookup[1]);
       if (!clan) return json({ error: 'Not found' }, 404);
-      return json({ name: clan.name });
+      const members = totalApproved(clan);
+      const size = clan.chapterSize || null;
+      return json({
+        ...publicClan(clan, members),
+        goal: size ? Math.ceil(0.8 * size) : null,
+        pending: (clan.members || []).filter((m) => m.status !== 'approved').length,
+        referralUrl: `${url.origin}/fomo/referral/${clan.code}`,
+      });
     }
 
     // Clan artwork, served from its own KV entry. Public: it's the picture the
@@ -905,7 +914,7 @@ export default {
     const join = path.match(/^\/api\/clans\/([a-z0-9]{4,16})\/join$/);
     if (join && request.method === 'POST') {
       const text = await request.text();
-      if (text.length > 512) return json({ error: 'Request too large' }, 413);
+      if (text.length > 2048) return json({ error: 'Request too large' }, 413);
       let body;
       try { body = JSON.parse(text); } catch { return json({ error: 'Invalid JSON' }, 400); }
 
@@ -917,15 +926,30 @@ export default {
 
       const clans = await readList(env, CLANS_KEY);
       const clan = clans.find((c) => c.code === join[1]);
-      if (!clan) return json({ error: 'That invite link is no longer valid' }, 404);
+      if (!clan) return json({ error: 'That chapter link is no longer valid' }, 404);
 
       clan.members = clan.members || [];
       if (clan.members.some((m) => m.username.toLowerCase() === username.toLowerCase())) {
-        return json({ error: 'That username already joined this clan' }, 409);
+        return json({ error: 'That username already joined this chapter' }, 409);
       }
-      clan.members.push({ username, email, joinedAt: new Date().toISOString(), status: 'pending' });
+      const opt = (v, re, max) => {
+        const x = String(v ?? '').trim().replace(/\s+/g, ' ').slice(0, max);
+        return x && re.test(x) ? x : '';
+      };
+      const member = {
+        username, email, joinedAt: new Date().toISOString(), status: 'pending',
+        firstName: opt(body.firstName, /^[\p{L}][\p{L} .'-]{0,39}$/u, 40),
+        lastName: opt(body.lastName, /^[\p{L}][\p{L} .'-]{0,39}$/u, 40),
+        instagram: opt(String(body.instagram ?? '').replace(/^@/, ''), /^[A-Za-z0-9._]{1,30}$/, 30).toLowerCase(),
+      };
+      Object.keys(member).forEach((k) => { if (member[k] === '') delete member[k]; });
+      clan.members.push(member);
       await env.FLIGHTS.put(CLANS_KEY, JSON.stringify(clans));
-      return json({ name: clan.name, members: clan.members.length }, 201);
+      return json({
+        name: clan.name, chapterName: clan.chapterName, schoolLabel: clan.schoolLabel,
+        members: totalApproved(clan), chapterSize: clan.chapterSize || null,
+        referralUrl: `${url.origin}/fomo/referral/${clan.code}`,
+      }, 201);
     }
 
     // ---------------- Accounts ----------------
