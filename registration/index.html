@@ -66,6 +66,30 @@ h1{font-size:clamp(2rem,5.4vw,3rem); font-weight:800; letter-spacing:-0.04em; li
 .live i{width:6px; height:6px; border-radius:50%; background:var(--green); animation:ping 2.2s ease-out infinite;}
 @keyframes ping{0%{box-shadow:0 0 0 0 rgba(46,212,122,.55);}70%{box-shadow:0 0 0 7px rgba(46,212,122,0);}100%{box-shadow:0 0 0 0 rgba(46,212,122,0);}}
 
+/* earnings sliders */
+.calc{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:26px 28px; text-align:left;}
+@media (max-width:620px){ .calc{padding:20px;} }
+.calc-kick{font-size:0.68rem; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-faint); margin-bottom:12px;}
+.calc-top{display:flex; align-items:baseline; justify-content:space-between; gap:14px; flex-wrap:wrap;}
+.calc-amt{font-size:3rem; font-weight:800; color:var(--green); letter-spacing:-0.045em; line-height:1;}
+.calc-size{text-align:right;}
+.calc-size .v{font-size:1.5rem; font-weight:800; color:var(--white); letter-spacing:-0.035em; line-height:1;}
+.calc-size .k{font-size:0.76rem; color:var(--text-faint); margin-top:5px;}
+@media (max-width:480px){ .calc-amt{font-size:2.4rem;} .calc-size{text-align:left;} }
+.slider{-webkit-appearance:none; appearance:none; width:100%; height:5px; border-radius:99px; outline:none; margin:20px 0 0; cursor:pointer; background:var(--surface-3);}
+.slider::-webkit-slider-thumb{-webkit-appearance:none; width:22px; height:22px; border-radius:50%; background:var(--white); border:4px solid var(--blue); cursor:grab; box-shadow:0 3px 12px rgba(0,0,0,.55);}
+.slider::-moz-range-thumb{width:16px; height:16px; border-radius:50%; background:var(--white); border:4px solid var(--blue); cursor:grab;}
+.slider.alt::-webkit-slider-thumb{border-color:var(--gold);}
+.slider.alt::-moz-range-thumb{border-color:var(--gold);}
+.ends{display:flex; justify-content:space-between; font-size:0.72rem; color:var(--text-faint); margin-top:8px;}
+.calc-note{font-size:0.84rem; color:var(--text-faint); margin-top:12px; line-height:1.5;}
+.calc-note b{color:var(--text-dim); font-weight:700;}
+.calc-live{display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-size:0.82rem; color:var(--text-faint); margin-top:16px; padding-top:16px; border-top:1px solid var(--border);}
+.calc-sub{margin-top:18px; padding-top:20px; border-top:1px solid var(--border);}
+.calc-sub .calc-kick{color:var(--gold);}
+.calc-sub .calc-amt{font-size:2rem; color:var(--gold);}
+.calc-sub .calc-size .v{font-size:1.15rem;}
+
 /* share */
 .share{display:flex; gap:10px; margin-top:14px; flex-wrap:wrap;}
 .sbtn{flex:1; min-width:170px; display:inline-flex; align-items:center; justify-content:center; gap:9px;
@@ -166,7 +190,18 @@ const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&
 const { schoolColors, glyphFor } = GreekData;
 
 const APP_URL = 'https://apps.apple.com/us/app/fomo-never-miss-out/id6741115427';
-const PRIZE = 500;
+
+// What a chapter earns scales with how many of them join, so the figure on the
+// page is that chapter's own rather than a flat number that fits nobody.
+const PER_MEMBER = 6.25;
+const REFERRAL_PCT = 0.20;
+const MIN_SIZE = 15;
+const MAX_SIZE = 500;
+const payout = (n) => Math.round(n * PER_MEMBER);
+const referral = (n) => Math.round(n * PER_MEMBER * REFERRAL_PCT);
+const clampSize = (n) => Math.max(MIN_SIZE, Math.min(MAX_SIZE, Math.round(Number(n) || 0) || MIN_SIZE));
+const usd = (v) => '$' + v.toLocaleString('en-US');
+let PRIZE = payout(MIN_SIZE);
 
 const ref = (new URLSearchParams(location.search).get('ref') || '').toLowerCase();
 
@@ -196,8 +231,10 @@ function render(c) {
   const left = Math.max(0, goal - have);
   const pct = goal ? Math.min(100, Math.round((have / goal) * 100)) : 0;
   const hit = goal > 0 && have >= goal;
+  const startSize = clampSize(size || MIN_SIZE);
+  PRIZE = payout(startSize);
   const link = c.referralUrl;
-  const shareMsg = `We're getting ${c.chapterName} paid $${PRIZE} by fomo — we just need ${left || 'a few'} more of us on the app. Takes 2 minutes: ${link}`;
+  const shareMsg = `We're getting ${c.chapterName} paid by fomo — every one of us who signs up is worth $${PER_MEMBER.toFixed(2)} to the house. Takes 2 minutes: ${link}`;
 
   $('page').innerHTML = `
     <header class="hero">
@@ -206,23 +243,30 @@ function render(c) {
       <h1>${esc(c.chapterName)}</h1>
       <p class="school">${esc(c.schoolLabel)}</p>
 
-      <div class="counter">
-        <div class="c-top">
-          <div>
-            <div class="c-num">${have}<small> of ${goal || '—'}</small></div>
-            <div class="c-lab">members on fomo${size ? ` · goal is 80% of ${size} actives` : ''}</div>
-          </div>
-          <div class="c-prize">
-            <div class="amt">$${PRIZE}</div>
-            <div class="k">${hit ? 'unlocked' : 'to the chapter at the goal'}</div>
-          </div>
+      <div class="calc">
+        <div class="calc-kick">What your chapter earns</div>
+        <div class="calc-top">
+          <div class="calc-amt" id="calc-amt">$0</div>
+          <div class="calc-size"><div class="v" id="calc-size">0</div><div class="k">members in your chapter</div></div>
         </div>
-        <div class="bar${hit ? ' done' : ''}"><span id="fill"></span></div>
-        <div class="c-note">
+        <input type="range" class="slider" id="sl-main" min="${MIN_SIZE}" max="${MAX_SIZE}" step="1" value="${startSize}" aria-label="Chapter size">
+        <div class="ends"><span>${MIN_SIZE}</span><span>${MAX_SIZE}</span></div>
+        <div class="calc-note"><b>$${PER_MEMBER.toFixed(2)}</b> for every member of the house who joins.</div>
+
+        <div class="calc-sub">
+          <div class="calc-kick">Chapter referral rewards</div>
+          <div class="calc-top">
+            <div class="calc-amt" id="ref-amt">$0</div>
+            <div class="calc-size"><div class="v" id="ref-size">0</div><div class="k">members in the chapter you refer</div></div>
+          </div>
+          <input type="range" class="slider alt" id="sl-ref" min="${MIN_SIZE}" max="${MAX_SIZE}" step="1" value="${MIN_SIZE}" aria-label="Size of the chapter you refer">
+          <div class="ends"><span>${MIN_SIZE}</span><span>${MAX_SIZE}</span></div>
+          <div class="calc-note">Bring another house onto fomo campus and you earn <b>${Math.round(REFERRAL_PCT * 100)}%</b> of what they earn, on top of your own.</div>
+        </div>
+
+        <div class="calc-live">
           <span class="live"><i></i>Updates live</span>
-          <span>${hit
-            ? 'Goal cleared. The fomo team confirms it and the money follows.'
-            : `<b style="color:var(--white)">${left}</b> more and the house gets paid.`}</span>
+          <span>${have} of ${goal || '—'} on fomo so far${hit ? ' · goal cleared' : left ? ` · ${left} to go` : ''}</span>
         </div>
         <div class="share">
           <button class="sbtn" id="copy-link">
@@ -240,12 +284,12 @@ function render(c) {
     <section class="sec">
       <h2>What this is.</h2>
       <p class="lede">fomo is a trading app. <b>${esc(c.chapterName)}</b> is in Greek Wars — chapters across the country racing to get their house on the app.</p>
-      <p class="lede">Once <b>${goal || '80%'}</b> of the chapter is on fomo, <b>$${PRIZE} goes to the house</b>. Not to one person, not to whoever signs up first — to the chapter. After that there are three more tiers, up to $2,000. On top of that you're all trading against each other, and the board is public.</p>
+      <p class="lede">Every member of the house who joins is worth <b>$${PER_MEMBER.toFixed(2)}</b> to the chapter — <b><span data-prize>$0</span> for a house your size</b>. Not to one person, not to whoever signs up first: to the chapter. On top of that you're all trading against each other, and the board is public.</p>
     </section>
 
     <section class="sec" id="join">
       <h2>Join your chapter.</h2>
-      <p class="lede">Download fomo, then drop your username below so you count toward the ${goal || 'goal'}.</p>
+      <p class="lede">Download fomo, then drop your username below so you count toward the house.</p>
       <div class="card" id="joincard">
         <div class="f">
           <label for="j-user">Your fomo username</label>
@@ -276,14 +320,14 @@ function render(c) {
     </section>
 
     <section class="sec">
-      <h2>How the $${PRIZE} works.</h2>
+      <h2>How the money works.</h2>
       <div class="steps">
         <div class="stp"><div class="no">01</div><div><h4>Everyone downloads fomo</h4><p>Each member makes an account and submits their username on this page. It takes about two minutes.</p></div></div>
         <div class="stp"><div class="no">02</div><div><h4>We approve each one</h4><p>The fomo team checks each username against a real account. Approved members move the counter above — usually same day.</p></div></div>
-        <div class="stp"><div class="no">03</div><div><h4>The counter hits ${goal || 'the goal'}</h4><p>That's 80% of your ${size || 'active'} actives. The moment it lands, the chapter qualifies.</p></div></div>
-        <div class="stp"><div class="no">04</div><div><h4>$${PRIZE} goes to the chapter</h4><p>Wired to the chapter account through your treasurer within 7 business days of confirmation, plus a crate of fomo gear to the house.</p></div></div>
+        <div class="stp"><div class="no">03</div><div><h4>The total climbs</h4><p>Every approved member adds $${PER_MEMBER.toFixed(2)}. The counter on this page moves as they land.</p></div></div>
+        <div class="stp"><div class="no">04</div><div><h4>The chapter gets paid</h4><p><span data-prize>$0</span> for a house your size, wired to the chapter account through your treasurer within 7 business days of confirmation, plus a crate of fomo gear to the house.</p></div></div>
       </div>
-      <p class="lede" style="margin-top:18px;">Who trades best is a separate contest. The $${PRIZE} is for getting the house on the app — <a href="/fomo/prizes/" style="color:var(--blue-dim);font-weight:600;">see every tier</a>.</p>
+      <p class="lede" style="margin-top:18px;">Who trades best is a separate contest. This money is for getting the house on the app — <a href="/fomo/prizes/" style="color:var(--blue-dim);font-weight:600;">see every tier</a>.</p>
     </section>
 
     <section class="sec">
@@ -294,7 +338,7 @@ function render(c) {
         <details><summary><span>Do I have to trade, or put money in?</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
           <div class="ans"><b>No.</b> You count toward the chapter's goal as soon as your account is approved. There is no minimum deposit and no requirement to place a single trade. If you do want to trade, that is your call and your risk.</div></details>
         <details><summary><span>What if I lose money trading?</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
-          <div class="ans">That is a real possibility and we are not going to pretend otherwise — trading involves risk and you can lose what you put in. It has no effect on the chapter's $${PRIZE}, which depends only on how many of you are signed up.</div></details>
+          <div class="ans">That is a real possibility and we are not going to pretend otherwise — trading involves risk and you can lose what you put in. It has no effect on what the chapter earns, which depends only on how many of you are signed up.</div></details>
         <details><summary><span>How long does this take?</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
           <div class="ans">Signing up is about two minutes. Approval is usually same day. The chapters that get there almost always do it in one push — one announcement at chapter, link in the group chat, done inside a week.</div></details>
         <details><summary><span>What if we do not reach ${goal || 'the goal'}?</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
@@ -304,7 +348,24 @@ function render(c) {
       </div>
     </section>`;
 
-  requestAnimationFrame(() => { const f = $('fill'); if (f) f.style.width = pct + '%'; });
+  // One handler keeps the amount, the member count and every other money
+  // figure on the page pointing at the same number.
+  const paintMain = () => {
+    const v = clampSize($('sl-main').value);
+    PRIZE = payout(v);
+    $('calc-amt').textContent = usd(PRIZE);
+    $('calc-size').textContent = v.toLocaleString('en-US');
+    document.querySelectorAll('[data-prize]').forEach((el) => { el.textContent = usd(PRIZE); });
+  };
+  const paintRef = () => {
+    const v = clampSize($('sl-ref').value);
+    $('ref-amt').textContent = usd(referral(v));
+    $('ref-size').textContent = v.toLocaleString('en-US');
+  };
+  $('sl-main').addEventListener('input', paintMain);
+  $('sl-ref').addEventListener('input', paintRef);
+  paintMain(); paintRef();
+
   $('copy-link').addEventListener('click', () => copyTo($('copy-link'), link, 'Copied'));
   $('copy-msg').addEventListener('click', () => copyTo($('copy-msg'), shareMsg, 'Copied'));
   $('j-go').addEventListener('click', () => submit(c));
@@ -351,7 +412,7 @@ function showDone(c, data) {
       <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
       <h3>You’re counted.</h3>
       <p>We’ll approve you into <b style="color:var(--white)">${esc(c.chapterName)}</b> shortly — usually same day. The counter at the top moves the moment we do.</p>
-      <p style="margin-bottom:14px;">Now send this to the group chat. Everyone who joins through it moves the house closer to the $${PRIZE}.</p>
+      <p style="margin-bottom:14px;">Now send this to the group chat. Everyone who joins through it adds $${PER_MEMBER.toFixed(2)} to the house.</p>
       <div class="linkbox">
         <input type="text" id="reflink" value="${esc(link)}" readonly spellcheck="false" aria-label="Your chapter link">
         <button class="sbtn" id="copy-done" style="flex:0 0 auto;">
