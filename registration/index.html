@@ -176,8 +176,10 @@ function copyTo(btn, text, okLabel) {
 
 function render(c) {
   const known = !!c;
-  const size = known ? (c.chapterSize || 0) : 0;
-  const goal = known ? (c.goal || 0) : 0;
+  const EG_GOAL = 100;                                   // the example tracker
+  const EG_SIZE = Math.round(EG_GOAL / 0.8);             // 125 actives -> goal 100
+  const size = known ? (c.chapterSize || 0) : EG_SIZE;
+  const goal = known ? (c.goal || 0) : EG_GOAL;
   const have = known ? (c.members || 0) : 0;
   const left = Math.max(0, goal - have);
   const pct = goal ? Math.min(100, Math.round((have / goal) * 100)) : 0;
@@ -201,15 +203,6 @@ function render(c) {
     <h1>${known ? esc(c.chapterName) : 'Get your chapter paid.'}</h1>
     <p class="school">${known ? esc(c.schoolLabel) : 'Every member of the house who joins is worth money to the chapter.'}</p>
 
-    ${known ? `<div class="card">
-      <div class="trk-top">
-        <div class="trk-num">${have}<small> of ${goal}</small></div>
-        <div class="trk-goal">${hit ? `Goal cleared — ${usd(payout(have))} earned` : `${left} more to unlock ${usd(unlock)}`}</div>
-      </div>
-      <div class="bar${hit ? ' done' : ''}"><span id="fill"></span></div>
-      <div class="trk-note">80% of ${size} active members needed. Updates live.</div>
-    </div>` : ''}
-
     <div class="card">
       <div class="sl-block">
         <div class="sl-head">
@@ -229,6 +222,16 @@ function render(c) {
         <div class="ends"><span>${MIN_SIZE}</span><span>${MAX_SIZE}</span></div>
         <div class="sl-note">Refer another chapter to fomo campus and you earn <b>${Math.round(REFERRAL_PCT * 100)}%</b> of what they earn, on top of your own.</div>
       </div>
+    </div>
+
+    <div class="card">
+      ${known ? '' : '<div class="sl-lab" style="margin-bottom:14px;">Example chapter</div>'}
+      <div class="trk-top">
+        <div class="trk-num">${have}<small> of ${goal}</small></div>
+        <div class="trk-goal">${hit ? `Goal cleared — ${usd(payout(have))} earned` : `${left} more to unlock ${usd(unlock)}`}</div>
+      </div>
+      <div class="bar${hit ? ' done' : ''}"><span id="fill"></span></div>
+      <div class="trk-note">80% of ${size} active members needed. Updates live.</div>
     </div>
 
     ${known ? `<div class="card">
