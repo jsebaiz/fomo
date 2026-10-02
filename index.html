@@ -65,6 +65,26 @@ h1,h2,h3{font-family:'Lora',serif; font-weight:600;}
 .desktop-icon span{color:#fff; font-size:0.82rem; font-weight:700; text-shadow:0 1px 4px rgba(0,0,0,.6); padding:2px 8px; border-radius:4px;}
 .desktop-icon.selected span{background:var(--amber-deep);}
 
+/* Signature — the name sits on the desktop and opens contact */
+.signature{position:fixed; left:38px; bottom:30px; z-index:6; display:block; text-align:left;
+  background:none; border:none; margin:0 0 0 -14px; padding:10px 16px 12px; border-radius:16px;
+  font-family:'Lora',serif; cursor:pointer; -webkit-tap-highlight-color:transparent;
+  transition:background .2s ease, transform .2s ease;}
+.signature .nm{display:block; font-size:clamp(2.9rem,8.4vw,6.4rem); line-height:0.84; font-weight:700;
+  color:#FBF3E7; letter-spacing:-0.035em;
+  text-shadow:0 4px 22px rgba(35,18,4,.55), 0 1px 3px rgba(35,18,4,.45);}
+.signature .hint{display:inline-flex; align-items:center; gap:6px; margin-top:14px;
+  font-family:'Nunito',sans-serif; font-size:0.8rem; font-weight:700; color:#FBF3E7;
+  background:rgba(40,25,12,0.34); border:1px solid rgba(255,255,255,0.22); backdrop-filter:blur(8px);
+  padding:6px 13px; border-radius:999px; opacity:.82;
+  transition:opacity .2s ease, background .2s ease, transform .2s ease;}
+.signature .hint svg{width:12px; height:12px; transition:transform .2s ease;}
+.signature:hover{background:rgba(255,255,255,0.10); transform:translateY(-2px);}
+.signature:hover .hint, .signature:focus-visible .hint{opacity:1; background:rgba(40,25,12,0.5);}
+.signature:hover .hint svg{transform:translateX(3px);}
+.signature:focus{outline:none;}
+.signature:focus-visible{background:rgba(255,255,255,0.14); box-shadow:0 0 0 3px rgba(255,255,255,.5);}
+
 /* Window overlay */
 .window-overlay{position:fixed; inset:0; z-index:50; display:flex; align-items:center; justify-content:center; padding:24px;}
 .window-overlay[hidden]{display:none;}
@@ -130,7 +150,10 @@ a{color:inherit;}
   .icons-row{padding:0 4vw; top:52px;}
   .desktop-icon svg{width:48px; height:44px;}
   .window-body{padding:22px 20px;}
+  .signature{left:18px; bottom:20px; padding:8px 12px 10px;}
+  .signature .hint{margin-top:10px; font-size:0.74rem; padding:5px 11px;}
 }
+@media (max-height:520px){ .signature .hint{display:none;} }
 </style>
 </head>
 <body>
@@ -167,6 +190,14 @@ a{color:inherit;}
       <span>contact</span>
     </button>
   </div>
+
+  <button class="signature" id="signature" data-window="contact" aria-label="Open contact">
+    <span class="nm">jesse</span>
+    <span class="nm">baizer</span>
+    <span class="hint">say hello
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </span>
+  </button>
 </div>
 
 <div class="window-overlay" id="window-overlay" hidden>
@@ -264,6 +295,9 @@ function closeWindow(){
 icons.forEach((icon) => {
   icon.addEventListener('click', () => openWindow(icon.dataset.window));
 });
+// The name on the desktop is a second door to the same contact window, so it
+// highlights the contact folder exactly as clicking the folder would.
+document.getElementById('signature').addEventListener('click', () => openWindow('contact'));
 document.getElementById('window-scrim').addEventListener('click', closeWindow);
 document.querySelectorAll('[data-close]').forEach((btn) => btn.addEventListener('click', closeWindow));
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeWindow(); });
