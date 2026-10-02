@@ -144,16 +144,17 @@ const money = (n) => '$' + Math.round(n).toLocaleString('en-US');
 
 // Mirrors the stops on /fomo/prizes. Kept in sync by hand — if the amounts
 // there change, change them here too.
+const PER_MEMBER = 6.25;
 const STOPS = [
-  { n: 1, name: 'Onboarded',  pct: 80,  cash: 500 },
-  { n: 2, name: 'Locked in',  pct: 90,  cash: 250 },
-  { n: 3, name: 'Full house', pct: 100, cash: 500 },
+  { n: 1, name: 'Onboarded',  pct: 80 },
+  { n: 2, name: 'Locked in',  pct: 90 },
+  { n: 3, name: 'Full house', pct: 100 },
 ];
 const AMB = [
-  { n: 1, name: 'Rep',             at: 1,   cash: 0,   rate: 5 },
-  { n: 2, name: 'Campus lead',     at: 50,  cash: 250, rate: 6 },
-  { n: 3, name: 'Campus director', at: 150, cash: 750, rate: 8 },
-  { n: 4, name: 'Intern',          at: 300, cash: 1500, rate: 8 },
+  { n: 1, name: 'Rep',             at: 10000,  cash: 0,    rate: 5 },
+  { n: 2, name: 'Campus lead',     at: 50000,  cash: 250,  rate: 6 },
+  { n: 3, name: 'Campus director', at: 150000, cash: 750,  rate: 8 },
+  { n: 4, name: 'Intern',          at: 400000, cash: 1500, rate: 8 },
 ];
 const needFor = (pct, size) => Math.ceil((pct / 100) * size);
 function chapterStop(members, size) {
@@ -161,7 +162,7 @@ function chapterStop(members, size) {
   STOPS.forEach((s) => { if (size && members >= needFor(s.pct, size)) best = s.n; });
   return best;
 }
-const chapterEarned = (n) => STOPS.reduce((t, s) => t + (s.n <= n ? s.cash : 0), 0);
+const chapterEarned = (members) => Math.round(members * PER_MEMBER);
 function ambEarnings(count) {
   let total = 0;
   AMB.forEach((s, i) => {
@@ -234,14 +235,14 @@ function renderChapter(d) {
         </div>
       </div>
       <div class="bar${pct >= 80 ? ' done' : ''}"><span style="width:0%" id="fill"></span></div>
-      <div class="marks"><span>0</span><span>80% — $500</span><span>90%</span><span>100%</span></div>
+      <div class="marks"><span>0</span><span>80% — Onboarded</span><span>90%</span><span>100%</span></div>
       <div class="next-line">${next
-        ? `<b>${away}</b> more ${away === 1 ? 'member' : 'members'} to reach <b>${esc(next.name)}</b> and unlock ${money(chapterEarned(next.n))} total.`
-        : `Every counted stop is cleared. <b>${money(chapterEarned(stop))}</b> earned.`}</div>
+        ? `<b>${away}</b> more ${away === 1 ? 'member' : 'members'} to reach <b>${esc(next.name)}</b> — and <b>${money(chapterEarned(needFor(next.pct, size)))}</b> at that point.`
+        : `Every counted stop is cleared. <b>${money(chapterEarned(c.members))}</b> earned so far.`}</div>
     </div>
 
     <div class="grid">
-      <div class="stat"><div class="v ${stop ? 'green' : ''}">${money(chapterEarned(stop))}</div><div class="k">Earned so far</div></div>
+      <div class="stat"><div class="v ${c.members ? 'green' : ''}">${money(chapterEarned(c.members))}</div><div class="k">Earned so far · $${PER_MEMBER.toFixed(2)} a head</div></div>
       <div class="stat"><div class="v">${stop ? 'Stop ' + String(stop).padStart(2, '0') : '—'}</div><div class="k">${stop ? esc((STOPS.find((s) => s.n === stop) || {}).name) : 'Not there yet'}</div></div>
       <div class="stat"><div class="v ${c.pending ? 'gold' : ''}">${c.pending}</div><div class="k">Waiting on approval</div></div>
       <div class="stat"><div class="v blue">${away || 0}</div><div class="k">${next ? 'To ' + esc(next.name) : 'Nothing left to count'}</div></div>
@@ -326,7 +327,7 @@ function renderAmbassador(d) {
 
     <div class="link-card">
       <h3>Your referral link</h3>
-      <p>Send this to any chapter on campus. Every member they onboard counts as one of your signups, and they still get their own $500.</p>
+      <p>Send this to any chapter on campus. Every member they onboard counts as one of your signups, and the house still earns its own $6.25 a head.</p>
       ${copyButton(d.referralUrl)}
       <div class="share">
         <a href="sms:?&body=${encodeURIComponent('Get your chapter paid by fomo — register here: ' + d.referralUrl)}">Send as a text</a>

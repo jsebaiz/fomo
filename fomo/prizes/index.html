@@ -418,17 +418,17 @@ h1{font-size:clamp(2.3rem,5.4vw,3.5rem); font-weight:800; letter-spacing:-0.04em
           <p>Clear stop one within <b id="bonus-days">14</b> days of registering and we add a speed bonus on top. Most chapters that hit 80% do it in the first two weeks or never.</p>
           <ul>
             <li>Clock starts the day your registration is <b>approved</b>.</li>
-            <li>Paid together with your stop-one $500.</li>
+            <li>Paid on top of what the house has already earned.</li>
             <li>One per chapter, ever.</li>
           </ul>
         </div>
         <div class="bonus">
-          <div class="bonus-top"><h3>Bring another house</h3><div class="amt" id="bonus-ref">+$100</div></div>
-          <p>Refer another chapter and you get paid <b>when they reach stop one</b> — not when they register. A signup that goes nowhere earns nothing.</p>
+          <div class="bonus-top"><h3>Bring another house</h3><div class="amt" id="bonus-ref">20%</div></div>
+          <p>Refer another chapter and you earn <b>a fifth of everything they earn</b>, on top of your own — paid when they reach stop one, not when they register. A signup that goes nowhere earns nothing.</p>
           <ul>
             <li>They name you on step 3 of registration.</li>
-            <li>Capped at <b id="bonus-cap">10</b> per semester — <b id="bonus-capcash">$1,000</b>.</li>
-            <li>Stacks with everything on the roadmap.</li>
+            <li>A 120-member house you refer is <b id="bonus-capcash">$150</b> to you.</li>
+            <li>Capped at <b id="bonus-cap">10</b> chapters per semester.</li>
           </ul>
         </div>
       </div>
@@ -463,7 +463,7 @@ h1{font-size:clamp(2.3rem,5.4vw,3.5rem); font-weight:800; letter-spacing:-0.04em
           <details><summary><span><span class="n">02</span>Your roster size is locked at registration</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
             <div class="ans">The active count you entered is the denominator for every stop. Only the fomo team can change it, and only with proof — a nationals listing or an exec board confirmation. This exists so no chapter clears 100% by declaring itself eight people deep.</div></details>
           <details><summary><span><span class="n">03</span>Stops stack, and each one pays once</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
-            <div class="ans">Clearing 90% pays stop two <b>on top of</b> the $500 you already received — you're not being re-paid, you're being topped up. A stop already paid can't be earned again.</div></details>
+            <div class="ans">The cash is one running number: <b>$6.25 for every approved member</b>, so it climbs with every person who joins rather than jumping at a threshold. What the stops unlock is the gear — each one ships its own crate, once.</div></details>
           <details><summary><span><span class="n">04</span>Dropping back takes nothing away</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
             <div class="ans">If members leave and your percentage falls, <b>you keep everything already paid.</b> Stops above your current level just pause until you're back over the line. We don't claw back.</div></details>
           <details><summary><span><span class="n">05</span>The chapter gets paid, not a person</span><svg class="pm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></summary>
@@ -519,7 +519,7 @@ h1{font-size:clamp(2.3rem,5.4vw,3.5rem); font-weight:800; letter-spacing:-0.04em
 
   <div class="closer">
     <div>
-      <h3>Two minutes to register. $500 to finish.</h3>
+      <h3>Two minutes to register. $6.25 a head after that.</h3>
       <p>One link for the whole chapter, and the bar starts moving the same day.</p>
     </div>
     <a class="cta" href="/fomo/clans/create/">
@@ -978,21 +978,21 @@ const TRACKS = {
     label: 'Chapters', icon: '<path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/>',
     kicker: 'Greek Wars · chapter rewards',
     h1: 'Get your house paid.',
-    lede: 'Get <b>80% of your roster</b> on fomo and we wire the chapter <b>$500</b> and ship a cooler of gear. Four stops, up to <b>$2,000</b>.',
+    lede: 'Every member of the house who joins is worth <b>$6.25</b> to the chapter. Four stops along the way, each one a crate of fomo gear.',
     metric: 'pct', noun: 'stop', unit: 'members',
     stops: [
-      { n: 1, name: 'Onboarded', pct: 80, cash: 500, auto: true, accent: '#516AF6',
+      { n: 1, name: 'Onboarded', pct: 80, cash: 0, auto: true, accent: '#516AF6',
         why: 'The one everybody is aiming at. Four out of five actives holding a fomo account is the point where a chapter stops being a signup list and starts being a trading floor — so it’s where the money starts.',
         loot: [
           { kind: 'cooler',   name: 'The fomo cooler',      qty: '45 qt',     desc: 'A hard cooler in your colours — and the crate itself. Everything else ships packed inside it.', photo: null },
-          { kind: 'giftcard', name: '$100 fomo gift card',  qty: '$100',      desc: 'Loaded and handed to the chapter on top of the $500 wire. Spend it in-app.', photo: null },
+          { kind: 'giftcard', name: '$100 fomo gift card',  qty: '$100',      desc: 'Loaded and handed to the chapter on top of the wire. Spend it in-app.', photo: null },
           { kind: 'hoodie',   name: 'Exec board hoodies',   qty: '×6',   desc: 'Heavyweight, your school mark embroidered on the chest, fomo mark on the sleeve.', photo: null },
           { kind: 'banner',   name: 'Chapter banner',       qty: '3ft × 5ft', desc: 'Your letters over the fomo mark, grommeted for the house.', photo: null },
           { kind: 'stickers', name: 'Sticker & decal pack', qty: '200 pcs',   desc: 'Laptops, bottles, the front door. The one thing here that reaches people who never opened the app.', photo: null },
           { kind: 'card',     name: 'Chapter trading card', qty: '1 of 1',    desc: 'Printed and numbered with your letters, school, rank and member count the day you onboarded. Never reprinted.', photo: null },
         ],
         perks: ['Your house on Greek Village', 'PAID badge on the leaderboard', 'Wired inside 7 business days'] },
-      { n: 2, name: 'Locked in', pct: 90, cash: 250, auto: true, accent: '#23B5D3',
+      { n: 2, name: 'Locked in', pct: 90, cash: 0, auto: true, accent: '#23B5D3',
         why: 'Going from 80 to 90 is the hardest ten points in the program — it means chasing the people who ignored the first three asks. That work is worth paying for separately.',
         loot: [
           { kind: 'tee',    name: 'House tee run',   qty: '×25',  desc: 'A fixed run of 25, sizes split however your exec board wants them — not one per member. A 200-man chapter would be shipping a pallet.', photo: null },
@@ -1000,19 +1000,19 @@ const TRACKS = {
           { kind: 'banner', name: 'Away banner',     qty: '2ft × 3ft', desc: 'A smaller second banner for tailgates and away games.', photo: null },
         ],
         perks: ['Named contact instead of the general inbox', 'Private thread with the fomo team'] },
-      { n: 3, name: 'Full house', pct: 100, cash: 500, auto: true, accent: '#2ED47A',
+      { n: 3, name: 'Full house', pct: 100, cash: 0, auto: true, accent: '#2ED47A',
         why: 'Every single active on the roster. No chapter gets here by accident, and very few get here at all — which is exactly why it’s worth another five hundred.',
         loot: [
           { kind: 'plaque', name: 'Engraved house plaque', qty: '1',    desc: 'Wood and brass — your letters and the date you went full house. Permanent.', photo: null },
           { kind: 'ticket', name: '$500 house fund',       qty: '$500', desc: 'Earmarked for one chapter event. We pay the vendor directly.', photo: null },
         ],
-        perks: ['Running total $1,250', 'Top of the percentage board'] },
-      { n: 4, name: 'Dynasty', pct: 100, hold: 30, cash: 750, auto: false, accent: '#E0B25C',
+        perks: ['Top of the percentage board', 'Every member counted at $6.25'] },
+      { n: 4, name: 'Dynasty', pct: 100, hold: 30, cash: 0, auto: false, accent: '#E0B25C',
         why: 'Hold a full house for thirty straight days. This is the only stop that measures whether the chapter actually stuck with it after the money landed, so it’s the only one confirmed by a person rather than a counter.',
         loot: [
           { kind: 'varsity', name: 'Exec board varsity jackets', qty: '×6', desc: 'Chenille school mark, contrast sleeves, chapter and year down the sleeve.', photo: null },
         ],
-        perks: ['Permanent Greek Wars wall spot', 'First look at every campus program', 'Running total $2,000'] },
+        perks: ['Permanent Greek Wars wall spot', 'First look at every campus program', 'Every crate on the roadmap'] },
     ],
   },
 
@@ -1063,8 +1063,14 @@ const TRACKS = {
   },
 };
 
+// A chapter's cash scales with how many of them join — the same $6.25 a head
+// the chapter page quotes. The four stops are what unlocks the gear, not
+// separate payouts, so there is one money number on the site rather than two.
+const PER_MEMBER = 6.25;
+const chapterCash = (members) => Math.round(members * PER_MEMBER);
+
 // Bonuses apply to the chapter track only.
-const BONUS = { speed: { days: 14, cash: 250 }, referral: { cash: 100, cap: 10 } };
+const BONUS = { speed: { days: 14, cash: 250 }, referral: { pct: 0.20, cap: 10 } };
 
 const money = (n) => '$' + Math.round(n).toLocaleString('en-US');
 
@@ -1164,7 +1170,8 @@ const nextStop = () => STOPS().find((s) => s.auto && s.n > reachedStop());
 // team has to confirm, as long as it has a number rather than a time hold.
 const nextShown = () => nextStop() || STOPS().find((s) => s.n > reachedStop() && !s.hold);
 
-// Cumulative bonus cash through stop n.
+// Cumulative bonus cash through stop n. Chapters earn per head instead, so
+// this only carries weight on the ambassador ladder.
 function earnedBy(n) {
   let t = 0;
   STOPS().forEach((s) => { if (s.n <= n) t += s.cash; });
@@ -1177,7 +1184,9 @@ function ambEarnings(views) {
   TRACKS.ambassadors.stops.forEach((s) => { if (s.auto && views >= s.at) total += s.cash; });
   return total;
 }
-const earnedNow = () => earnedBy(reachedStop());
+const earnedNow = () => (track === 'chapters'
+  ? (selected ? chapterCash(selected.members) : 0)
+  : earnedBy(reachedStop()));
 
 // Stops sit evenly along the track; their true values are wildly uneven and
 // would squash the interesting part into one end.
@@ -1241,8 +1250,8 @@ function renderStatus() {
   const reached = reachedStop(), next = nextStop(), v = scoreNow();
 
   if (track === 'chapters' && !selected) {
-    box.innerHTML = `<div class="stat ghost"><div class="v">$500</div><div class="k">at 80% of your roster</div></div>`
-      + `<div class="stat ghost"><div class="v">${money(earnedBy(4))}</div><div class="k">all four stops</div></div>`;
+    box.innerHTML = `<div class="stat ghost"><div class="v">$${PER_MEMBER.toFixed(2)}</div><div class="k">per member who joins</div></div>`
+      + `<div class="stat ghost"><div class="v">${money(chapterCash(120))}</div><div class="k">a 120-member house</div></div>`;
     return;
   }
   if (track === 'ambassadors' && signups === 0) {
@@ -1281,7 +1290,7 @@ function renderTrack() {
     b.setAttribute('aria-label', `${T().noun} ${s.n}: ${s.name}`);
     const dot = reached >= s.n ? `background:${s.accent};border-color:${s.accent}`
       : (openStop === s.n ? `border-color:${s.accent};color:${s.accent}` : '');
-    const sub = track === 'chapters' ? money(earnedBy(s.n)) : compact(s.at) + ' views';
+    const sub = track === 'chapters' ? s.pct + '% of roster' : compact(s.at) + ' views';
     b.innerHTML = `<div class="dot" style="${dot}">${String(s.n).padStart(2, '0')}</div>`
       + `<div class="st-name">${esc(s.name)}</div><div class="st-cash">${sub}</div>`;
     b.addEventListener('click', () => { openStop = s.n; show('crate'); paintStations(); scrollToStop(s.n); });
@@ -1356,7 +1365,9 @@ function renderRail() {
           <div class="tc-goal">${fmtGoal(s)}</div>
           <div class="tc-name" style="color:${s.accent}">${esc(s.name)}</div>
           <div class="tc-sub">${esc(sub)}</div>
-          <div class="tc-cash" style="color:${s.cash ? s.accent : 'var(--text-faint)'}">${s.cash ? '+' + money(s.cash) + (t.metric === 'pct' ? ' \u00b7 ' + money(earnedBy(s.n)) + ' total' : '') : 'Drops only'}${live && isNext ? ` \u00b7 ${away.toLocaleString('en-US')} to go` : ''}</div>
+          <div class="tc-cash" style="color:${s.cash || t.metric === 'pct' ? s.accent : 'var(--text-faint)'}">${t.metric === 'pct'
+            ? (live ? money(chapterCash(need)) + ' at this point' : money(chapterCash(needFor(s))) + ' for a house your size')
+            : (s.cash ? '+' + money(s.cash) : 'Drops only')}${live && isNext ? ` \u00b7 ${away.toLocaleString('en-US')} to go` : ''}</div>
         </div>
         <div class="tc-items">${s.loot.map((l) => `<div class="ti">
           <div class="ti-art">${l.photo ? `<img src="${esc(l.photo)}" alt="${esc(l.name)}" loading="lazy">` : ART[l.kind](c)}</div>
@@ -1537,11 +1548,12 @@ function chapterTier(c) {
   });
   return best;
 }
-const chapterEarned = (n) => { let t = 0; TRACKS.chapters.stops.forEach((s) => { if (s.n <= n) t += s.cash; }); return t; };
+// A chapter's earnings are its approved headcount, not its stop.
+const chapterEarned = (c) => chapterCash(c.members);
 
 function paintTicker() {
   const paid = chapters.filter((c) => chapterTier(c) >= 1).length;
-  const out = chapters.reduce((s, c) => s + chapterEarned(chapterTier(c)), 0);
+  const out = chapters.reduce((s, c) => s + chapterEarned(c), 0);
   $('ticker').hidden = false;
   $('ticker').innerHTML =
     `<div class="tick"><span class="dot"></span><b>${chapters.length}</b><span>chapters in</span></div>`
@@ -1565,7 +1577,7 @@ function rowHtml(c) {
       <div class="sub">${esc(c.schoolLabel)} · ${c.members} of ${c.chapterSize} on fomo</div></div>
     <div class="rprog"><div class="bar${tone}"><span style="width:${pct}%"></span></div><div class="pct${tone}">${pct}%</div></div>
     <div class="gap${next ? '' : ' max'}">${next ? `<b>${away}</b> more → ${esc(next.name)}` : 'Every auto stop cleared'}</div>
-    <div class="earned"><div class="e${t ? '' : ' zero'}">${money(chapterEarned(t))}</div>
+    <div class="earned"><div class="e${c.members ? '' : ' zero'}">${money(chapterEarned(c))}</div>
       <div class="el">${t ? 'Stop ' + String(t).padStart(2, '0') : 'Climbing'}</div></div>
   </div>`;
 }
@@ -1585,9 +1597,9 @@ $('board-filter').querySelectorAll('button').forEach((b) => {
 
 $('bonus-speed').textContent = '+' + money(BONUS.speed.cash);
 $('bonus-days').textContent = BONUS.speed.days;
-$('bonus-ref').textContent = '+' + money(BONUS.referral.cash);
+$('bonus-ref').textContent = Math.round(BONUS.referral.pct * 100) + '%';
 $('bonus-cap').textContent = BONUS.referral.cap;
-$('bonus-capcash').textContent = money(BONUS.referral.cash * BONUS.referral.cap);
+$('bonus-capcash').textContent = money(Math.round(chapterCash(120) * BONUS.referral.pct));
 
 setTrack('chapters');
 load();

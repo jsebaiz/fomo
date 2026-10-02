@@ -184,9 +184,10 @@ function render(c) {
   const hit = goal > 0 && have >= goal;
   // With no chapter, open the calculator on a mid-sized house rather than the
   // floor — it reads as an example, not as a lowball.
-  // Open the slider on the goal, not the full roster, so it agrees with the
-  // "unlock $X" figure in the tracker directly above it.
-  const startSize = clampSize(known ? (goal || size || MIN_SIZE) : 100);
+  // Open the slider on what the chapter has actually done — its headcount if
+  // anyone has joined, otherwise the goal — so it agrees with the figure in
+  // the tracker directly above it instead of showing a second number.
+  const startSize = clampSize(known ? (have || goal || size || MIN_SIZE) : 100);
   const unlock = payout(goal || startSize);
   const link = known ? c.referralUrl : '';
   const org = known ? orgFor(c.chapterName) : null;
@@ -203,7 +204,7 @@ function render(c) {
     ${known ? `<div class="card">
       <div class="trk-top">
         <div class="trk-num">${have}<small> of ${goal}</small></div>
-        <div class="trk-goal">${hit ? `Goal cleared — ${usd(unlock)} unlocked` : `${left} more to unlock ${usd(unlock)}`}</div>
+        <div class="trk-goal">${hit ? `Goal cleared — ${usd(payout(have))} earned` : `${left} more to unlock ${usd(unlock)}`}</div>
       </div>
       <div class="bar${hit ? ' done' : ''}"><span id="fill"></span></div>
       <div class="trk-note">80% of ${size} active members needed. Updates live.</div>
