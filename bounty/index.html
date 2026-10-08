@@ -1,159 +1,247 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-fomo-theme="dark" data-fomo-campaign-colorway="ink">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
 <title>fomo / bounty</title>
 <meta name="description" content="Post-onboarding bounties for fomo campus chapters.">
+<meta name="theme-color" content="#0B091F">
 <link rel="icon" href="/fomo-favicon.svg" type="image/svg+xml">
 <!-- The campus house tokens, shipped verbatim from the brand kit. Every colour
-     on this page is a var() from this file; nothing is invented locally. -->
+     here is a var() from that file; nothing is invented locally. The page runs
+     the kit's own ink campaign colourway: #0B091F canvas, white display type,
+     #ACB8F9 emphasis, white logo. -->
 <link rel="stylesheet" href="/assets/css/fomo-tokens.css">
 <style>
-/* Aeonik is fomo's house typeface, self-hosted from the kit's own files. */
 @font-face{font-family:Aeonik; src:url('/assets/fonts/Aeonik-Regular.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap;}
 @font-face{font-family:Aeonik; src:url('/assets/fonts/Aeonik-Medium.woff2')  format('woff2'); font-weight:500; font-style:normal; font-display:swap;}
 @font-face{font-family:Aeonik; src:url('/assets/fonts/Aeonik-Bold.woff2')    format('woff2'); font-weight:700; font-style:normal; font-display:swap;}
 
+/* The kit's dark button pair, from its component spec: translucent fill behind
+   a 12px blur, #CBD0EB hairline at 10%, 12px radius, bold. No glow, ever. */
+:root{
+  --btn-primary:rgba(96,106,247,.50);
+  --btn-secondary:rgba(255,255,255,.12);
+  --btn-hairline:rgba(203,208,235,.10);
+  --btn-radius:12px;
+  --panel:rgba(255,255,255,.04);
+}
+
 *{box-sizing:border-box;}
 [hidden]{display:none !important;}
-html{scroll-behavior:smooth;}
-body{margin:0; background:var(--fomo-canvas); color:var(--fomo-text);
+html{scroll-behavior:smooth; background:var(--fomo-ink);}
+body{margin:0; min-height:100vh;
+  background:var(--fomo-campaign-background); background-attachment:fixed;
+  color:var(--fomo-campaign-body);
   font-family:var(--fomo-font-family); font-weight:var(--fomo-weight-medium);
   font-size:17px; line-height:1.55; -webkit-font-smoothing:antialiased;}
-button{font-family:inherit;}
-a{color:var(--fomo-link);}
+button{font-family:inherit; color:inherit;}
 svg,img{display:block;}
-@media (prefers-reduced-motion:reduce){ *{transition:none !important; scroll-behavior:auto;} }
+::selection{background:var(--fomo-purple); color:var(--fomo-white);}
+:focus-visible{outline:2px solid var(--fomo-campaign-emphasis); outline-offset:3px;}
 
-/* kit layout: 1160 max, 24–40 gutters, 64–80 desktop section spacing */
 .wrap{max-width:1160px; margin:0 auto; padding:0 40px;}
 @media (max-width:760px){ .wrap{padding:0 24px;} }
 
-.bar{border-bottom:1px solid var(--fomo-line);}
-.bar-in{max-width:1160px; margin:0 auto; padding:20px 40px; display:flex; align-items:center; gap:14px;}
-@media (max-width:760px){ .bar-in{padding:16px 24px;} }
-.lockup{display:flex; align-items:baseline; gap:9px; text-decoration:none;}
-.lockup img{width:86px; height:auto;}   /* wordmark artwork, never set as type */
-.lockup span{font-size:1.02rem; font-weight:var(--fomo-weight-medium); color:var(--fomo-muted);}
+/* ---- lockup: campus mark (cap + eyes) beside the fomo wordmark ---- */
+.bar{border-bottom:1px solid var(--fomo-line); position:relative; z-index:2;}
+.bar-in{max-width:1160px; margin:0 auto; padding:18px 40px; display:flex; align-items:center; gap:13px;}
+@media (max-width:760px){ .bar-in{padding:15px 24px; gap:10px;} }
+.lockup{display:flex; align-items:center; gap:11px; text-decoration:none;}
+.mark{width:46px; height:auto; color:var(--fomo-pale); flex-shrink:0;}
+@media (max-width:760px){ .mark{width:38px;} }
+.mark path{fill:currentColor;}
+/* A blink, every five seconds: the eyes squash and open. The cap never moves,
+   the mark is never recoloured, blurred or rotated. */
+/* Origin sits at 18% of the eye bbox -- the line the cap's brim rests on -- so
+   the cap stays seated on the closed eyes instead of floating over a gap. */
+.mark .eyes{transform-box:fill-box; transform-origin:50% 18%; animation:blink 5s infinite;}
+@keyframes blink{0%,92%{transform:scaleY(1);} 95.2%{transform:scaleY(.08);} 98.4%,100%{transform:scaleY(1);}}
+.lockup .wm{width:76px; height:auto;}
+@media (max-width:760px){ .lockup .wm{width:64px;} }
+.lockup .sub{font-size:1rem; font-weight:var(--fomo-weight-medium); color:var(--fomo-campaign-emphasis); white-space:nowrap;}
 .bar .sp{flex:1;}
-.bar a.lnk{font-size:0.95rem; text-decoration:none; color:var(--fomo-muted);}
-.bar a.lnk:hover{color:var(--fomo-text);}
+.bar a.lnk{font-size:0.94rem; text-decoration:none; color:var(--fomo-campaign-emphasis);}
+.bar a.lnk:hover{color:var(--fomo-campaign-display);}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none !important; scroll-behavior:auto;}
+  .mark .eyes{animation:none;}        /* static poster, per the kit's motion note */
+}
 
-/* kit type: heading 48–72 desktop / 36–48 mobile, leading 1.0–1.1 */
-h1{font-size:clamp(2.25rem,5.4vw,4.1rem); font-weight:var(--fomo-weight-bold); line-height:1.05; letter-spacing:-0.02em; margin:0;}
-h2{font-size:1.4rem; font-weight:var(--fomo-weight-bold); line-height:1.15; letter-spacing:-0.015em; margin:0;}
-h3{font-size:1.02rem; font-weight:var(--fomo-weight-bold); letter-spacing:-0.01em; margin:0;}
-p{margin:0; color:var(--fomo-muted);}
-.eyebrow{font-size:0.74rem; font-weight:var(--fomo-weight-bold); letter-spacing:0.16em; text-transform:uppercase; color:var(--fomo-purple); margin-bottom:18px;}
+h1{font-size:clamp(2.25rem,5.4vw,4.1rem); font-weight:var(--fomo-weight-bold); line-height:1.05;
+   letter-spacing:-0.025em; margin:0; color:var(--fomo-campaign-display);}
+h2{font-size:1.32rem; font-weight:var(--fomo-weight-bold); line-height:1.15; letter-spacing:-0.015em;
+   margin:0; color:var(--fomo-campaign-display);}
+h3{font-size:1.02rem; font-weight:var(--fomo-weight-bold); letter-spacing:-0.01em; margin:0;
+   color:var(--fomo-campaign-display);}
+p{margin:0; color:var(--fomo-campaign-emphasis);}
+.eyebrow{font-size:0.74rem; font-weight:var(--fomo-weight-bold); letter-spacing:0.18em;
+  text-transform:uppercase; color:var(--fomo-purple); margin-bottom:18px;}
 
-.hero{padding:72px 0 0;}
-@media (max-width:760px){ .hero{padding:48px 0 0;} }
-.hero p{font-size:1.12rem; line-height:1.55; max-width:56ch; margin-top:20px;}
+.hero{padding:68px 0 0;}
+@media (max-width:760px){ .hero{padding:44px 0 0;} }
+.hero p{font-size:1.1rem; max-width:54ch; margin-top:18px;}
 
-/* star key — one row, replaces the old ladder section */
-.key{display:flex; margin-top:34px; border:1px solid var(--fomo-line); border-radius:12px; overflow:hidden; background:var(--fomo-light-tint);}
-.key .cell{flex:1 1 0; min-width:0; padding:16px 18px; border-right:1px solid var(--fomo-line);}
+/* ---- the three steps, so the system reads at a glance ---- */
+.steps{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:32px;}
+@media (max-width:640px){ .steps{grid-template-columns:1fr;} }
+.steps div{display:flex; align-items:center; gap:11px; padding:13px 16px;
+  background:var(--panel); border:1px solid var(--fomo-line); border-radius:var(--btn-radius);}
+.steps b{width:23px; height:23px; flex-shrink:0; border-radius:50%; background:var(--fomo-purple);
+  color:var(--fomo-white); font-size:0.78rem; font-weight:var(--fomo-weight-bold);
+  display:flex; align-items:center; justify-content:center;}
+.steps span{font-size:0.92rem; color:var(--fomo-campaign-display);}
+
+/* ---- payout legend ---- */
+.key{display:flex; margin-top:14px; border:1px solid var(--fomo-line);
+  border-radius:var(--btn-radius); overflow:hidden; background:var(--panel);}
+.key .cell{flex:1 1 0; min-width:0; padding:15px 18px; border-right:1px solid var(--fomo-line);}
 .key .cell:last-child{border-right:none;}
-.key .p{font-size:1.2rem; font-weight:var(--fomo-weight-bold); letter-spacing:-0.02em; margin-top:9px;}
-.key .l{font-size:0.78rem; color:var(--fomo-muted); margin-top:2px;}
-/* On a phone the five tiers read better stacked than wrapped 3+2. */
+.key .p{font-size:1.22rem; font-weight:var(--fomo-weight-bold); letter-spacing:-0.02em; margin-top:9px;
+  color:var(--fomo-campaign-display);}
+.key .l{font-size:0.78rem; color:var(--fomo-campaign-emphasis); margin-top:2px;}
 @media (max-width:640px){
   .key{flex-direction:column;}
-  .key .cell{display:flex; align-items:baseline; gap:12px; padding:13px 16px;
+  .key .cell{display:flex; align-items:baseline; gap:12px; padding:12px 16px;
     border-right:none; border-bottom:1px solid var(--fomo-line);}
   .key .cell:last-child{border-bottom:none;}
   .key .p{margin-top:0; margin-left:auto; order:3;}
   .key .l{margin-top:0; order:2;}
 }
-
 .stars{display:inline-flex; gap:3px;}
 .stars svg{width:13px; height:13px;}
 .stars .on{color:var(--fomo-purple);} .stars .off{color:var(--fomo-line);}
 
-/* board */
-.board{padding:64px 0 0;}
-@media (max-width:760px){ .board{padding:44px 0 0;} }
-.tools{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin:22px 0 20px;}
-.tools .fl{display:flex; gap:2px; border:1px solid var(--fomo-line); border-radius:11px; padding:3px; flex-wrap:wrap;}
-.tools .fl button{background:none; border:none; color:var(--fomo-muted); font-weight:var(--fomo-weight-bold); font-size:0.86rem; padding:8px 13px; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;}
-.tools .fl button:hover{color:var(--fomo-text);}
-.tools .fl button.on{background:var(--fomo-action); color:var(--fomo-white);}
-.tools .fl button.on .off{color:var(--fomo-highlight);} .tools .fl button.on .on{color:var(--fomo-white);}
-.tools .n{margin-left:auto; font-size:0.88rem; color:var(--fomo-muted);}
+/* ---- board ---- */
+.board{padding:44px 0 0;}
+@media (max-width:760px){ .board{padding:40px 0 0;} }
+.tools{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin:20px 0 18px;}
+.fl{display:flex; gap:2px; border:1px solid var(--fomo-line); border-radius:11px; padding:3px;}
+.fl button{background:none; border:none; color:var(--fomo-campaign-emphasis);
+  font-weight:var(--fomo-weight-bold); font-size:0.86rem; padding:8px 13px; border-radius:8px;
+  cursor:pointer; display:inline-flex; align-items:center; gap:6px;}
+.fl button:hover{color:var(--fomo-campaign-display);}
+.fl button.on{background:var(--btn-primary); border:1px solid var(--btn-hairline);
+  color:var(--fomo-white); padding:7px 12px;}
+.fl button.on .on{color:var(--fomo-white);} .fl button.on .off{color:var(--fomo-highlight);}
+.starter{background:var(--btn-secondary); border:1px solid var(--btn-hairline);
+  border-radius:var(--btn-radius); color:var(--fomo-campaign-display);
+  font-weight:var(--fomo-weight-bold); font-size:0.86rem; padding:10px 15px; cursor:pointer;}
+.starter:hover{background:var(--btn-primary);}
+.tools .n{margin-left:auto; font-size:0.88rem; color:var(--fomo-campaign-emphasis);}
 @media (max-width:760px){
   .tools .n{margin-left:0;}
-  /* Tighten just enough that all six chips hold one line at 390px. */
-  .tools .fl{flex-wrap:nowrap;}
-  .tools .fl button{padding:8px 9px; gap:4px;}
-  .tools .fl .stars svg{width:11px; height:11px;}
+  .fl{flex-wrap:nowrap;} .fl button{padding:8px 9px; gap:4px;} .fl button.on{padding:7px 8px;}
+  .fl .stars svg{width:11px; height:11px;}
 }
 
 .grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; align-items:start;}
 @media (max-width:980px){ .grid{grid-template-columns:repeat(2,1fr);} }
 @media (max-width:640px){ .grid{grid-template-columns:1fr;} }
-.b{border:1px solid var(--fomo-line); border-radius:12px; background:var(--fomo-canvas); overflow:hidden; transition:border-color .15s ease, background .15s ease;}
+.b{border:1px solid var(--fomo-line); border-radius:var(--btn-radius); background:var(--fomo-dark-surface);
+  overflow:hidden; transition:border-color .15s ease, background .15s ease;}
 .b:hover{border-color:var(--fomo-highlight);}
-.b.on{border-color:var(--fomo-purple); background:var(--fomo-light-tint);}
-.b-top{padding:16px 18px 0; display:flex; align-items:center; justify-content:space-between; gap:10px;}
-.b-pay{font-size:1.05rem; font-weight:var(--fomo-weight-bold); letter-spacing:-0.02em;}
-.b-mid{padding:11px 18px 15px;}
+.b.st-run{border-color:var(--fomo-purple); background:var(--fomo-dark-raised);}
+.b.st-sent{border-color:var(--fomo-highlight); background:var(--fomo-dark-raised);}
+.b-top{padding:15px 17px 0; display:flex; align-items:center; justify-content:space-between; gap:10px;}
+.b-pay{font-size:1.06rem; font-weight:var(--fomo-weight-bold); letter-spacing:-0.02em;
+  color:var(--fomo-campaign-display);}
+.b-mid{padding:10px 17px 14px;}
 .b-mid h3{margin-bottom:5px;}
 .b-mid p{font-size:0.88rem; line-height:1.5;}
-.b-act{border-top:1px solid var(--fomo-line); padding:10px 18px; display:flex; align-items:center; gap:10px;}
-.b-act button{background:none; border:none; cursor:pointer; font-family:inherit; font-size:0.84rem; font-weight:var(--fomo-weight-bold); color:var(--fomo-muted); display:inline-flex; align-items:center; gap:8px; padding:3px 0;}
-.b-act button:hover{color:var(--fomo-text);}
-.bx{width:17px; height:17px; border-radius:5px; border:1.5px solid var(--fomo-line); display:flex; align-items:center; justify-content:center; flex-shrink:0;}
-.bx svg{width:10px; height:10px; color:var(--fomo-white); opacity:0;}
-.b.on .bx{background:var(--fomo-purple); border-color:var(--fomo-purple);}
-.b.on .bx svg{opacity:1;}
-.b.on .b-act button.pk{color:var(--fomo-text);}
-.b-act .mo{margin-left:auto; color:var(--fomo-link);}
-.b-act .mo svg{width:11px; height:11px; transition:transform .2s ease;}
-.b.open .mo svg{transform:rotate(180deg);}
-.b-brief{border-top:1px solid var(--fomo-line); padding:14px 18px 16px; background:var(--fomo-light-tint);}
-.b-brief dl{margin:0; display:grid; grid-template-columns:72px 1fr; gap:8px 12px;}
-.b-brief dt{font-size:0.68rem; font-weight:var(--fomo-weight-bold); letter-spacing:0.1em; text-transform:uppercase; color:var(--fomo-muted); padding-top:3px;}
-.b-brief dd{margin:0; font-size:0.86rem; line-height:1.5; color:var(--fomo-text);}
+.b-act{border-top:1px solid var(--fomo-line); padding:10px 17px; display:flex; align-items:center; gap:9px;}
+.add{flex:1; background:var(--btn-secondary); border:1px solid var(--btn-hairline);
+  border-radius:9px; padding:8px 12px; font-size:0.84rem; font-weight:var(--fomo-weight-bold);
+  cursor:pointer; color:var(--fomo-campaign-display); text-align:center;}
+.add:hover{background:var(--btn-primary);}
+.b.st-run .add{background:var(--btn-primary); color:var(--fomo-white);}
+.b.st-sent .add{background:none; border-color:var(--fomo-highlight); color:var(--fomo-highlight);}
+.mo{background:none; border:none; cursor:pointer; font-size:0.84rem;
+  font-weight:var(--fomo-weight-bold); color:var(--fomo-campaign-emphasis);
+  display:inline-flex; align-items:center; gap:7px; padding:3px 0;}
+.mo:hover{color:var(--fomo-campaign-display);}
+.mo svg{width:11px; height:11px; transition:transform .2s ease;}
+.b.exp .mo svg{transform:rotate(180deg);}
+.b-brief{border-top:1px solid var(--fomo-line); padding:13px 17px 15px; background:var(--panel);}
+.b-brief dl{margin:0; display:grid; grid-template-columns:70px 1fr; gap:8px 12px;}
+.b-brief dt{font-size:0.67rem; font-weight:var(--fomo-weight-bold); letter-spacing:0.1em;
+  text-transform:uppercase; color:var(--fomo-purple); padding-top:3px;}
+.b-brief dd{margin:0; font-size:0.86rem; line-height:1.5; color:var(--fomo-campaign-emphasis);}
+.b-brief .mark-sent{margin-top:13px; width:100%; background:none; border:1px solid var(--btn-hairline);
+  border-radius:9px; padding:8px; font-size:0.82rem; font-weight:var(--fomo-weight-bold);
+  cursor:pointer; color:var(--fomo-campaign-emphasis);}
+.b-brief .mark-sent:hover{background:var(--btn-secondary); color:var(--fomo-campaign-display);}
+.b.st-sent .b-brief .mark-sent{color:var(--fomo-highlight); border-color:var(--fomo-highlight);}
 
-/* run tally */
-.run{position:sticky; bottom:0; z-index:10; background:var(--fomo-canvas); border-top:1px solid var(--fomo-line);}
-.run-in{max-width:1160px; margin:0 auto; padding:13px 40px; display:flex; align-items:center; gap:14px;}
-@media (max-width:760px){ .run-in{padding:12px 24px;} }
-.run b{font-size:1.2rem; font-weight:var(--fomo-weight-bold); letter-spacing:-0.02em;}
-.run span{font-size:0.88rem; color:var(--fomo-muted);}
-.run .sp{flex:1;}
-.run button{background:none; border:none; font-family:inherit; font-size:0.84rem; font-weight:var(--fomo-weight-bold); color:var(--fomo-link); cursor:pointer;}
+/* ---- the run meter ---- */
+.run{position:sticky; bottom:0; z-index:9; background:var(--fomo-ink);
+  border-top:1px solid var(--fomo-line);}
+.run-in{max-width:1160px; margin:0 auto; padding:12px 40px;}
+@media (max-width:760px){ .run-in{padding:11px 24px;} }
+.run-row{display:flex; align-items:center; gap:13px; flex-wrap:wrap;}
+.run-amt{font-size:1.2rem; font-weight:var(--fomo-weight-bold); letter-spacing:-0.02em;
+  color:var(--fomo-campaign-display);}
+.run-row span{font-size:0.86rem; color:var(--fomo-campaign-emphasis);}
+.run-row .sp{flex:1;}
+.run-row button{background:none; border:none; font-size:0.83rem;
+  font-weight:var(--fomo-weight-bold); color:var(--fomo-highlight); cursor:pointer;}
+.meter{position:relative; height:6px; margin-top:9px; border-radius:3px;
+  background:var(--btn-secondary); overflow:hidden;}
+.meter i{display:block; height:100%; width:0; border-radius:3px;
+  background:var(--fomo-purple); transition:width .35s ease;}
+.pips{position:relative; height:13px; margin-top:5px;}
+.pips b{position:absolute; transform:translateX(-50%); font-size:0.64rem;
+  font-weight:var(--fomo-weight-bold); letter-spacing:0.06em; color:var(--fomo-dark-muted);
+  white-space:nowrap;}
+.pips b.hit{color:var(--fomo-highlight);}
+.pips b:first-child{transform:none;} .pips b:last-child{transform:translateX(-100%);}
+/* On a phone the four milestone labels collide, so the bar carries the
+   progress and the "next" readout names the milestone instead. */
+@media (max-width:640px){
+  .pips{display:none;}
+  .run-row{display:grid; grid-template-columns:auto 1fr; gap:1px 10px; align-items:baseline;}
+  .run-row .sp{display:none;}
+  .run-amt{grid-column:1; grid-row:1;}
+  #r-meta{grid-column:2; grid-row:1;}
+  #r-next{grid-column:1 / -1; grid-row:2; font-size:0.81rem;}
+  #r-clear{grid-column:2; grid-row:2; justify-self:end;}
+}
 
-/* close */
-.end{padding:64px 0 0;}
-@media (max-width:760px){ .end{padding:44px 0 0;} }
-.end ol{margin:18px 0 0; padding-left:20px; max-width:72ch; color:var(--fomo-muted); font-size:0.98rem; line-height:1.75;}
-.end ol b{color:var(--fomo-text); font-weight:var(--fomo-weight-bold);}
-details.fine{margin-top:26px; border-top:1px solid var(--fomo-line);}
-details.fine summary{cursor:pointer; list-style:none; padding:16px 0; font-size:0.94rem; font-weight:var(--fomo-weight-bold); display:flex; justify-content:space-between; align-items:center;}
+/* ---- close ---- */
+.end{padding:58px 0 0;}
+@media (max-width:760px){ .end{padding:40px 0 0;} }
+details.fine{margin-top:4px; border-top:1px solid var(--fomo-line);}
+details.fine summary{cursor:pointer; list-style:none; padding:16px 0; font-size:0.94rem;
+  font-weight:var(--fomo-weight-bold); display:flex; justify-content:space-between;
+  align-items:center; color:var(--fomo-campaign-display);}
 details.fine summary::-webkit-details-marker{display:none;}
-details.fine summary::after{content:'+'; color:var(--fomo-muted); font-weight:var(--fomo-weight-medium);}
-details.fine[open] summary::after{content:'–';}
-details.fine ul{margin:0 0 20px; padding-left:20px; max-width:78ch; color:var(--fomo-muted); font-size:0.9rem; line-height:1.7;}
-details.fine ul b{color:var(--fomo-text); font-weight:var(--fomo-weight-bold);}
+details.fine summary::after{content:'+'; color:var(--fomo-campaign-emphasis);
+  font-weight:var(--fomo-weight-medium);}
+details.fine[open] summary::after{content:'\2013';}
+details.fine ul{margin:0 0 20px; padding-left:20px; max-width:78ch;
+  color:var(--fomo-campaign-emphasis); font-size:0.9rem; line-height:1.7;}
+details.fine ul b{color:var(--fomo-campaign-display); font-weight:var(--fomo-weight-bold);}
 
-footer{margin-top:56px; border-top:1px solid var(--fomo-line);}
-.ft{max-width:1160px; margin:0 auto; padding:22px 40px 46px; display:flex; gap:18px; justify-content:space-between; flex-wrap:wrap; font-size:0.84rem; color:var(--fomo-muted);}
-@media (max-width:760px){ .ft{padding:20px 24px 38px;} }
-.ft a{text-decoration:none; margin-left:20px;}
+footer{margin-top:50px; border-top:1px solid var(--fomo-line);}
+.ft{max-width:1160px; margin:0 auto; padding:22px 40px 44px; display:flex; gap:18px;
+  justify-content:space-between; flex-wrap:wrap; font-size:0.83rem; color:var(--fomo-dark-muted);}
+@media (max-width:760px){ .ft{padding:20px 24px 36px;} }
+.ft a{text-decoration:none; color:var(--fomo-campaign-emphasis); margin-left:20px;}
 .ft a:first-child{margin-left:0;}
-:focus-visible{outline:2px solid var(--fomo-action); outline-offset:3px;}
 </style>
 </head>
 <body>
 
 <div class="bar">
   <div class="bar-in">
-    <a class="lockup" href="/fomo/clans/">
-      <img src="/assets/fomo/fomo-wordmark-ink.svg" alt="fomo" width="352" height="113">
-      <span>/bounty</span>
+    <a class="lockup" href="/fomo/clans/" aria-label="fomo campus">
+      <svg class="mark" viewBox="0 0 620 415" aria-hidden="true" focusable="false">
+        <g class="cap" fill-rule="evenodd"><path d="M0 0 C0.381 0.25 0.381 0.25 2.306 1.515 C3.878 2.55 5.442 3.598 6.998 4.657 C9.732 6.515 12.509 8.298 15.292 10.079 C17.399 11.43 19.495 12.796 21.59 14.164 C24.88 16.307 28.187 18.422 31.504 20.523 C49.106 31.686 66.441 43.242 83.757 54.843 C87.17 57.13 90.585 59.413 94.013 61.676 C94.574 62.047 95.136 62.418 95.714 62.8 C97.17 63.763 98.628 64.722 100.087 65.682 C102.25 67.187 102.25 67.187 104.25 69.188 C104.125 71.688 104.125 71.688 103.25 74.188 C99.92 76.466 96.412 76.605 92.5 76.812 C91.469 76.874 91.469 76.874 86.25 77.188 C86.25 85.438 86.25 93.688 86.25 102.188 C87.57 102.517 88.89 102.847 90.25 103.188 C93.186 105.388 95.078 107.671 96.25 111.188 C96.961 116.546 96.293 120.019 93.027 124.352 C90.708 129.829 95.015 138.1 96.688 143.375 C99.934 153.769 103.084 164.192 106.126 174.648 C106.582 176.211 107.043 177.773 107.508 179.334 C108.163 181.539 108.804 183.747 109.441 185.957 C109.64 186.614 109.838 187.272 110.043 187.949 C111.102 191.689 111.539 194.473 110.25 198.188 C104.979 201.712 99.412 202.434 93.25 202.188 C92.944 202.349 92.944 202.349 91.395 203.164 C88.732 204.435 86.752 204.454 83.812 204.438 C82.886 204.443 81.959 204.448 81.004 204.453 C78.072 204.17 75.954 203.315 73.25 202.188 C71.039 201.879 71.039 201.879 68.875 201.75 C59.926 200.789 59.926 200.789 57.25 198.188 C56.676 190.935 59.254 183.051 60.902 176.047 C61.166 174.91 61.428 173.773 61.691 172.635 C62.238 170.271 62.788 167.908 63.343 165.546 C64.049 162.533 64.748 159.518 65.444 156.502 C66.114 153.6 66.79 150.698 67.465 147.797 C67.589 147.259 67.589 147.259 68.219 144.539 C70.17 136.237 70.17 136.237 71.436 132.618 C72.439 129.624 72.221 128.175 71.25 125.188 C70.734 124.259 70.219 123.331 69.688 122.375 C67.648 117.853 67.231 113.939 68.977 109.227 C71.014 105.3 73.119 103.036 77.25 101.188 C77.91 101.188 78.57 101.188 79.25 101.188 C79.33 97.308 79.35 93.434 79.317 89.554 C79.314 88.237 79.327 86.92 79.356 85.603 C79.581 74.805 79.581 74.805 76.586 71.166 C74.22 69.539 71.868 68.365 69.25 67.188 C67.39 66.189 65.532 65.186 63.676 64.18 C62.166 63.406 60.657 62.632 59.143 61.865 C56.393 60.469 53.652 59.054 50.91 57.641 C50.353 57.354 49.796 57.067 49.223 56.772 C41.778 52.927 34.443 48.882 27.102 44.844 C24.172 43.233 21.236 41.643 18.273 40.094 C12.833 37.246 7.855 34.277 3.02 30.48 C-0.601 27.835 -4.037 26.039 -8.625 26.438 C-10.75 27.188 -10.75 27.188 -11.75 28.188 C-12.125 31 -12.125 31 -11.75 34.188 C-7.513 38.673 -2.735 40.104 3.273 40.398 C9.259 41.042 13.924 43.743 19.125 46.625 C20.657 47.45 22.189 48.275 23.722 49.099 C25.262 49.929 26.798 50.767 28.334 51.605 C31.714 53.44 35.119 55.223 38.531 56.998 C41.6 58.598 44.657 60.22 47.714 61.844 C50.058 63.086 52.407 64.318 54.756 65.549 C57.322 66.898 59.879 68.263 62.438 69.625 C62.925 69.879 62.925 69.879 65.395 71.166 C66.289 71.646 67.184 72.126 68.105 72.621 C68.906 73.044 69.707 73.468 70.532 73.904 C71.099 74.328 71.666 74.751 72.25 75.188 C72.25 76.177 72.25 77.168 72.25 78.188 C71.151 78.125 70.052 78.063 68.92 77.999 C43.085 76.883 43.085 76.883 34.25 82.188 C27.439 89.664 26.212 102.172 25.144 111.841 C24.906 113.925 24.906 113.925 24.25 117.188 C21.25 118.188 21.25 118.188 18.527 116.992 C17.406 116.363 16.294 115.718 15.188 115.062 C14.58 114.71 13.972 114.357 13.346 113.994 C8.089 110.861 3.173 107.315 -1.75 103.688 C-9.148 98.237 -16.625 93.466 -24.75 89.188 C-25.316 88.881 -25.883 88.575 -26.466 88.259 C-52.526 74.198 -80.598 71.188 -109.75 70.188 C-108.162 64.183 -104.98 59.26 -101.75 54 C-101.203 53.098 -100.657 52.197 -100.094 51.268 C-95.861 44.3 -95.861 44.3 -93.75 41.188 C-94.612 40.923 -95.473 40.659 -96.361 40.387 C-99.744 39.256 -102.842 37.695 -105.969 35.992 C-106.545 35.683 -107.121 35.375 -107.714 35.056 C-109.562 34.063 -111.406 33.063 -113.25 32.062 C-114.516 31.379 -115.782 30.696 -117.048 30.013 C-123.518 26.517 -129.979 23.004 -136.375 19.375 C-136.646 19.222 -136.646 19.222 -138.018 18.447 C-140.228 17.172 -141.932 16.005 -143.75 14.188 C-144 11.688 -144 11.688 -143.75 9.188 C-141.368 6.806 -140.56 6.841 -137.29 6.505 C-136.35 6.404 -135.41 6.303 -134.442 6.199 C-133.924 6.148 -133.924 6.148 -131.301 5.891 C-130.209 5.776 -129.117 5.662 -127.991 5.545 C-124.98 5.23 -121.968 4.927 -118.955 4.627 C-116.426 4.374 -113.899 4.115 -111.371 3.855 C-103.213 3.02 -95.052 2.208 -86.891 1.4 C-84.737 1.186 -82.584 0.972 -80.43 0.757 C-71.143 -0.17 -61.855 -1.084 -52.566 -1.986 C-50.513 -2.186 -48.46 -2.388 -46.408 -2.591 C-43.148 -2.912 -39.887 -3.226 -36.627 -3.536 C-34.875 -3.703 -33.123 -3.877 -31.372 -4.051 C-8.751 -6.169 -8.751 -6.169 0 0 Z " transform="translate(496.75,16.8125)" id="graduation-cap" /></g>
+        <g class="eyes" fill-rule="evenodd"><path d="M0 0 C0.334 -0.005 0.334 -0.005 2.026 -0.03 C35.306 -0.419 64.488 6.477 89.801 29.238 C90.184 29.581 90.184 29.581 92.125 31.312 C98.284 37.128 102.994 43.789 107.761 50.741 C109.059 52.61 110.417 54.431 111.801 56.238 C112.456 55.693 113.11 55.148 113.785 54.586 C135.692 36.436 158.906 22.309 186.801 15.238 C187.536 15.044 188.272 14.849 189.029 14.648 C222.008 6.26 258.766 9.745 289.801 23.238 C290.489 23.536 291.178 23.833 291.887 24.14 C315.49 34.578 335.991 51.705 348.801 74.238 C349.161 74.872 349.521 75.506 349.893 76.159 C365.526 104.281 369.958 135.83 362.801 167.238 C362.629 167.999 362.458 168.76 362.281 169.544 C350.348 221.049 318.521 267.61 273.594 295.941 C254.204 307.791 234.057 315.773 211.801 320.238 C211.502 320.298 211.502 320.298 209.992 320.602 C174.894 327.278 137.487 319.563 107.488 300.426 C93.103 290.303 82.155 278.326 71.801 264.238 C68.857 267.165 65.943 270.117 63.051 273.094 C43.793 292.806 22.475 307.371 -4.262 314.988 C-4.609 315.088 -4.609 315.088 -6.369 315.591 C-17.371 318.551 -28.393 319.631 -39.762 319.613 C-40.365 319.613 -40.969 319.612 -41.591 319.612 C-72.15 319.486 -100.351 308.257 -122.715 287.512 C-124.06 286.281 -125.416 285.061 -126.829 283.909 C-131.425 280.147 -135.019 276.047 -138.574 271.301 C-138.854 270.931 -138.854 270.931 -140.267 269.058 C-147.312 259.582 -155.16 248.829 -158.199 237.238 C-157.199 236.238 -157.199 236.238 -155.554 236.114 C-155.195 236.114 -155.195 236.114 -153.379 236.114 C-152.557 236.111 -151.735 236.109 -150.889 236.106 C-149.981 236.108 -149.073 236.11 -148.137 236.112 C-147.662 236.111 -147.662 236.111 -145.255 236.107 C-143.182 236.103 -141.109 236.101 -139.036 236.1 C-134.637 236.097 -130.239 236.075 -125.84 236.055 C-117.64 236.017 -109.441 235.985 -101.241 235.988 C-95.547 235.99 -89.853 235.965 -84.159 235.926 C-81.984 235.915 -79.81 235.914 -77.635 235.922 C-74.596 235.931 -71.559 235.91 -68.52 235.882 C-67.616 235.892 -66.712 235.902 -65.781 235.913 C-63.48 235.874 -61.431 235.795 -59.199 235.238 C-57.222 232.975 -57.222 232.975 -56.199 230.238 C-56.049 229.877 -56.049 229.877 -55.287 228.046 C-55.034 227.307 -54.781 226.568 -54.52 225.807 C-54.225 224.954 -53.929 224.101 -53.625 223.222 C-53.313 222.303 -53.001 221.384 -52.68 220.438 C-52.345 219.467 -52.01 218.496 -51.665 217.495 C-50.567 214.307 -49.477 211.116 -48.387 207.926 C-47.618 205.689 -46.848 203.452 -46.078 201.216 C-45.688 200.085 -45.299 198.955 -44.91 197.824 C-44.717 197.263 -44.523 196.703 -44.324 196.125 C-43.737 194.417 -43.149 192.708 -42.562 191 C-39.445 181.928 -36.273 172.877 -33.085 163.829 C-30.438 156.305 -27.818 148.772 -25.199 141.238 C-25.01 140.693 -25.01 140.693 -24.05 137.935 C-21.733 131.275 -19.426 124.611 -17.137 117.941 C-16.101 114.925 -15.062 111.911 -14.015 108.9 C-12.847 105.543 -11.696 102.18 -10.547 98.816 C-10.192 97.805 -9.838 96.793 -9.473 95.751 C-9.315 95.284 -9.315 95.284 -8.516 92.923 C-8.236 92.111 -7.956 91.299 -7.668 90.462 C-7.144 87.979 -7.261 86.586 -8.199 84.238 C-10.694 82.991 -12.393 83.1 -15.185 83.08 C-16.24 83.07 -17.294 83.06 -18.381 83.05 C-19.554 83.044 -20.727 83.039 -21.901 83.033 C-23.133 83.023 -24.364 83.013 -25.596 83.003 C-28.945 82.976 -32.294 82.955 -35.643 82.935 C-39.141 82.913 -42.639 82.886 -46.137 82.859 C-52.764 82.809 -59.39 82.764 -66.016 82.721 C-73.559 82.672 -81.102 82.617 -88.645 82.561 C-104.163 82.447 -119.681 82.341 -135.199 82.238 C-135.199 78.256 -133.316 76.355 -130.949 73.363 C-130.725 73.077 -130.725 73.077 -129.591 71.629 C-99.67 33.987 -57.047 7.132 -9.063 0.45 C-6.043 0.107 -3.037 0.037 0 0 Z M85.796 87.473 C85.467 88.055 85.139 88.638 84.801 89.238 C84.204 90.127 83.608 91.016 82.993 91.931 C81.328 94.816 79.668 97.702 78.051 100.613 C77.748 101.154 77.446 101.696 77.135 102.253 C56.446 139.508 44.401 184.136 55.855 226.273 C58.318 234.756 58.318 234.756 59.801 236.238 C61.436 236.341 63.077 236.373 64.716 236.379 C65.248 236.382 65.248 236.382 67.94 236.396 C69.13 236.397 70.319 236.398 71.509 236.399 C72.754 236.404 73.999 236.409 75.244 236.414 C78.634 236.428 82.025 236.434 85.415 236.438 C87.533 236.441 89.65 236.446 91.767 236.45 C98.388 236.464 105.009 236.473 111.629 236.477 C119.278 236.482 126.927 236.499 134.576 236.528 C140.483 236.55 146.39 236.56 152.298 236.561 C155.828 236.562 159.358 236.568 162.889 236.586 C166.21 236.602 169.532 236.605 172.854 236.596 C174.073 236.595 175.292 236.599 176.511 236.609 C178.175 236.622 179.84 236.614 181.505 236.606 C181.971 236.607 181.971 236.607 184.328 236.61 C187.274 236.167 188.63 235.243 190.801 233.238 C191.826 231.269 191.826 231.269 192.577 228.99 C192.87 228.127 193.162 227.263 193.463 226.373 C193.766 225.431 194.07 224.49 194.383 223.52 C194.714 222.531 195.045 221.542 195.385 220.524 C196.286 217.828 197.174 215.128 198.058 212.427 C198.991 209.588 199.939 206.754 200.887 203.919 C201.273 202.767 201.658 201.614 202.044 200.462 C202.235 199.888 202.427 199.315 202.624 198.725 C203.21 196.972 203.793 195.219 204.377 193.465 C207.713 183.444 211.177 173.469 214.683 163.506 C220.927 145.762 227.018 127.969 232.861 110.088 C233.957 106.744 235.087 103.418 236.28 100.107 C236.399 99.771 236.399 99.771 237.001 98.067 C237.451 96.798 237.911 95.532 238.385 94.271 C239.795 90.248 239.98 87.345 238.801 83.238 C236.124 81.9 234.056 82.094 231.058 82.071 C230.464 82.065 229.871 82.059 229.259 82.053 C227.261 82.035 225.264 82.024 223.267 82.014 C221.838 82.002 220.409 81.991 218.98 81.979 C214.279 81.943 209.579 81.917 204.879 81.895 C204.079 81.891 203.28 81.887 202.456 81.883 C194.917 81.846 187.378 81.815 179.839 81.793 C170.194 81.766 160.549 81.715 150.904 81.633 C144.124 81.577 137.344 81.548 130.563 81.539 C126.512 81.533 122.463 81.515 118.413 81.468 C114.601 81.424 110.79 81.413 106.977 81.428 C105.58 81.428 104.183 81.416 102.786 81.39 C90.014 81.172 90.014 81.172 85.796 87.473 Z " transform="translate(170.19921875,80.76171875)" id="fomo-eyes" /></g>
+      </svg>
+      <img class="wm" src="/assets/fomo/fomo-wordmark-pale.svg" alt="fomo" width="352" height="113">
+      <span class="sub">/ campus</span>
     </a>
     <div class="sp"></div>
     <a class="lnk" href="/fomo/prizes/">Rewards</a>
@@ -161,15 +249,21 @@ footer{margin-top:56px; border-top:1px solid var(--fomo-line);}
 </div>
 
 <div class="wrap hero">
-  <div class="eyebrow">fomo / campus</div>
+  <div class="eyebrow">fomo / bounties</div>
   <h1>pick a job.<br>send it. get paid.</h1>
-  <p>Your chapter is onboarded. These are the jobs you can run for cash from here, any week of the semester. One to five stars, easiest to hardest.</p>
+  <p>Your chapter is onboarded. Build a run out of the jobs below, send the proof, get the chapter paid.</p>
+  <div class="steps">
+    <div><b>1</b><span>Add jobs to your run</span></div>
+    <div><b>2</b><span>Send us the proof</span></div>
+    <div><b>3</b><span>Chapter paid in 7 days</span></div>
+  </div>
   <div class="key" id="key"></div>
 </div>
 
 <div class="wrap board" id="board">
   <div class="tools">
     <div class="fl" id="filters"></div>
+    <button type="button" class="starter" id="starter">Build me a starter run</button>
     <div class="n" id="count"></div>
   </div>
   <div class="grid" id="grid"></div>
@@ -177,26 +271,27 @@ footer{margin-top:56px; border-top:1px solid var(--fomo-line);}
 
 <div class="run">
   <div class="run-in">
-    <b id="r-amt">$0</b>
-    <span id="r-meta">Nothing picked</span>
-    <div class="sp"></div>
-    <button type="button" id="r-clear" hidden>Clear</button>
+    <div class="run-row">
+      <span class="run-amt" id="r-amt">$0</span>
+      <span id="r-meta">Nothing in your run yet</span>
+      <div class="sp"></div>
+      <span id="r-next"></span>
+      <button type="button" id="r-clear" hidden>Clear</button>
+    </div>
+    <div class="meter"><i id="r-bar"></i></div>
+    <div class="pips" id="r-pips"></div>
   </div>
 </div>
 
 <div class="wrap end">
-  <h2>Getting paid</h2>
-  <ol>
-    <li><b>Run it</b> the way the brief says, and keep the raw files.</li>
-    <li><b>Send it</b> to whoever onboarded your chapter, with the bounty number.</li>
-    <li><b>We check it</b> in 3 business days and pay the chapter within 7 of approval.</li>
-  </ol>
-
+  <h2>The rules</h2>
   <details class="fine">
-    <summary>The fine print</summary>
+    <summary>Sending work in, and getting paid</summary>
     <ul>
-      <li>Money goes to the <b>chapter account</b> through your treasurer or president, never to a personal Venmo.</li>
-      <li>Most bounties <b>repeat</b> in a later month. The ones that don't say so in the brief.</li>
+      <li>Send proof to whoever onboarded your chapter, with the job name. <b>Keep the raw files.</b></li>
+      <li>We check it in <b>3 business days</b> and pay the chapter within <b>7 days</b> of approval.</li>
+      <li>Money goes to the <b>chapter account</b> through your treasurer or president, never a personal Venmo.</li>
+      <li>Most jobs <b>repeat</b> in a later month. The ones that don't say so in the brief.</li>
       <li>Everyone on camera agreed to be there and is <b>18 or older</b>. Nothing you didn't shoot.</li>
       <li>An intro counts when the person <b>replies</b>. Scraped lists don't count.</li>
       <li>Nothing that puts you sideways with your nationals, your university or the law.</li>
@@ -209,7 +304,7 @@ footer{margin-top:56px; border-top:1px solid var(--fomo-line);}
 
 <footer>
   <div class="ft">
-    <span>© 2026 FOMO Labs Inc. · fomo / campus</span>
+    <span>&copy; 2026 FOMO Labs Inc. &middot; fomo / campus</span>
     <div>
       <a href="/fomo/clans/">Leaderboard</a>
       <a href="/fomo/prizes/">Rewards</a>
@@ -217,7 +312,6 @@ footer{margin-top:56px; border-top:1px solid var(--fomo-line);}
     </div>
   </div>
 </footer>
-
 <script>
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
@@ -249,8 +343,6 @@ const B = [
   { t:2, title:'Chapter artwork', p:'Your letters and composite, so the house looks right on Greek Village.',
     send:'Letters as artwork plus this year’s composite. SVG or PNG over 1500px.', yes:'Artwork your chapter can share.', no:'Anything your nationals haven’t approved.', rep:0 },
 
-  { t:3, title:'IcyBox watch spin', p:'Spin a watch on camera for IcyBox — the shot that stops a scroll.',
-    send:'One vertical video, 15–30 seconds.', yes:'Clean spin, steady, watch in focus throughout.', no:'Dark, blurry, or other brand logos in frame.', rep:1 },
   { t:3, title:'Founder org intro', p:'Put us in a room with your startup, entrepreneurship or accelerator org.',
     send:'A group chat or email with us and whoever runs it.', yes:'They reply — that’s the bar.', no:'A handle with no introduction.', rep:1 },
   { t:3, title:'Host a fomo dinner', p:'Ten or more at one table, fomo covers it, you run the night.',
@@ -277,79 +369,113 @@ const B = [
     send:'Post link plus the view count 30 days after posting.', yes:'Original, organic, fomo clearly in it.', no:'Paid boosts, view-buying, reposts.', rep:0 },
 ];
 
-const S = '<svg viewBox="0 0 24 24" fill="currentColor" class="%c"><path d="m12 2 2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8L12 2Z"/></svg>';
-const stars = (n) => `<span class="stars">${S.replace('%c','on').repeat(n)}${S.replace('%c','off').repeat(5-n)}</span>`;
-// Filters show only the filled stars, so the row stays one line on a phone.
-const starsOn = (n) => `<span class="stars">${S.replace('%c','on').repeat(n)}</span>`;
-const TICK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
-const CHV  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
+const MAXRUN = B.reduce((a,b) => a + PAY[b.t], 0);
+const MILES = [
+  { at:250,  name:'Starter run' },
+  { at:750,  name:'Solid semester' },
+  { at:1500, name:'Big semester' },
+  { at:MAXRUN, name:'Everything' },
+];
 
-let picked = new Set();
-try { picked = new Set(JSON.parse(localStorage.getItem('fomo_bounty_v2')) || []); } catch (e) {}
-const save = () => { try { localStorage.setItem('fomo_bounty_v2', JSON.stringify([...picked])); } catch (e) {} };
-let f = 'all';
+const S = '<svg viewBox="0 0 24 24" fill="currentColor" class="%c"><path d="m12 2 2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8L12 2Z"/></svg>';
+const stars   = (n) => `<span class="stars">${S.replace('%c','on').repeat(n)}${S.replace('%c','off').repeat(5-n)}</span>`;
+const starsOn = (n) => `<span class="stars">${S.replace('%c','on').repeat(n)}</span>`;
+const CHV = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
+
+// Each job is open, in the run, or sent. That is the whole system.
+const KEY = 'fomo_bounty_v3';
+let state = {};
+try { state = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { state = {}; }
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} };
 const id = (i) => 'b' + String(i+1).padStart(2,'0');
+let f = 'all';
 
 $('key').innerHTML = [1,2,3,4,5].map((t) =>
   `<div class="cell">${stars(t)}<div class="p">${usd(PAY[t])}</div><div class="l">${esc(LABEL[t])}</div></div>`).join('');
 
 $('filters').innerHTML = `<button data-f="all" class="on">All</button>`
-  + [1,2,3,4,5].map((t) => `<button data-f="${t}" aria-label="${t} star bounties">${starsOn(t)}</button>`).join('');
+  + [1,2,3,4,5].map((t) => `<button data-f="${t}" aria-label="${t} star jobs">${starsOn(t)}</button>`).join('');
+
+$('r-pips').innerHTML = MILES.map((m) =>
+  `<b data-at="${m.at}" style="left:${(m.at/MAXRUN*100).toFixed(1)}%">${esc(m.name)}</b>`).join('');
 
 function paint() {
-  const list = B.map((b,i) => ({b,i})).filter(({b}) => f === 'all' || b.t === Number(f));
+  const list = B.map((b,i) => ({ b, i })).filter(({b}) => f === 'all' || b.t === Number(f));
   $('grid').innerHTML = list.map(({b,i}) => {
-    const on = picked.has(id(i));
-    return `<article class="b${on?' on':''}" data-i="${i}">
+    const st = state[id(i)] || 'idle';
+    const verb = st === 'sent' ? 'Sent ✓' : st === 'run' ? 'In your run ✓' : '+ Add to run';
+    return `<article class="b st-${st}" data-i="${i}">
       <div class="b-top">${stars(b.t)}<span class="b-pay">${usd(PAY[b.t])}</span></div>
       <div class="b-mid"><h3>${esc(b.title)}</h3><p>${esc(b.p)}</p></div>
       <div class="b-act">
-        <button type="button" class="pk" aria-pressed="${on}"><span class="bx">${TICK}</span>${on?'Picked':'Pick'}</button>
+        <button type="button" class="add" aria-pressed="${st !== 'open'}">${verb}</button>
         <button type="button" class="mo" aria-expanded="false">Brief ${CHV}</button>
       </div>
-      <div class="b-brief" hidden><dl>
-        <dt>Send</dt><dd>${esc(b.send)}</dd>
-        <dt>Counts</dt><dd>${esc(b.yes)}</dd>
-        <dt>Doesn't</dt><dd>${esc(b.no)}</dd>
-        <dt>Repeat</dt><dd>${b.rep?'Can be run again later.':'Once per chapter.'}</dd>
-      </dl></div>
+      <div class="b-brief" hidden>
+        <dl>
+          <dt>Send</dt><dd>${esc(b.send)}</dd>
+          <dt>Counts</dt><dd>${esc(b.yes)}</dd>
+          <dt>Doesn't</dt><dd>${esc(b.no)}</dd>
+          <dt>Repeat</dt><dd>${b.rep ? 'Can be run again later.' : 'Once per chapter.'}</dd>
+        </dl>
+        <button type="button" class="mark-sent">${st === 'sent' ? 'Sent — undo' : 'Mark as sent'}</button>
+      </div>
     </article>`;
   }).join('');
   $('count').textContent = `${list.length} of ${B.length}`;
 
   $('grid').querySelectorAll('.b').forEach((el) => {
-    el.querySelector('.pk').addEventListener('click', () => {
-      const k = id(Number(el.dataset.i));
-      picked.has(k) ? picked.delete(k) : picked.add(k);
-      save();
-      const on = picked.has(k);
-      el.classList.toggle('on', on);
-      const btn = el.querySelector('.pk');
-      btn.setAttribute('aria-pressed', String(on));
-      btn.lastChild.textContent = on ? 'Picked' : 'Pick';
-      tally();
+    const k = id(Number(el.dataset.i));
+    el.querySelector('.add').addEventListener('click', () => {
+      if (state[k]) delete state[k]; else state[k] = 'run';
+      save(); paint(); tally();
+    });
+    el.querySelector('.mark-sent').addEventListener('click', () => {
+      state[k] = state[k] === 'sent' ? 'run' : 'sent';
+      save(); paint(); tally();
     });
     el.querySelector('.mo').addEventListener('click', () => {
-      const br = el.querySelector('.b-brief'), open = br.hidden;
-      br.hidden = !open;
-      el.classList.toggle('open', open);
-      el.querySelector('.mo').setAttribute('aria-expanded', String(open));
+      const br = el.querySelector('.b-brief'), show = br.hidden;
+      br.hidden = !show;
+      el.classList.toggle('exp', show);
+      el.querySelector('.mo').setAttribute('aria-expanded', String(show));
     });
   });
 }
+
 function tally() {
-  let t = 0, n = 0;
-  B.forEach((b,i) => { if (picked.has(id(i))) { t += PAY[b.t]; n++; } });
-  $('r-amt').textContent = usd(t);
-  $('r-meta').textContent = n ? `${n} picked` : 'Nothing picked';
+  let total = 0, n = 0, sent = 0;
+  B.forEach((b,i) => {
+    const st = state[id(i)];
+    if (st === 'run' || st === 'sent') { total += PAY[b.t]; n++; }
+    if (st === 'sent') sent += PAY[b.t];
+  });
+  $('r-amt').textContent = usd(total);
+  $('r-meta').textContent = n
+    ? `${n} job${n > 1 ? 's' : ''} in your run` + (sent ? ` · ${usd(sent)} sent` : '')
+    : 'Nothing in your run yet';
+  $('r-bar').style.width = Math.min(100, total / MAXRUN * 100) + '%';
   $('r-clear').hidden = !n;
+  const next = MILES.find((m) => total < m.at);
+  $('r-next').textContent = next ? `${usd(next.at - total)} to ${next.name}` : 'Every job picked';
+  $('r-pips').querySelectorAll('b').forEach((p) => p.classList.toggle('hit', total >= +p.dataset.at));
 }
-$('filters').querySelectorAll('button').forEach((b) => b.addEventListener('click', () => {
-  f = b.dataset.f;
-  $('filters').querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b));
+
+$('filters').querySelectorAll('button').forEach((btn) => btn.addEventListener('click', () => {
+  f = btn.dataset.f;
+  $('filters').querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === btn));
   paint();
 }));
-$('r-clear').addEventListener('click', () => { picked.clear(); save(); paint(); tally(); });
+
+// One tap gives a sensible first week: every one-star job.
+$('starter').addEventListener('click', () => {
+  B.forEach((b,i) => { if (b.t === 1 && !state[id(i)]) state[id(i)] = 'run'; });
+  save(); paint(); tally();
+  $('board').scrollIntoView({ behavior:'smooth', block:'start' });
+});
+
+$('r-clear').addEventListener('click', () => { state = {}; save(); paint(); tally(); });
+
 paint(); tally();
 </script>
 </body>
