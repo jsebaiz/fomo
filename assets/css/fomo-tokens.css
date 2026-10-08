@@ -1,0 +1,132 @@
+/* fomo campus house tokens.
+   fomo brand kit values come first; campus additions build on them.
+   Four colorways, one for each background fomo allows, across grid posts,
+   stories, and web compositions. Campus purple is fomo blue #516AF6;
+   --fomo-blue remains a compatibility alias. Keep the fomo type pairings.
+   Aeonik is the house typeface. */
+:root {
+  --fomo-purple: #516AF6;
+  --fomo-blue: var(--fomo-purple);
+  --fomo-electric: #4A36FF;
+  --fomo-highlight: #ACB8F9;
+  --fomo-ink: #0B091F;
+  --fomo-pale: #EAEDFF;
+  --fomo-white: #FFFFFF;
+  --fomo-action: #4057DF;
+
+
+  --fomo-light-canvas: #FFFFFF;
+  --fomo-light-text: #141322;
+  --fomo-light-muted: #666675;
+  --fomo-light-tint: #F4F5FF;
+  --fomo-light-line: #EAEAEF;
+  --fomo-light-surface: #F8F8FA;
+
+  --fomo-dark-canvas: #060510;
+  --fomo-dark-surface: #12111A;
+  --fomo-dark-raised: #161522;
+  --fomo-dark-text: #F7F7F7;
+  --fomo-dark-muted: #9899A3;
+  --fomo-dark-line: #33343D;
+
+  --fomo-font-family: Aeonik, Arial, sans-serif;
+  --fomo-weight-regular: 400;
+  --fomo-weight-medium: 500;
+  --fomo-weight-bold: 700;
+
+  /* Light editorial web defaults. Add data-fomo-theme="dark" for dark web. */
+  --fomo-canvas: var(--fomo-light-canvas);
+  --fomo-surface: var(--fomo-light-surface);
+  --fomo-text: var(--fomo-light-text);
+  --fomo-muted: var(--fomo-light-muted);
+  --fomo-line: var(--fomo-light-line);
+  --fomo-link: var(--fomo-action);
+}
+[data-fomo-theme="dark"] {
+  --fomo-canvas: var(--fomo-dark-canvas);
+  --fomo-surface: var(--fomo-dark-surface);
+  --fomo-text: var(--fomo-dark-text);
+  --fomo-muted: var(--fomo-dark-muted);
+  --fomo-line: var(--fomo-dark-line);
+  --fomo-link: var(--fomo-highlight);
+}
+
+/* Shared composition themes: apply to either a grid post or a story.
+   One theme for each background the fomo brand kit allows, with its pairings.
+   Use --fomo-composition-display for large type and --fomo-composition-text
+   for body copy. --fomo-composition-accent is also safe for small labels. */
+[data-fomo-colorway="purple"] {
+  --fomo-composition-canvas: #516AF6;
+  --fomo-composition-display: #FFFFFF;
+  --fomo-composition-logo: #FFFFFF;
+  --fomo-composition-text: #FFFFFF;
+  --fomo-composition-accent: #EAEDFF;
+}
+[data-fomo-colorway="lavender"] {
+  --fomo-composition-canvas: #EAEDFF;
+  --fomo-composition-display: #0B091F;
+  --fomo-composition-logo: #0B091F;
+  --fomo-composition-text: #0B091F;
+  --fomo-composition-accent: #0B091F;
+}
+[data-fomo-colorway="ink"] {
+  --fomo-composition-canvas: #0B091F;
+  --fomo-composition-display: #FFFFFF;
+  --fomo-composition-logo: #FFFFFF;
+  --fomo-composition-text: #FFFFFF;
+  --fomo-composition-accent: #EAEDFF;
+}
+[data-fomo-colorway="white"] {
+  --fomo-composition-canvas: #FFFFFF;
+  --fomo-composition-display: #516AF6;
+  --fomo-composition-logo: #516AF6;
+  --fomo-composition-text: #0B091F;
+  --fomo-composition-accent: #0B091F;
+}
+/* Campaign atmosphere: fomo's brand gradient, deepened with electric blue.
+   The fomo brand kit allows electric blue as gradient depth, never as its own
+   background. Apply atmosphere behind content; never blur or add effects to
+   the logos. Type stays white or #EAEDFF. */
+:root {
+  --fomo-gradient-brand: radial-gradient(ellipse at 50% 12%, rgba(172, 184, 249, 0.45) 0%, rgba(172, 184, 249, 0) 70%), #516AF6;
+  --fomo-gradient-premium: radial-gradient(ellipse at 50% 0%, #221D4B 0%, rgba(34, 29, 75, 0) 80%), #0B091F;
+  --fomo-campaign-atmosphere: radial-gradient(ellipse at 50% 10%, rgba(172, 184, 249, 0.3) 0%, rgba(172, 184, 249, 0) 70%), linear-gradient(135deg, #516AF6 0%, #4A36FF 100%);
+  --fomo-campaign-text: #FFFFFF;
+  --fomo-campaign-highlight-on-ink: #ACB8F9;
+  --fomo-campaign-loop-duration: 7s;
+  --fomo-campaign-min-reading-hold: 3s;
+}
+/* Motion is optional: 6–8s loop, >=3s reading hold.
+   Always provide the complete static poster for reduced motion and fallback. */
+
+/* Campaign colorways: every campaign pattern in the four fomo backgrounds.
+   Use --fomo-campaign-display for large type, --fomo-campaign-emphasis for the
+   one focal figure, and --fomo-campaign-body for everything smaller. */
+[data-fomo-campaign-colorway="purple"] {
+  --fomo-campaign-background: radial-gradient(ellipse at 50% 10%, rgba(172, 184, 249, 0.3) 0%, rgba(172, 184, 249, 0) 70%), linear-gradient(135deg, #516AF6 0%, #4A36FF 100%);
+  --fomo-campaign-display: #FFFFFF;
+  --fomo-campaign-emphasis: #FFFFFF;
+  --fomo-campaign-body: #FFFFFF;
+  --fomo-campaign-logo: #FFFFFF;
+}
+[data-fomo-campaign-colorway="lavender"] {
+  --fomo-campaign-background: radial-gradient(ellipse at 50% 5%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 60%), #EAEDFF;
+  --fomo-campaign-display: #0B091F;
+  --fomo-campaign-emphasis: #516AF6;
+  --fomo-campaign-body: #0B091F;
+  --fomo-campaign-logo: #0B091F;
+}
+[data-fomo-campaign-colorway="ink"] {
+  --fomo-campaign-background: radial-gradient(ellipse at 50% 0%, rgba(34, 29, 75, 1) 0%, rgba(34, 29, 75, 0) 80%), #0B091F;
+  --fomo-campaign-display: #FFFFFF;
+  --fomo-campaign-emphasis: #ACB8F9;
+  --fomo-campaign-body: #FFFFFF;
+  --fomo-campaign-logo: #FFFFFF;
+}
+[data-fomo-campaign-colorway="white"] {
+  --fomo-campaign-background: radial-gradient(ellipse at 50% 0%, rgba(234, 237, 255, 0.5) 0%, rgba(234, 237, 255, 0) 55.00000000000001%), #FFFFFF;
+  --fomo-campaign-display: #0B091F;
+  --fomo-campaign-emphasis: #516AF6;
+  --fomo-campaign-body: #0B091F;
+  --fomo-campaign-logo: #516AF6;
+}
