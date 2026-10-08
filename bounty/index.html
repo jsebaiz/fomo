@@ -1,234 +1,273 @@
 <!DOCTYPE html>
-<html lang="en" data-fomo-theme="dark" data-fomo-campaign-colorway="ink">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
 <title>fomo / bounty</title>
-<meta name="description" content="Post-onboarding bounties for fomo campus chapters.">
-<meta name="theme-color" content="#0B091F">
+<meta name="description" content="Live bounties for fomo campus chapters — pick one, send it in, get paid.">
+<meta name="theme-color" content="#FFFFFF">
 <link rel="icon" href="/fomo-favicon.svg" type="image/svg+xml">
-<!-- The campus house tokens, shipped verbatim from the brand kit. Every colour
-     here is a var() from that file; nothing is invented locally. The page runs
-     the kit's own ink campaign colourway: #0B091F canvas, white display type,
-     #ACB8F9 emphasis, white logo. -->
+<!-- The campus house tokens, shipped verbatim from the brand kit. Colour on this
+     page comes from that file; the two exceptions are commented where they sit. -->
 <link rel="stylesheet" href="/assets/css/fomo-tokens.css">
 <style>
 @font-face{font-family:Aeonik; src:url('/assets/fonts/Aeonik-Regular.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap;}
 @font-face{font-family:Aeonik; src:url('/assets/fonts/Aeonik-Medium.woff2')  format('woff2'); font-weight:500; font-style:normal; font-display:swap;}
 @font-face{font-family:Aeonik; src:url('/assets/fonts/Aeonik-Bold.woff2')    format('woff2'); font-weight:700; font-style:normal; font-display:swap;}
 
-/* The kit's dark button pair, from its component spec: translucent fill behind
-   a 12px blur, #CBD0EB hairline at 10%, 12px radius, bold. No glow, ever. */
 :root{
-  --btn-primary:rgba(96,106,247,.50);
-  --btn-secondary:rgba(255,255,255,.12);
-  --btn-hairline:rgba(203,208,235,.10);
-  --btn-radius:12px;
-  --panel:rgba(255,255,255,.04);
+  /* The kit's dark button spec, reused here for the one filled control. */
+  --btn-hairline:rgba(203,208,235,.45);
+  /* The only non-kit colour on the page: a live indicator reads as red
+     everywhere, and the kit has no red. It is used for one 7px dot. */
+  --live:#E5484D;
 }
 
 *{box-sizing:border-box;}
 [hidden]{display:none !important;}
-html{scroll-behavior:smooth; background:var(--fomo-ink);}
-body{margin:0; min-height:100vh;
-  background:var(--fomo-campaign-background); background-attachment:fixed;
-  color:var(--fomo-campaign-body);
+html{scroll-behavior:smooth; background:var(--fomo-canvas);}
+body{margin:0; background:var(--fomo-canvas); color:var(--fomo-text);
   font-family:var(--fomo-font-family); font-weight:var(--fomo-weight-medium);
   font-size:17px; line-height:1.55; -webkit-font-smoothing:antialiased;}
-button{font-family:inherit; color:inherit;}
+button,input,textarea,select{font-family:inherit; color:inherit;}
 svg,img{display:block;}
+a{color:var(--fomo-link);}
 ::selection{background:var(--fomo-purple); color:var(--fomo-white);}
-:focus-visible{outline:2px solid var(--fomo-campaign-emphasis); outline-offset:3px;}
+:focus-visible{outline:2px solid var(--fomo-action); outline-offset:3px;}
+@media (prefers-reduced-motion:reduce){ *{transition:none !important; animation:none !important; scroll-behavior:auto;} }
 
 .wrap{max-width:1160px; margin:0 auto; padding:0 40px;}
 @media (max-width:760px){ .wrap{padding:0 24px;} }
 
-/* ---- lockup: campus mark (cap + eyes) beside the fomo wordmark ---- */
-.bar{border-bottom:1px solid var(--fomo-line); position:relative; z-index:2;}
+/* ---- lockup ---- */
+.bar{border-bottom:1px solid var(--fomo-line);}
 .bar-in{max-width:1160px; margin:0 auto; padding:18px 40px; display:flex; align-items:center; gap:13px;}
 @media (max-width:760px){ .bar-in{padding:15px 24px; gap:10px;} }
 .lockup{display:flex; align-items:center; gap:11px; text-decoration:none;}
-.mark{width:46px; height:auto; color:var(--fomo-pale); flex-shrink:0;}
+.mark{width:46px; height:auto; color:var(--fomo-text); flex-shrink:0;}
 @media (max-width:760px){ .mark{width:38px;} }
 .mark path{fill:currentColor;}
-/* A blink, every five seconds: the eyes squash and open. The cap never moves,
-   the mark is never recoloured, blurred or rotated. */
-/* Origin sits at 18% of the eye bbox -- the line the cap's brim rests on -- so
-   the cap stays seated on the closed eyes instead of floating over a gap. */
+/* Origin sits on the line the cap's brim rests on, so the cap stays seated on
+   the closed eyes instead of floating over a gap. */
 .mark .eyes{transform-box:fill-box; transform-origin:50% 18%; animation:blink 5s infinite;}
 @keyframes blink{0%,92%{transform:scaleY(1);} 95.2%{transform:scaleY(.08);} 98.4%,100%{transform:scaleY(1);}}
 .lockup .wm{width:76px; height:auto;}
 @media (max-width:760px){ .lockup .wm{width:64px;} }
-.lockup .sub{font-size:1rem; font-weight:var(--fomo-weight-medium); color:var(--fomo-campaign-emphasis); white-space:nowrap;}
+.lockup .sub{font-size:1rem; color:var(--fomo-muted); white-space:nowrap;}
 .bar .sp{flex:1;}
-.bar a.lnk{font-size:0.94rem; text-decoration:none; color:var(--fomo-campaign-emphasis);}
-.bar a.lnk:hover{color:var(--fomo-campaign-display);}
-@media (prefers-reduced-motion:reduce){
-  *{transition:none !important; scroll-behavior:auto;}
-  .mark .eyes{animation:none;}        /* static poster, per the kit's motion note */
-}
+.bar a.lnk{font-size:0.94rem; text-decoration:none; color:var(--fomo-muted);}
+.bar a.lnk:hover{color:var(--fomo-text);}
 
-h1{font-size:clamp(2.25rem,5.4vw,4.1rem); font-weight:var(--fomo-weight-bold); line-height:1.05;
-   letter-spacing:-0.025em; margin:0; color:var(--fomo-campaign-display);}
-h2{font-size:1.32rem; font-weight:var(--fomo-weight-bold); line-height:1.15; letter-spacing:-0.015em;
-   margin:0; color:var(--fomo-campaign-display);}
-h3{font-size:1.02rem; font-weight:var(--fomo-weight-bold); letter-spacing:-0.01em; margin:0;
-   color:var(--fomo-campaign-display);}
-p{margin:0; color:var(--fomo-campaign-emphasis);}
-.eyebrow{font-size:0.74rem; font-weight:var(--fomo-weight-bold); letter-spacing:0.18em;
-  text-transform:uppercase; color:var(--fomo-purple); margin-bottom:18px;}
+h1{font-size:clamp(2.2rem,5.2vw,3.9rem); font-weight:var(--fomo-weight-bold); line-height:1.05; letter-spacing:-0.025em; margin:0;}
+h2{font-size:1.32rem; font-weight:var(--fomo-weight-bold); line-height:1.15; letter-spacing:-0.015em; margin:0;}
+h3{font-size:1.02rem; font-weight:var(--fomo-weight-bold); letter-spacing:-0.01em; margin:0;}
+p{margin:0; color:var(--fomo-muted);}
+.eyebrow{font-size:0.74rem; font-weight:var(--fomo-weight-bold); letter-spacing:0.18em; text-transform:uppercase; color:var(--fomo-purple); margin-bottom:18px;}
+.lede{font-size:1.08rem; max-width:56ch; margin-top:18px;}
+section{padding:52px 0 0;}
+@media (max-width:760px){ section{padding:38px 0 0;} }
+.hd{display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:16px;}
+.hd p{font-size:0.92rem;}
 
-.hero{padding:68px 0 0;}
-@media (max-width:760px){ .hero{padding:44px 0 0;} }
-.hero p{font-size:1.1rem; max-width:54ch; margin-top:18px;}
-
-/* ---- the three steps, so the system reads at a glance ---- */
-.steps{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:32px;}
+/* ---- steps ---- */
+.steps{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:30px;}
 @media (max-width:640px){ .steps{grid-template-columns:1fr;} }
-.steps div{display:flex; align-items:center; gap:11px; padding:13px 16px;
-  background:var(--panel); border:1px solid var(--fomo-line); border-radius:var(--btn-radius);}
-.steps b{width:23px; height:23px; flex-shrink:0; border-radius:50%; background:var(--fomo-purple);
-  color:var(--fomo-white); font-size:0.78rem; font-weight:var(--fomo-weight-bold);
-  display:flex; align-items:center; justify-content:center;}
-.steps span{font-size:0.92rem; color:var(--fomo-campaign-display);}
+.steps div{display:flex; align-items:center; gap:11px; padding:13px 16px; background:var(--fomo-light-tint); border:1px solid var(--fomo-line); border-radius:12px;}
+.steps b{width:23px; height:23px; flex-shrink:0; border-radius:50%; background:var(--fomo-purple); color:var(--fomo-white); font-size:0.78rem; font-weight:var(--fomo-weight-bold); display:flex; align-items:center; justify-content:center;}
+.steps span{font-size:0.92rem;}
+
+/* ---- live strip ---- */
+.live-badge{display:inline-flex; align-items:center; gap:8px; font-size:0.74rem; font-weight:var(--fomo-weight-bold); letter-spacing:0.16em; text-transform:uppercase; color:var(--fomo-text);}
+.dot{width:7px; height:7px; border-radius:50%; background:var(--live); flex-shrink:0; animation:flash 1.5s ease-in-out infinite;}
+@keyframes flash{0%,100%{opacity:1; transform:scale(1);} 50%{opacity:.25; transform:scale(.72);}}
+.school-pick{position:relative; margin-left:auto; min-width:300px;}
+@media (max-width:640px){ .school-pick{margin-left:0; width:100%; min-width:0;} }
+.school-pick input{width:100%; padding:11px 14px; font-size:0.94rem; font-weight:var(--fomo-weight-medium); border:1px solid var(--fomo-line); border-radius:11px; background:var(--fomo-canvas);}
+.school-pick input::placeholder{color:var(--fomo-muted);}
+.ac{position:absolute; z-index:20; top:calc(100% + 5px); left:0; right:0; max-height:270px; overflow:auto; background:var(--fomo-canvas); border:1px solid var(--fomo-line); border-radius:11px; box-shadow:0 10px 30px rgba(20,19,34,.10);}
+.ac button{display:block; width:100%; text-align:left; background:none; border:none; padding:9px 14px; font-size:0.9rem; cursor:pointer;}
+.ac button:hover,.ac button.cur{background:var(--fomo-light-tint);}
+.ac button i{font-style:normal; color:var(--fomo-muted); font-size:0.82rem; margin-left:7px;}
+.live-box{border:1px solid var(--fomo-line); border-radius:12px; padding:16px 18px; background:var(--fomo-light-tint);}
+.live-box.none{color:var(--fomo-muted); font-size:0.92rem;}
+.ev{display:grid; grid-template-columns:1fr auto; gap:4px 14px; padding:13px 0; border-bottom:1px solid var(--fomo-line);}
+.ev:last-child{border-bottom:none; padding-bottom:0;}
+.ev:first-child{padding-top:0;}
+.ev h3{grid-column:1;}
+.ev .when{grid-column:2; grid-row:1; font-size:0.84rem; color:var(--fomo-muted); white-space:nowrap;}
+.ev .jobs{grid-column:1 / -1; display:flex; flex-wrap:wrap; gap:6px; margin-top:6px;}
+.ev .jobs button{background:var(--fomo-canvas); border:1px solid var(--fomo-purple); color:var(--fomo-purple); border-radius:8px; padding:5px 10px; font-size:0.82rem; font-weight:var(--fomo-weight-bold); cursor:pointer;}
+.ev .jobs button:hover{background:var(--fomo-purple); color:var(--fomo-white);}
 
 /* ---- payout legend ---- */
-.key{display:flex; margin-top:14px; border:1px solid var(--fomo-line);
-  border-radius:var(--btn-radius); overflow:hidden; background:var(--panel);}
+.key{display:flex; border:1px solid var(--fomo-line); border-radius:12px; overflow:hidden; background:var(--fomo-light-tint); margin-top:14px;}
 .key .cell{flex:1 1 0; min-width:0; padding:15px 18px; border-right:1px solid var(--fomo-line);}
 .key .cell:last-child{border-right:none;}
-.key .p{font-size:1.22rem; font-weight:var(--fomo-weight-bold); letter-spacing:-0.02em; margin-top:9px;
-  color:var(--fomo-campaign-display);}
-.key .l{font-size:0.78rem; color:var(--fomo-campaign-emphasis); margin-top:2px;}
+.key .p{font-size:1.2rem; font-weight:var(--fomo-weight-bold); letter-spacing:-0.02em; margin-top:9px;}
+.key .l{font-size:0.78rem; color:var(--fomo-muted); margin-top:2px;}
 @media (max-width:640px){
   .key{flex-direction:column;}
-  .key .cell{display:flex; align-items:baseline; gap:12px; padding:12px 16px;
-    border-right:none; border-bottom:1px solid var(--fomo-line);}
+  .key .cell{display:flex; align-items:baseline; gap:12px; padding:12px 16px; border-right:none; border-bottom:1px solid var(--fomo-line);}
   .key .cell:last-child{border-bottom:none;}
-  .key .p{margin-top:0; margin-left:auto; order:3;}
-  .key .l{margin-top:0; order:2;}
+  .key .p{margin-top:0; margin-left:auto; order:3;} .key .l{margin-top:0; order:2;}
 }
 .stars{display:inline-flex; gap:3px;}
 .stars svg{width:13px; height:13px;}
 .stars .on{color:var(--fomo-purple);} .stars .off{color:var(--fomo-line);}
 
 /* ---- board ---- */
-.board{padding:44px 0 0;}
-@media (max-width:760px){ .board{padding:40px 0 0;} }
-.tools{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin:20px 0 18px;}
+.tools{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin:18px 0;}
 .fl{display:flex; gap:2px; border:1px solid var(--fomo-line); border-radius:11px; padding:3px;}
-.fl button{background:none; border:none; color:var(--fomo-campaign-emphasis);
-  font-weight:var(--fomo-weight-bold); font-size:0.86rem; padding:8px 13px; border-radius:8px;
-  cursor:pointer; display:inline-flex; align-items:center; gap:6px;}
-.fl button:hover{color:var(--fomo-campaign-display);}
-.fl button.on{background:var(--btn-primary); border:1px solid var(--btn-hairline);
-  color:var(--fomo-white); padding:7px 12px;}
+.fl button{background:none; border:none; color:var(--fomo-muted); font-weight:var(--fomo-weight-bold); font-size:0.86rem; padding:8px 13px; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;}
+.fl button:hover{color:var(--fomo-text);}
+.fl button.on{background:var(--fomo-action); color:var(--fomo-white);}
 .fl button.on .on{color:var(--fomo-white);} .fl button.on .off{color:var(--fomo-highlight);}
-.starter{background:var(--btn-secondary); border:1px solid var(--btn-hairline);
-  border-radius:var(--btn-radius); color:var(--fomo-campaign-display);
-  font-weight:var(--fomo-weight-bold); font-size:0.86rem; padding:10px 15px; cursor:pointer;}
-.starter:hover{background:var(--btn-primary);}
-.tools .n{margin-left:auto; font-size:0.88rem; color:var(--fomo-campaign-emphasis);}
+.ghost{background:var(--fomo-canvas); border:1px solid var(--fomo-line); border-radius:11px; font-weight:var(--fomo-weight-bold); font-size:0.86rem; padding:10px 15px; cursor:pointer;}
+.ghost:hover{border-color:var(--fomo-purple); color:var(--fomo-purple);}
+.tools .n{margin-left:auto; font-size:0.88rem; color:var(--fomo-muted);}
 @media (max-width:760px){
   .tools .n{margin-left:0;}
-  .fl{flex-wrap:nowrap;} .fl button{padding:8px 9px; gap:4px;} .fl button.on{padding:7px 8px;}
-  .fl .stars svg{width:11px; height:11px;}
+  .fl{flex-wrap:nowrap; min-width:0; max-width:100%; overflow-x:auto; scrollbar-width:none;}
+  .fl::-webkit-scrollbar{display:none;}
+  .fl button{padding:8px 7px; gap:4px; flex:0 0 auto;}
+  .fl .stars{gap:2px;} .fl .stars svg{width:11px; height:11px;}
 }
-
 .grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; align-items:start;}
 @media (max-width:980px){ .grid{grid-template-columns:repeat(2,1fr);} }
 @media (max-width:640px){ .grid{grid-template-columns:1fr;} }
-.b{border:1px solid var(--fomo-line); border-radius:var(--btn-radius); background:var(--fomo-dark-surface);
-  overflow:hidden; transition:border-color .15s ease, background .15s ease;}
+.b{border:1px solid var(--fomo-line); border-radius:12px; background:var(--fomo-canvas); overflow:hidden; transition:border-color .15s ease, background .15s ease;}
 .b:hover{border-color:var(--fomo-highlight);}
-.b.st-run{border-color:var(--fomo-purple); background:var(--fomo-dark-raised);}
-.b.st-sent{border-color:var(--fomo-highlight); background:var(--fomo-dark-raised);}
+.b.st-run{border-color:var(--fomo-purple); background:var(--fomo-light-tint);}
+.b.st-sent{border-color:var(--fomo-highlight); background:var(--fomo-light-tint);}
 .b-top{padding:15px 17px 0; display:flex; align-items:center; justify-content:space-between; gap:10px;}
-.b-pay{font-size:1.06rem; font-weight:var(--fomo-weight-bold); letter-spacing:-0.02em;
-  color:var(--fomo-campaign-display);}
+.b-pay{font-size:1.06rem; font-weight:var(--fomo-weight-bold); letter-spacing:-0.02em; white-space:nowrap;}
+.b-pay s{color:var(--fomo-muted); font-size:0.82rem; margin-right:6px; font-weight:var(--fomo-weight-medium);}
 .b-mid{padding:10px 17px 14px;}
 .b-mid h3{margin-bottom:5px;}
 .b-mid p{font-size:0.88rem; line-height:1.5;}
+.b-live{display:inline-flex; align-items:center; gap:6px; margin-top:9px; font-size:0.74rem; font-weight:var(--fomo-weight-bold); letter-spacing:.09em; text-transform:uppercase; color:var(--fomo-text);}
 .b-act{border-top:1px solid var(--fomo-line); padding:10px 17px; display:flex; align-items:center; gap:9px;}
-.add{flex:1; background:var(--btn-secondary); border:1px solid var(--btn-hairline);
-  border-radius:9px; padding:8px 12px; font-size:0.84rem; font-weight:var(--fomo-weight-bold);
-  cursor:pointer; color:var(--fomo-campaign-display); text-align:center;}
-.add:hover{background:var(--btn-primary);}
-.b.st-run .add{background:var(--btn-primary); color:var(--fomo-white);}
-.b.st-sent .add{background:none; border-color:var(--fomo-highlight); color:var(--fomo-highlight);}
-.mo{background:none; border:none; cursor:pointer; font-size:0.84rem;
-  font-weight:var(--fomo-weight-bold); color:var(--fomo-campaign-emphasis);
-  display:inline-flex; align-items:center; gap:7px; padding:3px 0;}
-.mo:hover{color:var(--fomo-campaign-display);}
+.b-act{gap:7px;}
+.add{flex:0 0 auto; background:var(--fomo-canvas); border:1px solid var(--fomo-line); border-radius:9px; padding:8px 11px; font-size:0.83rem; font-weight:var(--fomo-weight-bold); cursor:pointer; white-space:nowrap;}
+.add:hover{border-color:var(--fomo-purple); color:var(--fomo-purple);}
+.b.st-run .add{background:var(--fomo-purple); border-color:var(--fomo-purple); color:var(--fomo-white);}
+.send{flex:1; min-width:0; background:var(--fomo-action); color:var(--fomo-white); border:1px solid var(--fomo-action); border-radius:9px; padding:8px 10px; font-size:0.83rem; font-weight:var(--fomo-weight-bold); cursor:pointer; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.send:hover{filter:brightness(1.07);}
+.b.st-sent .send{background:var(--fomo-canvas); color:var(--fomo-purple); border-color:var(--fomo-purple);}
+.mo{flex:0 0 auto; width:30px; height:30px; background:none; border:1px solid var(--fomo-line); border-radius:9px; cursor:pointer; color:var(--fomo-muted); display:inline-flex; align-items:center; justify-content:center; padding:0;}
+.mo:hover{border-color:var(--fomo-purple); color:var(--fomo-purple);}
 .mo svg{width:11px; height:11px; transition:transform .2s ease;}
 .b.exp .mo svg{transform:rotate(180deg);}
-.b-brief{border-top:1px solid var(--fomo-line); padding:13px 17px 15px; background:var(--panel);}
+.b-brief{border-top:1px solid var(--fomo-line); padding:13px 17px 15px; background:var(--fomo-light-tint);}
 .b-brief dl{margin:0; display:grid; grid-template-columns:70px 1fr; gap:8px 12px;}
-.b-brief dt{font-size:0.67rem; font-weight:var(--fomo-weight-bold); letter-spacing:0.1em;
-  text-transform:uppercase; color:var(--fomo-purple); padding-top:3px;}
-.b-brief dd{margin:0; font-size:0.86rem; line-height:1.5; color:var(--fomo-campaign-emphasis);}
-.b-brief .mark-sent{margin-top:13px; width:100%; background:none; border:1px solid var(--btn-hairline);
-  border-radius:9px; padding:8px; font-size:0.82rem; font-weight:var(--fomo-weight-bold);
-  cursor:pointer; color:var(--fomo-campaign-emphasis);}
-.b-brief .mark-sent:hover{background:var(--btn-secondary); color:var(--fomo-campaign-display);}
-.b.st-sent .b-brief .mark-sent{color:var(--fomo-highlight); border-color:var(--fomo-highlight);}
+.b-brief dt{font-size:0.67rem; font-weight:var(--fomo-weight-bold); letter-spacing:0.1em; text-transform:uppercase; color:var(--fomo-purple); padding-top:3px;}
+.b-brief dd{margin:0; font-size:0.86rem; line-height:1.5;}
 
-/* ---- the run meter ---- */
-.run{position:sticky; bottom:0; z-index:9; background:var(--fomo-ink);
-  border-top:1px solid var(--fomo-line);}
+/* ---- status pill ---- */
+.pill{display:inline-flex; align-items:center; gap:6px; font-size:0.73rem; font-weight:var(--fomo-weight-bold); letter-spacing:.04em; padding:3px 9px; border-radius:999px; border:1px solid var(--fomo-line); color:var(--fomo-muted); white-space:nowrap;}
+.pill.s1{border-color:var(--fomo-highlight); color:var(--fomo-action);}
+.pill.s2{border-color:var(--fomo-highlight); color:var(--fomo-action);}
+.pill.s3{border-color:var(--fomo-purple); color:var(--fomo-purple);}
+.pill.s4{border-color:var(--fomo-purple); color:var(--fomo-purple);}
+.pill.s5{background:var(--fomo-purple); border-color:var(--fomo-purple); color:var(--fomo-white);}
+.pill.sx{border-color:var(--live); color:var(--live);}
+
+/* ---- run meter ---- */
+.run{position:sticky; bottom:0; z-index:9; background:var(--fomo-canvas); border-top:1px solid var(--fomo-line);}
 .run-in{max-width:1160px; margin:0 auto; padding:12px 40px;}
 @media (max-width:760px){ .run-in{padding:11px 24px;} }
 .run-row{display:flex; align-items:center; gap:13px; flex-wrap:wrap;}
-.run-amt{font-size:1.2rem; font-weight:var(--fomo-weight-bold); letter-spacing:-0.02em;
-  color:var(--fomo-campaign-display);}
-.run-row span{font-size:0.86rem; color:var(--fomo-campaign-emphasis);}
+.run-amt{font-size:1.2rem; font-weight:var(--fomo-weight-bold); letter-spacing:-0.02em;}
+.run-row span{font-size:0.86rem; color:var(--fomo-muted);}
 .run-row .sp{flex:1;}
-.run-row button{background:none; border:none; font-size:0.83rem;
-  font-weight:var(--fomo-weight-bold); color:var(--fomo-highlight); cursor:pointer;}
-.meter{position:relative; height:6px; margin-top:9px; border-radius:3px;
-  background:var(--btn-secondary); overflow:hidden;}
-.meter i{display:block; height:100%; width:0; border-radius:3px;
-  background:var(--fomo-purple); transition:width .35s ease;}
+.run-row button{background:none; border:none; font-size:0.83rem; font-weight:var(--fomo-weight-bold); color:var(--fomo-link); cursor:pointer;}
+.meter{position:relative; height:6px; margin-top:9px; border-radius:3px; background:var(--fomo-line); overflow:hidden;}
+.meter i{display:block; height:100%; width:0; border-radius:3px; background:var(--fomo-purple); transition:width .35s ease;}
 .pips{position:relative; height:13px; margin-top:5px;}
-.pips b{position:absolute; transform:translateX(-50%); font-size:0.64rem;
-  font-weight:var(--fomo-weight-bold); letter-spacing:0.06em; color:var(--fomo-dark-muted);
-  white-space:nowrap;}
-.pips b.hit{color:var(--fomo-highlight);}
+.pips b{position:absolute; transform:translateX(-50%); font-size:0.64rem; font-weight:var(--fomo-weight-bold); letter-spacing:0.06em; color:var(--fomo-muted); white-space:nowrap;}
+.pips b.hit{color:var(--fomo-purple);}
 .pips b:first-child{transform:none;} .pips b:last-child{transform:translateX(-100%);}
-/* On a phone the four milestone labels collide, so the bar carries the
-   progress and the "next" readout names the milestone instead. */
 @media (max-width:640px){
   .pips{display:none;}
   .run-row{display:grid; grid-template-columns:auto 1fr; gap:1px 10px; align-items:baseline;}
   .run-row .sp{display:none;}
-  .run-amt{grid-column:1; grid-row:1;}
-  #r-meta{grid-column:2; grid-row:1;}
+  .run-amt{grid-column:1; grid-row:1;} #r-meta{grid-column:2; grid-row:1;}
   #r-next{grid-column:1 / -1; grid-row:2; font-size:0.81rem;}
   #r-clear{grid-column:2; grid-row:2; justify-self:end;}
 }
 
-/* ---- close ---- */
-.end{padding:58px 0 0;}
-@media (max-width:760px){ .end{padding:40px 0 0;} }
-details.fine{margin-top:4px; border-top:1px solid var(--fomo-line);}
-details.fine summary{cursor:pointer; list-style:none; padding:16px 0; font-size:0.94rem;
-  font-weight:var(--fomo-weight-bold); display:flex; justify-content:space-between;
-  align-items:center; color:var(--fomo-campaign-display);}
-details.fine summary::-webkit-details-marker{display:none;}
-details.fine summary::after{content:'+'; color:var(--fomo-campaign-emphasis);
-  font-weight:var(--fomo-weight-medium);}
-details.fine[open] summary::after{content:'\2013';}
-details.fine ul{margin:0 0 20px; padding-left:20px; max-width:78ch;
-  color:var(--fomo-campaign-emphasis); font-size:0.9rem; line-height:1.7;}
-details.fine ul b{color:var(--fomo-campaign-display); font-weight:var(--fomo-weight-bold);}
+/* ---- forms ---- */
+.panel{border:1px solid var(--fomo-line); border-radius:12px; padding:20px; background:var(--fomo-light-tint);}
+.f{display:grid; gap:12px;}
+.f label{display:block; font-size:0.8rem; font-weight:var(--fomo-weight-bold); letter-spacing:.03em; margin-bottom:5px;}
+.f .hint{font-weight:var(--fomo-weight-medium); color:var(--fomo-muted); letter-spacing:0;}
+.f input[type=text],.f input[type=url],.f textarea,.f select{width:100%; padding:10px 13px; font-size:0.93rem; border:1px solid var(--fomo-line); border-radius:9px; background:var(--fomo-canvas);}
+.f textarea{min-height:92px; resize:vertical; line-height:1.5;}
+.f .two{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+@media (max-width:640px){ .f .two{grid-template-columns:1fr;} }
+.frow{display:flex; align-items:center; gap:12px; flex-wrap:wrap;}
+.primary{background:var(--fomo-action); color:var(--fomo-white); border:1px solid var(--fomo-action); border-radius:10px; padding:11px 20px; font-size:0.92rem; font-weight:var(--fomo-weight-bold); cursor:pointer;}
+.primary:hover{filter:brightness(1.07);}
+.primary[disabled]{opacity:.55; cursor:default; filter:none;}
+.msg{font-size:0.88rem; margin-top:4px;}
+.msg.err{color:var(--live);} .msg.ok{color:var(--fomo-purple);}
 
-footer{margin-top:50px; border-top:1px solid var(--fomo-line);}
-.ft{max-width:1160px; margin:0 auto; padding:22px 40px 44px; display:flex; gap:18px;
-  justify-content:space-between; flex-wrap:wrap; font-size:0.83rem; color:var(--fomo-dark-muted);}
+/* ---- modal ---- */
+.scrim{position:fixed; inset:0; z-index:40; background:rgba(20,19,34,.45); display:flex; align-items:flex-start; justify-content:center; padding:24px; overflow:auto;}
+.modal{background:var(--fomo-canvas); border-radius:14px; width:100%; max-width:620px; margin:auto; overflow:hidden;}
+.modal-hd{padding:18px 22px; border-bottom:1px solid var(--fomo-line); display:flex; align-items:flex-start; gap:12px;}
+.modal-hd .x{margin-left:auto; background:none; border:none; font-size:1.4rem; line-height:1; cursor:pointer; color:var(--fomo-muted); padding:0 2px;}
+.modal-bd{padding:20px 22px; display:grid; gap:14px; max-height:62vh; overflow:auto;}
+.modal-ft{padding:14px 22px 20px; border-top:1px solid var(--fomo-line); display:flex; align-items:center; gap:12px; flex-wrap:wrap;}
+.modal-ft .sp{flex:1;}
+.rowset{display:grid; gap:7px;}
+.rowset .r{display:grid; gap:7px;}
+.rowset .r input{width:100%;}
+.numbered{display:grid; grid-template-columns:22px 1fr; gap:7px 9px; align-items:center;}
+.numbered em{font-style:normal; font-size:0.78rem; color:var(--fomo-muted); text-align:right;}
+.drop{border:1px dashed var(--fomo-line); border-radius:10px; padding:16px; text-align:center; background:var(--fomo-light-tint);}
+.drop button{background:var(--fomo-canvas); border:1px solid var(--fomo-line); border-radius:9px; padding:9px 16px; font-size:0.87rem; font-weight:var(--fomo-weight-bold); cursor:pointer;}
+.drop button:hover{border-color:var(--fomo-purple); color:var(--fomo-purple);}
+.drop p{font-size:0.8rem; margin-top:8px;}
+.files{display:grid; gap:6px; margin-top:10px;}
+.files div{display:flex; align-items:center; gap:9px; font-size:0.84rem; background:var(--fomo-canvas); border:1px solid var(--fomo-line); border-radius:8px; padding:7px 11px;}
+.files div span{overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.files div em{font-style:normal; color:var(--fomo-muted); margin-left:auto; white-space:nowrap;}
+.files div button{background:none; border:none; cursor:pointer; color:var(--fomo-muted); font-size:1.1rem; line-height:1; padding:0 2px;}
+
+/* ---- tracker ---- */
+.tr{border:1px solid var(--fomo-line); border-radius:11px; padding:14px 16px; background:var(--fomo-canvas); display:grid; gap:9px;}
+.tr-hd{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+.tr-hd b{font-size:0.97rem;}
+.tr-hd .amt{margin-left:auto; font-weight:var(--fomo-weight-bold);}
+@media (max-width:640px){ .tr-hd .amt{margin-left:0;} }
+.track{display:flex; align-items:center; gap:0;}
+.track div{flex:1; display:flex; align-items:center; gap:0; min-width:0;}
+.track i{width:9px; height:9px; border-radius:50%; background:var(--fomo-line); flex-shrink:0;}
+.track div.done i{background:var(--fomo-purple);}
+.track div.done s{background:var(--fomo-purple);}
+.track s{flex:1; height:2px; background:var(--fomo-line); text-decoration:none;}
+.track div:last-child{flex:0 0 auto;}
+.tr-steps{display:flex; justify-content:space-between; font-size:0.66rem; color:var(--fomo-muted); letter-spacing:.03em;}
+.tr-steps span.on{color:var(--fomo-purple); font-weight:var(--fomo-weight-bold);}
+@media (max-width:640px){ .tr-steps span{font-size:0.58rem;} }
+.totals{display:flex; gap:22px; flex-wrap:wrap; margin-bottom:14px;}
+.totals div b{display:block; font-size:1.3rem; font-weight:var(--fomo-weight-bold); letter-spacing:-0.02em;}
+.totals div span{font-size:0.8rem; color:var(--fomo-muted);}
+
+details.fine{margin-top:4px; border-top:1px solid var(--fomo-line);}
+details.fine summary{cursor:pointer; list-style:none; padding:16px 0; font-size:0.94rem; font-weight:var(--fomo-weight-bold); display:flex; justify-content:space-between; align-items:center;}
+details.fine summary::-webkit-details-marker{display:none;}
+details.fine summary::after{content:'+'; color:var(--fomo-muted); font-weight:var(--fomo-weight-medium);}
+details.fine[open] summary::after{content:'\2013';}
+details.fine ul{margin:0 0 20px; padding-left:20px; max-width:78ch; color:var(--fomo-muted); font-size:0.9rem; line-height:1.7;}
+details.fine ul b{color:var(--fomo-text); font-weight:var(--fomo-weight-bold);}
+
+footer{margin-top:52px; border-top:1px solid var(--fomo-line);}
+.ft{max-width:1160px; margin:0 auto; padding:22px 40px 44px; display:flex; gap:18px; justify-content:space-between; flex-wrap:wrap; font-size:0.83rem; color:var(--fomo-muted);}
 @media (max-width:760px){ .ft{padding:20px 24px 36px;} }
-.ft a{text-decoration:none; color:var(--fomo-campaign-emphasis); margin-left:20px;}
-.ft a:first-child{margin-left:0;}
+.ft a{text-decoration:none; margin-left:20px;} .ft a:first-child{margin-left:0;}
 </style>
 </head>
 <body>
@@ -240,7 +279,7 @@ footer{margin-top:50px; border-top:1px solid var(--fomo-line);}
         <g class="cap" fill-rule="evenodd"><path d="M0 0 C0.381 0.25 0.381 0.25 2.306 1.515 C3.878 2.55 5.442 3.598 6.998 4.657 C9.732 6.515 12.509 8.298 15.292 10.079 C17.399 11.43 19.495 12.796 21.59 14.164 C24.88 16.307 28.187 18.422 31.504 20.523 C49.106 31.686 66.441 43.242 83.757 54.843 C87.17 57.13 90.585 59.413 94.013 61.676 C94.574 62.047 95.136 62.418 95.714 62.8 C97.17 63.763 98.628 64.722 100.087 65.682 C102.25 67.187 102.25 67.187 104.25 69.188 C104.125 71.688 104.125 71.688 103.25 74.188 C99.92 76.466 96.412 76.605 92.5 76.812 C91.469 76.874 91.469 76.874 86.25 77.188 C86.25 85.438 86.25 93.688 86.25 102.188 C87.57 102.517 88.89 102.847 90.25 103.188 C93.186 105.388 95.078 107.671 96.25 111.188 C96.961 116.546 96.293 120.019 93.027 124.352 C90.708 129.829 95.015 138.1 96.688 143.375 C99.934 153.769 103.084 164.192 106.126 174.648 C106.582 176.211 107.043 177.773 107.508 179.334 C108.163 181.539 108.804 183.747 109.441 185.957 C109.64 186.614 109.838 187.272 110.043 187.949 C111.102 191.689 111.539 194.473 110.25 198.188 C104.979 201.712 99.412 202.434 93.25 202.188 C92.944 202.349 92.944 202.349 91.395 203.164 C88.732 204.435 86.752 204.454 83.812 204.438 C82.886 204.443 81.959 204.448 81.004 204.453 C78.072 204.17 75.954 203.315 73.25 202.188 C71.039 201.879 71.039 201.879 68.875 201.75 C59.926 200.789 59.926 200.789 57.25 198.188 C56.676 190.935 59.254 183.051 60.902 176.047 C61.166 174.91 61.428 173.773 61.691 172.635 C62.238 170.271 62.788 167.908 63.343 165.546 C64.049 162.533 64.748 159.518 65.444 156.502 C66.114 153.6 66.79 150.698 67.465 147.797 C67.589 147.259 67.589 147.259 68.219 144.539 C70.17 136.237 70.17 136.237 71.436 132.618 C72.439 129.624 72.221 128.175 71.25 125.188 C70.734 124.259 70.219 123.331 69.688 122.375 C67.648 117.853 67.231 113.939 68.977 109.227 C71.014 105.3 73.119 103.036 77.25 101.188 C77.91 101.188 78.57 101.188 79.25 101.188 C79.33 97.308 79.35 93.434 79.317 89.554 C79.314 88.237 79.327 86.92 79.356 85.603 C79.581 74.805 79.581 74.805 76.586 71.166 C74.22 69.539 71.868 68.365 69.25 67.188 C67.39 66.189 65.532 65.186 63.676 64.18 C62.166 63.406 60.657 62.632 59.143 61.865 C56.393 60.469 53.652 59.054 50.91 57.641 C50.353 57.354 49.796 57.067 49.223 56.772 C41.778 52.927 34.443 48.882 27.102 44.844 C24.172 43.233 21.236 41.643 18.273 40.094 C12.833 37.246 7.855 34.277 3.02 30.48 C-0.601 27.835 -4.037 26.039 -8.625 26.438 C-10.75 27.188 -10.75 27.188 -11.75 28.188 C-12.125 31 -12.125 31 -11.75 34.188 C-7.513 38.673 -2.735 40.104 3.273 40.398 C9.259 41.042 13.924 43.743 19.125 46.625 C20.657 47.45 22.189 48.275 23.722 49.099 C25.262 49.929 26.798 50.767 28.334 51.605 C31.714 53.44 35.119 55.223 38.531 56.998 C41.6 58.598 44.657 60.22 47.714 61.844 C50.058 63.086 52.407 64.318 54.756 65.549 C57.322 66.898 59.879 68.263 62.438 69.625 C62.925 69.879 62.925 69.879 65.395 71.166 C66.289 71.646 67.184 72.126 68.105 72.621 C68.906 73.044 69.707 73.468 70.532 73.904 C71.099 74.328 71.666 74.751 72.25 75.188 C72.25 76.177 72.25 77.168 72.25 78.188 C71.151 78.125 70.052 78.063 68.92 77.999 C43.085 76.883 43.085 76.883 34.25 82.188 C27.439 89.664 26.212 102.172 25.144 111.841 C24.906 113.925 24.906 113.925 24.25 117.188 C21.25 118.188 21.25 118.188 18.527 116.992 C17.406 116.363 16.294 115.718 15.188 115.062 C14.58 114.71 13.972 114.357 13.346 113.994 C8.089 110.861 3.173 107.315 -1.75 103.688 C-9.148 98.237 -16.625 93.466 -24.75 89.188 C-25.316 88.881 -25.883 88.575 -26.466 88.259 C-52.526 74.198 -80.598 71.188 -109.75 70.188 C-108.162 64.183 -104.98 59.26 -101.75 54 C-101.203 53.098 -100.657 52.197 -100.094 51.268 C-95.861 44.3 -95.861 44.3 -93.75 41.188 C-94.612 40.923 -95.473 40.659 -96.361 40.387 C-99.744 39.256 -102.842 37.695 -105.969 35.992 C-106.545 35.683 -107.121 35.375 -107.714 35.056 C-109.562 34.063 -111.406 33.063 -113.25 32.062 C-114.516 31.379 -115.782 30.696 -117.048 30.013 C-123.518 26.517 -129.979 23.004 -136.375 19.375 C-136.646 19.222 -136.646 19.222 -138.018 18.447 C-140.228 17.172 -141.932 16.005 -143.75 14.188 C-144 11.688 -144 11.688 -143.75 9.188 C-141.368 6.806 -140.56 6.841 -137.29 6.505 C-136.35 6.404 -135.41 6.303 -134.442 6.199 C-133.924 6.148 -133.924 6.148 -131.301 5.891 C-130.209 5.776 -129.117 5.662 -127.991 5.545 C-124.98 5.23 -121.968 4.927 -118.955 4.627 C-116.426 4.374 -113.899 4.115 -111.371 3.855 C-103.213 3.02 -95.052 2.208 -86.891 1.4 C-84.737 1.186 -82.584 0.972 -80.43 0.757 C-71.143 -0.17 -61.855 -1.084 -52.566 -1.986 C-50.513 -2.186 -48.46 -2.388 -46.408 -2.591 C-43.148 -2.912 -39.887 -3.226 -36.627 -3.536 C-34.875 -3.703 -33.123 -3.877 -31.372 -4.051 C-8.751 -6.169 -8.751 -6.169 0 0 Z " transform="translate(496.75,16.8125)" id="graduation-cap" /></g>
         <g class="eyes" fill-rule="evenodd"><path d="M0 0 C0.334 -0.005 0.334 -0.005 2.026 -0.03 C35.306 -0.419 64.488 6.477 89.801 29.238 C90.184 29.581 90.184 29.581 92.125 31.312 C98.284 37.128 102.994 43.789 107.761 50.741 C109.059 52.61 110.417 54.431 111.801 56.238 C112.456 55.693 113.11 55.148 113.785 54.586 C135.692 36.436 158.906 22.309 186.801 15.238 C187.536 15.044 188.272 14.849 189.029 14.648 C222.008 6.26 258.766 9.745 289.801 23.238 C290.489 23.536 291.178 23.833 291.887 24.14 C315.49 34.578 335.991 51.705 348.801 74.238 C349.161 74.872 349.521 75.506 349.893 76.159 C365.526 104.281 369.958 135.83 362.801 167.238 C362.629 167.999 362.458 168.76 362.281 169.544 C350.348 221.049 318.521 267.61 273.594 295.941 C254.204 307.791 234.057 315.773 211.801 320.238 C211.502 320.298 211.502 320.298 209.992 320.602 C174.894 327.278 137.487 319.563 107.488 300.426 C93.103 290.303 82.155 278.326 71.801 264.238 C68.857 267.165 65.943 270.117 63.051 273.094 C43.793 292.806 22.475 307.371 -4.262 314.988 C-4.609 315.088 -4.609 315.088 -6.369 315.591 C-17.371 318.551 -28.393 319.631 -39.762 319.613 C-40.365 319.613 -40.969 319.612 -41.591 319.612 C-72.15 319.486 -100.351 308.257 -122.715 287.512 C-124.06 286.281 -125.416 285.061 -126.829 283.909 C-131.425 280.147 -135.019 276.047 -138.574 271.301 C-138.854 270.931 -138.854 270.931 -140.267 269.058 C-147.312 259.582 -155.16 248.829 -158.199 237.238 C-157.199 236.238 -157.199 236.238 -155.554 236.114 C-155.195 236.114 -155.195 236.114 -153.379 236.114 C-152.557 236.111 -151.735 236.109 -150.889 236.106 C-149.981 236.108 -149.073 236.11 -148.137 236.112 C-147.662 236.111 -147.662 236.111 -145.255 236.107 C-143.182 236.103 -141.109 236.101 -139.036 236.1 C-134.637 236.097 -130.239 236.075 -125.84 236.055 C-117.64 236.017 -109.441 235.985 -101.241 235.988 C-95.547 235.99 -89.853 235.965 -84.159 235.926 C-81.984 235.915 -79.81 235.914 -77.635 235.922 C-74.596 235.931 -71.559 235.91 -68.52 235.882 C-67.616 235.892 -66.712 235.902 -65.781 235.913 C-63.48 235.874 -61.431 235.795 -59.199 235.238 C-57.222 232.975 -57.222 232.975 -56.199 230.238 C-56.049 229.877 -56.049 229.877 -55.287 228.046 C-55.034 227.307 -54.781 226.568 -54.52 225.807 C-54.225 224.954 -53.929 224.101 -53.625 223.222 C-53.313 222.303 -53.001 221.384 -52.68 220.438 C-52.345 219.467 -52.01 218.496 -51.665 217.495 C-50.567 214.307 -49.477 211.116 -48.387 207.926 C-47.618 205.689 -46.848 203.452 -46.078 201.216 C-45.688 200.085 -45.299 198.955 -44.91 197.824 C-44.717 197.263 -44.523 196.703 -44.324 196.125 C-43.737 194.417 -43.149 192.708 -42.562 191 C-39.445 181.928 -36.273 172.877 -33.085 163.829 C-30.438 156.305 -27.818 148.772 -25.199 141.238 C-25.01 140.693 -25.01 140.693 -24.05 137.935 C-21.733 131.275 -19.426 124.611 -17.137 117.941 C-16.101 114.925 -15.062 111.911 -14.015 108.9 C-12.847 105.543 -11.696 102.18 -10.547 98.816 C-10.192 97.805 -9.838 96.793 -9.473 95.751 C-9.315 95.284 -9.315 95.284 -8.516 92.923 C-8.236 92.111 -7.956 91.299 -7.668 90.462 C-7.144 87.979 -7.261 86.586 -8.199 84.238 C-10.694 82.991 -12.393 83.1 -15.185 83.08 C-16.24 83.07 -17.294 83.06 -18.381 83.05 C-19.554 83.044 -20.727 83.039 -21.901 83.033 C-23.133 83.023 -24.364 83.013 -25.596 83.003 C-28.945 82.976 -32.294 82.955 -35.643 82.935 C-39.141 82.913 -42.639 82.886 -46.137 82.859 C-52.764 82.809 -59.39 82.764 -66.016 82.721 C-73.559 82.672 -81.102 82.617 -88.645 82.561 C-104.163 82.447 -119.681 82.341 -135.199 82.238 C-135.199 78.256 -133.316 76.355 -130.949 73.363 C-130.725 73.077 -130.725 73.077 -129.591 71.629 C-99.67 33.987 -57.047 7.132 -9.063 0.45 C-6.043 0.107 -3.037 0.037 0 0 Z M85.796 87.473 C85.467 88.055 85.139 88.638 84.801 89.238 C84.204 90.127 83.608 91.016 82.993 91.931 C81.328 94.816 79.668 97.702 78.051 100.613 C77.748 101.154 77.446 101.696 77.135 102.253 C56.446 139.508 44.401 184.136 55.855 226.273 C58.318 234.756 58.318 234.756 59.801 236.238 C61.436 236.341 63.077 236.373 64.716 236.379 C65.248 236.382 65.248 236.382 67.94 236.396 C69.13 236.397 70.319 236.398 71.509 236.399 C72.754 236.404 73.999 236.409 75.244 236.414 C78.634 236.428 82.025 236.434 85.415 236.438 C87.533 236.441 89.65 236.446 91.767 236.45 C98.388 236.464 105.009 236.473 111.629 236.477 C119.278 236.482 126.927 236.499 134.576 236.528 C140.483 236.55 146.39 236.56 152.298 236.561 C155.828 236.562 159.358 236.568 162.889 236.586 C166.21 236.602 169.532 236.605 172.854 236.596 C174.073 236.595 175.292 236.599 176.511 236.609 C178.175 236.622 179.84 236.614 181.505 236.606 C181.971 236.607 181.971 236.607 184.328 236.61 C187.274 236.167 188.63 235.243 190.801 233.238 C191.826 231.269 191.826 231.269 192.577 228.99 C192.87 228.127 193.162 227.263 193.463 226.373 C193.766 225.431 194.07 224.49 194.383 223.52 C194.714 222.531 195.045 221.542 195.385 220.524 C196.286 217.828 197.174 215.128 198.058 212.427 C198.991 209.588 199.939 206.754 200.887 203.919 C201.273 202.767 201.658 201.614 202.044 200.462 C202.235 199.888 202.427 199.315 202.624 198.725 C203.21 196.972 203.793 195.219 204.377 193.465 C207.713 183.444 211.177 173.469 214.683 163.506 C220.927 145.762 227.018 127.969 232.861 110.088 C233.957 106.744 235.087 103.418 236.28 100.107 C236.399 99.771 236.399 99.771 237.001 98.067 C237.451 96.798 237.911 95.532 238.385 94.271 C239.795 90.248 239.98 87.345 238.801 83.238 C236.124 81.9 234.056 82.094 231.058 82.071 C230.464 82.065 229.871 82.059 229.259 82.053 C227.261 82.035 225.264 82.024 223.267 82.014 C221.838 82.002 220.409 81.991 218.98 81.979 C214.279 81.943 209.579 81.917 204.879 81.895 C204.079 81.891 203.28 81.887 202.456 81.883 C194.917 81.846 187.378 81.815 179.839 81.793 C170.194 81.766 160.549 81.715 150.904 81.633 C144.124 81.577 137.344 81.548 130.563 81.539 C126.512 81.533 122.463 81.515 118.413 81.468 C114.601 81.424 110.79 81.413 106.977 81.428 C105.58 81.428 104.183 81.416 102.786 81.39 C90.014 81.172 90.014 81.172 85.796 87.473 Z " transform="translate(170.19921875,80.76171875)" id="fomo-eyes" /></g>
       </svg>
-      <img class="wm" src="/assets/fomo/fomo-wordmark-pale.svg" alt="fomo" width="352" height="113">
+      <img class="wm" src="/assets/fomo/fomo-wordmark-ink.svg" alt="fomo" width="352" height="113">
       <span class="sub">/ campus</span>
     </a>
     <div class="sp"></div>
@@ -248,25 +287,41 @@ footer{margin-top:50px; border-top:1px solid var(--fomo-line);}
   </div>
 </div>
 
-<div class="wrap hero">
-  <div class="eyebrow">fomo / bounties</div>
-  <h1>pick a job.<br>send it. get paid.</h1>
-  <p>Your chapter is onboarded. Build a run out of the jobs below, send the proof, get the chapter paid.</p>
-  <div class="steps">
-    <div><b>1</b><span>Add jobs to your run</span></div>
-    <div><b>2</b><span>Send us the proof</span></div>
-    <div><b>3</b><span>Chapter paid in 7 days</span></div>
-  </div>
-  <div class="key" id="key"></div>
-</div>
+<div class="wrap">
+  <section style="padding-top:62px">
+    <div class="eyebrow">fomo / bounties</div>
+    <h1>pick a bounty.<br>send it. get paid.</h1>
+    <p class="lede">Your chapter is onboarded. Pick your school, build a run out of the bounties below, upload what you shot, and watch it pay.</p>
+    <div class="steps">
+      <div><b>1</b><span>Add bounties to your run</span></div>
+      <div><b>2</b><span>Upload your submission</span></div>
+      <div><b>3</b><span>Approved, then paid</span></div>
+    </div>
+  </section>
 
-<div class="wrap board" id="board">
-  <div class="tools">
-    <div class="fl" id="filters"></div>
-    <button type="button" class="starter" id="starter">Build me a starter run</button>
-    <div class="n" id="count"></div>
-  </div>
-  <div class="grid" id="grid"></div>
+  <section id="live">
+    <div class="hd">
+      <span class="live-badge"><i class="dot"></i>Live bounties</span>
+      <p id="live-sub">Pick your school to see what is live this week.</p>
+      <div class="school-pick">
+        <input type="text" id="school" autocomplete="off" spellcheck="false"
+               placeholder="Your school — try ASU" aria-label="Your school">
+        <div class="ac" id="ac" hidden></div>
+      </div>
+    </div>
+    <div class="live-box none" id="live-box">Every payout below is a base rate until you pick a school.</div>
+  </section>
+
+  <section id="board">
+    <div class="hd"><h2>The board</h2><p id="board-note">Payouts shown at base rate.</p></div>
+    <div class="key" id="key"></div>
+    <div class="tools">
+      <div class="fl" id="filters"></div>
+      <button type="button" class="ghost" id="starter">Build me a starter run</button>
+      <div class="n" id="count"></div>
+    </div>
+    <div class="grid" id="grid"></div>
+  </section>
 </div>
 
 <div class="run">
@@ -283,23 +338,80 @@ footer{margin-top:50px; border-top:1px solid var(--fomo-line);}
   </div>
 </div>
 
-<div class="wrap end">
-  <h2>The rules</h2>
-  <details class="fine">
-    <summary>Sending work in, and getting paid</summary>
-    <ul>
-      <li>Send proof to whoever onboarded your chapter, with the job name. <b>Keep the raw files.</b></li>
-      <li>We check it in <b>3 business days</b> and pay the chapter within <b>7 days</b> of approval.</li>
-      <li>Money goes to the <b>chapter account</b> through your treasurer or president, never a personal Venmo.</li>
-      <li>Most jobs <b>repeat</b> in a later month. The ones that don't say so in the brief.</li>
-      <li>Everyone on camera agreed to be there and is <b>18 or older</b>. Nothing you didn't shoot.</li>
-      <li>An intro counts when the person <b>replies</b>. Scraped lists don't count.</li>
-      <li>Nothing that puts you sideways with your nationals, your university or the law.</li>
-      <li>Submitting lets fomo use the footage in campus marketing, your chapter credited. Tell us if something is off-limits.</li>
-      <li>Past <b>$600</b> to one chapter in a calendar year we need a W-9 before sending more.</li>
-      <li>Amounts can change with notice here. <b>Anything already approved pays at the amount posted when you ran it.</b></li>
-    </ul>
-  </details>
+<div class="wrap">
+  <section id="account">
+    <div class="hd"><h2>Your payouts</h2><p>Bounties pay into the fomo account you name here.</p></div>
+    <div class="panel">
+      <div class="f">
+        <div class="two">
+          <div>
+            <label for="fomoHandle">Your fomo @ <span class="hint">— where the money lands</span></label>
+            <input type="text" id="fomoHandle" autocomplete="off" spellcheck="false" placeholder="@yourchapter">
+          </div>
+          <div>
+            <label for="rewardsCode">fomo rewards code <span class="hint">— from your chapter page</span></label>
+            <input type="text" id="rewardsCode" autocomplete="off" spellcheck="false" placeholder="ABCD-1234">
+          </div>
+        </div>
+        <div class="frow">
+          <button type="button" class="primary" id="track-go">Save and load my bounties</button>
+          <span class="msg" id="track-msg"></span>
+        </div>
+      </div>
+      <div id="track-out" hidden style="margin-top:18px">
+        <div class="totals" id="track-totals"></div>
+        <div class="f" id="track-list"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pitch">
+    <div class="hd"><h2>Pitch a bounty</h2><p>Something your chapter could do that is not on the board? Tell us and we will price it.</p></div>
+    <div class="panel">
+      <div class="f">
+        <div>
+          <label for="p-idea">What should chapters get paid to do? <span class="hint">— what it is, what you would send us, and why it is worth it</span></label>
+          <textarea id="p-idea" placeholder="e.g. film the walkout at our philanthropy week — 400 people in letters, we can get it on a gimbal"></textarea>
+        </div>
+        <div class="two">
+          <div>
+            <label for="p-ig">Your Instagram <span class="hint">— so we can come back to you</span></label>
+            <input type="text" id="p-ig" autocomplete="off" spellcheck="false" placeholder="@yourhandle">
+          </div>
+          <div>
+            <label for="p-school">Your school</label>
+            <input type="text" id="p-school" autocomplete="off" spellcheck="false" placeholder="Start typing your school" list="schoolList">
+            <datalist id="schoolList"></datalist>
+          </div>
+        </div>
+        <div class="frow">
+          <button type="button" class="primary" id="p-go">Send the pitch</button>
+          <span class="msg" id="p-msg"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="rules">
+    <div class="hd"><h2>The rules</h2></div>
+    <details class="fine">
+      <summary>Sending work in, and getting paid</summary>
+      <ul>
+        <li>Upload straight from the bounty. <b>Keep the raw files</b> until it is paid.</li>
+        <li>We check it in <b>3 business days</b> and pay within <b>7 days</b> of approval.</li>
+        <li>Money lands in the <b>fomo account</b> you named above, through your treasurer or president, never a personal Venmo.</li>
+        <li>Payouts move with the campus. A bounty whose value depends on where it happens pays up to <b>24% either side</b> of base; the rest pay the same everywhere.</li>
+        <li>Live bounties pay a <b>boost</b> for the days that event runs. The rate you see when you submit is the rate we pay.</li>
+        <li>Most bounties <b>repeat</b> in a later month. The ones that do not say so in the brief.</li>
+        <li>Everyone on camera agreed to be there and is <b>18 or older</b>. Nothing you did not shoot.</li>
+        <li>An intro counts when the person <b>replies</b>. Scraped lists do not count.</li>
+        <li>Nothing that puts you sideways with your nationals, your university or the law.</li>
+        <li>Submitting lets fomo use the footage in campus marketing, your chapter credited. Tell us if something is off-limits.</li>
+        <li>Past <b>$600</b> to one chapter in a calendar year we need a W-9 before sending more.</li>
+        <li>Amounts can change with notice here. <b>Anything already approved pays at the amount posted when you ran it.</b></li>
+      </ul>
+    </details>
+  </section>
 </div>
 
 <footer>
@@ -312,128 +424,237 @@ footer{margin-top:50px; border-top:1px solid var(--fomo-line);}
     </div>
   </div>
 </footer>
+
+<div class="scrim" id="scrim" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="m-title">
+    <div class="modal-hd">
+      <div>
+        <h2 id="m-title">Upload submission</h2>
+        <p id="m-sub" style="font-size:0.88rem; margin-top:3px"></p>
+      </div>
+      <button type="button" class="x" id="m-x" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-bd f" id="m-body"></div>
+    <div class="modal-ft">
+      <button type="button" class="primary" id="m-send">Send it in</button>
+      <span class="msg" id="m-msg"></span>
+      <div class="sp"></div>
+      <span style="font-size:0.84rem; color:var(--fomo-muted)" id="m-pay"></span>
+    </div>
+  </div>
+</div>
+
 <script>
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
-const usd = (n) => '$' + n.toLocaleString('en-US');
+const usd = (n) => '$' + Math.round(n).toLocaleString('en-US');
 
+/* ---- schools: code|abbrev|label|reach tier ------------------------------
+   The reach tier is a hand-kept table, not a computed metric. It reads as
+   "how far does content from this campus travel", which is undergrad scale
+   and how visible Greek life is there -- not academic ranking. Anything
+   unlisted sits at 3, so a school is never punished for being missing.     */
+const SCHOOLS = "akron||University of Akron|2\nala|Alabama|University of Alabama|5\nalbany||University at Albany|2\namericanu||American University|3\nappstate||Appalachian State University|3\narizonanorthern||Northern Arizona University|2\narkansas||University of Arkansas|5\nasu|ASU|Arizona State University|5\nauburn||Auburn University|5\nballstate||Ball State University|2\nbaylor||Baylor University|4\nbc||Boston College|3\nbgsu||Bowling Green State University|2\nbinghamton||Binghamton University|2\nboisestate||Boise State University|4\nbradley||Bradley University|2\nbrown||Brown University|3\nbu|BU|Boston University|3\nbucknell||Bucknell University|3\nbuffalo||University at Buffalo|2\nbutler||Butler University|3\nbyu||Brigham Young University|4\ncal|Cal|UC Berkeley|3\ncalpoly||Cal Poly San Luis Obispo|3\ncentralmich||Central Michigan University|2\ncharleston||College of Charleston|4\nchico||Chico State|2\ncincinnati||University of Cincinnati|4\nclarkson||Clarkson University|2\nclemson||Clemson University|5\ncmu|CMU|Carnegie Mellon University|3\ncoastal||Coastal Carolina University|4\ncolostate||Colorado State University|4\ncolumbia|Columbia|Columbia University|3\ncornell|Cornell|Cornell University|3\ncreighton||Creighton University|3\ncsuf||Cal State Fullerton|2\ncsulb||Cal State Long Beach|2\ncsupueblo||Colorado State University Pueblo|2\ncu|CU Boulder|University of Colorado Boulder|4\ncwru||Case Western Reserve University|3\ndartmouth||Dartmouth College|3\ndaytonoh||University of Dayton|2\ndelaware||University of Delaware|4\ndenver||University of Denver|3\ndepaul||DePaul University|3\ndrake||Drake University|2\ndrexel||Drexel University|3\nduke|Duke|Duke University|3\nduquesne||Duquesne University|2\necu||East Carolina University|4\nelon||Elon University|3\nemory||Emory University|3\nemu||Eastern Michigan University|2\netsu||East Tennessee State University|2\nfairfield||Fairfield University|2\nfau||Florida Atlantic University|2\nfgcu||Florida Gulf Coast University|2\nfiu||Florida International University|4\nfresnostate||Fresno State|2\nfsu|FSU|Florida State University|5\nfurman||Furman University|2\ngeorgetown|Georgetown|Georgetown University|3\ngeorgiastate||Georgia State University|2\ngmu||George Mason University|2\ngsu||Georgia Southern University|2\ngt||Georgia Tech|4\ngvsu||Grand Valley State University|2\ngwu||George Washington University|3\nharvard|Harvard|Harvard University|3\nhawaii||University of Hawaii|4\nhighpoint||High Point University|2\nhofstra||Hofstra University|2\nhouston||University of Houston|4\nidaho||University of Idaho|2\nillinois|Illinois|University of Illinois|4\nillinoisstate||Illinois State University|2\nindianastate||Indiana State University|2\niowa||University of Iowa|4\niowastate||Iowa State University|4\niu|Indiana|Indiana University|5\njmu||James Madison University|4\njsu||Jacksonville State University|2\nkansas||University of Kansas|5\nkansascity||University of Missouri\u2013Kansas City|2\nkennesaw||Kennesaw State University|2\nkent||Kent State University|2\nkstate||Kansas State University|4\nlafayette||Lafayette College|3\nlamar||Lamar University|2\nlatech||Louisiana Tech University|2\nlehigh||Lehigh University|3\nlemoyne||Le Moyne College|2\nlmu||Loyola Marymount University|3\nlouisville||University of Louisville|4\nloyolachicago||Loyola University Chicago|3\nlsu||Louisiana State University|5\nmaine||University of Maine|2\nmarist||Marist College|2\nmarquette||Marquette University|3\nmaryland||University of Maryland|4\nmemphis||University of Memphis|4\nmercer||Mercer University|2\nmetrostate||Metropolitan State University of Denver|2\nmiami|Miami|University of Miami|4\nmiamiohio||Miami University (Ohio)|4\nmichigan|Michigan|University of Michigan|5\nminnesota|Minnesota|University of Minnesota|4\nmissouristate||Missouri State University|2\nmizzou|Mizzou|University of Missouri|5\nmonmouth||Monmouth University|2\nmontana||University of Montana|2\nmsstate||Mississippi State University|4\nmsu||Michigan State University|5\nmtsu||Middle Tennessee State University|2\nncstate||NC State University|4\nndsu||North Dakota State University|2\nnebraska||University of Nebraska|4\nnevada||University of Nevada, Reno|2\nnewmexico||University of New Mexico|2\nniu||Northern Illinois University|2\nnmsu||New Mexico State University|2\nnorthdakota||University of North Dakota|2\nnortheastern||Northeastern University|3\nnorthwestern|Northwestern|Northwestern University|3\nnotredame||University of Notre Dame|3\nnyu|NYU|New York University|3\noakland||Oakland University|2\nodu||Old Dominion University|2\nohiou||Ohio University|4\nokstate||Oklahoma State University|4\nolemiss||University of Mississippi|5\noregon||University of Oregon|4\noregonstate||Oregon State University|4\nosu|Ohio State|Ohio State University|5\nou|Oklahoma|University of Oklahoma|5\npenn|Penn|University of Pennsylvania|3\npennstate|Penn State|Penn State University|5\npepperdine||Pepperdine University|3\npitt|Pitt|University of Pittsburgh|4\nportlandstate||Portland State University|2\nprinceton||Princeton University|3\nprovidence||Providence College|2\npurdue|Purdue|Purdue University|5\nquinnipiac||Quinnipiac University|2\nradford||Radford University|2\nrice|Rice|Rice University|3\nrider||Rider University|2\nrit||Rochester Institute of Technology|3\nrollins||Rollins College|2\nrowan||Rowan University|2\nrutgers||Rutgers University|4\nsalisbury||Salisbury University|2\nsantaclara||Santa Clara University|3\nsc||University of South Carolina|5\nscranton||University of Scranton|2\nsdstate||South Dakota State University|2\nsdsu|SDSU|San Diego State University|4\nseton||Seton Hall University|3\nsiena||Siena College|2\nsiu||Southern Illinois University|2\nsjsu||San Jose State University|2\nsmu|SMU|Southern Methodist University|4\nsouthalabama||University of South Alabama|2\nsouthernmiss||University of Southern Mississippi|2\nstanford|Stanford|Stanford University|3\nstetson||Stetson University|2\nstlouis||Saint Louis University|3\nstonybrook||Stony Brook University|2\nsyracuse||Syracuse University|4\ntampa||University of Tampa|3\ntamu|Texas A&M|Texas A&M University|5\ntamucc||Texas A&M\u2013Corpus Christi|2\ntcnj||The College of New Jersey|2\ntcu||Texas Christian University|4\ntechtexas||Texas Tech University|4\ntemple||Temple University|3\ntennessee||University of Tennessee|5\ntexasstate||Texas State University|4\ntoledo||University of Toledo|2\ntowson||Towson University|2\ntroy||Troy University|2\ntulane||Tulane University|4\nua|Arizona|University of Arizona|4\nuab||University of Alabama at Birmingham|2\nuccs||University of Colorado Colorado Springs|2\nucdavis||UC Davis|3\nucf||University of Central Florida|5\nuchicago|UChicago|University of Chicago|3\nuci||UC Irvine|3\nucla||UCLA|4\nuconn||University of Connecticut|4\nucr||UC Riverside|2\nucsb||UC Santa Barbara|4\nucsc||UC Santa Cruz|2\nucsd|UCSD|UC San Diego|4\nuf|Florida|University of Florida|5\nuga|Georgia|University of Georgia|5\nuk||University of Kentucky|5\null||University of Louisiana at Lafayette|2\numass||University of Massachusetts Amherst|4\nunc|UNC|UNC Chapel Hill|5\nuncc||UNC Charlotte|4\nuncw||UNC Wilmington|2\nunh||University of New Hampshire|2\nuni||University of Northern Iowa|2\nunlv||University of Nevada, Las Vegas|4\nunt||University of North Texas|4\nurhode||University of Rhode Island|2\nusc|USC|University of Southern California|4\nusf||University of South Florida|4\nusfca||University of San Francisco|2\nusouthdakota||University of South Dakota|2\nutah|Utah|University of Utah|4\nutahstate||Utah State University|2\nutaustin|UT Austin|University of Texas at Austin|5\nutc||UT Chattanooga|2\nutd||UT Dallas|2\nutsa||UT San Antonio|2\nuva|UVA|University of Virginia|4\nuvm||University of Vermont|2\nuvu||Utah Valley University|2\nuw|UW|University of Washington|4\nvalpo||Valparaiso University|2\nvanderbilt|Vanderbilt|Vanderbilt University|3\nvcu||Virginia Commonwealth University|3\nvillanova||Villanova University|3\nvt||Virginia Tech|4\nwakeforest||Wake Forest University|3\nwayne||Wayne State University|2\nweber||Weber State University|2\nwestchester||West Chester University|2\nwinthrop||Winthrop University|2\nwisconsin|Wisconsin|University of Wisconsin\u2013Madison|5\nwku||Western Kentucky University|2\nwmu||Western Michigan University|2\nwsu||Washington State University|4\nwustl|WashU|Washington University in St. Louis|3\nwvu||West Virginia University|5\nwyoming||University of Wyoming|2\nxavier||Xavier University|3\nyale|Yale|Yale University|3".split('\n').map((r) => {
+  const [code, abbr, label, tier] = r.split('|');
+  return { code, abbr, label, tier: +tier };
+});
+const BY_CODE = {};
+SCHOOLS.forEach((s) => { BY_CODE[s.code] = s; });
+
+/* ---- payouts ------------------------------------------------------------
+   base x school x event. `sens` is how much a bounty's value actually
+   depends on which campus it happens on: sending us three restaurants is
+   the same work anywhere (0), party footage from a campus people watch is
+   worth more (1). Each tier step moves the price 12%, so the widest gap
+   between two schools on the most campus-dependent bounty is 24% either
+   side of base -- real, but never the difference between worth doing and
+   not. Everything rounds to the nearest $5.                                */
 const PAY = { 1:25, 2:50, 3:100, 4:250, 5:500 };
 const LABEL = { 1:'ten minutes', 2:'your phone', 3:'a bit of setup', 4:'real pull', 5:'moves a campus' };
+const STEP = 0.12;
+const round5 = (n) => Math.max(5, Math.round(n / 5) * 5);
+const schoolMult = (b, tier) => 1 + (b.sens || 0) * ((tier || 3) - 3) * STEP;
+const payFor = (b, tier, boost) => round5(PAY[b.t] * schoolMult(b, tier) * (boost || 1));
+const payText = (n, t) => usd(n) + (t === 5 ? '+' : '');
+
+/* ---- the board ----------------------------------------------------------
+   `sub` is the shape of the submission form: what boxes appear when someone
+   clicks Upload submission.                                                 */
+const H = (n, label) => ({ k:'handles', n, label });
+const R = (n, cols) => ({ k:'rows', n, cols });
+const F = (n, accept, label) => ({ k:'files', n, accept, label });
+const L = (n, label) => ({ k:'links', n, label });
+const N = (label) => ({ k:'note', label });
 
 const B = [
-  { t:1, title:'Sorority dinner list', p:'Ten Instagram handles of sorority members who would come to a fomo dinner.',
-    send:'Ten @ handles, sorority next to each.', yes:'Real, active accounts at your school.', no:'Private or inactive accounts, anyone not at your school.', rep:1 },
-  { t:1, title:'Three dinner spots', p:'Three restaurants near campus that could host a table of ten to fifteen.',
-    send:'Name, area and a link or @ for each.', yes:'Places that take a group that size on a weeknight.', no:'Fast food, or anywhere over 20 minutes away.', rep:1 },
-  { t:1, title:'Five sponsorable events', p:'Five events this semester that fomo could put money behind.',
-    send:'Event, date, rough headcount and who runs it.', yes:'Real dates on a real calendar.', no:'Events already past, or with no organiser you can name.', rep:1 },
-  { t:1, title:'Chapter calendar', p:'Your semester at a glance so we know when to show up.',
-    send:'Rush, formal, philanthropy week and any date you expect a crowd.', yes:'Dates confirmed by your exec board.', no:'Guesses.', rep:0 },
-  { t:1, title:'Campus accounts', p:'The five accounts everyone at your school actually follows.',
-    send:'Five @ handles.', yes:'Accounts with real reach at your school.', no:'Official university accounts, national pages.', rep:1 },
+  { t:1, sens:0.3, title:'Sorority dinner list', p:'Ten Instagram handles of sorority members who would come to a fomo dinner.',
+    send:'Ten @ handles, sorority next to each.', yes:'Real, active accounts at your school.', no:'Private or inactive accounts, anyone not at your school.', rep:1,
+    sub:[H(10,'Instagram @'), N('Which sorority is each one in?')] },
+  { t:1, sens:0, title:'Three dinner spots', p:'Three restaurants near campus that could host a table of ten to fifteen.',
+    send:'Name, area and a link or @ for each.', yes:'Places that take a group that size on a weeknight.', no:'Fast food, or anywhere over 20 minutes away.', rep:1,
+    sub:[R(3,['Restaurant','Area','Link or @'])] },
+  { t:1, sens:0.3, title:'Five sponsorable events', p:'Five events this semester that fomo could put money behind.',
+    send:'Event, date, rough headcount and who runs it.', yes:'Real dates on a real calendar.', no:'Events already past, or with no organiser you can name.', rep:1,
+    sub:[R(5,['Event','Date','Headcount','Who runs it'])] },
+  { t:1, sens:0, title:'Chapter calendar', p:'Your semester at a glance so we know when to show up.',
+    send:'Rush, formal, philanthropy week and any date you expect a crowd.', yes:'Dates confirmed by your exec board.', no:'Guesses.', rep:0,
+    sub:[R(6,['What','Date']), N('Anything else worth knowing about the semester')] },
+  { t:1, sens:0.4, title:'Campus accounts', p:'The five accounts everyone at your school actually follows.',
+    send:'Five @ handles.', yes:'Accounts with real reach at your school.', no:'Official university accounts, national pages.', rep:1,
+    sub:[H(5,'Instagram @')] },
 
-  { t:2, title:'House tour', p:'Walk the house on camera the way you would show a rushee around.',
-    send:'One video, 60–90 seconds, vertical.', yes:'Steady, lit, you talking over it.', no:'Anyone’s room without them saying yes.', rep:0 },
-  { t:2, title:'Party footage', p:'The night your chapter already had, filmed well enough to use.',
-    send:'At least 30 seconds of usable clips.', yes:'Crowd energy, lighting, a room that looks alive.', no:'Anyone underage with alcohol in frame.', rep:1 },
-  { t:2, title:'Tailgate or game day', p:'Your chapter on a game day — the walk over, the lot, the stands.',
-    send:'30+ seconds of clips plus three stills.', yes:'School colours, crowd, letters visible.', no:'Footage from a game you weren’t at.', rep:1 },
-  { t:2, title:'Story push', p:'Five members put your chapter link on their story for 24 hours.',
-    send:'Five screenshots of the live stories.', yes:'Five different members, public, link working.', no:'One person posting five times.', rep:1 },
-  { t:2, title:'Chapter artwork', p:'Your letters and composite, so the house looks right on Greek Village.',
-    send:'Letters as artwork plus this year’s composite. SVG or PNG over 1500px.', yes:'Artwork your chapter can share.', no:'Anything your nationals haven’t approved.', rep:0 },
+  { t:2, sens:0.4, title:'House tour', p:'Walk the house on camera the way you would show a rushee around.',
+    send:'One video, 60–90 seconds, vertical.', yes:'Steady, lit, you talking over it.', no:'Anyone’s room without them saying yes.', rep:0,
+    sub:[F(1,'video/*','Upload the video'), N('Anything we should know')] },
+  { t:2, sens:1, title:'Party footage', p:'The night your chapter already had, filmed well enough to use.',
+    send:'At least 30 seconds of usable clips.', yes:'Crowd energy, lighting, a room that looks alive.', no:'Anyone underage with alcohol in frame.', rep:1,
+    sub:[F(4,'video/*','Upload your clips'), N('When was it, and what are we looking at?')] },
+  { t:2, sens:1, title:'Tailgate or game day', p:'Your chapter on a game day — the walk over, the lot, the stands.',
+    send:'30+ seconds of clips plus three stills.', yes:'School colours, crowd, letters visible.', no:'Footage from a game you weren’t at.', rep:1,
+    sub:[F(6,'video/*,image/*','Upload clips and stills'), N('Which game?')] },
+  { t:2, sens:0.6, title:'Story push', p:'Five members put your chapter link on their story for 24 hours.',
+    send:'Five screenshots of the live stories.', yes:'Five different members, public, link working.', no:'One person posting five times.', rep:1,
+    sub:[F(5,'image/*','Upload the five screenshots'), H(5,'Whose story (Instagram @)')] },
+  { t:2, sens:0, title:'Chapter artwork', p:'Your letters and composite, so the house looks right on Greek Village.',
+    send:'Letters as artwork plus this year’s composite. SVG or PNG over 1500px.', yes:'Artwork your chapter can share.', no:'Anything your nationals haven’t approved.', rep:0,
+    sub:[F(2,'image/*','Upload letters and composite'), L(1,'Or a link to the files')] },
 
-  { t:3, title:'Founder org intro', p:'Put us in a room with your startup, entrepreneurship or accelerator org.',
-    send:'A group chat or email with us and whoever runs it.', yes:'They reply — that’s the bar.', no:'A handle with no introduction.', rep:1 },
-  { t:3, title:'Host a fomo dinner', p:'Ten or more at one table, fomo covers it, you run the night.',
-    send:'Date and venue agreed first, then headcount, four photos and the receipt.', yes:'Ten or more actually there.', no:'A dinner booked without agreeing it first.', rep:1 },
-  { t:3, title:'Member interviews', p:'Three members on camera on why they trade, in their own words.',
-    send:'Three clips, 30–60 seconds each, one person per clip.', yes:'Honest answers, faces lit, usable audio.', no:'Scripted claims about returns.', rep:1 },
-  { t:3, title:'Chapter account post', p:'Your chapter’s own Instagram posts fomo content and leaves it up.',
-    send:'The post link plus reach after 48 hours.', yes:'From the chapter account, up a week, tags fomo.', no:'A story that disappears.', rep:1 },
+  { t:3, sens:0.3, title:'Founder org intro', p:'Put us in a room with your startup, entrepreneurship or accelerator org.',
+    send:'A group chat or email with us and whoever runs it.', yes:'They reply — that’s the bar.', no:'A handle with no introduction.', rep:1,
+    sub:[N('Which org, and who did you introduce us to?'), L(1,'Screenshot or thread link'), F(2,'image/*','Or upload a screenshot')] },
+  { t:3, sens:0.2, title:'Host a fomo dinner', p:'Ten or more at one table, fomo covers it, you run the night.',
+    send:'Date and venue agreed first, then headcount, four photos and the receipt.', yes:'Ten or more actually there.', no:'A dinner booked without agreeing it first.', rep:1,
+    sub:[N('Date, venue and headcount'), F(5,'image/*','Photos and the receipt')] },
+  { t:3, sens:0.4, title:'Member interviews', p:'Three members on camera on why they trade, in their own words.',
+    send:'Three clips, 30–60 seconds each, one person per clip.', yes:'Honest answers, faces lit, usable audio.', no:'Scripted claims about returns.', rep:1,
+    sub:[F(3,'video/*','Upload the three clips'), N('Who is in each clip?')] },
+  { t:3, sens:0.7, title:'Chapter account post', p:'Your chapter’s own Instagram posts fomo content and leaves it up.',
+    send:'The post link plus reach after 48 hours.', yes:'From the chapter account, up a week, tags fomo.', no:'A story that disappears.', rep:1,
+    sub:[L(1,'Link to the post'), N('Reach after 48 hours'), F(2,'image/*','Insights screenshot')] },
 
-  { t:4, title:'Refer a chapter', p:'Bring another house onto fomo campus and get paid when they onboard.',
-    send:'Nothing — they name you on step 3 of their registration.', yes:'Paid when they reach their own goal.', no:'A chapter already talking to us.', rep:1 },
-  { t:4, title:'Sponsored event', p:'fomo’s name on something real — a formal, a concert, a philanthropy night.',
-    send:'The agreement, where branding goes, photos from the night.', yes:'Agreed with us before the event.', no:'Branding added after the fact.', rep:1 },
-  { t:4, title:'Council meeting', p:'A seat in front of IFC, Panhellenic or your Greek council.',
-    send:'The meeting on a calendar with someone from fomo invited.', yes:'A real agenda slot. Paid once it happens.', no:'An email address.', rep:0 },
-  { t:4, title:'Edited campaign video', p:'A finished piece we could run as a campus ad — shot and cut by you.',
-    send:'One edit, 30–60 seconds, vertical, plus the raw files.', yes:'Cut to the brand kit, logo flat and unmodified.', no:'Rainbow gradients, neon, metallic, recoloured marks.', rep:1 },
+  { t:4, sens:0, title:'Refer a chapter', p:'Bring another house onto fomo campus and get paid when they onboard.',
+    send:'Nothing — they name you on step 3 of their registration.', yes:'Paid when they reach their own goal.', no:'A chapter already talking to us.', rep:1,
+    sub:[N('Which chapter, and who did you talk to?')] },
+  { t:4, sens:0.8, title:'Sponsored event', p:'fomo’s name on something real — a formal, a concert, a philanthropy night.',
+    send:'The agreement, where branding goes, photos from the night.', yes:'Agreed with us before the event.', no:'Branding added after the fact.', rep:1,
+    sub:[N('What was the event, and where did the branding go?'), F(5,'image/*','Photos from the night'), L(1,'Agreement or run of show')] },
+  { t:4, sens:0.5, title:'Council meeting', p:'A seat in front of IFC, Panhellenic or your Greek council.',
+    send:'The meeting on a calendar with someone from fomo invited.', yes:'A real agenda slot. Paid once it happens.', no:'An email address.', rep:0,
+    sub:[N('Which council, what date, and who is the contact?'), F(2,'image/*','Calendar invite or agenda')] },
+  { t:4, sens:0.9, title:'Edited campaign video', p:'A finished piece we could run as a campus ad — shot and cut by you.',
+    send:'One edit, 30–60 seconds, vertical, plus the raw files.', yes:'Cut to the brand kit, logo flat and unmodified.', no:'Rainbow gradients, neon, metallic, recoloured marks.', rep:1,
+    sub:[F(1,'video/*','Upload the edit'), L(1,'Link to the raw files'), N('Anything we should know')] },
 
-  { t:5, title:'Bring three houses', p:'Three chapters, referred by you, all the way to onboarded.',
-    send:'Nothing — all three name you on their registration.', yes:'Paid when the third clears its goal.', no:'Chapters already talking to us.', rep:1 },
-  { t:5, title:'Headline a campus event', p:'fomo as headline sponsor of something the whole school turns up to.',
-    send:'The agreement, run of show, and coverage.', yes:'Headline billing, campus-wide, hundreds of people.', no:'A chapter-only event.', rep:0 },
-  { t:5, title:'A video that travels', p:'Make something about fomo that clears 100,000 views on its own.',
-    send:'Post link plus the view count 30 days after posting.', yes:'Original, organic, fomo clearly in it.', no:'Paid boosts, view-buying, reposts.', rep:0 },
+  { t:5, sens:0, title:'Bring three houses', p:'Three chapters, referred by you, all the way to onboarded.',
+    send:'Nothing — all three name you on their registration.', yes:'Paid when the third clears its goal.', no:'Chapters already talking to us.', rep:1,
+    sub:[N('Which three chapters?')] },
+  { t:5, sens:1, title:'Headline a campus event', p:'fomo as headline sponsor of something the whole school turns up to.',
+    send:'The agreement, run of show, and coverage.', yes:'Headline billing, campus-wide, hundreds of people.', no:'A chapter-only event.', rep:0,
+    sub:[N('What is the event, when, and how many people?'), L(1,'Coverage or run of show'), F(5,'image/*','Photos')] },
+  { t:5, sens:0.6, title:'A video that travels', p:'Make something about fomo that clears 100,000 views on its own.',
+    send:'Post link plus the view count 30 days after posting.', yes:'Original, organic, fomo clearly in it.', no:'Paid boosts, view-buying, reposts.', rep:0,
+    sub:[L(1,'Link to the post'), N('View count 30 days after posting'), F(2,'image/*','Insights screenshot')] },
 ];
+const id = (i) => 'b' + String(i + 1).padStart(2, '0');
+const idx = (k) => parseInt(k.slice(1), 10) - 1;
 
-const MAXRUN = B.reduce((a,b) => a + PAY[b.t], 0);
+const MAXRUN = B.reduce((a, b) => a + PAY[b.t], 0);
 const MILES = [
-  { at:250,  name:'Starter run' },
-  { at:750,  name:'Solid semester' },
-  { at:1500, name:'Big semester' },
-  { at:MAXRUN, name:'Everything' },
+  { at:250, name:'Starter run' }, { at:750, name:'Solid semester' },
+  { at:1500, name:'Big semester' }, { at:MAXRUN, name:'Everything' },
 ];
+
+/* ---- status pipeline ---- */
+const FLOW = ['submitted','review','approved','awaiting_payout','paid'];
+const STATUS = {
+  notsubmitted:   { label:'Not submitted',   step:0 },
+  submitted:      { label:'Submitted',       step:1 },
+  review:         { label:'Waiting review',  step:2 },
+  approved:       { label:'Approved',        step:3 },
+  awaiting_payout:{ label:'Awaiting payout', step:4 },
+  paid:           { label:'Paid',            step:5 },
+  rejected:       { label:'Not accepted',    step:-1 },
+};
 
 const S = '<svg viewBox="0 0 24 24" fill="currentColor" class="%c"><path d="m12 2 2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8L12 2Z"/></svg>';
 const stars   = (n) => `<span class="stars">${S.replace('%c','on').repeat(n)}${S.replace('%c','off').repeat(5-n)}</span>`;
 const starsOn = (n) => `<span class="stars">${S.replace('%c','on').repeat(n)}</span>`;
 const CHV = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
 
-// Each job is open, in the run, or sent. That is the whole system.
-const KEY = 'fomo_bounty_v3';
-let state = {};
-try { state = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { state = {}; }
-const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} };
-const id = (i) => 'b' + String(i+1).padStart(2,'0');
+/* ---- state ---- */
+const KEY = 'fomo_bounty_v4';
+let store = { run:{}, school:'', payee:{ fomoHandle:'', rewardsCode:'' } };
+try { store = Object.assign(store, JSON.parse(localStorage.getItem(KEY)) || {}); } catch (e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) {} };
+
+let events = [];      // live events for the chosen school
+let remote = {};      // bountyId -> submission status from the server
 let f = 'all';
 
-$('key').innerHTML = [1,2,3,4,5].map((t) =>
-  `<div class="cell">${stars(t)}<div class="p">${usd(PAY[t])}</div><div class="l">${esc(LABEL[t])}</div></div>`).join('');
+const tierNow = () => (BY_CODE[store.school] ? BY_CODE[store.school].tier : 3);
+const boostFor = (k) => {
+  let best = 1;
+  events.forEach((e) => { if ((e.jobs || []).includes(k) && e.boost > best) best = e.boost; });
+  return best;
+};
+const liveFor = (k) => events.find((e) => (e.jobs || []).includes(k));
 
-$('filters').innerHTML = `<button data-f="all" class="on">All</button>`
-  + [1,2,3,4,5].map((t) => `<button data-f="${t}" aria-label="${t} star jobs">${starsOn(t)}</button>`).join('');
+/* ---- payout legend ---- */
+function paintKey() {
+  const t = tierNow();
+  $('key').innerHTML = [1,2,3,4,5].map((tier) => {
+    // the legend shows a typical bounty at this tier for the chosen school
+    const sample = B.filter((b) => b.t === tier);
+    const avg = sample.reduce((a, b) => a + payFor(b, t, 1), 0) / sample.length;
+    return `<div class="cell">${stars(tier)}<div class="p">${payText(round5(avg), tier)}</div>
+      <div class="l">${esc(LABEL[tier])}</div></div>`;
+  }).join('');
+}
 
-$('r-pips').innerHTML = MILES.map((m) =>
-  `<b data-at="${m.at}" style="left:${(m.at/MAXRUN*100).toFixed(1)}%">${esc(m.name)}</b>`).join('');
-
+/* ---- board ---- */
 function paint() {
-  const list = B.map((b,i) => ({ b, i })).filter(({b}) => f === 'all' || b.t === Number(f));
-  $('grid').innerHTML = list.map(({b,i}) => {
-    const st = state[id(i)] || 'idle';
-    const verb = st === 'sent' ? 'Sent ✓' : st === 'run' ? 'In your run ✓' : '+ Add to run';
-    return `<article class="b st-${st}" data-i="${i}">
-      <div class="b-top">${stars(b.t)}<span class="b-pay">${usd(PAY[b.t])}</span></div>
-      <div class="b-mid"><h3>${esc(b.title)}</h3><p>${esc(b.p)}</p></div>
+  const t = tierNow();
+  const list = B.map((b, i) => ({ b, i })).filter(({b}) => f === 'all' || b.t === Number(f));
+  $('grid').innerHTML = list.map(({b, i}) => {
+    const k = id(i);
+    const st = remote[k] ? remote[k].status : (store.run[k] || 'idle');
+    const inRun = store.run[k] === 'run';
+    const base = PAY[b.t];
+    const boost = boostFor(k);
+    const now = payFor(b, t, boost);
+    const moved = now !== base;
+    const ev = liveFor(k);
+    const meta = STATUS[st] || null;
+    return `<article class="b ${inRun ? 'st-run' : ''} ${remote[k] ? 'st-sent' : ''}" data-k="${k}">
+      <div class="b-top">${stars(b.t)}
+        <span class="b-pay">${moved ? `<s>${payText(base, b.t)}</s>` : ''}${payText(now, b.t)}</span></div>
+      <div class="b-mid"><h3>${esc(b.title)}</h3><p>${esc(b.p)}</p>
+        ${ev ? `<span class="b-live"><i class="dot"></i>${esc(ev.name)}</span>` : ''}
+        ${remote[k] ? `<div style="margin-top:9px"><span class="pill s${Math.max(0, meta.step)}${st==='rejected'?' sx':''}">${esc(meta.label)}</span></div>` : ''}
+      </div>
       <div class="b-act">
-        <button type="button" class="add" aria-pressed="${st !== 'open'}">${verb}</button>
-        <button type="button" class="mo" aria-expanded="false">Brief ${CHV}</button>
+        <button type="button" class="add">${inRun ? '✓ In run' : '+ Run'}</button>
+        <button type="button" class="send">Upload submission</button>
+        <button type="button" class="mo" aria-label="Brief" aria-expanded="false">${CHV}</button>
       </div>
-      <div class="b-brief" hidden>
-        <dl>
-          <dt>Send</dt><dd>${esc(b.send)}</dd>
-          <dt>Counts</dt><dd>${esc(b.yes)}</dd>
-          <dt>Doesn't</dt><dd>${esc(b.no)}</dd>
-          <dt>Repeat</dt><dd>${b.rep ? 'Can be run again later.' : 'Once per chapter.'}</dd>
-        </dl>
-        <button type="button" class="mark-sent">${st === 'sent' ? 'Sent — undo' : 'Mark as sent'}</button>
-      </div>
+      <div class="b-brief" hidden><dl>
+        <dt>Send</dt><dd>${esc(b.send)}</dd>
+        <dt>Counts</dt><dd>${esc(b.yes)}</dd>
+        <dt>Doesn't</dt><dd>${esc(b.no)}</dd>
+        <dt>Repeat</dt><dd>${b.rep ? 'Can be run again later.' : 'Once per chapter.'}</dd>
+        ${moved ? `<dt>Rate</dt><dd>${esc(BY_CODE[store.school] ? BY_CODE[store.school].label : 'This school')}${boost > 1 ? `, with a ${Math.round((boost-1)*100)}% live boost` : ''}.</dd>` : ''}
+      </dl></div>
     </article>`;
   }).join('');
   $('count').textContent = `${list.length} of ${B.length}`;
 
   $('grid').querySelectorAll('.b').forEach((el) => {
-    const k = id(Number(el.dataset.i));
+    const k = el.dataset.k;
     el.querySelector('.add').addEventListener('click', () => {
-      if (state[k]) delete state[k]; else state[k] = 'run';
+      if (store.run[k]) delete store.run[k]; else store.run[k] = 'run';
       save(); paint(); tally();
     });
-    el.querySelector('.mark-sent').addEventListener('click', () => {
-      state[k] = state[k] === 'sent' ? 'run' : 'sent';
-      save(); paint(); tally();
-    });
+    el.querySelector('.send').addEventListener('click', () => openModal(k));
     el.querySelector('.mo').addEventListener('click', () => {
       const br = el.querySelector('.b-brief'), show = br.hidden;
       br.hidden = !show;
@@ -444,39 +665,360 @@ function paint() {
 }
 
 function tally() {
-  let total = 0, n = 0, sent = 0;
-  B.forEach((b,i) => {
-    const st = state[id(i)];
-    if (st === 'run' || st === 'sent') { total += PAY[b.t]; n++; }
-    if (st === 'sent') sent += PAY[b.t];
+  const t = tierNow();
+  let total = 0, n = 0;
+  B.forEach((b, i) => {
+    const k = id(i);
+    if (store.run[k]) { total += payFor(b, t, boostFor(k)); n++; }
   });
   $('r-amt').textContent = usd(total);
-  $('r-meta').textContent = n
-    ? `${n} job${n > 1 ? 's' : ''} in your run` + (sent ? ` · ${usd(sent)} sent` : '')
-    : 'Nothing in your run yet';
+  $('r-meta').textContent = n ? `${n} ${n > 1 ? 'bounties' : 'bounty'} in your run` : 'Nothing in your run yet';
   $('r-bar').style.width = Math.min(100, total / MAXRUN * 100) + '%';
   $('r-clear').hidden = !n;
   const next = MILES.find((m) => total < m.at);
-  $('r-next').textContent = next ? `${usd(next.at - total)} to ${next.name}` : 'Every job picked';
+  $('r-next').textContent = next ? `${usd(next.at - total)} to ${next.name}` : 'Every bounty picked';
   $('r-pips').querySelectorAll('b').forEach((p) => p.classList.toggle('hit', total >= +p.dataset.at));
 }
 
+/* ---- school picker ---- */
+function matches(q) {
+  const s = q.trim().toLowerCase();
+  if (!s) return [];
+  const starts = [], has = [];
+  for (const sc of SCHOOLS) {
+    const a = (sc.abbr || '').toLowerCase(), l = sc.label.toLowerCase(), c = sc.code;
+    if (a === s || c === s || l === s) { starts.unshift(sc); continue; }
+    if (a.startsWith(s) || c.startsWith(s) || l.startsWith(s)) starts.push(sc);
+    else if (l.includes(s) || a.includes(s)) has.push(sc);
+    if (starts.length + has.length > 60) break;
+  }
+  return starts.concat(has).slice(0, 12);
+}
+let acIdx = -1;
+function closeAc() { $('ac').hidden = true; acIdx = -1; }
+function showAc(q) {
+  const m = matches(q);
+  if (!m.length) return closeAc();
+  $('ac').innerHTML = m.map((s, i) =>
+    `<button type="button" data-code="${s.code}"${i === acIdx ? ' class="cur"' : ''}>${esc(s.label)}${s.abbr ? `<i>${esc(s.abbr)}</i>` : ''}</button>`).join('');
+  $('ac').hidden = false;
+  $('ac').querySelectorAll('button').forEach((b) =>
+    b.addEventListener('mousedown', (e) => { e.preventDefault(); pickSchool(b.dataset.code); }));
+}
+async function pickSchool(code) {
+  store.school = code; save();
+  const s = BY_CODE[code];
+  $('school').value = s ? s.label : '';
+  closeAc();
+  $('board-note').textContent = s
+    ? `Payouts priced for ${s.label}.`
+    : 'Payouts shown at base rate.';
+  await loadEvents();
+  paintKey(); paint(); tally();
+}
+$('school').addEventListener('input', (e) => { acIdx = -1; showAc(e.target.value); });
+$('school').addEventListener('focus', (e) => showAc(e.target.value));
+$('school').addEventListener('blur', () => setTimeout(closeAc, 120));
+$('school').addEventListener('keydown', (e) => {
+  const btns = $('ac').hidden ? [] : [...$('ac').querySelectorAll('button')];
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+    e.preventDefault();
+    if (!btns.length) return;
+    acIdx = (acIdx + (e.key === 'ArrowDown' ? 1 : -1) + btns.length) % btns.length;
+    btns.forEach((b, i) => b.classList.toggle('cur', i === acIdx));
+    btns[acIdx].scrollIntoView({ block:'nearest' });
+  } else if (e.key === 'Enter') {
+    e.preventDefault();
+    if (btns.length) pickSchool(btns[Math.max(0, acIdx)].dataset.code);
+  } else if (e.key === 'Escape') closeAc();
+});
+
+/* ---- live events ---- */
+const fmtRange = (a, b) => {
+  const o = { month:'short', day:'numeric', timeZone:'UTC' };
+  const A = new Date(a + 'T00:00:00Z').toLocaleDateString('en-US', o);
+  const Bd = new Date(b + 'T00:00:00Z').toLocaleDateString('en-US', o);
+  return A === Bd ? A : `${A} – ${Bd}`;
+};
+async function loadEvents() {
+  events = [];
+  if (!store.school) return paintLive();
+  try {
+    const res = await fetch(`/api/bounty/events?school=${encodeURIComponent(store.school)}`, { cache:'no-store' });
+    if (res.ok) events = (await res.json()).events || [];
+  } catch (e) { events = []; }
+  paintLive();
+}
+function paintLive() {
+  const s = BY_CODE[store.school];
+  const box = $('live-box');
+  if (!s) {
+    $('live-sub').textContent = 'Pick your school to see what is live this week.';
+    box.className = 'live-box none';
+    box.textContent = 'Every payout below is a base rate until you pick a school.';
+    return;
+  }
+  if (!events.length) {
+    $('live-sub').textContent = `Nothing live at ${s.label} right now.`;
+    box.className = 'live-box none';
+    box.textContent = `No events on ${s.label}'s calendar this fortnight. The whole board below is priced for ${s.label} — pick anything and run it.`;
+    return;
+  }
+  $('live-sub').textContent = `${events.length} event${events.length > 1 ? 's' : ''} on at ${s.label}.`;
+  box.className = 'live-box';
+  box.innerHTML = events.map((e) => `<div class="ev">
+    <h3>${esc(e.name)}</h3><span class="when">${esc(fmtRange(e.starts, e.ends))}</span>
+    ${e.note ? `<p style="grid-column:1/-1;font-size:0.86rem">${esc(e.note)}</p>` : ''}
+    <div class="jobs">${(e.jobs || []).filter((k) => B[idx(k)]).map((k) =>
+      `<button type="button" data-k="${k}">${esc(B[idx(k)].title)} · ${payText(payFor(B[idx(k)], s.tier, e.boost), B[idx(k)].t)}</button>`).join('')}</div>
+  </div>`).join('');
+  box.querySelectorAll('.jobs button').forEach((b) => b.addEventListener('click', () => openModal(b.dataset.k)));
+}
+
+/* ---- submission modal --------------------------------------------------- */
+let modalKey = null, modalFiles = [];
+const MAX_FILE = 420 * 1024;
+
+function partHTML(p, n) {
+  if (p.k === 'handles') {
+    return `<div><label>${esc(p.label)} <span class="hint">— ${p.n} of them</span></label>
+      <div class="numbered">${Array.from({length:p.n}, (_, i) =>
+        `<em>${i+1}</em><input type="text" data-ans="${esc(p.label)} ${i+1}" placeholder="@handle">`).join('')}</div></div>`;
+  }
+  if (p.k === 'rows') {
+    return `<div><label>${esc(p.cols.join(' · '))}</label><div class="rowset">${
+      Array.from({length:p.n}, (_, i) => `<div class="r" style="grid-template-columns:repeat(${p.cols.length},1fr)">${
+        p.cols.map((c) => `<input type="text" data-row="${i}" data-col="${esc(c)}" placeholder="${esc(c)}">`).join('')
+      }</div>`).join('')}</div></div>`;
+  }
+  if (p.k === 'links') {
+    return `<div><label>${esc(p.label)}</label>${Array.from({length:p.n}, () =>
+      `<input type="url" data-ans="${esc(p.label)}" placeholder="https://">`).join('')}</div>`;
+  }
+  if (p.k === 'note') {
+    return `<div><label>${esc(p.label)}</label><textarea data-note placeholder="Type here"></textarea></div>`;
+  }
+  if (p.k === 'files') {
+    return `<div><label>${esc(p.label)} <span class="hint">— up to ${p.n}</span></label>
+      <div class="drop">
+        <button type="button" data-pick="${n}">Choose file${p.n > 1 ? 's' : ''}</button>
+        <input type="file" id="fi-${n}" accept="${esc(p.accept)}" ${p.n > 1 ? 'multiple' : ''} hidden>
+        <p>Up to 420KB each. Anything bigger — most video — upload to Drive and paste the link below.</p>
+      </div>
+      <div class="files" id="fl-${n}"></div>
+      <input type="url" data-ans="Link to ${esc(p.label)}" placeholder="https:// link to the files" style="margin-top:8px">
+    </div>`;
+  }
+  return '';
+}
+
+function renderFiles() {
+  document.querySelectorAll('.files').forEach((el) => {
+    const n = +el.id.split('-')[1];
+    const mine = modalFiles.filter((f2) => f2.part === n);
+    el.innerHTML = mine.map((f2) => `<div><span>${esc(f2.name)}</span><em>${Math.round(f2.size/1024)}KB</em>
+      <button type="button" data-rm="${esc(f2.uid)}" aria-label="Remove">&times;</button></div>`).join('');
+    el.querySelectorAll('[data-rm]').forEach((b) => b.addEventListener('click', () => {
+      modalFiles = modalFiles.filter((f2) => f2.uid !== b.dataset.rm); renderFiles();
+    }));
+  });
+}
+
+function openModal(k) {
+  const b = B[idx(k)];
+  if (!b) return;
+  modalKey = k; modalFiles = [];
+  const t = tierNow(), boost = boostFor(k), amount = payFor(b, t, boost);
+  $('m-title').textContent = b.title;
+  const s = BY_CODE[store.school];
+  $('m-sub').textContent = b.send;
+  $('m-pay').textContent = `${payText(amount, b.t)}${s ? ` at ${s.abbr || s.label}` : ''}${boost > 1 ? ' (live boost)' : ''}`;
+  $('m-msg').textContent = ''; $('m-msg').className = 'msg';
+  $('m-send').disabled = false; $('m-send').textContent = 'Send it in';
+
+  const parts = (b.sub || []).map((p, n) => partHTML(p, n)).join('');
+  $('m-body').innerHTML = `
+    <div class="two">
+      <div><label for="m-h">Your fomo @</label><input type="text" id="m-h" placeholder="@yourchapter" value="${esc(store.payee.fomoHandle)}"></div>
+      <div><label for="m-c">fomo rewards code</label><input type="text" id="m-c" placeholder="ABCD-1234" value="${esc(store.payee.rewardsCode)}"></div>
+    </div>
+    <div><label for="m-s">School</label><input type="text" id="m-s" value="${esc(s ? s.label : '')}" placeholder="Pick your school above" readonly></div>
+    ${parts}`;
+  $('m-body').querySelectorAll('[data-pick]').forEach((btn) => {
+    const n = btn.dataset.pick, input = $('fi-' + n);
+    btn.addEventListener('click', () => input.click());
+    input.addEventListener('change', async () => {
+      for (const file of [...input.files]) {
+        if (file.size > MAX_FILE) {
+          $('m-msg').className = 'msg err';
+          $('m-msg').textContent = `"${file.name}" is ${Math.round(file.size/1024/1024*10)/10}MB — too big to attach. Paste a link to it instead.`;
+          continue;
+        }
+        const data = await new Promise((res) => { const r = new FileReader(); r.onload = () => res(r.result); r.readAsDataURL(file); });
+        modalFiles.push({ uid: Math.random().toString(36).slice(2), part:+n, name:file.name, size:file.size, data });
+      }
+      input.value = ''; renderFiles();
+    });
+  });
+  renderFiles();
+  $('scrim').hidden = false;
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => $('m-h').focus(), 30);
+}
+function closeModal() { $('scrim').hidden = true; document.body.style.overflow = ''; modalKey = null; modalFiles = []; }
+$('m-x').addEventListener('click', closeModal);
+$('scrim').addEventListener('mousedown', (e) => { if (e.target === $('scrim')) closeModal(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('scrim').hidden) closeModal(); });
+
+$('m-send').addEventListener('click', async () => {
+  const b = B[idx(modalKey)];
+  const answers = [];
+  $('m-body').querySelectorAll('[data-ans]').forEach((el) => {
+    if (el.value.trim()) answers.push(`${el.dataset.ans}: ${el.value.trim()}`);
+  });
+  const rows = {};
+  $('m-body').querySelectorAll('[data-row]').forEach((el) => {
+    if (!el.value.trim()) return;
+    (rows[el.dataset.row] = rows[el.dataset.row] || []).push(`${el.dataset.col}: ${el.value.trim()}`);
+  });
+  Object.keys(rows).forEach((r) => answers.push(rows[r].join(' · ')));
+  const noteEl = $('m-body').querySelector('[data-note]');
+  const note = noteEl ? noteEl.value.trim() : '';
+
+  const body = {
+    bountyId: modalKey, bountyTitle: b.title, school: store.school,
+    fomoHandle: $('m-h').value.trim(), rewardsCode: $('m-c').value.trim(),
+    answers, note, uploads: modalFiles.map((f2) => ({ name:f2.name, data:f2.data })),
+    amount: payFor(b, tierNow(), boostFor(modalKey)),
+  };
+  $('m-send').disabled = true; $('m-send').textContent = 'Sending…';
+  $('m-msg').className = 'msg'; $('m-msg').textContent = '';
+  try {
+    const res = await fetch('/api/bounty/submit', {
+      method:'POST', headers:{ 'content-type':'application/json' }, body: JSON.stringify(body),
+    });
+    const out = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(out.error || `Something went wrong (${res.status})`);
+    store.payee = { fomoHandle: body.fomoHandle.replace(/^@/, ''), rewardsCode: body.rewardsCode.toUpperCase() };
+    $('fomoHandle').value = store.payee.fomoHandle;
+    $('rewardsCode').value = store.payee.rewardsCode;
+    delete store.run[modalKey];
+    save();
+    remote[modalKey] = out.submission;
+    $('m-msg').className = 'msg ok';
+    $('m-msg').textContent = 'Sent. We review within 3 business days.';
+    paint(); tally();
+    setTimeout(closeModal, 1100);
+    loadTrack(true);
+  } catch (err) {
+    $('m-msg').className = 'msg err';
+    $('m-msg').textContent = err.message;
+    $('m-send').disabled = false; $('m-send').textContent = 'Send it in';
+  }
+});
+
+/* ---- payouts + tracker ---- */
+function trackRow(s) {
+  const meta = STATUS[s.status] || STATUS.submitted;
+  const rejected = s.status === 'rejected';
+  const dots = FLOW.map((st, i) => {
+    const done = !rejected && meta.step >= i + 1;
+    return `<div class="${done ? 'done' : ''}"><i></i>${i < FLOW.length - 1 ? '<s></s>' : ''}</div>`;
+  }).join('');
+  return `<div class="tr">
+    <div class="tr-hd"><b>${esc(s.bountyTitle || s.bountyId)}</b>
+      <span class="pill s${Math.max(0, meta.step)}${rejected ? ' sx' : ''}">${esc(meta.label)}</span>
+      <span class="amt">${usd(s.amount || 0)}</span></div>
+    <div class="track">${dots}</div>
+    <div class="tr-steps">${FLOW.map((st, i) =>
+      `<span class="${!rejected && meta.step === i + 1 ? 'on' : ''}">${esc(STATUS[st].label)}</span>`).join('')}</div>
+  </div>`;
+}
+
+async function loadTrack(quiet) {
+  const h = $('fomoHandle').value.trim(), c = $('rewardsCode').value.trim();
+  if (!h || !c) {
+    if (!quiet) { $('track-msg').className = 'msg err'; $('track-msg').textContent = 'Both your fomo @ and your rewards code, please.'; }
+    return;
+  }
+  if (!quiet) { $('track-msg').className = 'msg'; $('track-msg').textContent = 'Loading…'; }
+  try {
+    const res = await fetch('/api/bounty/track', {
+      method:'POST', headers:{ 'content-type':'application/json' },
+      body: JSON.stringify({ fomoHandle:h, rewardsCode:c }),
+    });
+    const out = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(out.error || `Something went wrong (${res.status})`);
+    store.payee = { fomoHandle:h.replace(/^@/, ''), rewardsCode:c.toUpperCase() };
+    save();
+    remote = {};
+    (out.submissions || []).forEach((s) => { remote[s.bountyId] = s; });
+    const t = out.totals || { paid:0, due:0, count:0 };
+    $('track-totals').innerHTML = `
+      <div><b>${usd(t.paid)}</b><span>Paid out</span></div>
+      <div><b>${usd(t.due)}</b><span>Approved, on its way</span></div>
+      <div><b>${t.count}</b><span>Bounties sent in</span></div>`;
+    $('track-list').innerHTML = (out.submissions || []).length
+      ? out.submissions.map(trackRow).join('')
+      : '<p>Nothing sent in yet. Upload your first bounty from the board above.</p>';
+    $('track-out').hidden = false;
+    $('track-msg').className = 'msg ok';
+    $('track-msg').textContent = quiet ? '' : 'Up to date.';
+    paint();
+  } catch (err) {
+    $('track-msg').className = 'msg err';
+    $('track-msg').textContent = err.message;
+  }
+}
+$('track-go').addEventListener('click', () => loadTrack(false));
+
+/* ---- pitch ---- */
+$('p-go').addEventListener('click', async () => {
+  const idea = $('p-idea').value.trim(), ig = $('p-ig').value.trim(), school = $('p-school').value.trim();
+  const code = (SCHOOLS.find((s) => s.label.toLowerCase() === school.toLowerCase()) || {}).code || school;
+  $('p-msg').className = 'msg'; $('p-msg').textContent = 'Sending…';
+  $('p-go').disabled = true;
+  try {
+    const res = await fetch('/api/bounty/pitch', {
+      method:'POST', headers:{ 'content-type':'application/json' },
+      body: JSON.stringify({ idea, instagram:ig, school:code }),
+    });
+    const out = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(out.error || `Something went wrong (${res.status})`);
+    $('p-msg').className = 'msg ok';
+    $('p-msg').textContent = 'Got it. If we run it, you get the first crack at it.';
+    $('p-idea').value = '';
+  } catch (err) {
+    $('p-msg').className = 'msg err';
+    $('p-msg').textContent = err.message;
+  }
+  $('p-go').disabled = false;
+});
+
+/* ---- boot ---- */
+$('filters').innerHTML = `<button data-f="all" class="on">All</button>`
+  + [1,2,3,4,5].map((t) => `<button data-f="${t}" aria-label="${t} star bounties">${starsOn(t)}</button>`).join('');
 $('filters').querySelectorAll('button').forEach((btn) => btn.addEventListener('click', () => {
   f = btn.dataset.f;
   $('filters').querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === btn));
   paint();
 }));
-
-// One tap gives a sensible first week: every one-star job.
+$('r-pips').innerHTML = MILES.map((m) =>
+  `<b data-at="${m.at}" style="left:${(m.at / MAXRUN * 100).toFixed(1)}%">${esc(m.name)}</b>`).join('');
 $('starter').addEventListener('click', () => {
-  B.forEach((b,i) => { if (b.t === 1 && !state[id(i)]) state[id(i)] = 'run'; });
+  B.forEach((b, i) => { if (b.t === 1 && !store.run[id(i)]) store.run[id(i)] = 'run'; });
   save(); paint(); tally();
   $('board').scrollIntoView({ behavior:'smooth', block:'start' });
 });
+$('r-clear').addEventListener('click', () => { store.run = {}; save(); paint(); tally(); });
+$('schoolList').innerHTML = SCHOOLS.map((s) => `<option value="${esc(s.label)}">`).join('');
+$('fomoHandle').value = store.payee.fomoHandle || '';
+$('rewardsCode').value = store.payee.rewardsCode || '';
 
-$('r-clear').addEventListener('click', () => { state = {}; save(); paint(); tally(); });
+paintKey(); paint(); tally(); paintLive();
+if (store.school && BY_CODE[store.school]) pickSchool(store.school);
+if (store.payee.fomoHandle && store.payee.rewardsCode) loadTrack(true);
 
-paint(); tally();
 </script>
 </body>
 </html>

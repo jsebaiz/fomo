@@ -346,6 +346,135 @@ function cleanUsername(value) {
 //  · Nothing in this file ever returns a hash, a salt or a claim code to a
 //    caller who didn't already have it.
 // ---------------------------------------------------------------------------
+const SUBS_KEY = 'bountysubs';
+const MAX_SUBS = 5000;
+const MAX_UPLOAD_BYTES = 420 * 1024;   // KV holds the small stuff; video goes by link
+const MAX_UPLOADS = 6;
+
+// The pipeline a submission walks. "notsubmitted" is a browser-side state, so
+// it never reaches here; everything stored has at least been sent.
+const SUB_STATUSES = ['submitted', 'review', 'approved', 'awaiting_payout', 'paid', 'rejected'];
+
+// A submitter is identified by their fomo handle plus their rewards code. The
+// pair is the key for reading their own submissions back, so both are required
+// and the code is compared in full.
+function parsePayee(body) {
+  const h = cleanHandle(body.fomoHandle, 'fomo', 30);
+  if (h.error || h.value === NA) return { error: 'Add your fomo @ so the payout has somewhere to go' };
+  const code = String(body.rewardsCode || '').trim().toUpperCase();
+  if (!/^[A-Z0-9-]{4,24}$/.test(code)) return { error: 'Rewards code looks wrong — letters, numbers and dashes, 4 to 24 characters' };
+  return { payee: { fomoHandle: h.value, rewardsCode: code } };
+}
+
+function parseUploads(list) {
+  if (!Array.isArray(list)) return { uploads: [] };
+  if (list.length > MAX_UPLOADS) return { error: `Attach at most ${MAX_UPLOADS} files` };
+  const out = [];
+  for (const item of list) {
+    const name = String((item && item.name) || 'file').slice(0, 120);
+    const v = String((item && item.data) || '');
+    const m = v.match(/^data:(image\/(?:jpeg|png|webp|heic)|video\/(?:mp4|quicktime|webm));base64,([A-Za-z0-9+/=]+)$/);
+    if (!m) return { error: 'Only JPEG, PNG, WebP, HEIC, MP4, MOV or WebM files' };
+    if (m[2].length > MAX_UPLOAD_BYTES) return { error: `"${name}" is too big to attach — paste a link to it instead` };
+    out.push({ name, mime: m[1], data: m[2] });
+  }
+  return { uploads: out };
+}
+
+// The answers themselves. Every bounty hands back a list of short strings, an
+// optional note and optional small files; we cap all three rather than trust
+// whatever the form posted.
+function parseSubmission(body) {
+  const bountyId = String(body.bountyId || '').trim();
+  if (!/^b[0-9]{2}$/.test(bountyId)) return { error: 'Unknown bounty' };
+  const school = String(body.school || '').toLowerCase().trim();
+  if (school && !SCHOOL_LABELS[school]) return { error: 'Unknown school' };
+
+  const payee = parsePayee(body);
+  if (payee.error) return { error: payee.error };
+
+  const answers = Array.isArray(body.answers)
+    ? body.answers.map((a) => String(a ?? '').trim().slice(0, 400)).filter(Boolean).slice(0, 40)
+    : [];
+  const note = String(body.note || '').trim().slice(0, 1200);
+  const up = parseUploads(body.uploads);
+  if (up.error) return { error: up.error };
+  if (!answers.length && !note && !up.uploads.length) {
+    return { error: 'Nothing to submit yet — fill the form in first' };
+  }
+  const amount = Number(body.amount);
+  return {
+    submission: {
+      bountyId,
+      bountyTitle: String(body.bountyTitle || '').slice(0, 120),
+      school,
+      schoolLabel: school ? SCHOOL_LABELS[school] : '',
+      ...payee.payee,
+      answers,
+      note,
+      uploads: up.uploads,
+      amount: Number.isFinite(amount) && amount >= 0 && amount <= 100000 ? Math.round(amount) : 0,
+    },
+  };
+}
+
+// What the submitter is allowed to see of their own row: everything they sent,
+// minus the file blobs, plus where it has got to.
+const publicSub = (s) => ({
+  id: s.id, bountyId: s.bountyId, bountyTitle: s.bountyTitle,
+  school: s.school, schoolLabel: s.schoolLabel,
+  amount: s.amount, status: s.status, answers: s.answers, note: s.note,
+  files: (s.uploads || []).map((u) => u.name),
+  createdAt: s.createdAt, updatedAt: s.updatedAt, history: s.history || [],
+});
+
+const PITCHES_KEY = 'bountypitches';
+const MAX_PITCHES = 2000;
+const EVENTS_KEY = 'bountyevents';
+const MAX_EVENTS = 1000;
+const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+
+// A pitch is three free-text answers. We keep it short, strip the @ people type
+// out of habit, and store nothing we were not handed.
+function parsePitch(body) {
+  const idea = String(body.idea || '').trim();
+  if (idea.length < 15) return { error: 'Tell us a bit more about the bounty — 15 characters minimum' };
+  if (idea.length > 1200) return { error: 'Keep the pitch under 1200 characters' };
+  const handle = cleanHandle(body.instagram, 'Instagram', 30);
+  if (handle.error) return { error: handle.error };
+  if (!handle.value) return { error: 'Add your Instagram handle so we can reach you' };
+  const schoolRaw = String(body.school || '').trim();
+  if (!schoolRaw) return { error: 'Add your school' };
+  if (schoolRaw.length > 80) return { error: 'School name is too long' };
+  const code = SCHOOL_LABELS[schoolRaw.toLowerCase()] ? schoolRaw.toLowerCase() : '';
+  return {
+    pitch: {
+      idea,
+      instagram: handle.value,
+      school: code,
+      schoolLabel: code ? SCHOOL_LABELS[code] : schoolRaw,
+    },
+  };
+}
+
+// An event is a window on one campus plus the jobs it should light up.
+function parseEvent(body) {
+  const school = String(body.school || '').toLowerCase().trim();
+  if (!SCHOOL_LABELS[school]) return { error: 'Unknown school code' };
+  const name = String(body.name || '').trim();
+  if (!name || name.length > 80) return { error: 'Event needs a name under 80 characters' };
+  const starts = String(body.starts || '').trim();
+  const ends = String(body.ends || '').trim();
+  if (!ISO_DATE_RE.test(starts) || !ISO_DATE_RE.test(ends)) return { error: 'Dates must be YYYY-MM-DD' };
+  if (ends < starts) return { error: 'Event ends before it starts' };
+  const jobs = Array.isArray(body.jobs) ? body.jobs.map((j) => String(j).trim()).filter(Boolean).slice(0, 12) : [];
+  if (!jobs.length) return { error: 'List at least one job id this event lights up' };
+  const boost = Number(body.boost);
+  if (!Number.isFinite(boost) || boost < 1 || boost > 2) return { error: 'Boost must be between 1 and 2' };
+  const note = String(body.note || '').trim().slice(0, 160);
+  return { event: { school, schoolLabel: SCHOOL_LABELS[school], name, starts, ends, jobs, boost: Math.round(boost * 100) / 100, note } };
+}
+
 const ACCOUNTS_KEY = 'accounts';
 const MAX_ACCOUNTS = 5000;
 const SESS_KEY = (t) => `sess:${t}`;
@@ -1117,7 +1246,162 @@ export default {
       return json({ code: clan.claimCode, expires: clan.claimExpires });
     }
 
-    if (path === '/api/flights' || path === '/api/auth' || path === '/api/clans' || path === '/api/clans/internal' || path === '/api/clans/internal/approve' || path === '/api/clans/internal/payout' || path === '/api/clans/internal/continuation' || path === '/api/clans/seed' || path === '/api/clans/internal/claimcode' || path === '/api/account/login' || path === '/api/account/logout' || path === '/api/account/claim' || path === '/api/account/ambassador' || path === '/api/account/me' || lookup || join || clanId || mediaReq || notesReq || del) {
+    // A chapter sends work in. Open, rate-limited, and the row starts its life
+    // at "submitted" — every later move is an admin decision.
+    if (path === '/api/bounty/submit' && request.method === 'POST') {
+      const text = await request.text();
+      if (text.length > 3 * 1024 * 1024) return json({ error: 'Submission too large — paste links to big files instead' }, 413);
+      let body; try { body = JSON.parse(text); } catch { return json({ error: 'Invalid JSON' }, 400); }
+      const parsed = parseSubmission(body || {});
+      if (parsed.error) return json({ error: parsed.error }, 400);
+      if (await tooMany(env, 'bsub', ipOf(request), 10)) {
+        return json({ error: 'Too many submissions — try again in a minute' }, 429);
+      }
+      const subs = await readList(env, SUBS_KEY);
+      if (subs.length >= MAX_SUBS) return json({ error: 'Submission limit reached' }, 409);
+      const now = new Date().toISOString();
+      const row = {
+        id: randomCode(10), ...parsed.submission,
+        status: 'submitted', createdAt: now, updatedAt: now,
+        history: [{ status: 'submitted', at: now }],
+      };
+      subs.unshift(row);
+      await env.FLIGHTS.put(SUBS_KEY, JSON.stringify(subs));
+      return json({ ok: true, submission: publicSub(row) }, 201);
+    }
+
+    // The tracker. Handle plus rewards code, posted rather than in the query so
+    // the code stays out of logs and referrers.
+    if (path === '/api/bounty/track' && request.method === 'POST') {
+      const text = await request.text();
+      if (text.length > 2048) return json({ error: 'Request too large' }, 413);
+      let body; try { body = JSON.parse(text); } catch { return json({ error: 'Invalid JSON' }, 400); }
+      const payee = parsePayee(body || {});
+      if (payee.error) return json({ error: payee.error }, 400);
+      if (await tooMany(env, 'btrack', ipOf(request), 30)) return json({ error: 'Too many lookups — try again in a minute' }, 429);
+      const subs = await readList(env, SUBS_KEY);
+      const mine = subs.filter((s) =>
+        s.fomoHandle.toLowerCase() === payee.payee.fomoHandle.toLowerCase() &&
+        s.rewardsCode === payee.payee.rewardsCode);
+      const paid = mine.filter((s) => s.status === 'paid').reduce((a, s) => a + (s.amount || 0), 0);
+      const due = mine.filter((s) => s.status === 'approved' || s.status === 'awaiting_payout').reduce((a, s) => a + (s.amount || 0), 0);
+      return json({ submissions: mine.map(publicSub), totals: { paid, due, count: mine.length } });
+    }
+
+    if (path === '/api/bounty/submissions' && request.method === 'GET') {
+      const denied = await guard(request, env);
+      if (denied) return denied;
+      const subs = await readList(env, SUBS_KEY);
+      const status = String(url.searchParams.get('status') || '');
+      const rows = status ? subs.filter((s) => s.status === status) : subs;
+      const counts = {};
+      SUB_STATUSES.forEach((k) => { counts[k] = subs.filter((s) => s.status === k).length; });
+      return json({
+        counts,
+        submissions: rows.map((s) => ({ ...publicSub(s), fomoHandle: s.fomoHandle, rewardsCode: s.rewardsCode })),
+      });
+    }
+
+    if (path === '/api/bounty/submissions/status' && request.method === 'POST') {
+      const denied = await guard(request, env);
+      if (denied) return denied;
+      const text = await request.text();
+      if (text.length > 2048) return json({ error: 'Request too large' }, 413);
+      let body; try { body = JSON.parse(text); } catch { return json({ error: 'Invalid JSON' }, 400); }
+      const id = String((body && body.id) || '');
+      const status = String((body && body.status) || '');
+      if (!SUB_STATUSES.includes(status)) return json({ error: 'Unknown status' }, 400);
+      const subs = await readList(env, SUBS_KEY);
+      const row = subs.find((s) => s.id === id);
+      if (!row) return json({ error: 'Not found' }, 404);
+      const now = new Date().toISOString();
+      row.status = status;
+      row.updatedAt = now;
+      if (Number.isFinite(Number(body.amount))) row.amount = Math.max(0, Math.round(Number(body.amount)));
+      row.history = (row.history || []).concat([{ status, at: now }]);
+      await env.FLIGHTS.put(SUBS_KEY, JSON.stringify(subs));
+      return json({ ok: true, submission: publicSub(row) });
+    }
+
+    // One attached file, for the admin reviewing a submission.
+    if (path === '/api/bounty/file' && request.method === 'GET') {
+      const denied = await guard(request, env);
+      if (denied) return denied;
+      const subs = await readList(env, SUBS_KEY);
+      const row = subs.find((s) => s.id === String(url.searchParams.get('id') || ''));
+      if (!row) return json({ error: 'Not found' }, 404);
+      const file = (row.uploads || [])[Number(url.searchParams.get('n') || 0)];
+      if (!file) return json({ error: 'Not found' }, 404);
+      const bin = Uint8Array.from(atob(file.data), (c) => c.charCodeAt(0));
+      return new Response(bin, { headers: { 'content-type': file.mime, 'cache-control': 'no-store' } });
+    }
+
+    // ---- /bounty ------------------------------------------------------------
+    // Anyone can pitch a bounty. Only the admin reads the pile back.
+    if (path === '/api/bounty/pitch' && request.method === 'POST') {
+      const text = await request.text();
+      if (text.length > 8 * 1024) return json({ error: 'Request too large' }, 413);
+      let body; try { body = JSON.parse(text); } catch { return json({ error: 'Invalid JSON' }, 400); }
+      const parsed = parsePitch(body || {});
+      if (parsed.error) return json({ error: parsed.error }, 400);
+      if (await tooMany(env, 'pitch', ipOf(request), 4)) {
+        return json({ error: 'Too many pitches — try again in a minute' }, 429);
+      }
+      const pitches = await readList(env, PITCHES_KEY);
+      if (pitches.length >= MAX_PITCHES) return json({ error: 'Pitch box is full' }, 409);
+      const pitch = { id: randomCode(10), ...parsed.pitch, createdAt: new Date().toISOString() };
+      pitches.unshift(pitch);
+      await env.FLIGHTS.put(PITCHES_KEY, JSON.stringify(pitches));
+      return json({ ok: true, id: pitch.id }, 201);
+    }
+
+    if (path === '/api/bounty/pitch' && request.method === 'GET') {
+      const denied = await guard(request, env);
+      if (denied) return denied;
+      return json({ pitches: await readList(env, PITCHES_KEY) });
+    }
+
+    // Live events drive the auto-launched bounties. A chapter's schedule lands
+    // here, and anything inside its window shows on /bounty for that school.
+    if (path === '/api/bounty/events' && request.method === 'GET') {
+      const school = String(url.searchParams.get('school') || '').toLowerCase();
+      const all = await readList(env, EVENTS_KEY);
+      const now = Date.now();
+      const live = all
+        .filter((e) => !school || e.school === school)
+        .filter((e) => Date.parse(e.ends + 'T23:59:59Z') >= now && Date.parse(e.starts + 'T00:00:00Z') <= now + 14 * 86400000)
+        .sort((a, b) => a.starts.localeCompare(b.starts));
+      return json({ events: live });
+    }
+
+    if (path === '/api/bounty/events' && request.method === 'POST') {
+      const denied = await guard(request, env);
+      if (denied) return denied;
+      const text = await request.text();
+      if (text.length > 16 * 1024) return json({ error: 'Request too large' }, 413);
+      let body; try { body = JSON.parse(text); } catch { return json({ error: 'Invalid JSON' }, 400); }
+      const parsed = parseEvent(body || {});
+      if (parsed.error) return json({ error: parsed.error }, 400);
+      const events = await readList(env, EVENTS_KEY);
+      if (events.length >= MAX_EVENTS) return json({ error: 'Event limit reached' }, 409);
+      const ev = { id: randomCode(8), ...parsed.event, createdAt: new Date().toISOString() };
+      events.push(ev);
+      await env.FLIGHTS.put(EVENTS_KEY, JSON.stringify(events));
+      return json({ ok: true, event: ev }, 201);
+    }
+
+    if (path === '/api/bounty/events' && request.method === 'DELETE') {
+      const denied = await guard(request, env);
+      if (denied) return denied;
+      const id = String(url.searchParams.get('id') || '');
+      const events = await readList(env, EVENTS_KEY);
+      const next = events.filter((e) => e.id !== id);
+      if (next.length === events.length) return json({ error: 'Not found' }, 404);
+      await env.FLIGHTS.put(EVENTS_KEY, JSON.stringify(next));
+      return json({ ok: true });
+    }
+
+    if (path === '/api/flights' || path === '/api/auth' || path === '/api/clans' || path === '/api/clans/internal' || path === '/api/clans/internal/approve' || path === '/api/clans/internal/payout' || path === '/api/clans/internal/continuation' || path === '/api/clans/seed' || path === '/api/clans/internal/claimcode' || path === '/api/account/login' || path === '/api/account/logout' || path === '/api/account/claim' || path === '/api/account/ambassador' || path === '/api/account/me' || path === '/api/bounty/pitch' || path === '/api/bounty/events' || path === '/api/bounty/submit' || path === '/api/bounty/track' || path === '/api/bounty/submissions' || path === '/api/bounty/submissions/status' || path === '/api/bounty/file' || lookup || join || clanId || mediaReq || notesReq || del) {
       return json({ error: 'Method not allowed' }, 405);
     }
     return json({ error: 'Not found' }, 404);
