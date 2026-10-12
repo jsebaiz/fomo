@@ -23,12 +23,33 @@
   --sans:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --mono:'JetBrains Mono', ui-monospace, Menlo, monospace;
   --r:18px;
+  /* ---- type scale. Every size on this page resolves to one of these. ---- */
+  --ds-1:clamp(2.75rem,6.6vw,5.25rem);  /* page title            */
+  --ds-2:clamp(2.05rem,4.3vw,3.15rem);  /* section title         */
+  --ds-3:clamp(1.55rem,3vw,2.15rem);    /* sub-section title     */
+  --ds-4:1.3125rem;                     /* card + panel heading  */
+  --ds-5:1.0625rem;                     /* small heading         */
+  --num-1:2.25rem;                      /* feature figure        */
+  --num-2:1.5rem;                       /* stat figure           */
+  --num-3:clamp(3rem,7vw,4.6rem);       /* the payout figure     */
+  --fs-1:1.125rem;                      /* lede                  */
+  --fs-2:1.0625rem;                     /* body                  */
+  --fs-3:0.9375rem;                     /* card body, inputs     */
+  --fs-4:0.875rem;                      /* ui, nav, buttons      */
+  --fs-5:0.8125rem;                     /* hints, captions       */
+  --fs-6:0.75rem;                       /* mono body             */
+  --fs-7:0.6875rem;                     /* mono label, kicker    */
+  --fs-8:0.625rem;                      /* micro, inside phones  */
+  --ls-1:0.16em;                        /* every mono label      */
+  --ls-2:0.1em;                         /* tight mono            */
+  --ls-3:0.32em;                        /* intro only            */
+  --lh-1:1.05; --lh-2:1.3; --lh-3:1.55; --lh-4:1.75;
 }
 *{box-sizing:border-box;}
 [hidden]{display:none !important;}
 html{scroll-behavior:smooth; background:var(--paper); -webkit-text-size-adjust:100%;}
 body{margin:0; background:var(--paper); color:var(--text); font-family:var(--sans);
-  font-size:17px; line-height:1.55; -webkit-font-smoothing:antialiased;}
+  font-size:17px; line-height:var(--lh-3); -webkit-font-smoothing:antialiased;}
 button,input,textarea,select{font-family:inherit; color:inherit; font-size:inherit;}
 svg,img{display:block;}
 a{color:inherit;}
@@ -38,51 +59,76 @@ a{color:inherit;}
 .wrap{max-width:1120px; margin:0 auto; padding-left:32px; padding-right:32px;}
 @media (max-width:760px){ .wrap{padding-left:20px; padding-right:20px;} }
 
-h1,h2,h3,.disp{font-family:var(--serif); font-weight:700; letter-spacing:-0.015em; line-height:1.04; margin:0;}
+h1,h2,h3,.disp{font-family:var(--serif); font-weight:700; letter-spacing:-0.015em; line-height:var(--lh-1); margin:0;}
 h1{font-size:clamp(2.6rem,6.4vw,5rem);}
 h2{font-size:clamp(2rem,4.2vw,3.1rem);}
-h3{font-size:1.18rem; line-height:1.2;}
+h3{font-size:var(--ds-4); line-height:1.2;}
 p{margin:0; color:var(--muted);}
-.kicker{font-family:var(--mono); font-size:0.72rem; letter-spacing:0.22em; text-transform:uppercase; color:var(--orange);}
-.lede{font-size:1.1rem; max-width:52ch; color:var(--muted);}
+.kicker{font-family:var(--mono); font-size:var(--fs-7); letter-spacing:var(--ls-1); text-transform:uppercase; color:var(--orange);}
+.lede{font-size:var(--fs-1); max-width:52ch; color:var(--muted);}
 em.it{font-style:italic;}
 
-section{padding:88px 0;}
-@media (max-width:760px){ section{padding:60px 0;} }
+section{padding:88px 0; scroll-margin-top:86px;}
+@media (max-width:760px){ section{padding:54px 0; scroll-margin-top:72px;} }
 .sec-hd{margin-bottom:38px; max-width:58ch;}
 .sec-hd .kicker{display:block; margin-bottom:14px;}
 .sec-hd p{margin-top:14px;}
 
 /* ---------- the neon mark ---------- */
 .mark{width:100%; height:auto;}
-.brand .chip img,.toast .ic img{width:78%; height:78%; object-fit:contain;}
+.toast .ic img{width:78%; height:78%; object-fit:contain;}
 
 /* ---------- intro ---------- */
-#intro{position:fixed; inset:0; z-index:200; background:var(--ink); display:flex;
-  flex-direction:column; align-items:center; justify-content:center; gap:26px;
+#intro{position:fixed; inset:0; z-index:200; overflow:hidden; display:flex;
+  flex-direction:column; align-items:center; justify-content:center; gap:30px;
+  background:radial-gradient(90vmin 70vmin at 50% 40%, #121C29 0%, var(--ink) 68%);
   transition:opacity .75s ease, visibility .75s;}
 #intro.gone{opacity:0; visibility:hidden;}
-#intro .stage{position:relative; display:grid; place-items:center;}
-#intro .stage::before{content:''; position:absolute; width:300px; height:300px; border-radius:50%;
-  background:radial-gradient(circle, rgba(150,195,255,.30) 0%, rgba(150,195,255,0) 66%);
-  opacity:0; animation:bloom 1.9s ease .35s forwards;}
-#intro .mark{position:relative; width:188px; height:188px; opacity:0;
-  animation:ignite 1.65s steps(1,end) forwards;}
+#intro::before{content:''; position:absolute; inset:0; pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+                   linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-size:64px 64px;
+  mask-image:radial-gradient(60vmin 60vmin at 50% 44%, #000 0%, transparent 72%);
+  -webkit-mask-image:radial-gradient(60vmin 60vmin at 50% 44%, #000 0%, transparent 72%);
+  opacity:0; animation:gridin 1.6s ease .5s forwards;}
+@keyframes gridin{to{opacity:1;}}
+
+#intro .stage{position:relative; display:grid; place-items:center;
+  width:clamp(240px,42vmin,460px); height:clamp(240px,42vmin,460px);}
+#intro .bloom{position:absolute; inset:-18%; border-radius:50%;
+  background:radial-gradient(circle, rgba(150,195,255,.34) 0%, rgba(150,195,255,0) 64%);
+  opacity:0; animation:bloom 2s ease .3s forwards;}
+/* rings leave the mark the way a signal leaves a transmitter */
+#intro .ring{position:absolute; inset:0; border-radius:50%;
+  border:1px solid rgba(175,205,255,.5); opacity:0;
+  animation:ripple 3.4s cubic-bezier(.2,.6,.3,1) infinite;}
+#intro .ring:nth-of-type(2){animation-delay:.95s;}
+#intro .ring:nth-of-type(3){animation-delay:1.9s;}
+@keyframes ripple{
+  0%{transform:scale(.46); opacity:0;}
+  14%{opacity:.75;}
+  100%{transform:scale(1.75); opacity:0;}}
+#intro .mark{position:relative; width:100%; height:100%; opacity:0;
+  animation:ignite 1.7s steps(1,end) forwards;}
 /* a real neon tube stutters before it holds */
 @keyframes ignite{
-  0%{opacity:0;}      6%{opacity:1;}      10%{opacity:.08;}
-  16%{opacity:1;}     20%{opacity:.25;}   27%{opacity:1;}
-  32%{opacity:.5;}    40%{opacity:1;}     44%{opacity:.8;}
-  52%,100%{opacity:1;}}
-@keyframes bloom{from{opacity:0; transform:scale(.82);} to{opacity:1; transform:scale(1);}}
-#intro .tag{font-family:var(--mono); font-size:0.72rem; letter-spacing:0.32em; text-transform:uppercase;
-  color:#7E93AC; opacity:0; animation:fadeUp .7s ease 1.25s forwards;}
+  0%{opacity:0;}      5%{opacity:1;}      9%{opacity:.06;}
+  14%{opacity:1;}     18%{opacity:.22;}   25%{opacity:1;}
+  30%{opacity:.45;}   38%{opacity:1;}     42%{opacity:.78;}
+  50%,100%{opacity:1;}}
+@keyframes bloom{from{opacity:0; transform:scale(.8);} to{opacity:1; transform:scale(1);}}
+/* on the way out the mark takes its seat in the nav */
+#intro.leaving .stage{transition:transform .95s cubic-bezier(.6,0,.2,1);}
+#intro.leaving .ring,#intro.leaving .bloom,#intro.leaving .tag,#intro.leaving .bar,#intro.leaving #skip{
+  opacity:0 !important; transition:opacity .3s ease;}
+#intro .tag{font-family:var(--mono); font-size:var(--fs-7); letter-spacing:var(--ls-3); text-transform:uppercase;
+  color:#8FA6BE; opacity:0; animation:fadeUp .8s ease 1.3s forwards;}
 #intro .bar{width:150px; height:2px; background:rgba(255,255,255,.12); border-radius:2px; overflow:hidden;}
 #intro .bar i{display:block; height:100%; width:0; background:#fff; animation:fill 1.75s cubic-bezier(.5,0,.2,1) forwards;}
 @keyframes fill{to{width:100%;}}
 @keyframes fadeUp{from{opacity:0; transform:translateY(7px);} to{opacity:1; transform:none;}}
 #skip{position:absolute; bottom:28px; background:none; border:none; color:#54677C;
-  font-family:var(--mono); font-size:0.68rem; letter-spacing:.18em; text-transform:uppercase; cursor:pointer;}
+  font-family:var(--mono); font-size:var(--fs-7); letter-spacing:var(--ls-1); text-transform:uppercase; cursor:pointer;}
 #skip:hover{color:#9FB3C8;}
 
 /* ---------- nav ---------- */
@@ -90,28 +136,27 @@ section{padding:88px 0;}
   backdrop-filter:saturate(1.6) blur(14px); border-bottom:1px solid var(--line);}
 .nav-in{max-width:1120px; margin:0 auto; padding:13px 32px; display:flex; align-items:center; gap:14px;}
 @media (max-width:760px){ .nav-in{padding:11px 20px;} }
-.brand{display:flex; align-items:center; gap:10px; text-decoration:none;}
-.brand .chip{width:34px; height:34px; border-radius:10px; background:var(--ink); display:grid; place-items:center; flex-shrink:0;}
-.brand .chip .mark{width:26px; height:26px;}
-.brand .chip .halo{stroke-width:20; opacity:.5; filter:blur(5px);}
-.brand .chip .core{stroke-width:7;} .brand .chip .mid{stroke-width:13;}
-.brand b{font-family:var(--serif); font-size:1.18rem; font-weight:700; letter-spacing:-0.01em;}
-.brand span{font-family:var(--mono); font-size:0.66rem; letter-spacing:.14em; text-transform:uppercase; color:var(--faint);}
+.brand{display:flex; align-items:center; gap:12px; text-decoration:none;}
+/* the mark itself, at size. No container, no plate. */
+.brand .glyph{width:46px; height:46px; flex-shrink:0; object-fit:contain;}
+@media (max-width:760px){ .brand .glyph{width:38px; height:38px;} }
+.brand b{font-family:var(--serif); font-size:1.5rem; font-weight:700; letter-spacing:-0.015em; line-height:1;}
+.brand .sub{font-family:var(--mono); font-size:var(--fs-7); letter-spacing:var(--ls-1); text-transform:uppercase; color:var(--faint); align-self:center; padding-top:2px;}
 .nav .sp{flex:1;}
 .nav .links{display:flex; gap:24px;}
 @media (max-width:900px){ .nav .links{display:none;} }
 /* on a small phone the lockup sub-label and the button padding are what
    push the nav past the viewport, so they go first */
 @media (max-width:560px){
-  .brand span{display:none;}
-  .nav .btn{padding:10px 15px; font-size:0.85rem;}
-  .brand b{font-size:1.08rem;}
+  .brand .sub{display:none;}
+  .nav .btn{padding:10px 15px; font-size:var(--fs-4);}
+  .brand b{font-size:var(--fs-1);}
 }
-.nav .links a{text-decoration:none; font-size:0.9rem; font-weight:500; color:var(--muted);}
+.nav .links a{text-decoration:none; font-size:var(--fs-3); font-weight:500; color:var(--muted);}
 .nav .links a:hover{color:var(--text);}
 
 .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; border-radius:999px;
-  padding:11px 20px; font-size:0.9rem; font-weight:600; cursor:pointer; text-decoration:none;
+  padding:11px 20px; font-size:var(--fs-3); font-weight:600; cursor:pointer; text-decoration:none;
   border:1px solid transparent; white-space:nowrap; transition:transform .12s ease, filter .12s ease;}
 .btn:active{transform:translateY(1px);}
 .btn-pri{background:var(--orange); color:#fff;}
@@ -123,7 +168,7 @@ section{padding:88px 0;}
 .btn-outline-light{background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.22); color:#fff;}
 .btn-outline-light:hover{background:rgba(255,255,255,.16);}
 .btn[disabled]{opacity:.5; cursor:default; transform:none; filter:none;}
-.btn-lg{padding:14px 26px; font-size:0.98rem;}
+.btn-lg{padding:14px 26px; font-size:var(--fs-3);}
 
 /* ---------- hero ---------- */
 .hero{position:relative; background:
@@ -141,10 +186,10 @@ section{padding:88px 0;}
 @media (max-width:760px){ .hero-in{padding:52px 20px 52px;} }
 .hero h1{color:#fff;}
 .hero h1 em{font-style:italic; font-weight:500;}
-.hero p{color:#A8B6C6; margin-top:20px; font-size:1.08rem; max-width:46ch;}
+.hero p{color:#A8B6C6; margin-top:20px; font-size:var(--fs-1); max-width:46ch;}
 .badge{display:inline-flex; align-items:center; gap:9px; padding:7px 14px; border-radius:999px;
   background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.14);
-  font-family:var(--mono); font-size:0.68rem; letter-spacing:.17em; text-transform:uppercase; color:#C7D4E2;}
+  font-family:var(--mono); font-size:var(--fs-7); letter-spacing:var(--ls-1); text-transform:uppercase; color:#C7D4E2;}
 .pulse{width:7px; height:7px; border-radius:50%; background:var(--live); flex-shrink:0;
   animation:pulse 2s ease-in-out infinite;}
 .pulse.o{background:var(--orange);}
@@ -157,9 +202,9 @@ section{padding:88px 0;}
 .term{background:rgba(6,11,18,.72); border:1px solid rgba(255,255,255,.1); border-radius:var(--r);
   overflow:hidden; backdrop-filter:blur(8px); box-shadow:0 30px 70px -30px rgba(0,0,0,.8);}
 .term-hd{display:flex; align-items:center; gap:9px; padding:12px 16px; border-bottom:1px solid rgba(255,255,255,.08);}
-.term-hd span{font-family:var(--mono); font-size:0.68rem; letter-spacing:.14em; text-transform:uppercase; color:#8FA3B8;}
+.term-hd span{font-family:var(--mono); font-size:var(--fs-7); letter-spacing:var(--ls-1); text-transform:uppercase; color:#8FA3B8;}
 .term-hd .sp{flex:1;}
-.term-body{padding:12px 16px 14px; font-family:var(--mono); font-size:0.73rem; line-height:1.95;
+.term-body{padding:12px 16px 14px; font-family:var(--mono); font-size:var(--fs-6); line-height:1.9;
   min-height:172px; max-height:172px; overflow:hidden;}
 .term-body div{display:grid; grid-template-columns:52px 46px 1fr; gap:10px; color:#64798F;
   animation:tin .45s ease backwards;}
@@ -171,8 +216,8 @@ section{padding:88px 0;}
 .term-stats{display:grid; grid-template-columns:repeat(3,1fr); border-top:1px solid rgba(255,255,255,.08);}
 .term-stats div{padding:13px 16px; border-right:1px solid rgba(255,255,255,.08);}
 .term-stats div:last-child{border-right:none;}
-.term-stats b{display:block; font-family:var(--serif); font-size:1.5rem; color:#fff; line-height:1;}
-.term-stats span{font-family:var(--mono); font-size:0.62rem; letter-spacing:.12em; text-transform:uppercase; color:#7A8EA3;}
+.term-stats b{display:block; font-family:var(--serif); font-size:var(--num-2); color:#fff; line-height:1;}
+.term-stats span{font-family:var(--mono); font-size:var(--fs-8); letter-spacing:var(--ls-2); text-transform:uppercase; color:#7A8EA3;}
 
 /* ---------- what ami is ---------- */
 .three{display:grid; grid-template-columns:repeat(3,1fr); gap:18px; align-items:start;}
@@ -180,8 +225,8 @@ section{padding:88px 0;}
 .card{background:var(--surface); border:1px solid var(--line); border-radius:var(--r); overflow:hidden;}
 .card .art{height:188px; background:var(--map); position:relative; overflow:hidden; border-bottom:1px solid var(--line);}
 .card .cap{padding:18px 20px 22px;}
-.card .cap h3{font-size:1.22rem; margin-bottom:7px;}
-.card .cap p{font-size:0.92rem;}
+.card .cap h3{font-size:var(--ds-4); margin-bottom:7px;}
+.card .cap p{font-size:var(--fs-3);}
 
 /* map texture used by the little art panels */
 .mapbg{position:absolute; inset:0; background:var(--map);}
@@ -194,20 +239,20 @@ section{padding:88px 0;}
   radial-gradient(circle at 26% 70%, rgba(47,191,85,.14) 0%, rgba(47,191,85,0) 44%);}
 .pin{position:absolute; width:30px; height:30px; border-radius:50%; border:2px solid #fff;
   background:#CFC8BA; box-shadow:0 3px 9px rgba(0,0,0,.2); overflow:hidden; display:grid; place-items:center;
-  font-size:0.72rem; font-weight:600; color:#4A4740;}
-.pin.sm{width:22px; height:22px; font-size:0.6rem;}
+  font-size:var(--fs-7); font-weight:600; color:#4A4740;}
+.pin.sm{width:22px; height:22px; font-size:var(--fs-8);}
 .pin i{position:absolute; right:-1px; bottom:-1px; width:9px; height:9px; border-radius:50%;
   background:var(--live); border:1.6px solid #fff;}
 .heat{position:absolute; border-radius:50%; background:var(--orange); opacity:.55;}
 .venue{position:absolute; display:inline-flex; align-items:center; gap:6px; padding:4px 9px; border-radius:999px;
-  background:var(--orange); color:#fff; font-family:var(--mono); font-size:0.58rem; letter-spacing:.1em;
+  background:var(--orange); color:#fff; font-family:var(--mono); font-size:var(--fs-8); letter-spacing:var(--ls-2);
   text-transform:uppercase; white-space:nowrap; box-shadow:0 4px 12px rgba(240,86,30,.4);}
 .toast{position:absolute; display:flex; gap:9px; align-items:flex-start; background:#fff; border-radius:13px;
   padding:9px 12px; box-shadow:0 10px 26px -8px rgba(0,0,0,.26); max-width:84%;}
 .toast .ic{width:26px; height:26px; border-radius:8px; background:var(--ink); display:grid; place-items:center; flex-shrink:0;}
 .toast .ic .mark{width:19px; height:19px;} .toast .ic .core{stroke-width:8;} .toast .ic .mid{stroke-width:14;} .toast .ic .halo{opacity:0;}
-.toast b{display:block; font-size:0.76rem; font-weight:600; line-height:1.3;}
-.toast span{display:block; font-size:0.72rem; color:var(--muted); line-height:1.35;}
+.toast b{display:block; font-size:var(--fs-5); font-weight:600; line-height:var(--lh-2);}
+.toast span{display:block; font-size:var(--fs-7); color:var(--muted); line-height:var(--lh-2);}
 
 /* ---------- calculator ---------- */
 .calc{display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--line);
@@ -216,14 +261,14 @@ section{padding:88px 0;}
 .calc-l{padding:30px 32px;}
 .calc-r{padding:30px 32px; background:var(--ink); color:#fff; display:flex; flex-direction:column; justify-content:center;}
 @media (max-width:760px){ .calc-l,.calc-r{padding:24px 22px;} }
-.calc-out{font-family:var(--serif); font-size:clamp(3rem,7vw,4.6rem); line-height:1; letter-spacing:-0.03em;}
-.calc-r .sub{font-family:var(--mono); font-size:0.68rem; letter-spacing:.16em; text-transform:uppercase; color:#8FA3B8; margin-top:12px;}
+.calc-out{font-family:var(--serif); font-weight:700; font-size:var(--num-3); line-height:var(--lh-1); letter-spacing:-0.03em;}
+.calc-r .sub{font-family:var(--mono); font-size:var(--fs-7); letter-spacing:var(--ls-1); text-transform:uppercase; color:#8FA3B8; margin-top:12px;}
 .calc-r .split{margin-top:22px; padding-top:18px; border-top:1px solid rgba(255,255,255,.12); display:grid; gap:9px;}
-.calc-r .split div{display:flex; justify-content:space-between; font-size:0.88rem; color:#A8B6C6;}
+.calc-r .split div{display:flex; justify-content:space-between; font-size:var(--fs-4); color:#A8B6C6;}
 .calc-r .split b{color:#fff; font-weight:600;}
 .sl-top{display:flex; align-items:baseline; gap:10px; margin-bottom:6px;}
-.sl-top b{font-family:var(--serif); font-size:2.4rem; line-height:1;}
-.sl-top span{font-size:0.9rem; color:var(--muted);}
+.sl-top b{font-family:var(--serif); font-size:var(--num-1); line-height:1;}
+.sl-top span{font-size:var(--fs-3); color:var(--muted);}
 input[type=range]{-webkit-appearance:none; appearance:none; width:100%; height:30px; background:none; cursor:pointer;}
 input[type=range]::-webkit-slider-runnable-track{height:5px; border-radius:3px;
   background:linear-gradient(90deg, var(--orange) var(--p,30%), var(--line) var(--p,30%));}
@@ -232,8 +277,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; width:24px; hei
 input[type=range]::-moz-range-track{height:5px; border-radius:3px; background:var(--line);}
 input[type=range]::-moz-range-progress{height:5px; border-radius:3px; background:var(--orange);}
 input[type=range]::-moz-range-thumb{width:20px; height:20px; border-radius:50%; background:#fff; border:2px solid var(--orange);}
-.sl-ends{display:flex; justify-content:space-between; font-family:var(--mono); font-size:0.66rem; color:var(--faint);}
-.calc-note{margin-top:22px; padding-top:18px; border-top:1px solid var(--line); font-size:0.86rem;}
+.sl-ends{display:flex; justify-content:space-between; font-family:var(--mono); font-size:var(--fs-7); color:var(--faint);}
+.calc-note{margin-top:22px; padding-top:18px; border-top:1px solid var(--line); font-size:var(--fs-4);}
 
 /* ---------- early ---------- */
 .early{background:var(--ink); color:#fff; border-radius:var(--r); padding:46px 44px; position:relative; overflow:hidden;}
@@ -243,34 +288,34 @@ input[type=range]::-moz-range-thumb{width:20px; height:20px; border-radius:50%; 
 .early h2{color:#fff; position:relative;}
 .early p{color:#A8B6C6; position:relative; margin-top:16px; max-width:52ch;}
 .early .row{display:flex; gap:34px; flex-wrap:wrap; margin-top:30px; position:relative;}
-.early .row div b{display:block; font-family:var(--serif); font-size:2.1rem; line-height:1;}
-.early .row div span{font-family:var(--mono); font-size:0.64rem; letter-spacing:.13em; text-transform:uppercase; color:#8FA3B8;}
+.early .row div b{display:block; font-family:var(--serif); font-size:var(--num-1); line-height:1;}
+.early .row div span{font-family:var(--mono); font-size:var(--fs-8); letter-spacing:var(--ls-1); text-transform:uppercase; color:#8FA3B8;}
 
 /* ---------- steps ---------- */
 .steps{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; align-items:start;}
 @media (max-width:940px){ .steps{grid-template-columns:repeat(2,1fr);} }
 @media (max-width:560px){ .steps{grid-template-columns:1fr;} }
 .step{background:var(--surface); border:1px solid var(--line); border-radius:var(--r); padding:22px 20px 24px;}
-.step em{font-style:normal; font-family:var(--mono); font-size:0.66rem; letter-spacing:.16em; color:var(--orange);}
-.step h3{font-size:1.1rem; margin:12px 0 7px;}
-.step p{font-size:0.9rem;}
+.step em{font-style:normal; font-family:var(--mono); font-size:var(--fs-7); letter-spacing:var(--ls-1); color:var(--orange);}
+.step h3{font-size:var(--fs-1); margin:12px 0 7px;}
+.step p{font-size:var(--fs-3);}
 
 /* ---------- screens ---------- */
 .tabs{display:flex; gap:6px; border:1px solid var(--line); border-radius:999px; padding:4px;
   background:var(--surface); margin-bottom:28px; overflow-x:auto; scrollbar-width:none;}
 .tabs::-webkit-scrollbar{display:none;}
 .tabs button{flex:0 0 auto; background:none; border:none; border-radius:999px; padding:9px 17px;
-  font-size:0.87rem; font-weight:600; color:var(--muted); cursor:pointer; white-space:nowrap;}
+  font-size:var(--fs-4); font-weight:600; color:var(--muted); cursor:pointer; white-space:nowrap;}
 .tabs button.on{background:var(--ink); color:#fff;}
-.screen{display:grid; grid-template-columns:272px 1fr; gap:52px; align-items:center;}
+.screen{display:grid; grid-template-columns:262px 1fr; gap:52px; align-items:center;}
 @media (max-width:860px){ .screen{grid-template-columns:1fr; gap:28px;} }
-.phone{width:272px; max-width:100%; aspect-ratio:9/19.3; border-radius:40px; background:var(--ink);
+.phone{width:262px; max-width:100%; aspect-ratio:9/18.4; border-radius:40px; background:var(--ink);
   padding:9px; box-shadow:0 36px 70px -26px rgba(0,0,0,.42); margin:0 auto;}
 .phone-in{width:100%; height:100%; border-radius:32px; overflow:hidden; position:relative; background:var(--map);}
 .notch{position:absolute; top:8px; left:50%; transform:translateX(-50%); width:84px; height:22px;
   background:var(--ink); border-radius:999px; z-index:6;}
 .scr-copy h3{font-family:var(--serif); font-size:clamp(1.5rem,3vw,2.1rem); margin-bottom:12px;}
-.scr-copy ol{margin:18px 0 0; padding-left:20px; color:var(--muted); font-size:0.96rem; line-height:1.8;}
+.scr-copy ol{margin:18px 0 0; padding-left:20px; color:var(--muted); font-size:var(--fs-3); line-height:var(--lh-4);}
 .scr-copy ol b{color:var(--text); font-weight:600;}
 .scr-copy .kicker{display:block; margin-bottom:12px;}
 
@@ -278,48 +323,48 @@ input[type=range]::-moz-range-thumb{width:20px; height:20px; border-radius:50%; 
 .sheet{position:absolute; left:0; right:0; bottom:0; background:#fff; border-radius:20px 20px 0 0;
   padding:16px 16px 20px; box-shadow:0 -10px 34px -14px rgba(0,0,0,.22);}
 .sheet .grab{width:34px; height:4px; border-radius:3px; background:var(--line); margin:0 auto 12px;}
-.sheet h4{font-family:var(--serif); font-size:1.18rem; margin:0;}
-.sheet .addr{font-size:0.72rem; color:var(--muted); margin-top:2px;}
-.sheet .who{font-family:var(--mono); font-size:0.6rem; letter-spacing:.1em; text-transform:uppercase;
+.sheet h4{font-family:var(--serif); font-size:var(--ds-4); margin:0;}
+.sheet .addr{font-size:var(--fs-7); color:var(--muted); margin-top:2px;}
+.sheet .who{font-family:var(--mono); font-size:var(--fs-8); letter-spacing:var(--ls-2); text-transform:uppercase;
   color:var(--faint); margin-top:14px;}
-.sheet .nums{font-size:0.78rem; margin-top:3px;}
+.sheet .nums{font-size:var(--fs-5); margin-top:3px;}
 .sheet .nums b{font-weight:600;}
 .faces{display:flex; gap:7px; margin-top:12px;}
 .faces .pin{position:relative;}
 .chip-row{display:flex; gap:6px; margin-top:13px; flex-wrap:wrap;}
-.chip{font-size:0.68rem; padding:4px 9px; border-radius:999px; background:var(--paper); border:1px solid var(--line); color:var(--muted);}
+.chip{font-size:var(--fs-7); padding:4px 9px; border-radius:999px; background:var(--paper); border:1px solid var(--line); color:var(--muted);}
 
 /* ---------- referral ---------- */
 .tiers{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
 @media (max-width:760px){ .tiers{grid-template-columns:1fr;} }
 .tier{border:1px solid var(--line); border-radius:var(--r); padding:24px 22px; background:var(--surface);}
 .tier.best{border-color:var(--orange); background:var(--orange-soft);}
-.tier b{display:block; font-family:var(--serif); font-size:2.2rem; line-height:1;}
-.tier span{display:block; font-size:0.88rem; color:var(--muted); margin-top:7px;}
-.tier em{font-style:normal; font-family:var(--mono); font-size:0.64rem; letter-spacing:.14em;
+.tier b{display:block; font-family:var(--serif); font-size:var(--num-1); line-height:1;}
+.tier span{display:block; font-size:var(--fs-4); color:var(--muted); margin-top:7px;}
+.tier em{font-style:normal; font-family:var(--mono); font-size:var(--fs-8); letter-spacing:var(--ls-1);
   text-transform:uppercase; color:var(--orange);}
 
 /* ---------- forms ---------- */
 .panel{border:1px solid var(--line); border-radius:var(--r); background:var(--surface); overflow:hidden;}
 .panel-hd{padding:20px 26px; border-bottom:1px solid var(--line); display:flex; align-items:center; gap:14px; flex-wrap:wrap;}
-.panel-hd h3{font-size:1.25rem;}
+.panel-hd h3{font-size:var(--ds-4);}
 .panel-bd{padding:26px;}
 @media (max-width:760px){ .panel-hd,.panel-bd{padding:20px;} }
 .f{display:grid; gap:16px;}
 .f .two{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
 @media (max-width:640px){ .f .two{grid-template-columns:1fr;} }
-label{display:block; font-size:0.82rem; font-weight:600; margin-bottom:6px;}
+label{display:block; font-size:var(--fs-5); font-weight:600; margin-bottom:6px;}
 label .hint{font-weight:400; color:var(--muted);}
 input[type=text],input[type=email],input[type=number],textarea,select{width:100%; padding:12px 14px;
-  border:1px solid var(--line); border-radius:12px; background:var(--paper); font-size:0.95rem;}
+  border:1px solid var(--line); border-radius:12px; background:var(--paper); font-size:var(--fs-3);}
 input:focus,textarea:focus,select:focus{background:#fff;}
-textarea{min-height:104px; resize:vertical; line-height:1.55;}
-.msg{font-size:0.88rem;}
+textarea{min-height:104px; resize:vertical; line-height:var(--lh-3);}
+.msg{font-size:var(--fs-4);}
 .msg.err{color:#C5341B;} .msg.ok{color:var(--live);}
 .frow{display:flex; align-items:center; gap:14px; flex-wrap:wrap;}
 .scene{display:flex; gap:7px; flex-wrap:wrap;}
 .scene button{border:1px solid var(--line); background:var(--paper); border-radius:999px; padding:8px 14px;
-  font-size:0.85rem; cursor:pointer; color:var(--muted);}
+  font-size:var(--fs-4); cursor:pointer; color:var(--muted);}
 .scene button.on{background:var(--ink); border-color:var(--ink); color:#fff;}
 
 /* steps bar in the portal */
@@ -327,13 +372,13 @@ textarea{min-height:104px; resize:vertical; line-height:1.55;}
 .wiz div{display:flex; align-items:center; gap:10px; flex:1; min-width:0;}
 .wiz div:last-child{flex:0 0 auto;}
 .wiz i{width:26px; height:26px; border-radius:50%; border:1px solid var(--line); background:var(--paper);
-  display:grid; place-items:center; font-family:var(--mono); font-size:0.7rem; font-style:normal;
+  display:grid; place-items:center; font-family:var(--mono); font-size:var(--fs-7); font-style:normal;
   color:var(--faint); flex-shrink:0;}
 .wiz div.on i{background:var(--orange); border-color:var(--orange); color:#fff;}
 .wiz div.done i{background:var(--ink); border-color:var(--ink); color:#fff;}
 .wiz s{flex:1; height:1px; background:var(--line); text-decoration:none;}
 .wiz div.done s{background:var(--ink);}
-.wiz em{font-style:normal; font-size:0.8rem; color:var(--muted); white-space:nowrap;}
+.wiz em{font-style:normal; font-size:var(--fs-5); color:var(--muted); white-space:nowrap;}
 @media (max-width:760px){ .wiz em{display:none;} }
 
 /* ---------- tracker ---------- */
@@ -344,39 +389,119 @@ textarea{min-height:104px; resize:vertical; line-height:1.55;}
 .pipe i{width:10px; height:10px; border-radius:50%; background:var(--line); flex-shrink:0;}
 .pipe div.done i{background:var(--orange);} .pipe div.done s{background:var(--orange);}
 .pipe s{flex:1; height:2px; background:var(--line); text-decoration:none;}
-.pipe-lbl{display:flex; justify-content:space-between; font-family:var(--mono); font-size:0.58rem;
-  letter-spacing:.06em; text-transform:uppercase; color:var(--faint); gap:4px;}
+.pipe-lbl{display:flex; justify-content:space-between; font-family:var(--mono); font-size:var(--fs-8);
+  letter-spacing:var(--ls-2); text-transform:uppercase; color:var(--faint); gap:4px;}
 .pipe-lbl span.on{color:var(--orange);}
-.pill{display:inline-flex; align-items:center; gap:6px; font-family:var(--mono); font-size:0.64rem;
-  letter-spacing:.1em; text-transform:uppercase; padding:4px 10px; border-radius:999px;
+/* six stage names will not fit a narrow phone; the dots still show progress
+   and the status pill above already names the stage you are on */
+@media (max-width:480px){ .pipe-lbl{display:none;} .track-row{gap:9px;} }
+.pill{display:inline-flex; align-items:center; gap:6px; font-family:var(--mono); font-size:var(--fs-8);
+  letter-spacing:var(--ls-2); text-transform:uppercase; padding:4px 10px; border-radius:999px;
   border:1px solid var(--line); color:var(--muted);}
 .pill.hot{border-color:var(--orange); color:var(--orange);}
-.pill.raw{text-transform:none; letter-spacing:0; font-family:var(--sans); font-size:0.78rem;}
+.pill.raw{text-transform:none; letter-spacing:0; font-family:var(--sans); font-size:var(--fs-5);}
 .pill.good{border-color:var(--live); color:var(--live);}
 .codes{display:flex; gap:7px; flex-wrap:wrap;}
-.codes code{font-family:var(--mono); font-size:0.78rem; padding:6px 11px; border-radius:9px;
-  background:var(--ink); color:#C6FF4A; letter-spacing:.08em;}
+.codes code{font-family:var(--mono); font-size:var(--fs-5); padding:6px 11px; border-radius:9px;
+  background:var(--ink); color:#C6FF4A; letter-spacing:var(--ls-2);}
 
 /* ---------- faq ---------- */
 .faq{border-top:1px solid var(--line);}
 .faq details{border-bottom:1px solid var(--line);}
 .faq summary{cursor:pointer; list-style:none; padding:20px 0; display:flex; gap:18px; align-items:flex-start;
-  font-size:1.02rem; font-weight:600;}
+  font-size:var(--fs-2); font-weight:600;}
 .faq summary::-webkit-details-marker{display:none;}
-.faq summary::after{content:'+'; margin-left:auto; color:var(--faint); font-weight:400; font-size:1.3rem; line-height:1;}
+.faq summary::after{content:'+'; margin-left:auto; color:var(--faint); font-weight:400; font-size:var(--ds-4); line-height:1;}
 .faq details[open] summary::after{content:'\2013';}
-.faq .a{padding:0 0 22px 0; max-width:72ch; color:var(--muted); font-size:0.96rem; line-height:1.7;}
+.faq .a{padding:0 0 22px 0; max-width:72ch; color:var(--muted); font-size:var(--fs-3); line-height:var(--lh-4);}
 .faq .a b{color:var(--text);}
 
 /* ---------- footer ---------- */
 footer{background:var(--ink); color:#8FA3B8; margin-top:0;}
 .foot{max-width:1120px; margin:0 auto; padding:52px 32px 60px; display:flex; gap:28px;
-  justify-content:space-between; flex-wrap:wrap; font-size:0.86rem;}
+  justify-content:space-between; flex-wrap:wrap; font-size:var(--fs-4);}
 @media (max-width:760px){ .foot{padding:40px 20px 48px;} }
 .foot a{text-decoration:none; color:#8FA3B8;} .foot a:hover{color:#fff;}
 .foot .cols{display:flex; gap:44px; flex-wrap:wrap;}
 .foot .cols div{display:grid; gap:9px;}
-.foot .cols b{color:#fff; font-size:0.78rem; font-family:var(--mono); letter-spacing:.14em; text-transform:uppercase; font-weight:500;}
+.foot .cols b{color:#fff; font-size:var(--fs-7); font-family:var(--mono); letter-spacing:var(--ls-1); text-transform:uppercase; font-weight:500;}
+
+
+/* ---------- cabo: the interactive map ---------- */
+.cabo{background:var(--ink); border-radius:var(--r); overflow:hidden; position:relative;}
+.cabo-hd{display:flex; align-items:center; gap:14px; flex-wrap:wrap; padding:20px 24px; border-bottom:1px solid rgba(255,255,255,.1);}
+.cabo-hd h3{color:#fff; font-size:var(--ds-4);}
+.cabo-hd .sp{flex:1;}
+.cabo-hd .scene button{background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.18); color:#A8B6C6;}
+.cabo-hd .scene button:hover{color:#fff; border-color:rgba(255,255,255,.36);}
+.cabo-hd .scene button.on{background:var(--orange); border-color:var(--orange); color:#fff;}
+.tag-prev{display:inline-flex; align-items:center; gap:7px; padding:5px 11px; border-radius:999px;
+  background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.16);
+  font-family:var(--mono); font-size:var(--fs-8); letter-spacing:var(--ls-1); text-transform:uppercase; color:#A8B6C6;}
+.cabo-body{display:grid; grid-template-columns:1fr 310px;}
+@media (max-width:900px){ .cabo-body{grid-template-columns:1fr;} }
+.cabo-stage{position:relative; background:#CFDCE4; min-height:430px; touch-action:none; cursor:grab; overflow:hidden;}
+.cabo-stage.drag{cursor:grabbing;}
+.cabo-stage svg{display:block; width:100%; height:100%; min-height:430px;}
+@media (max-width:900px){ .cabo-stage,.cabo-stage svg{min-height:360px;} }
+
+.mp-land{fill:var(--map);}
+.mp-water{fill:#BDD3DF;}
+.mp-deep{fill:#A9C6D6;}
+.mp-sand{fill:none; stroke:#E6D9BE; stroke-width:17; stroke-linecap:round;}
+.mp-road{fill:none; stroke:var(--road); stroke-width:4; stroke-linecap:round;}
+.mp-road.big{stroke-width:7;}
+.mp-label{fill:#8A8578;}
+.mp-label.sea{fill:#7E9BAC;}
+.mp-heat{fill:var(--orange); opacity:.17;}
+
+.hs{cursor:pointer;}
+.hs .ring{fill:none; stroke:var(--orange); stroke-width:2; opacity:0;}
+.hs .disc{fill:#fff; stroke:var(--ink); stroke-width:2.5;}
+.hs .letters{font-family:var(--serif); font-size:11px; font-weight:700; fill:var(--ink); text-anchor:middle;}
+.hs .live{fill:var(--live); stroke:#fff; stroke-width:2;}
+.hs:hover .disc,.hs.on .disc{stroke:var(--orange);}
+.hs.on .ring{opacity:1; animation:hsring 1.8s ease-out infinite;}
+@keyframes hsring{0%{r:18; opacity:.85;} 100%{r:36; opacity:0;}}
+.hs .cap{font-family:var(--sans); font-size:11px; font-weight:600; fill:var(--ink); text-anchor:middle; opacity:0; pointer-events:none;}
+.hs:hover .cap{opacity:1;}
+.me .pulse-ring{fill:var(--orange); opacity:.2;}
+
+.cabo-ctl{position:absolute; right:12px; bottom:12px; display:grid; gap:6px;}
+.cabo-ctl button{width:34px; height:34px; border-radius:10px; border:1px solid rgba(10,16,24,.14);
+  background:rgba(255,255,255,.92); color:var(--text); font-size:var(--fs-2); font-weight:600; cursor:pointer;
+  display:grid; place-items:center; line-height:1;}
+.cabo-ctl button:hover{background:#fff; border-color:var(--orange); color:var(--orange);}
+.cabo-key{position:absolute; left:12px; bottom:12px; display:flex; gap:7px; flex-wrap:wrap; max-width:72%;}
+.cabo-key span{display:inline-flex; align-items:center; gap:6px; padding:5px 10px; border-radius:999px;
+  background:rgba(255,255,255,.9); font-size:var(--fs-8); font-weight:600; color:var(--text);}
+.cabo-key i{width:7px; height:7px; border-radius:50%; background:var(--orange);}
+.cabo-key i.g{background:var(--live);}
+
+.cabo-side{border-left:1px solid rgba(255,255,255,.1); display:flex; flex-direction:column; min-height:430px;}
+@media (max-width:900px){ .cabo-side{border-left:none; border-top:1px solid rgba(255,255,255,.1); min-height:0;} }
+.cabo-side .top{padding:16px 18px; border-bottom:1px solid rgba(255,255,255,.1);}
+.cabo-side .top b{display:block; font-family:var(--serif); font-size:var(--num-2); color:#fff; line-height:1;}
+.cabo-side .top span{font-family:var(--mono); font-size:var(--fs-8); letter-spacing:var(--ls-1); text-transform:uppercase; color:#8FA3B8;}
+.cabo-list{flex:1; overflow-y:auto; max-height:360px;}
+@media (max-width:900px){ .cabo-list{max-height:280px;} }
+.cabo-list button{display:flex; gap:11px; align-items:center; width:100%; text-align:left; background:none;
+  border:none; border-bottom:1px solid rgba(255,255,255,.07); padding:11px 18px; cursor:pointer; color:#fff;}
+.cabo-list button:hover{background:rgba(255,255,255,.05);}
+.cabo-list button.on{background:rgba(240,86,30,.14);}
+.cabo-list .av{width:30px; height:30px; border-radius:50%; background:rgba(255,255,255,.1); display:grid;
+  place-items:center; font-family:var(--serif); font-size:var(--fs-6); font-weight:700; flex-shrink:0;}
+.cabo-list .nm{flex:1; min-width:0;}
+.cabo-list .nm b{display:block; font-size:var(--fs-5); font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.cabo-list .nm span{display:block; font-size:var(--fs-8); color:#8FA3B8; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.cabo-list .ct{font-family:var(--mono); font-size:var(--fs-8); color:var(--orange); white-space:nowrap;}
+
+.cabo-card{padding:16px 18px; border-top:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.04);}
+.cabo-card h4{font-family:var(--serif); font-size:var(--ds-5); color:#fff; margin:0 0 3px;}
+.cabo-card .sub{font-size:var(--fs-8); color:#8FA3B8; margin-bottom:11px;}
+.cabo-card .rows{display:grid; gap:7px;}
+.cabo-card .rows div{display:flex; justify-content:space-between; font-size:var(--fs-5); color:#A8B6C6;}
+.cabo-card .rows b{color:#fff; font-weight:600;}
 
 @media (prefers-reduced-motion:reduce){
   *{animation:none !important; transition:none !important; scroll-behavior:auto;}
@@ -384,6 +509,8 @@ footer{background:var(--ink); color:#8FA3B8; margin-top:0;}
   #intro .tube{stroke-dashoffset:0;}
   /* the scroll reveal is decoration; without motion it just shows everything */
   .reveal{opacity:1 !important; transform:none !important;}
+  .hs.on .ring{opacity:.6; animation:none;}
+  #intro .ring{display:none;}
 }
 .reveal{opacity:0; transform:translateY(16px);}
 .reveal.in{opacity:1; transform:none; transition:opacity .7s cubic-bezier(.2,.7,.3,1), transform .7s cubic-bezier(.2,.7,.3,1);}
@@ -393,7 +520,10 @@ footer{background:var(--ink); color:#8FA3B8; margin-top:0;}
 <body>
 
 <div id="intro">
-  <div class="stage"><img class="mark" src="/assets/ami/ami-mark.png" alt="" width="341" height="341"></div>
+  <div class="stage">
+    <span class="bloom"></span><span class="ring"></span><span class="ring"></span><span class="ring"></span>
+    <img class="mark" src="/assets/ami/ami-mark.png" alt="" width="341" height="341">
+  </div>
   <div class="tag">the spatial network</div>
   <div class="bar"><i></i></div>
   <button type="button" id="skip">skip</button>
@@ -402,8 +532,8 @@ footer{background:var(--ink); color:#8FA3B8; margin-top:0;}
 <nav class="nav">
   <div class="nav-in">
     <a class="brand" href="#top">
-      <span class="chip"><img src="/assets/ami/ami-mark.png" alt="" width="341" height="341"></span>
-      <b>Ami</b><span>Campus&nbsp;Program</span>
+      <img class="glyph" src="/assets/ami/ami-mark-ink.png" alt="" width="341" height="341">
+      <b>Ami</b><span class="sub">Campus</span>
     </a>
     <div class="sp"></div>
     <div class="links">
@@ -549,6 +679,81 @@ footer{background:var(--ink); color:#8FA3B8; margin-top:0;}
   <div class="screen" id="screen"></div>
 </section>
 
+<section class="wrap reveal" id="cabo">
+  <div class="sec-hd">
+    <span class="kicker">Beyond campus</span>
+    <h2>Spring break is <em class="it">one big campus.</em></h2>
+    <p>Half your school lands in the same four blocks of Cabo for one week in March &mdash; and so does half of Alabama, Texas and Arizona State. Ami is the only way to see which houses are actually out, and where.</p>
+  </div>
+
+  <div class="cabo">
+    <div class="cabo-hd">
+      <h3>Cabo San Lucas</h3>
+      <span class="tag-prev"><i class="pulse o"></i>Sample week &middot; illustrative</span>
+      <div class="sp"></div>
+      <div class="scene" id="cabo-filter"></div>
+    </div>
+    <div class="cabo-body">
+      <div class="cabo-stage" id="cabo-stage">
+        <svg id="cabo-svg" viewBox="0 0 1000 680" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Map of Cabo San Lucas showing which houses are out">
+          <defs>
+            <radialGradient id="heat"><stop offset="0%" stop-color="#F0561E" stop-opacity=".26"/><stop offset="70%" stop-color="#F0561E" stop-opacity=".07"/><stop offset="100%" stop-color="#F0561E" stop-opacity="0"/></radialGradient>
+            <radialGradient id="deep"><stop offset="0%" stop-color="#8FB6CB" stop-opacity=".55"/><stop offset="100%" stop-color="#8FB6CB" stop-opacity="0"/></radialGradient>
+          </defs>
+          <g id="cabo-cam">
+            <rect x="-500" y="-500" width="2000" height="1680" class="mp-land"/>
+            <!-- the bay: land above and to the left, open water below and right -->
+            <path class="mp-water" d="M1100,96 C940,146 790,228 682,322 C596,398 530,490 488,590 C476,620 467,650 461,690 L1100,690 Z"/>
+            <ellipse cx="880" cy="520" rx="260" ry="170" fill="url(#deep)"/>
+            <!-- marina basin and its channel out to the bay -->
+            <path class="mp-water" d="M466,596 C430,572 394,544 358,516 C338,500 320,488 306,476" stroke="#BDD3DF" stroke-width="40" stroke-linecap="round" fill="none"/>
+            <ellipse cx="286" cy="462" rx="62" ry="38" class="mp-water"/>
+            <!-- Land's End, hooking into the bay -->
+            <path class="mp-land" d="M452,576 C500,586 552,608 592,634 C612,647 618,660 609,665 C597,671 574,663 551,650 C513,629 478,605 450,584 Z"/>
+            <path class="mp-sand" d="M1060,118 C916,166 776,244 684,338 C622,400 568,470 530,544"/>
+            <g class="mp-road big" opacity=".9">
+              <path d="M-80,214 C110,198 300,222 448,286 C544,328 606,382 660,440"/>
+              <path d="M92,-40 C124,120 168,268 220,430"/>
+            </g>
+            <g class="mp-road" opacity=".7">
+              <path d="M10,124 C160,112 310,138 436,190"/>
+              <path d="M24,312 C160,306 296,332 404,382"/>
+              <path d="M226,10 C246,130 268,238 300,358"/>
+              <path d="M352,0 C372,118 388,214 416,292"/>
+              <path d="M520,10 C548,110 572,190 600,258"/>
+              <path d="M726,74 C766,146 796,206 824,258"/>
+              <path d="M884,40 C906,104 926,164 942,214"/>
+              <path d="M60,470 C150,462 226,452 286,440"/>
+            </g>
+            <ellipse cx="792" cy="256" rx="150" ry="110" fill="url(#heat)"/>
+            <ellipse cx="256" cy="356" rx="118" ry="88" fill="url(#heat)"/>
+            <text class="mp-label" x="128" y="238">Downtown</text>
+            <text class="mp-label" x="192" y="530">Marina</text>
+            <text class="mp-label sea" x="648" y="596">Bahía de Cabo San Lucas</text>
+            <text class="mp-label" x="724" y="212" transform="rotate(-31 724 212)">Playa El Médano</text>
+            <text class="mp-label" x="372" y="628">Land&rsquo;s End</text>
+            <g id="cabo-pins"></g>
+          </g>
+        </svg>
+        <div class="cabo-ctl">
+          <button type="button" id="cabo-in" aria-label="Zoom in">+</button>
+          <button type="button" id="cabo-out" aria-label="Zoom out">&minus;</button>
+          <button type="button" id="cabo-reset" aria-label="Reset view">&#9678;</button>
+        </div>
+        <div class="cabo-key">
+          <span><i></i>House out now</span>
+          <span><i class="g"></i>Friends inside</span>
+        </div>
+      </div>
+      <div class="cabo-side">
+        <div class="top"><b id="cabo-total">0</b><span id="cabo-sub">houses out tonight</span></div>
+        <div class="cabo-list" id="cabo-list"></div>
+        <div class="cabo-card" id="cabo-card"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="wrap reveal" id="refer">
   <div class="sec-hd">
     <span class="kicker">Refer a friend</span>
@@ -613,7 +818,7 @@ footer{background:var(--ink); color:#8FA3B8; margin-top:0;}
 
       <div class="f" id="st3" hidden>
         <div class="track-row" id="a-review"></div>
-        <p style="font-size:0.88rem">Applying puts you on the campus waitlist. We will never post as you, message your followers, or share your list with anyone.</p>
+        <p style="font-size:var(--fs-4)">Applying puts you on the campus waitlist. We will never post as you, message your followers, or share your list with anyone.</p>
         <div class="frow">
           <button type="button" class="btn btn-ghost" data-next="2">Back</button>
           <button type="button" class="btn btn-pri btn-lg" id="a-send">Send my application</button>
@@ -623,10 +828,10 @@ footer{background:var(--ink); color:#8FA3B8; margin-top:0;}
 
       <div id="a-done" hidden>
         <div class="track-row" style="border-color:var(--orange); background:var(--orange-soft)">
-          <h3 style="font-size:1.3rem">You&rsquo;re on the list.</h3>
-          <p style="font-size:0.94rem">Keep this host code safe &mdash; it is the only way to check your status.</p>
+          <h3 style="font-size:var(--ds-4)">You&rsquo;re on the list.</h3>
+          <p style="font-size:var(--fs-3)">Keep this host code safe &mdash; it is the only way to check your status.</p>
           <div class="codes"><code id="a-code">——————</code></div>
-          <p style="font-size:0.88rem">We read applications by hand and usually come back inside a day. Check your status in <a href="#payouts" style="color:var(--orange)">Payouts</a>.</p>
+          <p style="font-size:var(--fs-4)">We read applications by hand and usually come back inside a day. Check your status in <a href="#payouts" style="color:var(--orange)">Payouts</a>.</p>
         </div>
       </div>
     </div>
@@ -662,13 +867,13 @@ footer{background:var(--ink); color:#8FA3B8; margin-top:0;}
 
   <div class="three" style="margin-top:18px">
     <article class="card"><div class="cap">
-      <h3 style="font-size:1.05rem">When it lands</h3>
+      <h3 style="font-size:var(--ds-5)">When it lands</h3>
       <p>We count at the end of each month and pay within seven days. One payment, not a drip, and never a gift card.</p></div></article>
     <article class="card"><div class="cap">
-      <h3 style="font-size:1.05rem">How it lands</h3>
+      <h3 style="font-size:var(--ds-5)">How it lands</h3>
       <p>Venmo, Zelle or bank transfer &mdash; whichever you already use. We ask for that once you are approved, never on this page.</p></div></article>
     <article class="card"><div class="cap">
-      <h3 style="font-size:1.05rem">Past $600</h3>
+      <h3 style="font-size:var(--ds-5)">Past $600</h3>
       <p>Over $600 in a calendar year we need a W-9 before sending more. US tax law, not our rule. It does not affect your financial aid.</p></div></article>
   </div>
 </section>
@@ -696,10 +901,10 @@ footer{background:var(--ink); color:#8FA3B8; margin-top:0;}
   <div class="foot">
     <div>
       <a class="brand" href="#top" style="color:#fff">
-        <span class="chip" style="background:rgba(255,255,255,.08)"><img src="/assets/ami/ami-mark.png" alt="" width="341" height="341"></span>
-        <b style="color:#fff">Ami</b><span>Campus&nbsp;Program</span>
+        <img class="glyph" src="/assets/ami/ami-mark.png" alt="" width="341" height="341">
+        <b style="color:#fff">Ami</b><span class="sub">Campus</span>
       </a>
-      <p style="margin-top:16px; color:#64798F; font-size:0.82rem; max-width:30ch">Ami is invite-only. This page is the campus host programme, run by Jesse Baizer.</p>
+      <p style="margin-top:16px; color:#64798F; font-size:var(--fs-5); max-width:30ch">Ami is invite-only. This page is the campus host programme, run by Jesse Baizer.</p>
     </div>
     <div class="cols">
       <div><b>Programme</b><a href="#how">How it works</a><a href="#calc">Payout calculator</a><a href="#refer">Refer a friend</a><a href="#apply">Apply</a></div>
@@ -729,15 +934,31 @@ const FOUNDING = 250;     // flat bonus for the first host on a campus
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let seen = false;
   try { seen = sessionStorage.getItem('ami_intro') === '1'; } catch (e) {}
-  const end = () => {
-    el.classList.add('gone');
+  const done = () => {
     document.body.style.overflow = '';
     try { sessionStorage.setItem('ami_intro', '1'); } catch (e) {}
-    setTimeout(() => { el.hidden = true; }, 800);
+    el.hidden = true;
+  };
+  // the mark does not just fade: it shrinks onto the nav lockup, so the first
+  // thing on screen becomes the thing you then navigate by
+  const end = () => {
+    const stage = el.querySelector('.stage');
+    const seat = document.querySelector('.brand .glyph');
+    if (!stage || !seat) { el.classList.add('gone'); return setTimeout(done, 800); }
+    const a = stage.getBoundingClientRect(), b = seat.getBoundingClientRect();
+    const k = b.width / a.width;
+    const dx = (b.left + b.width / 2) - (a.left + a.width / 2);
+    const dy = (b.top + b.height / 2) - (a.top + a.height / 2);
+    el.classList.add('leaving');
+    requestAnimationFrame(() => {
+      stage.style.transform = `translate(${dx}px, ${dy}px) scale(${k})`;
+      setTimeout(() => { el.classList.add('gone'); }, 520);
+      setTimeout(done, 1180);
+    });
   };
   if (seen || reduced) { el.hidden = true; return; }
   document.body.style.overflow = 'hidden';
-  const t = setTimeout(end, 2450);
+  const t = setTimeout(end, 2600);
   $('skip').addEventListener('click', () => { clearTimeout(t); end(); });
 })();
 
@@ -792,7 +1013,7 @@ const SCREENS = [
         </div>
         <div class="faces">
           <span class="pin sm">VS<i></i></span><span class="pin sm">GR<i></i></span>
-          <span class="pin sm">LU</span><span class="pin sm" style="background:var(--ink); color:#fff; font-size:0.5rem">+99</span>
+          <span class="pin sm">LU</span><span class="pin sm" style="background:var(--ink); color:#fff; font-size:var(--fs-8)">+99</span>
         </div>
       </div>` },
 
@@ -808,7 +1029,7 @@ const SCREENS = [
       <div class="venue" style="left:30%; top:30%">● Snapped venue</div>
       <div class="pin" style="left:42%; top:38%">AM<i></i></div>
       <div class="sheet"><div class="grab"></div>
-        <div style="font-family:var(--mono); font-size:0.56rem; letter-spacing:.14em; text-transform:uppercase; color:var(--faint)">On campus</div>
+        <div style="font-family:var(--mono); font-size:var(--fs-8); letter-spacing:var(--ls-1); text-transform:uppercase; color:var(--faint)">On campus</div>
         <h4>The Quad</h4><div class="addr">Open until 2 AM</div>
         <div class="who">Who&rsquo;s here</div>
         <div class="nums" style="display:flex; gap:14px"><span><b>8</b> Friends</span><span><b>12</b> Amis</span><span><b>28</b> People</span></div>
@@ -830,8 +1051,8 @@ const SCREENS = [
         <span><b>Consider this your invite</b><span>darty at the house ☀️ · Saturday · 2:00 PM</span></span></div>
       <div style="position:absolute; left:8%; right:8%; top:24%; border-radius:18px; overflow:hidden;
                   background:linear-gradient(170deg,#2A1E18,#120C09); box-shadow:0 18px 40px -16px rgba(0,0,0,.5); padding:20px 18px 18px">
-        <div style="font-family:var(--serif); font-style:italic; font-size:1.5rem; color:#F3E3CF; line-height:1.1">darty<br>at ours <em>sat?</em></div>
-        <div style="font-family:var(--mono); font-size:0.52rem; letter-spacing:.2em; color:var(--orange); margin-top:10px">THE HOUSE · 114 COLLEGE AVE</div>
+        <div style="font-family:var(--serif); font-style:italic; font-size:var(--num-2); color:#F3E3CF; line-height:1.1">darty<br>at ours <em>sat?</em></div>
+        <div style="font-family:var(--mono); font-size:var(--fs-8); letter-spacing:var(--ls-1); color:var(--orange); margin-top:10px">THE HOUSE · 114 COLLEGE AVE</div>
         <div style="display:flex; gap:5px; margin-top:14px">
           <span style="width:5px;height:5px;border-radius:50%;background:#fff"></span>
           <span style="width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.3)"></span>
@@ -859,9 +1080,9 @@ const SCREENS = [
         repeating-linear-gradient(90deg, rgba(255,255,255,.05) 0 2px, transparent 2px 26px),
         repeating-linear-gradient(0deg, rgba(0,0,0,.08) 0 2px, transparent 2px 34px);"></div>
       <div style="position:absolute; left:50%; top:20%; transform:translateX(-50%); text-align:center">
-        <span class="pin" style="position:relative; width:72px; height:72px; font-size:1.1rem; margin:0 auto; border-width:3px">AM<i style="width:16px;height:16px"></i></span>
-        <div style="font-family:var(--serif); font-size:1.6rem; color:#fff; margin-top:10px; text-shadow:0 2px 14px rgba(0,0,0,.4)">Amelia</div>
-        <div style="font-family:var(--mono); font-size:0.8rem; color:#E8F0F8">170 ft</div>
+        <span class="pin" style="position:relative; width:72px; height:72px; font-size:var(--fs-1); margin:0 auto; border-width:3px">AM<i style="width:16px;height:16px"></i></span>
+        <div style="font-family:var(--serif); font-size:var(--num-2); color:#fff; margin-top:10px; text-shadow:0 2px 14px rgba(0,0,0,.4)">Amelia</div>
+        <div style="font-family:var(--mono); font-size:var(--fs-5); color:#E8F0F8">170 ft</div>
       </div>
       <div class="toast" style="left:6%; right:6%; top:52%; max-width:none">
         <span class="ic"><img src="/assets/ami/ami-mark.png" alt="" width="341" height="341"></span>
@@ -873,7 +1094,7 @@ const SCREENS = [
       <div class="sheet" style="background:rgba(255,255,255,.94); backdrop-filter:blur(10px)">
         <div class="grab"></div>
         <div style="display:flex; align-items:center; gap:11px">
-          <div style="flex:1"><h4 style="font-size:1rem">Audio chat</h4><div class="addr">Amelia is here</div></div>
+          <div style="flex:1"><h4 style="font-size:var(--fs-2)">Audio chat</h4><div class="addr">Amelia is here</div></div>
           <span class="chip" style="padding:8px 10px">🔊</span>
           <span class="chip" style="padding:8px 10px">🎙</span>
           <span class="chip" style="padding:8px 10px; background:var(--orange); border-color:var(--orange); color:#fff">✕</span>
@@ -1000,19 +1221,19 @@ function step(n) {
     const base = v.circle * PER_AMI;
     $('a-review').innerHTML = `
       <div style="display:flex; gap:12px; align-items:baseline; flex-wrap:wrap">
-        <h3 style="font-size:1.2rem">${esc(v.name || '—')}</h3>
+        <h3 style="font-size:var(--ds-4)">${esc(v.name || '—')}</h3>
         <span class="pill raw">@${esc(v.instagram.replace(/^@/, '') || '—')}</span>
         <span class="pill hot raw">${esc(v.city || '—')}</span>
         ${v.scene ? `<span class="pill raw">${esc(v.scene)}</span>` : ''}
       </div>
-      <p style="font-size:0.92rem">${esc(v.pitch || 'No description yet.')}</p>
+      <p style="font-size:var(--fs-3)">${esc(v.pitch || 'No description yet.')}</p>
       <div style="display:flex; gap:26px; flex-wrap:wrap; padding-top:12px; border-top:1px solid var(--line)">
-        <div><b style="font-family:var(--serif); font-size:1.5rem; display:block; line-height:1">${v.circle || 0}</b>
-          <span style="font-size:0.76rem; color:var(--muted)">friends</span></div>
-        <div><b style="font-family:var(--serif); font-size:1.5rem; display:block; line-height:1">${usd(base)}</b>
-          <span style="font-size:0.76rem; color:var(--muted)">at ${usd(PER_AMI)} each</span></div>
-        <div><b style="font-family:var(--serif); font-size:1.5rem; display:block; line-height:1">${usd(base + FOUNDING)}</b>
-          <span style="font-size:0.76rem; color:var(--muted)">if first at ${esc(v.city || 'your school')}</span></div>
+        <div><b style="font-family:var(--serif); font-size:var(--num-2); display:block; line-height:1">${v.circle || 0}</b>
+          <span style="font-size:var(--fs-5); color:var(--muted)">friends</span></div>
+        <div><b style="font-family:var(--serif); font-size:var(--num-2); display:block; line-height:1">${usd(base)}</b>
+          <span style="font-size:var(--fs-5); color:var(--muted)">at ${usd(PER_AMI)} each</span></div>
+        <div><b style="font-family:var(--serif); font-size:var(--num-2); display:block; line-height:1">${usd(base + FOUNDING)}</b>
+          <span style="font-size:var(--fs-5); color:var(--muted)">if first at ${esc(v.city || 'your school')}</span></div>
       </div>`;
   }
   $('apply').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1094,7 +1315,7 @@ async function track(quiet) {
     $('t-out').innerHTML = `
       <div class="track-row">
         <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap">
-          <h3 style="font-size:1.2rem">${esc(h.name)}</h3>
+          <h3 style="font-size:var(--ds-4)">${esc(h.name)}</h3>
           <span class="pill ${declined ? '' : h.status === 'paid' ? 'good' : 'hot'}">${esc(LABEL[h.status] || h.status)}</span>
           <span class="pill raw">${esc(h.city)}</span>
         </div>
@@ -1103,14 +1324,14 @@ async function track(quiet) {
         <div class="pipe-lbl">${FLOW.map((s, n) =>
           `<span class="${!declined && i === n ? 'on' : ''}">${esc(LABEL[s])}</span>`).join('')}</div>
         <div style="display:flex; gap:26px; flex-wrap:wrap; padding-top:12px; border-top:1px solid var(--line)">
-          <div><b style="font-family:var(--serif); font-size:1.6rem; display:block; line-height:1">${h.joined}</b>
-            <span style="font-size:0.76rem; color:var(--muted)">Friends live</span></div>
-          <div><b style="font-family:var(--serif); font-size:1.6rem; display:block; line-height:1">${usd(owed)}</b>
-            <span style="font-size:0.76rem; color:var(--muted)">${h.status === 'paid' ? 'Paid out' : 'Earned so far'}</span></div>
-          <div><b style="font-family:var(--serif); font-size:1.6rem; display:block; line-height:1">${(h.codes || []).length}</b>
-            <span style="font-size:0.76rem; color:var(--muted)">Codes issued</span></div>
+          <div><b style="font-family:var(--serif); font-size:var(--num-2); display:block; line-height:1">${h.joined}</b>
+            <span style="font-size:var(--fs-5); color:var(--muted)">Friends live</span></div>
+          <div><b style="font-family:var(--serif); font-size:var(--num-2); display:block; line-height:1">${usd(owed)}</b>
+            <span style="font-size:var(--fs-5); color:var(--muted)">${h.status === 'paid' ? 'Paid out' : 'Earned so far'}</span></div>
+          <div><b style="font-family:var(--serif); font-size:var(--num-2); display:block; line-height:1">${(h.codes || []).length}</b>
+            <span style="font-size:var(--fs-5); color:var(--muted)">Codes issued</span></div>
         </div>
-        ${(h.codes || []).length ? `<div><div class="who" style="font-family:var(--mono); font-size:0.58rem; letter-spacing:.12em; text-transform:uppercase; color:var(--faint); margin-bottom:8px">Your invite codes</div>
+        ${(h.codes || []).length ? `<div><div class="who" style="font-family:var(--mono); font-size:var(--fs-8); letter-spacing:var(--ls-2); text-transform:uppercase; color:var(--faint); margin-bottom:8px">Your invite codes</div>
           <div class="codes">${h.codes.map((c) => `<code>${esc(c)}</code>`).join('')}</div></div>` : ''}
       </div>`;
     $('t-out').hidden = false;
@@ -1129,6 +1350,183 @@ try {
   }
 } catch (e) {}
 
+
+/* ---- cabo: an illustrative spring-break week -------------------------------
+   These houses are a sample, not live data, and the section says so on its
+   face. The map itself is real: pan it, zoom it, pick a house.             */
+const SPOTS = {
+  mango:   { name:'Mango Deck',      area:'Playa El Médano', x:762, y:272 },
+  office:  { name:'The Office',      area:'Playa El Médano', x:846, y:214 },
+  bagus:   { name:'Bagus Beach Club',area:'Playa El Médano', x:672, y:336 },
+  taboo:   { name:'Taboo',           area:'Playa El Médano', x:926, y:160 },
+  wabo:    { name:'Cabo Wabo',       area:'Downtown',        x:268, y:338 },
+  squid:   { name:'Squid Roe',       area:'Downtown',        x:196, y:296 },
+  board:   { name:'Marina boardwalk',area:'Marina',          x:356, y:436 },
+};
+const HOUSES = [
+  { ltr:'ΣΧ', house:'Sigma Chi',          school:'Arizona State',  spot:'mango',  here:34, mutual:12 },
+  { ltr:'ΠΒΦ',house:'Pi Beta Phi',        school:'Alabama',        spot:'mango',  here:28, mutual:9  },
+  { ltr:'ΚΑΘ',house:'Kappa Alpha Theta',  school:'Texas',          spot:'office', here:22, mutual:6  },
+  { ltr:'ΣΑΕ',house:'Sigma Alpha Epsilon',school:'Ole Miss',       spot:'office', here:19, mutual:4  },
+  { ltr:'ΧΩ', house:'Chi Omega',          school:'Georgia',        spot:'bagus',  here:26, mutual:11 },
+  { ltr:'ΦΔΘ',house:'Phi Delta Theta',    school:'Wisconsin',      spot:'bagus',  here:15, mutual:3  },
+  { ltr:'ΔΓ', house:'Delta Gamma',        school:'Michigan',       spot:'taboo',  here:31, mutual:8  },
+  { ltr:'ΒΘΠ',house:'Beta Theta Pi',      school:'Indiana',        spot:'wabo',   here:24, mutual:7  },
+  { ltr:'ΑΦ', house:'Alpha Phi',          school:'USC',            spot:'wabo',   here:18, mutual:5  },
+  { ltr:'ΚΣ', house:'Kappa Sigma',        school:'Florida State',  spot:'squid',  here:21, mutual:6  },
+  { ltr:'ΑΧΩ',house:'Alpha Chi Omega',    school:'Tennessee',      spot:'squid',  here:17, mutual:2  },
+  { ltr:'ΛΧΑ',house:'Lambda Chi Alpha',   school:'Clemson',        spot:'board',  here:13, mutual:4  },
+];
+// two houses can share a venue, so fan them out around it
+HOUSES.forEach((hs) => {
+  const at = HOUSES.filter((o) => o.spot === hs.spot);
+  const i = at.indexOf(hs), n = at.length;
+  const s = SPOTS[hs.spot];
+  const a = (-Math.PI / 2) + (i - (n - 1) / 2) * 1.08;
+  const r = n > 1 ? 50 : 0;
+  hs.x = s.x + Math.cos(a) * r;
+  hs.y = s.y + Math.sin(a) * r * 0.8;
+  hs.spotName = s.name;
+  hs.area = s.area;
+});
+
+let caboPick = null, caboFilter = 'all';
+const caboSchools = [...new Set(HOUSES.map((h) => h.school))];
+
+const cam = { x:0, y:0, s:1 };
+const svg = $('cabo-svg'), camG = $('cabo-cam'), stage = $('cabo-stage');
+const applyCam = () => camG.setAttribute('transform', `translate(${cam.x} ${cam.y}) scale(${cam.s})`);
+
+function caboVisible() {
+  return HOUSES.filter((h) => caboFilter === 'all' || h.area === caboFilter);
+}
+
+function paintPins() {
+  const vis = caboVisible();
+  $('cabo-pins').innerHTML = vis.map((h, i) => `
+    <g class="hs${caboPick === h.house ? ' on' : ''}" data-h="${esc(h.house)}" transform="translate(${h.x} ${h.y})">
+      <circle class="ring" r="18"></circle>
+      <circle class="disc" r="15.5"></circle>
+      <text class="letters" y="4">${esc(h.ltr)}</text>
+      <circle class="live" cx="11.5" cy="11.5" r="4.2"></circle>
+      <text class="cap" y="-26">${esc(h.school)}</text>
+    </g>`).join('');
+  $('cabo-pins').querySelectorAll('.hs').forEach((g) =>
+    g.addEventListener('click', (e) => { e.stopPropagation(); pickHouse(g.dataset.h); }));
+}
+
+function paintList() {
+  const vis = caboVisible();
+  $('cabo-total').textContent = vis.length;
+  $('cabo-sub').textContent = `house${vis.length === 1 ? '' : 's'} out tonight`;
+  $('cabo-list').innerHTML = vis.map((h) => `
+    <button type="button" data-h="${esc(h.house)}" class="${caboPick === h.house ? 'on' : ''}">
+      <span class="av">${esc(h.ltr)}</span>
+      <span class="nm"><b>${esc(h.house)}</b><span>${esc(h.school)} &middot; ${esc(h.spotName)}</span></span>
+      <span class="ct">${h.here}</span>
+    </button>`).join('');
+  $('cabo-list').querySelectorAll('button').forEach((b) =>
+    b.addEventListener('click', () => pickHouse(b.dataset.h)));
+  const h = HOUSES.find((x) => x.house === caboPick);
+  $('cabo-card').innerHTML = h ? `
+    <h4>${esc(h.house)}</h4>
+    <div class="sub">${esc(h.school)}</div>
+    <div class="rows">
+      <div><span>Where</span><b>${esc(h.spotName)}</b></div>
+      <div><span>Area</span><b>${esc(h.area)}</b></div>
+      <div><span>Here right now</span><b>${h.here}</b></div>
+      <div><span>Your mutuals</span><b>${h.mutual}</b></div>
+    </div>` : `
+    <h4>Pick a house</h4>
+    <div class="sub">Tap a pin on the map, or a name in the list, to see who is there and how many you already know.</div>`;
+}
+
+function pickHouse(name) {
+  caboPick = caboPick === name ? null : name;
+  paintPins(); paintList();
+  const h = HOUSES.find((x) => x.house === caboPick);
+  if (h) centreOn(h.x, h.y);
+}
+
+function centreOn(x, y) {
+  const r = svg.viewBox.baseVal;
+  cam.s = Math.max(cam.s, 1.9);
+  cam.x = r.width / 2 - x * cam.s;
+  cam.y = r.height / 2 - y * cam.s;
+  clampCam(); camG.style.transition = 'transform .5s cubic-bezier(.2,.7,.3,1)';
+  applyCam();
+  setTimeout(() => { camG.style.transition = ''; }, 520);
+}
+
+function clampCam() {
+  const r = svg.viewBox.baseVal;
+  cam.s = Math.min(3.4, Math.max(1, cam.s));
+  const maxX = 0, minX = r.width - r.width * cam.s;
+  const maxY = 0, minY = r.height - r.height * cam.s;
+  cam.x = Math.min(maxX, Math.max(minX, cam.x));
+  cam.y = Math.min(maxY, Math.max(minY, cam.y));
+}
+
+function zoomBy(k, cx, cy) {
+  const r = svg.viewBox.baseVal;
+  const px = cx === undefined ? r.width / 2 : cx;
+  const py = cy === undefined ? r.height / 2 : cy;
+  const wx = (px - cam.x) / cam.s, wy = (py - cam.y) / cam.s;
+  cam.s *= k;
+  cam.s = Math.min(3.4, Math.max(1, cam.s));
+  cam.x = px - wx * cam.s; cam.y = py - wy * cam.s;
+  clampCam(); applyCam();
+}
+
+// pointer drag, in viewBox units so it tracks the cursor at any zoom
+let drag = null;
+const toView = (e) => {
+  const b = stage.getBoundingClientRect(), r = svg.viewBox.baseVal;
+  const scale = Math.max(r.width / b.width, r.height / b.height);   // slice
+  return { x:(e.clientX - b.left - b.width / 2) * scale + r.width / 2,
+           y:(e.clientY - b.top - b.height / 2) * scale + r.height / 2 };
+};
+stage.addEventListener('pointerdown', (e) => {
+  drag = { ...toView(e), cx:cam.x, cy:cam.y, moved:false };
+  stage.setPointerCapture(e.pointerId); stage.classList.add('drag');
+});
+stage.addEventListener('pointermove', (e) => {
+  if (!drag) return;
+  const p = toView(e);
+  if (Math.abs(p.x - drag.x) + Math.abs(p.y - drag.y) > 3) drag.moved = true;
+  cam.x = drag.cx + (p.x - drag.x); cam.y = drag.cy + (p.y - drag.y);
+  clampCam(); applyCam();
+});
+const endDrag = (e) => {
+  if (drag) { try { stage.releasePointerCapture(e.pointerId); } catch (x) {} }
+  drag = null; stage.classList.remove('drag');
+};
+stage.addEventListener('pointerup', endDrag);
+stage.addEventListener('pointercancel', endDrag);
+stage.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  const p = toView(e);
+  zoomBy(e.deltaY < 0 ? 1.14 : 1 / 1.14, p.x, p.y);
+}, { passive:false });
+$('cabo-in').addEventListener('click', () => zoomBy(1.4));
+$('cabo-out').addEventListener('click', () => zoomBy(1 / 1.4));
+$('cabo-reset').addEventListener('click', () => {
+  cam.x = 0; cam.y = 0; cam.s = 1; caboPick = null;
+  camG.style.transition = 'transform .45s ease'; applyCam();
+  setTimeout(() => { camG.style.transition = ''; }, 460);
+  paintPins(); paintList();
+});
+
+const caboAreas = [...new Set(HOUSES.map((h) => h.area))];
+$('cabo-filter').innerHTML = `<button type="button" class="on" data-s="all">All houses</button>`
+  + caboAreas.map((s) => `<button type="button" data-s="${esc(s)}">${esc(s)}</button>`).join('');
+$('cabo-filter').querySelectorAll('button').forEach((b) => b.addEventListener('click', () => {
+  caboFilter = b.dataset.s; caboPick = null;
+  $('cabo-filter').querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b));
+  paintPins(); paintList();
+}));
+
+applyCam(); paintPins(); paintList();
 </script>
 </body>
 </html>
