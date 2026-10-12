@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Ami · Host Program</title>
+<meta name="description" content="Bring your city onto Ami. Get paid per Ami who joins and goes live.">
+<meta name="theme-color" content="#0A1018">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,800;1,500;1,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0A1018; --night:#101A26; --slate:#1C2A3A;
+  --paper:#F8F6F1; --surface:#FFFFFF; --map:#EFEBE2; --road:#E1DBD0;
+  --line:#E6E0D5; --line-soft:#F0EBE1;
+  --text:#13161B; --muted:#6E6B65; --faint:#9B9890;
+  --orange:#F0561E; --orange-soft:#FDEDE4; --live:#2FBF55; --neon:#C6FF4A;
+  --serif:'Playfair Display', Georgia, serif;
+  --sans:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --mono:'JetBrains Mono', ui-monospace, Menlo, monospace;
+  --r:18px; --L:700;
+}
+*{box-sizing:border-box;}
+[hidden]{display:none !important;}
+html{scroll-behavior:smooth; background:var(--paper); -webkit-text-size-adjust:100%;}
+body{margin:0; background:var(--paper); color:var(--text); font-family:var(--sans);
+  font-size:17px; line-height:1.55; -webkit-font-smoothing:antialiased;}
+button,input,textarea,select{font-family:inherit; color:inherit; font-size:inherit;}
+svg,img{display:block;}
+a{color:inherit;}
+::selection{background:var(--orange); color:#fff;}
+:focus-visible{outline:2px solid var(--orange); outline-offset:3px;}
+
+.wrap{max-width:1120px; margin:0 auto; padding-left:32px; padding-right:32px;}
+@media (max-width:760px){ .wrap{padding-left:20px; padding-right:20px;} }
+
+h1,h2,h3,.disp{font-family:var(--serif); font-weight:700; letter-spacing:-0.015em; line-height:1.04; margin:0;}
+h1{font-size:clamp(2.6rem,6.4vw,5rem);}
+h2{font-size:clamp(2rem,4.2vw,3.1rem);}
+h3{font-size:1.18rem; line-height:1.2;}
+p{margin:0; color:var(--muted);}
+.kicker{font-family:var(--mono); font-size:0.72rem; letter-spacing:0.22em; text-transform:uppercase; color:var(--orange);}
+.lede{font-size:1.1rem; max-width:52ch; color:var(--muted);}
+em.it{font-style:italic;}
+
+section{padding:88px 0;}
+@media (max-width:760px){ section{padding:60px 0;} }
+.sec-hd{margin-bottom:38px; max-width:58ch;}
+.sec-hd .kicker{display:block; margin-bottom:14px;}
+.sec-hd p{margin-top:14px;}
+
+/* ---------- the neon mark ---------- */
+.mark{overflow:visible;}
+.mark .tube{fill:none; stroke-linecap:round; stroke-linejoin:round;}
+.mark .halo{stroke:#9EC3FF; stroke-width:17; opacity:.30; filter:blur(7px);}
+.mark .mid {stroke:#E8F1FF; stroke-width:9.5; opacity:.9; filter:blur(1.6px);}
+.mark .core{stroke:#FFFFFF; stroke-width:4.4;}
+
+/* ---------- intro ---------- */
+#intro{position:fixed; inset:0; z-index:200; background:var(--ink); display:flex;
+  flex-direction:column; align-items:center; justify-content:center; gap:26px;
+  transition:opacity .75s ease, visibility .75s;}
+#intro.gone{opacity:0; visibility:hidden;}
+#intro .mark{width:168px; height:168px;}
+#intro .tube{stroke-dasharray:var(--L); stroke-dashoffset:var(--L); animation:draw 1.5s cubic-bezier(.65,0,.35,1) forwards;}
+#intro .mid{animation-delay:.07s;} #intro .core{animation-delay:.14s;}
+@keyframes draw{to{stroke-dashoffset:0;}}
+#intro .tag{font-family:var(--mono); font-size:0.72rem; letter-spacing:0.32em; text-transform:uppercase;
+  color:#7E93AC; opacity:0; animation:fadeUp .7s ease 1.25s forwards;}
+#intro .bar{width:150px; height:2px; background:rgba(255,255,255,.12); border-radius:2px; overflow:hidden;}
+#intro .bar i{display:block; height:100%; width:0; background:#fff; animation:fill 1.75s cubic-bezier(.5,0,.2,1) forwards;}
+@keyframes fill{to{width:100%;}}
+@keyframes fadeUp{from{opacity:0; transform:translateY(7px);} to{opacity:1; transform:none;}}
+#skip{position:absolute; bottom:28px; background:none; border:none; color:#54677C;
+  font-family:var(--mono); font-size:0.68rem; letter-spacing:.18em; text-transform:uppercase; cursor:pointer;}
+#skip:hover{color:#9FB3C8;}
+
+/* ---------- nav ---------- */
+.nav{position:sticky; top:0; z-index:60; background:rgba(248,246,241,.82);
+  backdrop-filter:saturate(1.6) blur(14px); border-bottom:1px solid var(--line);}
+.nav-in{max-width:1120px; margin:0 auto; padding:13px 32px; display:flex; align-items:center; gap:14px;}
+@media (max-width:760px){ .nav-in{padding:11px 20px;} }
+.brand{display:flex; align-items:center; gap:10px; text-decoration:none;}
+.brand .chip{width:34px; height:34px; border-radius:10px; background:var(--ink); display:grid; place-items:center; flex-shrink:0;}
+.brand .chip .mark{width:26px; height:26px;}
+.brand .chip .halo{stroke-width:20; opacity:.5; filter:blur(5px);}
+.brand .chip .core{stroke-width:7;} .brand .chip .mid{stroke-width:13;}
+.brand b{font-family:var(--serif); font-size:1.18rem; font-weight:700; letter-spacing:-0.01em;}
+.brand span{font-family:var(--mono); font-size:0.66rem; letter-spacing:.14em; text-transform:uppercase; color:var(--faint);}
+.nav .sp{flex:1;}
+.nav .links{display:flex; gap:24px;}
+@media (max-width:900px){ .nav .links{display:none;} }
+/* on a small phone the lockup sub-label and the button padding are what
+   push the nav past the viewport, so they go first */
+@media (max-width:560px){
+  .brand span{display:none;}
+  .nav .btn{padding:10px 15px; font-size:0.85rem;}
+  .brand b{font-size:1.08rem;}
+}
+.nav .links a{text-decoration:none; font-size:0.9rem; font-weight:500; color:var(--muted);}
+.nav .links a:hover{color:var(--text);}
+
+.btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; border-radius:999px;
+  padding:11px 20px; font-size:0.9rem; font-weight:600; cursor:pointer; text-decoration:none;
+  border:1px solid transparent; white-space:nowrap; transition:transform .12s ease, filter .12s ease;}
+.btn:active{transform:translateY(1px);}
+.btn-pri{background:var(--orange); color:#fff;}
+.btn-pri:hover{filter:brightness(1.07);}
+.btn-ghost{background:transparent; border-color:var(--line); color:var(--text);}
+.btn-ghost:hover{border-color:var(--text);}
+.btn-dark{background:#fff; color:var(--ink);}
+.btn-dark:hover{filter:brightness(.95);}
+.btn-outline-light{background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.22); color:#fff;}
+.btn-outline-light:hover{background:rgba(255,255,255,.16);}
+.btn[disabled]{opacity:.5; cursor:default; transform:none; filter:none;}
+.btn-lg{padding:14px 26px; font-size:0.98rem;}
+
+/* ---------- hero ---------- */
+.hero{position:relative; background:
+    radial-gradient(1200px 520px at 72% -10%, rgba(120,170,255,.22) 0%, rgba(120,170,255,0) 62%),
+    radial-gradient(800px 420px at 8% 110%, rgba(240,86,30,.16) 0%, rgba(240,86,30,0) 64%),
+    linear-gradient(180deg, var(--night) 0%, var(--ink) 100%);
+  color:#fff; overflow:hidden; border-bottom:1px solid rgba(255,255,255,.07);}
+.hero::after{content:''; position:absolute; inset:0; pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,.028) 1px, transparent 1px),
+                   linear-gradient(90deg, rgba(255,255,255,.028) 1px, transparent 1px);
+  background-size:52px 52px; mask-image:radial-gradient(900px 560px at 50% 36%, #000 0%, transparent 78%);}
+.hero-in{position:relative; z-index:2; max-width:1120px; margin:0 auto; padding:92px 32px 86px;
+  display:grid; grid-template-columns:1.08fr .92fr; gap:52px; align-items:center;}
+@media (max-width:980px){ .hero-in{grid-template-columns:1fr; gap:40px; padding:66px 32px 60px;} }
+@media (max-width:760px){ .hero-in{padding:52px 20px 52px;} }
+.hero h1{color:#fff;}
+.hero h1 em{font-style:italic; font-weight:500;}
+.hero p{color:#A8B6C6; margin-top:20px; font-size:1.08rem; max-width:46ch;}
+.badge{display:inline-flex; align-items:center; gap:9px; padding:7px 14px; border-radius:999px;
+  background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.14);
+  font-family:var(--mono); font-size:0.68rem; letter-spacing:.17em; text-transform:uppercase; color:#C7D4E2;}
+.pulse{width:7px; height:7px; border-radius:50%; background:var(--live); flex-shrink:0;
+  animation:pulse 2s ease-in-out infinite;}
+.pulse.o{background:var(--orange);}
+@keyframes pulse{0%,100%{opacity:1; transform:scale(1);} 50%{opacity:.35; transform:scale(.7);}}
+.hero-cta{display:flex; gap:12px; flex-wrap:wrap; margin-top:30px;}
+.hero-mark{position:absolute; right:-70px; top:-60px; width:420px; height:420px; opacity:.1; z-index:1;}
+@media (max-width:980px){ .hero-mark{width:300px; height:300px; right:-90px;} }
+
+/* terminal, straight out of the app's global-activity panel */
+.term{background:rgba(6,11,18,.72); border:1px solid rgba(255,255,255,.1); border-radius:var(--r);
+  overflow:hidden; backdrop-filter:blur(8px); box-shadow:0 30px 70px -30px rgba(0,0,0,.8);}
+.term-hd{display:flex; align-items:center; gap:9px; padding:12px 16px; border-bottom:1px solid rgba(255,255,255,.08);}
+.term-hd span{font-family:var(--mono); font-size:0.68rem; letter-spacing:.14em; text-transform:uppercase; color:#8FA3B8;}
+.term-hd .sp{flex:1;}
+.term-body{padding:12px 16px 14px; font-family:var(--mono); font-size:0.73rem; line-height:1.95;
+  min-height:172px; max-height:172px; overflow:hidden;}
+.term-body div{display:grid; grid-template-columns:52px 46px 1fr; gap:10px; color:#64798F;
+  animation:tin .45s ease backwards;}
+@keyframes tin{from{opacity:0; transform:translateY(5px);}}
+.term-body b{color:#C9D7E6; font-weight:500;}
+.term-body .cur b{color:#C6FF4A; animation:blink 1.1s steps(1) infinite;}
+@keyframes blink{0%,49%{opacity:1;} 50%,100%{opacity:0;}}
+.term-body i{font-style:normal; color:var(--orange);}
+.term-stats{display:grid; grid-template-columns:repeat(3,1fr); border-top:1px solid rgba(255,255,255,.08);}
+.term-stats div{padding:13px 16px; border-right:1px solid rgba(255,255,255,.08);}
+.term-stats div:last-child{border-right:none;}
+.term-stats b{display:block; font-family:var(--serif); font-size:1.5rem; color:#fff; line-height:1;}
+.term-stats span{font-family:var(--mono); font-size:0.62rem; letter-spacing:.12em; text-transform:uppercase; color:#7A8EA3;}
+
+/* ---------- what ami is ---------- */
+.three{display:grid; grid-template-columns:repeat(3,1fr); gap:18px; align-items:start;}
+@media (max-width:900px){ .three{grid-template-columns:1fr;} }
+.card{background:var(--surface); border:1px solid var(--line); border-radius:var(--r); overflow:hidden;}
+.card .art{height:188px; background:var(--map); position:relative; overflow:hidden; border-bottom:1px solid var(--line);}
+.card .cap{padding:18px 20px 22px;}
+.card .cap h3{font-size:1.22rem; margin-bottom:7px;}
+.card .cap p{font-size:0.92rem;}
+
+/* map texture used by the little art panels */
+.mapbg{position:absolute; inset:0; background:var(--map);}
+.mapbg::before,.mapbg::after{content:''; position:absolute; inset:-20%;}
+.mapbg::before{background:
+   repeating-linear-gradient(26deg, transparent 0 46px, var(--road) 46px 49px),
+   repeating-linear-gradient(-58deg, transparent 0 62px, var(--road) 62px 64px);
+  opacity:.85;}
+.mapbg::after{background:radial-gradient(circle at 62% 38%, rgba(240,86,30,.16) 0%, rgba(240,86,30,0) 46%),
+  radial-gradient(circle at 26% 70%, rgba(47,191,85,.14) 0%, rgba(47,191,85,0) 44%);}
+.pin{position:absolute; width:30px; height:30px; border-radius:50%; border:2px solid #fff;
+  background:#CFC8BA; box-shadow:0 3px 9px rgba(0,0,0,.2); overflow:hidden; display:grid; place-items:center;
+  font-size:0.72rem; font-weight:600; color:#4A4740;}
+.pin.sm{width:22px; height:22px; font-size:0.6rem;}
+.pin i{position:absolute; right:-1px; bottom:-1px; width:9px; height:9px; border-radius:50%;
+  background:var(--live); border:1.6px solid #fff;}
+.heat{position:absolute; border-radius:50%; background:var(--orange); opacity:.55;}
+.venue{position:absolute; display:inline-flex; align-items:center; gap:6px; padding:4px 9px; border-radius:999px;
+  background:var(--orange); color:#fff; font-family:var(--mono); font-size:0.58rem; letter-spacing:.1em;
+  text-transform:uppercase; white-space:nowrap; box-shadow:0 4px 12px rgba(240,86,30,.4);}
+.toast{position:absolute; display:flex; gap:9px; align-items:flex-start; background:#fff; border-radius:13px;
+  padding:9px 12px; box-shadow:0 10px 26px -8px rgba(0,0,0,.26); max-width:84%;}
+.toast .ic{width:26px; height:26px; border-radius:8px; background:var(--ink); display:grid; place-items:center; flex-shrink:0;}
+.toast .ic .mark{width:19px; height:19px;} .toast .ic .core{stroke-width:8;} .toast .ic .mid{stroke-width:14;} .toast .ic .halo{opacity:0;}
+.toast b{display:block; font-size:0.76rem; font-weight:600; line-height:1.3;}
+.toast span{display:block; font-size:0.72rem; color:var(--muted); line-height:1.35;}
+
+/* ---------- calculator ---------- */
+.calc{display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--line);
+  border-radius:var(--r); overflow:hidden; background:var(--surface);}
+@media (max-width:860px){ .calc{grid-template-columns:1fr;} }
+.calc-l{padding:30px 32px;}
+.calc-r{padding:30px 32px; background:var(--ink); color:#fff; display:flex; flex-direction:column; justify-content:center;}
+@media (max-width:760px){ .calc-l,.calc-r{padding:24px 22px;} }
+.calc-out{font-family:var(--serif); font-size:clamp(3rem,7vw,4.6rem); line-height:1; letter-spacing:-0.03em;}
+.calc-r .sub{font-family:var(--mono); font-size:0.68rem; letter-spacing:.16em; text-transform:uppercase; color:#8FA3B8; margin-top:12px;}
+.calc-r .split{margin-top:22px; padding-top:18px; border-top:1px solid rgba(255,255,255,.12); display:grid; gap:9px;}
+.calc-r .split div{display:flex; justify-content:space-between; font-size:0.88rem; color:#A8B6C6;}
+.calc-r .split b{color:#fff; font-weight:600;}
+.sl-top{display:flex; align-items:baseline; gap:10px; margin-bottom:6px;}
+.sl-top b{font-family:var(--serif); font-size:2.4rem; line-height:1;}
+.sl-top span{font-size:0.9rem; color:var(--muted);}
+input[type=range]{-webkit-appearance:none; appearance:none; width:100%; height:30px; background:none; cursor:pointer;}
+input[type=range]::-webkit-slider-runnable-track{height:5px; border-radius:3px;
+  background:linear-gradient(90deg, var(--orange) var(--p,30%), var(--line) var(--p,30%));}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; width:24px; height:24px; border-radius:50%;
+  background:#fff; border:2px solid var(--orange); margin-top:-9.5px; box-shadow:0 2px 8px rgba(0,0,0,.18);}
+input[type=range]::-moz-range-track{height:5px; border-radius:3px; background:var(--line);}
+input[type=range]::-moz-range-progress{height:5px; border-radius:3px; background:var(--orange);}
+input[type=range]::-moz-range-thumb{width:20px; height:20px; border-radius:50%; background:#fff; border:2px solid var(--orange);}
+.sl-ends{display:flex; justify-content:space-between; font-family:var(--mono); font-size:0.66rem; color:var(--faint);}
+.calc-note{margin-top:22px; padding-top:18px; border-top:1px solid var(--line); font-size:0.86rem;}
+
+/* ---------- early ---------- */
+.early{background:var(--ink); color:#fff; border-radius:var(--r); padding:46px 44px; position:relative; overflow:hidden;}
+@media (max-width:760px){ .early{padding:32px 24px;} }
+.early::before{content:''; position:absolute; right:-80px; top:-110px; width:360px; height:360px;
+  background:radial-gradient(circle, rgba(240,86,30,.3) 0%, rgba(240,86,30,0) 68%);}
+.early h2{color:#fff; position:relative;}
+.early p{color:#A8B6C6; position:relative; margin-top:16px; max-width:52ch;}
+.early .row{display:flex; gap:34px; flex-wrap:wrap; margin-top:30px; position:relative;}
+.early .row div b{display:block; font-family:var(--serif); font-size:2.1rem; line-height:1;}
+.early .row div span{font-family:var(--mono); font-size:0.64rem; letter-spacing:.13em; text-transform:uppercase; color:#8FA3B8;}
+
+/* ---------- steps ---------- */
+.steps{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; align-items:start;}
+@media (max-width:940px){ .steps{grid-template-columns:repeat(2,1fr);} }
+@media (max-width:560px){ .steps{grid-template-columns:1fr;} }
+.step{background:var(--surface); border:1px solid var(--line); border-radius:var(--r); padding:22px 20px 24px;}
+.step em{font-style:normal; font-family:var(--mono); font-size:0.66rem; letter-spacing:.16em; color:var(--orange);}
+.step h3{font-size:1.1rem; margin:12px 0 7px;}
+.step p{font-size:0.9rem;}
+
+/* ---------- screens ---------- */
+.tabs{display:flex; gap:6px; border:1px solid var(--line); border-radius:999px; padding:4px;
+  background:var(--surface); margin-bottom:28px; overflow-x:auto; scrollbar-width:none;}
+.tabs::-webkit-scrollbar{display:none;}
+.tabs button{flex:0 0 auto; background:none; border:none; border-radius:999px; padding:9px 17px;
+  font-size:0.87rem; font-weight:600; color:var(--muted); cursor:pointer; white-space:nowrap;}
+.tabs button.on{background:var(--ink); color:#fff;}
+.screen{display:grid; grid-template-columns:272px 1fr; gap:52px; align-items:center;}
+@media (max-width:860px){ .screen{grid-template-columns:1fr; gap:28px;} }
+.phone{width:272px; max-width:100%; aspect-ratio:9/19.3; border-radius:40px; background:var(--ink);
+  padding:9px; box-shadow:0 36px 70px -26px rgba(0,0,0,.42); margin:0 auto;}
+.phone-in{width:100%; height:100%; border-radius:32px; overflow:hidden; position:relative; background:var(--map);}
+.notch{position:absolute; top:8px; left:50%; transform:translateX(-50%); width:84px; height:22px;
+  background:var(--ink); border-radius:999px; z-index:6;}
+.scr-copy h3{font-family:var(--serif); font-size:clamp(1.5rem,3vw,2.1rem); margin-bottom:12px;}
+.scr-copy ol{margin:18px 0 0; padding-left:20px; color:var(--muted); font-size:0.96rem; line-height:1.8;}
+.scr-copy ol b{color:var(--text); font-weight:600;}
+.scr-copy .kicker{display:block; margin-bottom:12px;}
+
+/* sheet used inside the phone */
+.sheet{position:absolute; left:0; right:0; bottom:0; background:#fff; border-radius:20px 20px 0 0;
+  padding:16px 16px 20px; box-shadow:0 -10px 34px -14px rgba(0,0,0,.22);}
+.sheet .grab{width:34px; height:4px; border-radius:3px; background:var(--line); margin:0 auto 12px;}
+.sheet h4{font-family:var(--serif); font-size:1.18rem; margin:0;}
+.sheet .addr{font-size:0.72rem; color:var(--muted); margin-top:2px;}
+.sheet .who{font-family:var(--mono); font-size:0.6rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--faint); margin-top:14px;}
+.sheet .nums{font-size:0.78rem; margin-top:3px;}
+.sheet .nums b{font-weight:600;}
+.faces{display:flex; gap:7px; margin-top:12px;}
+.faces .pin{position:relative;}
+.chip-row{display:flex; gap:6px; margin-top:13px; flex-wrap:wrap;}
+.chip{font-size:0.68rem; padding:4px 9px; border-radius:999px; background:var(--paper); border:1px solid var(--line); color:var(--muted);}
+
+/* ---------- referral ---------- */
+.tiers{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+@media (max-width:760px){ .tiers{grid-template-columns:1fr;} }
+.tier{border:1px solid var(--line); border-radius:var(--r); padding:24px 22px; background:var(--surface);}
+.tier.best{border-color:var(--orange); background:var(--orange-soft);}
+.tier b{display:block; font-family:var(--serif); font-size:2.2rem; line-height:1;}
+.tier span{display:block; font-size:0.88rem; color:var(--muted); margin-top:7px;}
+.tier em{font-style:normal; font-family:var(--mono); font-size:0.64rem; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--orange);}
+
+/* ---------- forms ---------- */
+.panel{border:1px solid var(--line); border-radius:var(--r); background:var(--surface); overflow:hidden;}
+.panel-hd{padding:20px 26px; border-bottom:1px solid var(--line); display:flex; align-items:center; gap:14px; flex-wrap:wrap;}
+.panel-hd h3{font-size:1.25rem;}
+.panel-bd{padding:26px;}
+@media (max-width:760px){ .panel-hd,.panel-bd{padding:20px;} }
+.f{display:grid; gap:16px;}
+.f .two{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+@media (max-width:640px){ .f .two{grid-template-columns:1fr;} }
+label{display:block; font-size:0.82rem; font-weight:600; margin-bottom:6px;}
+label .hint{font-weight:400; color:var(--muted);}
+input[type=text],input[type=email],input[type=number],textarea,select{width:100%; padding:12px 14px;
+  border:1px solid var(--line); border-radius:12px; background:var(--paper); font-size:0.95rem;}
+input:focus,textarea:focus,select:focus{background:#fff;}
+textarea{min-height:104px; resize:vertical; line-height:1.55;}
+.msg{font-size:0.88rem;}
+.msg.err{color:#C5341B;} .msg.ok{color:var(--live);}
+.frow{display:flex; align-items:center; gap:14px; flex-wrap:wrap;}
+.scene{display:flex; gap:7px; flex-wrap:wrap;}
+.scene button{border:1px solid var(--line); background:var(--paper); border-radius:999px; padding:8px 14px;
+  font-size:0.85rem; cursor:pointer; color:var(--muted);}
+.scene button.on{background:var(--ink); border-color:var(--ink); color:#fff;}
+
+/* steps bar in the portal */
+.wiz{display:flex; align-items:center; gap:0; margin-bottom:24px;}
+.wiz div{display:flex; align-items:center; gap:10px; flex:1; min-width:0;}
+.wiz div:last-child{flex:0 0 auto;}
+.wiz i{width:26px; height:26px; border-radius:50%; border:1px solid var(--line); background:var(--paper);
+  display:grid; place-items:center; font-family:var(--mono); font-size:0.7rem; font-style:normal;
+  color:var(--faint); flex-shrink:0;}
+.wiz div.on i{background:var(--orange); border-color:var(--orange); color:#fff;}
+.wiz div.done i{background:var(--ink); border-color:var(--ink); color:#fff;}
+.wiz s{flex:1; height:1px; background:var(--line); text-decoration:none;}
+.wiz div.done s{background:var(--ink);}
+.wiz em{font-style:normal; font-size:0.8rem; color:var(--muted); white-space:nowrap;}
+@media (max-width:760px){ .wiz em{display:none;} }
+
+/* ---------- tracker ---------- */
+.track-row{display:grid; gap:12px; border:1px solid var(--line); border-radius:14px; padding:18px 20px; background:var(--paper);}
+.pipe{display:flex; align-items:center;}
+.pipe div{display:flex; align-items:center; flex:1; min-width:0;}
+.pipe div:last-child{flex:0 0 auto;}
+.pipe i{width:10px; height:10px; border-radius:50%; background:var(--line); flex-shrink:0;}
+.pipe div.done i{background:var(--orange);} .pipe div.done s{background:var(--orange);}
+.pipe s{flex:1; height:2px; background:var(--line); text-decoration:none;}
+.pipe-lbl{display:flex; justify-content:space-between; font-family:var(--mono); font-size:0.58rem;
+  letter-spacing:.06em; text-transform:uppercase; color:var(--faint); gap:4px;}
+.pipe-lbl span.on{color:var(--orange);}
+.pill{display:inline-flex; align-items:center; gap:6px; font-family:var(--mono); font-size:0.64rem;
+  letter-spacing:.1em; text-transform:uppercase; padding:4px 10px; border-radius:999px;
+  border:1px solid var(--line); color:var(--muted);}
+.pill.hot{border-color:var(--orange); color:var(--orange);}
+.pill.raw{text-transform:none; letter-spacing:0; font-family:var(--sans); font-size:0.78rem;}
+.pill.good{border-color:var(--live); color:var(--live);}
+.codes{display:flex; gap:7px; flex-wrap:wrap;}
+.codes code{font-family:var(--mono); font-size:0.78rem; padding:6px 11px; border-radius:9px;
+  background:var(--ink); color:#C6FF4A; letter-spacing:.08em;}
+
+/* ---------- faq ---------- */
+.faq{border-top:1px solid var(--line);}
+.faq details{border-bottom:1px solid var(--line);}
+.faq summary{cursor:pointer; list-style:none; padding:20px 0; display:flex; gap:18px; align-items:flex-start;
+  font-size:1.02rem; font-weight:600;}
+.faq summary::-webkit-details-marker{display:none;}
+.faq summary::after{content:'+'; margin-left:auto; color:var(--faint); font-weight:400; font-size:1.3rem; line-height:1;}
+.faq details[open] summary::after{content:'\2013';}
+.faq .a{padding:0 0 22px 0; max-width:72ch; color:var(--muted); font-size:0.96rem; line-height:1.7;}
+.faq .a b{color:var(--text);}
+
+/* ---------- footer ---------- */
+footer{background:var(--ink); color:#8FA3B8; margin-top:0;}
+.foot{max-width:1120px; margin:0 auto; padding:52px 32px 60px; display:flex; gap:28px;
+  justify-content:space-between; flex-wrap:wrap; font-size:0.86rem;}
+@media (max-width:760px){ .foot{padding:40px 20px 48px;} }
+.foot a{text-decoration:none; color:#8FA3B8;} .foot a:hover{color:#fff;}
+.foot .cols{display:flex; gap:44px; flex-wrap:wrap;}
+.foot .cols div{display:grid; gap:9px;}
+.foot .cols b{color:#fff; font-size:0.78rem; font-family:var(--mono); letter-spacing:.14em; text-transform:uppercase; font-weight:500;}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none !important; transition:none !important; scroll-behavior:auto;}
+  #intro{display:none;}
+  #intro .tube{stroke-dashoffset:0;}
+  /* the scroll reveal is decoration; without motion it just shows everything */
+  .reveal{opacity:1 !important; transform:none !important;}
+}
+.reveal{opacity:0; transform:translateY(16px);}
+.reveal.in{opacity:1; transform:none; transition:opacity .7s cubic-bezier(.2,.7,.3,1), transform .7s cubic-bezier(.2,.7,.3,1);}
+</style>
+<noscript><style>.reveal{opacity:1; transform:none;} #intro{display:none;}</style></noscript>
+</head>
+<body>
+<svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute"><defs><path id="amiK" d="M100.0 85.63 L104.72 85.75 L109.42 86.09 L114.07 86.66 L118.68 87.46 L123.2 88.48 L127.63 89.72 L131.94 91.16 L136.12 92.8 L140.16 94.64 L144.02 96.66 L147.71 98.84 L151.2 101.19 L154.49 103.69 L157.55 106.31 L160.37 109.06 L162.96 111.9 L165.28 114.84 L167.35 117.85 L169.14 120.91 L170.66 124.01 L171.9 127.13 L172.85 130.25 L173.52 133.36 L173.9 136.43 L174.0 139.46 L173.81 142.42 L173.33 145.3 L172.58 148.07 L171.56 150.73 L170.28 153.25 L168.73 155.63 L166.94 157.84 L164.91 159.88 L162.66 161.73 L160.19 163.37 L157.52 164.8 L154.67 166.01 L151.64 166.99 L148.46 167.72 L145.14 168.21 L141.7 168.45 L138.15 168.42 L134.51 168.14 L130.81 167.59 L127.05 166.78 L123.26 165.7 L119.45 164.36 L115.65 162.77 L111.87 160.92 L108.14 158.82 L104.45 156.48 L100.85 153.9 L97.33 151.1 L93.93 148.09 L90.64 144.87 L87.5 141.46 L84.51 137.88 L81.68 134.13 L79.03 130.23 L76.57 126.2 L74.32 122.06 L72.27 117.82 L70.43 113.5 L68.82 109.11 L67.44 104.69 L66.3 100.24 L65.39 95.78 L64.72 91.33 L64.3 86.92 L64.11 82.57 L64.16 78.28 L64.45 74.08 L64.97 69.99 L65.71 66.03 L66.67 62.21 L67.85 58.55 L69.23 55.06 L70.8 51.77 L72.55 48.69 L74.48 45.82 L76.56 43.19 L78.79 40.8 L81.15 38.67 L83.62 36.8 L86.19 35.21 L88.85 33.89 L91.58 32.86 L94.36 32.13 L97.17 31.68 L100.0 31.53 L102.83 31.68 L105.64 32.13 L108.42 32.86 L111.15 33.89 L113.81 35.21 L116.38 36.8 L118.85 38.67 L121.21 40.8 L123.44 43.19 L125.52 45.82 L127.45 48.69 L129.2 51.77 L130.77 55.06 L132.15 58.55 L133.33 62.21 L134.29 66.03 L135.03 69.99 L135.55 74.08 L135.84 78.28 L135.89 82.57 L135.7 86.92 L135.28 91.33 L134.61 95.78 L133.7 100.24 L132.56 104.69 L131.18 109.11 L129.57 113.5 L127.73 117.82 L125.68 122.06 L123.43 126.2 L120.97 130.23 L118.32 134.13 L115.49 137.88 L112.5 141.46 L109.36 144.87 L106.07 148.09 L102.67 151.1 L99.15 153.9 L95.55 156.48 L91.86 158.82 L88.13 160.92 L84.35 162.77 L80.55 164.36 L76.74 165.7 L72.95 166.78 L69.19 167.59 L65.49 168.14 L61.85 168.42 L58.3 168.45 L54.86 168.21 L51.54 167.72 L48.36 166.99 L45.33 166.01 L42.48 164.8 L39.81 163.37 L37.34 161.73 L35.09 159.88 L33.06 157.84 L31.27 155.63 L29.72 153.25 L28.44 150.73 L27.42 148.07 L26.67 145.3 L26.19 142.42 L26.0 139.46 L26.1 136.43 L26.48 133.36 L27.15 130.25 L28.1 127.13 L29.34 124.01 L30.86 120.91 L32.65 117.85 L34.72 114.84 L37.04 111.9 L39.63 109.06 L42.45 106.31 L45.51 103.69 L48.8 101.19 L52.29 98.84 L55.98 96.66 L59.84 94.64 L63.88 92.8 L68.06 91.16 L72.37 89.72 L76.8 88.48 L81.32 87.46 L85.93 86.66 L90.58 86.09 L95.28 85.75 L100.0 85.63 Z"/></defs></svg>
+
+<div id="intro">
+  <svg class="mark" viewBox="0 0 200 200" aria-hidden="true">
+    <use class="tube halo" href="#amiK"/><use class="tube mid" href="#amiK"/><use class="tube core" href="#amiK"/>
+  </svg>
+  <div class="tag">the spatial network</div>
+  <div class="bar"><i></i></div>
+  <button type="button" id="skip">skip</button>
+</div>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="#top">
+      <span class="chip"><svg class="mark" viewBox="0 0 200 200" aria-hidden="true">
+        <use class="tube halo" href="#amiK"/><use class="tube mid" href="#amiK"/><use class="tube core" href="#amiK"/>
+      </svg></span>
+      <b>Ami</b><span>Host&nbsp;Program</span>
+    </a>
+    <div class="sp"></div>
+    <div class="links">
+      <a href="#how">How it works</a>
+      <a href="#screens">The screens</a>
+      <a href="#refer">Refer a host</a>
+      <a href="#payouts">Payouts</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <a class="btn btn-pri" href="#apply">Apply to host</a>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <svg class="mark hero-mark" viewBox="0 0 200 200" aria-hidden="true">
+    <use class="tube halo" href="#amiK"/><use class="tube core" href="#amiK"/>
+  </svg>
+  <div class="hero-in">
+    <div>
+      <span class="badge"><i class="pulse"></i>By invitation only</span>
+      <h1 style="margin-top:22px">Put your city<br>on the map.<br><em>Get paid.</em></h1>
+      <p>Ami is a live heatmap of your city and your people. Hosts are the ones who bring the people. You get invite codes, you bring your circle, and you earn <b style="color:#fff">$8 for every Ami who joins and goes live</b>.</p>
+      <div class="hero-cta">
+        <a class="btn btn-dark btn-lg" href="#apply">Apply to host</a>
+        <a class="btn btn-outline-light btn-lg" href="#how">See how it works</a>
+      </div>
+    </div>
+    <div class="term" id="term">
+      <div class="term-hd"><i class="pulse"></i><span>Global activity</span><div class="sp"></div><span id="term-live">live</span></div>
+      <div class="term-body" id="term-body"></div>
+      <div class="term-stats">
+        <div><b id="s-hosts">—</b><span>Hosts</span></div>
+        <div><b id="s-cities">—</b><span>Cities</span></div>
+        <div><b id="s-waiting">—</b><span>Waiting</span></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="wrap reveal" id="what">
+  <div class="sec-hd">
+    <span class="kicker">What you are selling</span>
+    <h2>It is not an app download.<br>It is <em class="it">a room filling up.</em></h2>
+    <p>Ami only works when the people you actually know are on it. That is the whole job. Three things happen the moment your circle lands.</p>
+  </div>
+  <div class="three">
+    <article class="card">
+      <div class="art"><div class="mapbg"></div>
+        <div class="heat" style="left:52%; top:30%; width:92px; height:92px; filter:blur(18px);"></div>
+        <div class="pin" style="left:18%; top:30%">VS<i></i></div>
+        <div class="pin sm" style="left:36%; top:56%">GR<i></i></div>
+        <div class="pin" style="left:60%; top:46%">LU<i></i></div>
+        <div class="pin sm" style="left:76%; top:24%">AM<i></i></div>
+        <div class="pin sm" style="left:70%; top:68%">EV<i></i></div>
+        <div class="venue" style="left:46%; top:62%">● Snapped venue</div>
+      </div>
+      <div class="cap"><h3>See who&rsquo;s out.</h3><p>Your people show up as live dots on a real map. No feed, no posting, no catching up on anything.</p></div>
+    </article>
+    <article class="card">
+      <div class="art"><div class="mapbg"></div>
+        <div class="toast" style="left:8%; top:16%"><span class="ic"><svg class="mark" viewBox="0 0 200 200" aria-hidden="true"><use class="tube mid" href="#amiK"/><use class="tube core" href="#amiK"/></svg></span>
+          <span><b>You have 12 Amis at Sheep Meadow</b><span>Tap to see who&rsquo;s here and your mutuals.</span></span></div>
+        <div class="pin" style="left:30%; top:62%">AM<i></i></div>
+        <div class="pin sm" style="left:52%; top:72%">JL<i></i></div>
+        <div class="pin sm" style="left:66%; top:58%">KT<i></i></div>
+        <div class="heat" style="left:28%; top:58%; width:120px; height:70px; filter:blur(20px); opacity:.4"></div>
+      </div>
+      <div class="cap"><h3>Know where to go.</h3><p>The map tells you where the night already is, so nobody spends an hour deciding in a group chat.</p></div>
+    </article>
+    <article class="card">
+      <div class="art"><div class="mapbg"></div>
+        <div class="toast" style="left:9%; top:12%; max-width:88%"><span class="ic"><svg class="mark" viewBox="0 0 200 200" aria-hidden="true"><use class="tube mid" href="#amiK"/><use class="tube core" href="#amiK"/></svg></span>
+          <span><b>Amelia is 170 ft away ✨</b><span>You&rsquo;re being intro&rsquo;ed by Evelyn K. 5 mutual friends.</span></span></div>
+        <div class="pin" style="left:24%; top:60%">EV<i></i></div>
+        <div class="pin" style="left:62%; top:66%">AM<i></i></div>
+        <div class="venue" style="left:30%; top:84%; background:var(--ink); box-shadow:none">Nearby serendipity</div>
+      </div>
+      <div class="cap"><h3>Meet friends of friends.</h3><p>Ami introduces people who already share five mutuals. That is the part your circle will talk about.</p></div>
+    </article>
+  </div>
+</section>
+
+<section class="wrap reveal" id="calc">
+  <div class="sec-hd">
+    <span class="kicker">Your circle. Your payout.</span>
+    <h2>Every Ami you bring on<br>is <em class="it">eight dollars.</em></h2>
+    <p>Paid per person who joins on your code and goes live once. Drag it and see what your circle is worth.</p>
+  </div>
+  <div class="calc">
+    <div class="calc-l">
+      <div class="sl-top"><b id="c-n">60</b><span>people you can bring</span></div>
+      <input type="range" id="c-range" min="10" max="400" step="5" value="60" aria-label="People you can bring">
+      <div class="sl-ends"><span>10</span><span>400</span></div>
+      <div class="calc-note">
+        <p>An Ami counts once they <b style="color:var(--text)">join on your code</b> and <b style="color:var(--text)">go live once</b> &mdash; share location a single time so they appear on the map. Nothing else is asked of them.</p>
+      </div>
+    </div>
+    <div class="calc-r">
+      <div class="calc-out" id="c-out">$480</div>
+      <div class="sub">Your payout</div>
+      <div class="split">
+        <div><span>Base &mdash; <span id="c-n2">60</span> Amis &times; $8</span><b id="c-base">$480</b></div>
+        <div><span>Founding host bonus</span><b id="c-bonus">$250</b></div>
+        <div style="padding-top:9px; border-top:1px solid rgba(255,255,255,.12)"><span>If you are first in your city</span><b id="c-total">$730</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap reveal">
+  <div class="early">
+    <span class="kicker" style="color:var(--neon)">Being early pays</span>
+    <h2 style="margin-top:14px">The first host in a city<br>sets the room.</h2>
+    <p>Ami opens one city at a time, and the first circle in defines who the next thousand people are connected to. Founding hosts get a flat bonus on top of their per-Ami rate, their codes jump the waitlist, and they get a say in which venues get snapped first.</p>
+    <div class="row">
+      <div><b>$250</b><span>Founding host bonus</span></div>
+      <div><b>40</b><span>Invite codes to start</span></div>
+      <div><b>0</b><span>Deposit, ever</span></div>
+      <div><b id="e-cities">—</b><span>Cities already claimed</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap reveal" id="how">
+  <div class="sec-hd">
+    <span class="kicker">Here&rsquo;s the whole thing</span>
+    <h2>Four steps. <em class="it">That is it.</em></h2>
+    <p>No deposit, no quota, no minimum. You can start with ten people and add more whenever you want.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><em>Step 01</em><h3>Apply to host</h3><p>Two minutes. Your handle, your city, and an honest sentence about who your circle actually is.</p></div>
+    <div class="step"><em>Step 02</em><h3>Get your codes</h3><p>We send a batch of invite codes tied to you. Every person who uses one is counted to your name automatically.</p></div>
+    <div class="step"><em>Step 03</em><h3>Bring your circle</h3><p>Send codes to the people you would actually text on a Friday. They join, they go live once, they are on the map.</p></div>
+    <div class="step"><em>Step 04</em><h3>Get paid</h3><p>We match every code to its Ami, confirm who went live, and pay you in a single transfer. Track it below.</p></div>
+  </div>
+</section>
+
+<section class="wrap reveal" id="screens">
+  <div class="sec-hd">
+    <span class="kicker">Follow the actual screens</span>
+    <h2>What your people see<br>when they land.</h2>
+    <p>Worth knowing before you send a single code, so you can tell them what it is in one sentence.</p>
+  </div>
+  <div class="tabs" id="tabs"></div>
+  <div class="screen" id="screen"></div>
+</section>
+
+<section class="wrap reveal" id="refer">
+  <div class="sec-hd">
+    <span class="kicker">Know another host?</span>
+    <h2>Send us someone<br>who owns a room.</h2>
+    <p>Paid on top of your own earnings, and it never comes out of theirs. We pay when their circle goes live, on the size of the circle they actually bring.</p>
+  </div>
+  <div class="tiers">
+    <div class="tier"><em>Under 40 Amis</em><b>$75</b><span>They brought a table.</span></div>
+    <div class="tier"><em>40 &ndash; 100 Amis</em><b>$150</b><span>They brought a room.</span></div>
+    <div class="tier best"><em>Over 100 Amis</em><b>$300</b><span>They brought a scene.</span></div>
+  </div>
+</section>
+
+<section class="wrap reveal" id="apply">
+  <div class="sec-hd">
+    <span class="kicker">The onboarding portal</span>
+    <h2>Apply to host <em class="it">your city.</em></h2>
+    <p>Three screens. We read every one of these by hand, usually inside a day.</p>
+  </div>
+  <div class="panel">
+    <div class="panel-bd">
+      <div class="wiz" id="wiz">
+        <div class="on"><i>1</i><em>You</em><s></s></div>
+        <div><i>2</i><em>Your circle</em><s></s></div>
+        <div><i>3</i><em>Review</em></div>
+      </div>
+
+      <div class="f" id="st1">
+        <div class="two">
+          <div><label for="a-name">Your name</label><input type="text" id="a-name" placeholder="Jesse Baizer" autocomplete="name"></div>
+          <div><label for="a-ig">Instagram <span class="hint">&mdash; how we check you&rsquo;re real</span></label><input type="text" id="a-ig" placeholder="@yourhandle" autocomplete="off" spellcheck="false"></div>
+        </div>
+        <div class="two">
+          <div><label for="a-city">City you&rsquo;re bringing on</label><input type="text" id="a-city" placeholder="New York" autocomplete="address-level2"></div>
+          <div><label for="a-email">Email <span class="hint">&mdash; optional, for the payout</span></label><input type="email" id="a-email" placeholder="you@email.com" autocomplete="email"></div>
+        </div>
+        <div>
+          <label>Where does your circle actually overlap? <span class="hint">&mdash; pick the closest one</span></label>
+          <div class="scene" id="a-scene"></div>
+        </div>
+        <div class="frow"><button type="button" class="btn btn-pri" data-next="2">Continue</button></div>
+      </div>
+
+      <div class="f" id="st2" hidden>
+        <div>
+          <label for="a-circle">Roughly how many people can you bring? <span class="hint">&mdash; people you&rsquo;d actually text, not followers</span></label>
+          <input type="number" id="a-circle" min="1" max="2000" placeholder="60">
+        </div>
+        <div>
+          <label for="a-pitch">Tell us about them <span class="hint">&mdash; who they are, where you all end up on a Friday</span></label>
+          <textarea id="a-pitch" placeholder="Mostly the Lower East Side crowd — a dinner group of about 20 that turns into 60 on a good weekend. We're at Casa Cipriani or Bar Oliver most Fridays."></textarea>
+        </div>
+        <div>
+          <label for="a-ref">Referred by a host? <span class="hint">&mdash; their handle, optional</span></label>
+          <input type="text" id="a-ref" placeholder="@theirhandle" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="frow">
+          <button type="button" class="btn btn-ghost" data-next="1">Back</button>
+          <button type="button" class="btn btn-pri" data-next="3">Review</button>
+        </div>
+      </div>
+
+      <div class="f" id="st3" hidden>
+        <div class="track-row" id="a-review"></div>
+        <p style="font-size:0.88rem">Applying puts you on the host waitlist. We will never post as you, message your followers, or share your list with anyone.</p>
+        <div class="frow">
+          <button type="button" class="btn btn-ghost" data-next="2">Back</button>
+          <button type="button" class="btn btn-pri btn-lg" id="a-send">Send my application</button>
+          <span class="msg" id="a-msg"></span>
+        </div>
+      </div>
+
+      <div id="a-done" hidden>
+        <div class="track-row" style="border-color:var(--orange); background:var(--orange-soft)">
+          <h3 style="font-size:1.3rem">You&rsquo;re on the list.</h3>
+          <p style="font-size:0.94rem">Keep this host code safe &mdash; it is the only way to check your status.</p>
+          <div class="codes"><code id="a-code">——————</code></div>
+          <p style="font-size:0.88rem">We read applications by hand and usually come back inside a day. Check your status in <a href="#payouts" style="color:var(--orange)">Payouts</a>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap reveal" id="payouts">
+  <div class="sec-hd">
+    <span class="kicker">Payouts</span>
+    <h2>Where your money is,<br>at any moment.</h2>
+    <p>Your handle and your host code pull up everything: where your application sits, the codes issued to you, how many went live, and what you are owed.</p>
+  </div>
+  <div class="panel">
+    <div class="panel-hd">
+      <h3>Check your status</h3>
+      <div class="sp" style="flex:1"></div>
+      <span class="pill"><i class="pulse o"></i>Updated live</span>
+    </div>
+    <div class="panel-bd">
+      <div class="f">
+        <div class="two">
+          <div><label for="t-ig">Your Instagram</label><input type="text" id="t-ig" placeholder="@yourhandle" autocomplete="off" spellcheck="false"></div>
+          <div><label for="t-code">Host code</label><input type="text" id="t-code" placeholder="A1B2C3" autocomplete="off" spellcheck="false"></div>
+        </div>
+        <div class="frow">
+          <button type="button" class="btn btn-pri" id="t-go">Pull up my status</button>
+          <span class="msg" id="t-msg"></span>
+        </div>
+      </div>
+      <div id="t-out" hidden style="margin-top:24px"></div>
+    </div>
+  </div>
+
+  <div class="three" style="margin-top:18px">
+    <article class="card"><div class="cap">
+      <h3 style="font-size:1.05rem">When it lands</h3>
+      <p>We count your Amis at the end of each month and pay within seven days of the count. One transfer, not a drip.</p></div></article>
+    <article class="card"><div class="cap">
+      <h3 style="font-size:1.05rem">How it lands</h3>
+      <p>Bank transfer or whatever you used to get paid before. We ask for those details once you are approved &mdash; never on this page.</p></div></article>
+    <article class="card"><div class="cap">
+      <h3 style="font-size:1.05rem">Past $600</h3>
+      <p>Over $600 in a calendar year we need a W-9 before sending more. US law, not our rule.</p></div></article>
+  </div>
+</section>
+
+<section class="wrap reveal" id="faq">
+  <div class="sec-hd">
+    <span class="kicker">The quick answers</span>
+    <h2>Everything people ask<br>before they say yes.</h2>
+  </div>
+  <div class="faq" id="faq-list"></div>
+</section>
+
+<section class="wrap reveal" style="padding-bottom:96px">
+  <div class="early" style="text-align:center">
+    <h2 style="margin:0 auto">Be the first circle<br>in your city.</h2>
+    <p style="margin:18px auto 0">Ami is invite-only and opens one city at a time. The host who gets there first decides who the room is.</p>
+    <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:28px; position:relative">
+      <a class="btn btn-dark btn-lg" href="#apply">Apply to host</a>
+      <a class="btn btn-outline-light btn-lg" href="#faq">Read the FAQ</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot">
+    <div>
+      <a class="brand" href="#top" style="color:#fff">
+        <span class="chip" style="background:rgba(255,255,255,.08)"><svg class="mark" viewBox="0 0 200 200" aria-hidden="true">
+          <use class="tube mid" href="#amiK"/><use class="tube core" href="#amiK"/></svg></span>
+        <b style="color:#fff">Ami</b><span>Host&nbsp;Program</span>
+      </a>
+      <p style="margin-top:16px; color:#64798F; font-size:0.82rem; max-width:30ch">Ami is invite-only. This page is the host programme, run by Jesse Baizer.</p>
+    </div>
+    <div class="cols">
+      <div><b>Programme</b><a href="#how">How it works</a><a href="#calc">Payout calculator</a><a href="#refer">Refer a host</a><a href="#apply">Apply</a></div>
+      <div><b>Support</b><a href="#payouts">Check status</a><a href="#faq">FAQ</a><a href="#screens">The screens</a></div>
+      <div><b>Elsewhere</b><a href="/">Portfolio</a><a href="/bounty/">fomo / bounty</a><a href="/fomo/clans/">Greek Village</a></div>
+    </div>
+  </div>
+</footer>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+const usd = (n) => '$' + Math.round(n).toLocaleString('en-US');
+
+/* ========================================================================
+   THE TWO NUMBERS THAT ARE THE BUSINESS. Change them here and the page,
+   the calculator and the review screen all follow.
+   ======================================================================== */
+const PER_AMI = 8;        // paid per Ami who joins on your code and goes live
+const FOUNDING = 250;     // flat bonus for the first host in a city
+/* ===================================================================== */
+
+/* ---- intro ---- */
+(function intro() {
+  const el = $('intro');
+  if (!el) return;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let seen = false;
+  try { seen = sessionStorage.getItem('ami_intro') === '1'; } catch (e) {}
+  const end = () => {
+    el.classList.add('gone');
+    document.body.style.overflow = '';
+    try { sessionStorage.setItem('ami_intro', '1'); } catch (e) {}
+    setTimeout(() => { el.hidden = true; }, 800);
+  };
+  if (seen || reduced) { el.hidden = true; return; }
+  document.body.style.overflow = 'hidden';
+  const t = setTimeout(end, 2450);
+  $('skip').addEventListener('click', () => { clearTimeout(t); end(); });
+})();
+
+/* ---- reveal on scroll ---- */
+const io = new IntersectionObserver((rows) => {
+  rows.forEach((r) => { if (r.isIntersecting) { r.target.classList.add('in'); io.unobserve(r.target); } });
+}, { rootMargin: '0px 0px -8% 0px', threshold: 0.04 });
+document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+
+/* ---- calculator ---- */
+const r = $('c-range');
+function calc() {
+  const n = +r.value;
+  const base = n * PER_AMI;
+  r.style.setProperty('--p', ((n - r.min) / (r.max - r.min) * 100) + '%');
+  $('c-n').textContent = n;
+  $('c-n2').textContent = n;
+  $('c-out').textContent = usd(base);
+  $('c-base').textContent = usd(base);
+  $('c-bonus').textContent = usd(FOUNDING);
+  $('c-total').textContent = usd(base + FOUNDING);
+}
+r.addEventListener('input', calc); calc();
+
+/* ---- the screens -------------------------------------------------------
+   Rebuilt in HTML from the app's own surfaces, so what we describe here is
+   what someone actually sees when they open it.                          */
+const MAP = `<div class="mapbg"></div>
+  <div class="heat" style="left:30%; top:34%; width:120px; height:120px; filter:blur(24px); opacity:.35"></div>
+  <div class="heat" style="left:58%; top:58%; width:86px; height:86px; filter:blur(20px); opacity:.3"></div>`;
+
+const SCREENS = [
+  { tab: 'The map', kicker: 'Screen 01', title: 'A live heatmap of your city.',
+    copy: 'The first thing anyone sees. Not a feed &mdash; a map of where the people they know actually are, right now.',
+    steps: ['<b>Dots are people</b>, not posts. A green ring means live.',
+            '<b>Orange is heat</b> &mdash; somewhere filling up in real time.',
+            '<b>Snapped venues</b> are places Ami has confirmed are on.'],
+    html: `${MAP}
+      <div class="pin" style="left:14%; top:26%">VS<i></i></div>
+      <div class="pin sm" style="left:34%; top:42%">GR<i></i></div>
+      <div class="pin" style="left:56%; top:30%">LU<i></i></div>
+      <div class="pin sm" style="left:24%; top:62%">KT<i></i></div>
+      <div class="pin" style="left:62%; top:66%">AM<i></i></div>
+      <div class="pin sm" style="left:78%; top:48%">EV<i></i></div>
+      <div class="venue" style="left:40%; top:52%">● Snapped venue</div>
+      <div class="sheet"><div class="grab"></div>
+        <div style="display:flex; align-items:center; gap:9px">
+          <h4 style="flex:1">New York</h4><i class="pulse"></i>
+        </div>
+        <div class="nums" style="display:flex; gap:16px; margin-top:12px">
+          <span><b>15</b> Live</span><span><b>36</b> Friends</span><span><b>459</b> Amis</span>
+        </div>
+        <div class="faces">
+          <span class="pin sm">VS<i></i></span><span class="pin sm">GR<i></i></span>
+          <span class="pin sm">LU</span><span class="pin sm" style="background:var(--ink); color:#fff; font-size:0.5rem">+99</span>
+        </div>
+      </div>` },
+
+  { tab: 'A venue', kicker: 'Screen 02', title: 'See who&rsquo;s out. Know where to go.',
+    copy: 'Tap any heat and you get the roster &mdash; friends, Amis, and the count of everyone else there.',
+    steps: ['<b>Friends</b> are people you already follow back.',
+            '<b>Amis</b> are friends of friends with real mutuals.',
+            'One tap gets you directions and who to look for.'],
+    html: `${MAP}
+      <div class="toast" style="left:6%; top:7%; max-width:88%">
+        <span class="ic"><svg class="mark" viewBox="0 0 200 200"><use class="tube mid" href="#amiK"/><use class="tube core" href="#amiK"/></svg></span>
+        <span><b>You have 12 Amis at Sheep Meadow</b><span>Tap to see who&rsquo;s here and your mutuals.</span></span></div>
+      <div class="venue" style="left:30%; top:30%">● Snapped venue</div>
+      <div class="pin" style="left:42%; top:38%">AM<i></i></div>
+      <div class="sheet"><div class="grab"></div>
+        <div style="font-family:var(--mono); font-size:0.56rem; letter-spacing:.14em; text-transform:uppercase; color:var(--faint)">Park</div>
+        <h4>Sheep Meadow</h4><div class="addr">1802 E 65th St</div>
+        <div class="who">Who&rsquo;s here</div>
+        <div class="nums" style="display:flex; gap:14px"><span><b>8</b> Friends</span><span><b>12</b> Amis</span><span><b>28</b> People</span></div>
+        <div class="faces">
+          <span class="pin">VS<i></i></span><span class="pin">GR<i></i></span>
+          <span class="pin">LU<i></i></span><span class="pin">KT<i></i></span>
+        </div>
+        <div class="chip-row"><span class="chip">Vincent · You</span><span class="chip">Grace · Friend</span><span class="chip">Luis · Friend</span></div>
+      </div>` },
+
+  { tab: 'An invite', kicker: 'Screen 03', title: 'Rendezvous with friends &amp; friends of friends.',
+    copy: 'Any host can put a night on the map. It goes to your circle, and to the circles touching yours.',
+    steps: ['The invite carries <b>a place, a time and a face</b>.',
+            'People reply <b>in one tap</b> &mdash; in, or not.',
+            'Everyone who says yes <b>shows on the map</b> that night.'],
+    html: `${MAP}
+      <div class="toast" style="left:6%; top:6%; max-width:88%">
+        <span class="ic"><svg class="mark" viewBox="0 0 200 200"><use class="tube mid" href="#amiK"/><use class="tube core" href="#amiK"/></svg></span>
+        <span><b>Consider this your invite</b><span>bday karaoke 🎤 · Saturday, Aug 29 · 10:00 PM</span></span></div>
+      <div style="position:absolute; left:8%; right:8%; top:24%; border-radius:18px; overflow:hidden;
+                  background:linear-gradient(170deg,#2A1E18,#120C09); box-shadow:0 18px 40px -16px rgba(0,0,0,.5); padding:20px 18px 18px">
+        <div style="font-family:var(--serif); font-style:italic; font-size:1.5rem; color:#F3E3CF; line-height:1.1">cheeky<br>bevy <em>fri?</em></div>
+        <div style="font-family:var(--mono); font-size:0.52rem; letter-spacing:.2em; color:var(--orange); margin-top:10px">BAR OLIVER · 1 OLIVER ST</div>
+        <div style="display:flex; gap:5px; margin-top:14px">
+          <span style="width:5px;height:5px;border-radius:50%;background:#fff"></span>
+          <span style="width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.3)"></span>
+          <span style="width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.3)"></span>
+        </div>
+      </div>
+      <div class="sheet"><div class="grab"></div>
+        <h4>cheeky bevy fri?</h4>
+        <div class="addr">📍 1 Oliver St &nbsp;·&nbsp; Fri, Aug 22 · 8:00 PM</div>
+        <div class="who">Can you make it?</div>
+        <div style="display:flex; gap:8px; margin-top:9px">
+          <span class="chip" style="flex:1; text-align:center">Can&rsquo;t make it</span>
+          <span class="chip" style="flex:1; text-align:center; background:var(--ink); color:#fff; border-color:var(--ink)">✓ Yes, I&rsquo;m in</span>
+        </div>
+        <div class="nums" style="margin-top:11px"><b>4</b> going · <b>6</b> pending</div>
+      </div>` },
+
+  { tab: 'Serendipity', kicker: 'Screen 04', title: 'Unlock real-time serendipity.',
+    copy: 'The part your circle will actually tell other people about. Ami surfaces someone 170 feet away you were always going to get along with.',
+    steps: ['Only fires on <b>real mutuals</b>, never cold strangers.',
+            'An intro needs <b>someone who knows you both</b>.',
+            'Audio chat opens <b>only if you both tap</b>.'],
+    html: `<div style="position:absolute; inset:0; background:linear-gradient(170deg,#6E8CA8,#2E4157)"></div>
+      <div style="position:absolute; inset:0; background:
+        repeating-linear-gradient(90deg, rgba(255,255,255,.05) 0 2px, transparent 2px 26px),
+        repeating-linear-gradient(0deg, rgba(0,0,0,.08) 0 2px, transparent 2px 34px);"></div>
+      <div style="position:absolute; left:50%; top:20%; transform:translateX(-50%); text-align:center">
+        <span class="pin" style="position:relative; width:72px; height:72px; font-size:1.1rem; margin:0 auto; border-width:3px">AM<i style="width:16px;height:16px"></i></span>
+        <div style="font-family:var(--serif); font-size:1.6rem; color:#fff; margin-top:10px; text-shadow:0 2px 14px rgba(0,0,0,.4)">Amelia</div>
+        <div style="font-family:var(--mono); font-size:0.8rem; color:#E8F0F8">170 ft</div>
+      </div>
+      <div class="toast" style="left:6%; right:6%; top:52%; max-width:none">
+        <span class="ic"><svg class="mark" viewBox="0 0 200 200"><use class="tube mid" href="#amiK"/><use class="tube core" href="#amiK"/></svg></span>
+        <span><b>Nearby Serendipity 💫</b><span>Casa Cipriani is lively right now. You have 5 potential connections there.</span></span></div>
+      <div style="position:absolute; left:50%; top:68%; transform:translateX(-50%); width:54px; height:54px">
+        <svg viewBox="0 0 60 60" style="width:100%;height:100%; filter:drop-shadow(0 6px 16px rgba(0,0,0,.45))">
+          <path d="M30 6 L48 30 L38 30 L38 52 L22 52 L22 30 L12 30 Z" fill="#C6FF4A" stroke="#8FD117" stroke-width="2" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="sheet" style="background:rgba(255,255,255,.94); backdrop-filter:blur(10px)">
+        <div class="grab"></div>
+        <div style="display:flex; align-items:center; gap:11px">
+          <div style="flex:1"><h4 style="font-size:1rem">Audio chat</h4><div class="addr">Amelia is here</div></div>
+          <span class="chip" style="padding:8px 10px">🔊</span>
+          <span class="chip" style="padding:8px 10px">🎙</span>
+          <span class="chip" style="padding:8px 10px; background:var(--orange); border-color:var(--orange); color:#fff">✕</span>
+        </div>
+      </div>` },
+];
+
+let tab = 0;
+function paintScreens() {
+  $('tabs').innerHTML = SCREENS.map((s, i) =>
+    `<button type="button" data-i="${i}" class="${i === tab ? 'on' : ''}">${s.tab}</button>`).join('');
+  const s = SCREENS[tab];
+  $('screen').innerHTML = `
+    <div class="phone"><div class="phone-in"><div class="notch"></div>${s.html}</div></div>
+    <div class="scr-copy">
+      <span class="kicker">${s.kicker}</span>
+      <h3>${s.title}</h3>
+      <p>${s.copy}</p>
+      <ol>${s.steps.map((x) => `<li>${x}</li>`).join('')}</ol>
+    </div>`;
+  $('tabs').querySelectorAll('button').forEach((b) =>
+    b.addEventListener('click', () => { tab = +b.dataset.i; paintScreens(); }));
+}
+paintScreens();
+
+/* ---- FAQ ---- */
+const FAQ = [
+  ['Why does being first in a city matter?',
+   'Ami opens one city at a time and the first circle in becomes the room everyone else joins. Practically: your codes skip the waitlist, you get the <b>' + usd(FOUNDING) + ' founding bonus</b> on top of your per-Ami rate, and you get a say in which venues get snapped first.'],
+  ['Who actually gets paid — me, or the people I bring?',
+   'You. The people you bring get into an invite-only app for free; you get <b>' + usd(PER_AMI) + ' per Ami</b> who joins on your code and goes live. Nobody you invite is ever asked for money.'],
+  ['What counts as an Ami?',
+   'Someone who joins on <b>your code</b> and <b>goes live once</b> — shares location a single time so they appear on the map. If they install it and never open it again, it does not count. That is the only bar.'],
+  ['How many people do I need?',
+   'There is no minimum. Ten real people who actually go out beats two hundred followers who will not open it. Start with the group chat you already have and add more whenever.'],
+  ['Do I need to pay anything, or hold a deposit?',
+   'No. There is no deposit, no buy-in, and nothing to front. If anyone asks you for money to host, it is not us.'],
+  ['How do I get the invite codes?',
+   'Once you are approved we issue a batch tied to your name — 40 to start, more on request. Every code is matched to you automatically, so there is nothing to track by hand.'],
+  ['When do I get paid?',
+   'We count at the end of each month and pay within seven days of the count. One transfer. You can see the running number any time in <a href="#payouts" style="color:var(--orange)">Payouts</a>.'],
+  ['Does referring another host cost me anything?',
+   'No, and it does not come out of their earnings either. Referral money is paid by us on top, between $75 and $300 depending on how big a circle they actually bring.'],
+  ['What do you do with my people&rsquo;s information?',
+   'Nothing you would not expect. We never post as you, never message your followers, and never sell or share your list. Your circle&rsquo;s locations are only ever visible to people they have accepted.'],
+  ['What if my city is already claimed?',
+   'You can still host — the founding bonus goes to whoever was first, but the per-Ami rate is the same for everyone, forever. Big cities hold a lot of rooms.'],
+];
+$('faq-list').innerHTML = FAQ.map(([q, a]) =>
+  `<details><summary>${q}</summary><div class="a">${a}</div></details>`).join('');
+
+/* ---- the live terminal, fed by real rows ---- */
+const ago = (iso) => {
+  const s = Math.max(0, (Date.now() - Date.parse(iso)) / 1000);
+  if (s < 60) return 'now';
+  if (s < 3600) return Math.floor(s / 60) + 'm ago';
+  if (s < 86400) return Math.floor(s / 3600) + 'h ago';
+  return Math.floor(s / 86400) + 'd ago';
+};
+const cityTag = (c) => (c || '').trim().split(/\s+/).map((w) => w[0] || '').join('').slice(0, 3).toUpperCase() || '—';
+
+async function loadStats() {
+  try {
+    const res = await fetch('/api/ami/stats', { cache: 'no-store' });
+    if (!res.ok) throw new Error();
+    const d = await res.json();
+    const t = d.totals || {};
+    $('s-hosts').textContent = (t.hosts || 0).toLocaleString('en-US');
+    $('s-cities').textContent = (t.cities || 0).toLocaleString('en-US');
+    $('s-waiting').textContent = (t.waiting || 0).toLocaleString('en-US');
+    $('e-cities').textContent = (t.cities || 0).toLocaleString('en-US');
+    const feed = d.feed || [];
+    const rows = feed.length
+      ? feed.slice(0, 6).map((f, i) =>
+          `<div style="animation-delay:${i * 60}ms"><span>${esc(ago(f.at))}</span><i>${esc(cityTag(f.city))}</i><b>${esc(f.line)}</b></div>`).join('')
+      : `<div><span>now</span><i>&mdash;</i><b>no cities claimed yet</b></div>
+         <div style="animation-delay:70ms"><span>now</span><i>&mdash;</i><b>waiting for the first host</b></div>`;
+    // a live terminal with little traffic should look like one, not like a
+    // broken panel -- so the cursor sits under whatever is really there
+    $('term-body').innerHTML = rows + `<div class="cur"><span></span><i></i><b>_</b></div>`;
+    $('term-live').textContent = feed.length ? 'live' : 'listening';
+  } catch (e) {
+    $('term-body').innerHTML = `<div><span>now</span><i>&mdash;</i><b>activity feed unavailable</b></div>`;
+    $('term-live').textContent = 'offline';
+  }
+}
+loadStats();
+setInterval(loadStats, 45000);
+
+/* ---- the portal ---- */
+const SCENES = ['Nightlife', 'Dinners', 'A campus', 'An office', 'A gym or run club', 'Music', 'Something else'];
+let scene = '';
+$('a-scene').innerHTML = SCENES.map((s) => `<button type="button" data-s="${esc(s)}">${esc(s)}</button>`).join('');
+$('a-scene').querySelectorAll('button').forEach((b) => b.addEventListener('click', () => {
+  scene = scene === b.dataset.s ? '' : b.dataset.s;
+  $('a-scene').querySelectorAll('button').forEach((x) => x.classList.toggle('on', x.dataset.s === scene));
+}));
+
+const read = () => ({
+  name: $('a-name').value.trim(),
+  instagram: $('a-ig').value.trim(),
+  city: $('a-city').value.trim(),
+  email: $('a-email').value.trim(),
+  scene,
+  circle: +$('a-circle').value || 0,
+  pitch: $('a-pitch').value.trim(),
+  referrer: $('a-ref').value.trim(),
+});
+
+function step(n) {
+  [1, 2, 3].forEach((i) => { $('st' + i).hidden = i !== n; });
+  [...$('wiz').children].forEach((d, i) => {
+    d.classList.toggle('on', i === n - 1);
+    d.classList.toggle('done', i < n - 1);
+  });
+  if (n === 3) {
+    const v = read();
+    const base = v.circle * PER_AMI;
+    $('a-review').innerHTML = `
+      <div style="display:flex; gap:12px; align-items:baseline; flex-wrap:wrap">
+        <h3 style="font-size:1.2rem">${esc(v.name || '—')}</h3>
+        <span class="pill raw">@${esc(v.instagram.replace(/^@/, '') || '—')}</span>
+        <span class="pill hot raw">${esc(v.city || '—')}</span>
+        ${v.scene ? `<span class="pill raw">${esc(v.scene)}</span>` : ''}
+      </div>
+      <p style="font-size:0.92rem">${esc(v.pitch || 'No description yet.')}</p>
+      <div style="display:flex; gap:26px; flex-wrap:wrap; padding-top:12px; border-top:1px solid var(--line)">
+        <div><b style="font-family:var(--serif); font-size:1.5rem; display:block; line-height:1">${v.circle || 0}</b>
+          <span style="font-size:0.76rem; color:var(--muted)">people</span></div>
+        <div><b style="font-family:var(--serif); font-size:1.5rem; display:block; line-height:1">${usd(base)}</b>
+          <span style="font-size:0.76rem; color:var(--muted)">at ${usd(PER_AMI)} each</span></div>
+        <div><b style="font-family:var(--serif); font-size:1.5rem; display:block; line-height:1">${usd(base + FOUNDING)}</b>
+          <span style="font-size:0.76rem; color:var(--muted)">if first in ${esc(v.city || 'your city')}</span></div>
+      </div>`;
+  }
+  $('apply').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+document.querySelectorAll('[data-next]').forEach((b) => b.addEventListener('click', () => {
+  const n = +b.dataset.next;
+  const v = read();
+  const msg = $('a-msg');
+  msg.textContent = '';
+  if (n >= 2) {
+    if (v.name.length < 2) return bail('a-name', 'Your name, please.');
+    if (!/^@?[A-Za-z0-9._]{1,30}$/.test(v.instagram)) return bail('a-ig', 'That Instagram handle does not look right.');
+    if (v.city.length < 2) return bail('a-city', 'Which city are you bringing on?');
+  }
+  if (n >= 3) {
+    if (!v.circle || v.circle < 1) return bail('a-circle', 'Roughly how many people can you bring?');
+    if (v.pitch.length < 20) return bail('a-pitch', 'A sentence or two about your circle, please.');
+  }
+  step(n);
+}));
+function bail(id, text) {
+  const el = $(id);
+  el.focus();
+  el.style.borderColor = '#C5341B';
+  setTimeout(() => { el.style.borderColor = ''; }, 2200);
+  const m = $('a-msg'); m.className = 'msg err'; m.textContent = text;
+  setTimeout(() => { if (m.textContent === text) m.textContent = ''; }, 4000);
+}
+
+$('a-send').addEventListener('click', async () => {
+  const v = read();
+  const msg = $('a-msg');
+  $('a-send').disabled = true; msg.className = 'msg'; msg.textContent = 'Sending…';
+  try {
+    const res = await fetch('/api/ami/apply', {
+      method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(v),
+    });
+    const out = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(out.error || `Something went wrong (${res.status})`);
+    $('st3').hidden = true;
+    $('wiz').hidden = true;
+    $('a-done').hidden = false;
+    $('a-code').textContent = out.hostCode;
+    try { localStorage.setItem('ami_host', JSON.stringify({ instagram: out.host.instagram, hostCode: out.hostCode })); } catch (e) {}
+    $('t-ig').value = out.host.instagram;
+    $('t-code').value = out.hostCode;
+    loadStats();
+  } catch (err) {
+    msg.className = 'msg err'; msg.textContent = err.message;
+  }
+  $('a-send').disabled = false;
+});
+
+/* ---- the tracker ---- */
+const FLOW = ['applied', 'reviewing', 'approved', 'codes_sent', 'live', 'paid'];
+const LABEL = {
+  applied:'Applied', reviewing:'In review', approved:'Approved',
+  codes_sent:'Codes sent', live:'Circle live', paid:'Paid', declined:'Not this time',
+};
+async function track(quiet) {
+  const ig = $('t-ig').value.trim(), code = $('t-code').value.trim();
+  const msg = $('t-msg');
+  if (!ig || !code) {
+    if (!quiet) { msg.className = 'msg err'; msg.textContent = 'Your handle and your host code, please.'; }
+    return;
+  }
+  if (!quiet) { msg.className = 'msg'; msg.textContent = 'Looking…'; }
+  try {
+    const res = await fetch('/api/ami/track', {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ instagram: ig, hostCode: code }),
+    });
+    const out = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(out.error || `Something went wrong (${res.status})`);
+    const h = out.host;
+    const i = FLOW.indexOf(h.status);
+    const declined = h.status === 'declined';
+    const owed = h.amount || h.joined * PER_AMI;
+    $('t-out').innerHTML = `
+      <div class="track-row">
+        <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap">
+          <h3 style="font-size:1.2rem">${esc(h.name)}</h3>
+          <span class="pill ${declined ? '' : h.status === 'paid' ? 'good' : 'hot'}">${esc(LABEL[h.status] || h.status)}</span>
+          <span class="pill raw">${esc(h.city)}</span>
+        </div>
+        <div class="pipe">${FLOW.map((s, n) =>
+          `<div class="${!declined && i >= n ? 'done' : ''}"><i></i>${n < FLOW.length - 1 ? '<s></s>' : ''}</div>`).join('')}</div>
+        <div class="pipe-lbl">${FLOW.map((s, n) =>
+          `<span class="${!declined && i === n ? 'on' : ''}">${esc(LABEL[s])}</span>`).join('')}</div>
+        <div style="display:flex; gap:26px; flex-wrap:wrap; padding-top:12px; border-top:1px solid var(--line)">
+          <div><b style="font-family:var(--serif); font-size:1.6rem; display:block; line-height:1">${h.joined}</b>
+            <span style="font-size:0.76rem; color:var(--muted)">Amis live</span></div>
+          <div><b style="font-family:var(--serif); font-size:1.6rem; display:block; line-height:1">${usd(owed)}</b>
+            <span style="font-size:0.76rem; color:var(--muted)">${h.status === 'paid' ? 'Paid out' : 'Earned so far'}</span></div>
+          <div><b style="font-family:var(--serif); font-size:1.6rem; display:block; line-height:1">${(h.codes || []).length}</b>
+            <span style="font-size:0.76rem; color:var(--muted)">Codes issued</span></div>
+        </div>
+        ${(h.codes || []).length ? `<div><div class="who" style="font-family:var(--mono); font-size:0.58rem; letter-spacing:.12em; text-transform:uppercase; color:var(--faint); margin-bottom:8px">Your invite codes</div>
+          <div class="codes">${h.codes.map((c) => `<code>${esc(c)}</code>`).join('')}</div></div>` : ''}
+      </div>`;
+    $('t-out').hidden = false;
+    msg.className = 'msg ok'; msg.textContent = quiet ? '' : 'Up to date.';
+  } catch (err) {
+    msg.className = 'msg err'; msg.textContent = err.message;
+  }
+}
+$('t-go').addEventListener('click', () => track(false));
+try {
+  const saved = JSON.parse(localStorage.getItem('ami_host') || 'null');
+  if (saved && saved.instagram && saved.hostCode) {
+    $('t-ig').value = saved.instagram;
+    $('t-code').value = saved.hostCode;
+    track(true);
+  }
+} catch (e) {}
+
+</script>
+</body>
+</html>

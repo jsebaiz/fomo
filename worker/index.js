@@ -346,6 +346,44 @@ function cleanUsername(value) {
 //  · Nothing in this file ever returns a hash, a salt or a claim code to a
 //    caller who didn't already have it.
 // ---------------------------------------------------------------------------
+const AMI_KEY = 'amihosts';
+const MAX_AMI = 5000;
+// Where a host sits between applying and being paid.
+const AMI_STATUSES = ['applied', 'reviewing', 'approved', 'codes_sent', 'live', 'paid', 'declined'];
+
+// A host application. Short, free-text, and we keep only what was handed over.
+function parseAmiHost(body) {
+  const name = String(body.name || '').trim().replace(/\s+/g, ' ');
+  if (name.length < 2 || name.length > 60) return { error: 'Add your name' };
+  const h = cleanHandle(body.instagram, 'Instagram', 30);
+  if (h.error || h.value === NA) return { error: 'Add your Instagram handle so we can see who you are' };
+  const city = String(body.city || '').trim().replace(/\s+/g, ' ');
+  if (city.length < 2 || city.length > 60) return { error: 'Which city are you bringing on?' };
+  const email = String(body.email || '').trim();
+  if (email && !EMAIL_RE.test(email)) return { error: 'That email does not look right' };
+  if (email.length > 120) return { error: 'That email is too long' };
+  const circle = Number(body.circle);
+  if (!Number.isFinite(circle) || circle < 1 || circle > 2000) return { error: 'Roughly how many people can you bring?' };
+  const pitch = String(body.pitch || '').trim().slice(0, 1200);
+  if (pitch.length < 20) return { error: 'Tell us a little about your circle \u2014 20 characters minimum' };
+  const scene = String(body.scene || '').trim().slice(0, 60);
+  const referrer = cleanHandle(body.referrer, 'referrer', 30);
+  return {
+    host: {
+      name, instagram: h.value, city, email,
+      circle: Math.round(circle), pitch, scene,
+      referrer: referrer.error || referrer.value === NA ? '' : referrer.value,
+    },
+  };
+}
+
+// What a host sees of their own row. No other applicant is ever visible.
+const publicHost = (a) => ({
+  id: a.id, name: a.name, instagram: a.instagram, city: a.city, scene: a.scene,
+  circle: a.circle, status: a.status, joined: a.joined || 0, amount: a.amount || 0,
+  codes: a.codes || [], createdAt: a.createdAt, updatedAt: a.updatedAt, history: a.history || [],
+});
+
 const SUBS_KEY = 'bountysubs';
 const MAX_SUBS = 5000;
 const MAX_UPLOAD_BYTES = 420 * 1024;   // KV holds the small stuff; video goes by link
@@ -1246,6 +1284,112 @@ export default {
       return json({ code: clan.claimCode, expires: clan.claimExpires });
     }
 
+    // ---- /ami ---------------------------------------------------------------
+    if (path === '/api/ami/apply' && request.method === 'POST') {
+      const text = await request.text();
+      if (text.length > 16 * 1024) return json({ error: 'Request too large' }, 413);
+      let body; try { body = JSON.parse(text); } catch { return json({ error: 'Invalid JSON' }, 400); }
+      const parsed = parseAmiHost(body || {});
+      if (parsed.error) return json({ error: parsed.error }, 400);
+      if (await tooMany(env, 'amiapply', ipOf(request), 4)) {
+        return json({ error: 'Too many applications \u2014 try again in a minute' }, 429);
+      }
+      const hosts = await readList(env, AMI_KEY);
+      if (hosts.length >= MAX_AMI) return json({ error: 'The waitlist is full' }, 409);
+      if (hosts.some((x) => x.instagram.toLowerCase() === parsed.host.instagram.toLowerCase())) {
+        return json({ error: 'That handle is already on the list \u2014 check your status below' }, 409);
+      }
+      const now = new Date().toISOString();
+      const row = {
+        id: randomCode(10), ...parsed.host,
+        hostCode: randomCode(6).toUpperCase(),
+        status: 'applied', joined: 0, amount: 0, codes: [],
+        createdAt: now, updatedAt: now, history: [{ status: 'applied', at: now }],
+      };
+      hosts.unshift(row);
+      await env.FLIGHTS.put(AMI_KEY, JSON.stringify(hosts));
+      return json({ ok: true, host: publicHost(row), hostCode: row.hostCode }, 201);
+    }
+
+    // Status lookup. Handle plus the code we hand back on application.
+    if (path === '/api/ami/track' && request.method === 'POST') {
+      const text = await request.text();
+      if (text.length > 2048) return json({ error: 'Request too large' }, 413);
+      let body; try { body = JSON.parse(text); } catch { return json({ error: 'Invalid JSON' }, 400); }
+      const h = cleanHandle(body.instagram, 'Instagram', 30);
+      if (h.error || h.value === NA) return json({ error: 'Your Instagram handle, please' }, 400);
+      const code = String(body.hostCode || '').trim().toUpperCase();
+      if (!/^[A-Z0-9]{4,12}$/.test(code)) return json({ error: 'That host code does not look right' }, 400);
+      if (await tooMany(env, 'amitrack', ipOf(request), 30)) return json({ error: 'Too many lookups \u2014 try again in a minute' }, 429);
+      const hosts = await readList(env, AMI_KEY);
+      const row = hosts.find((x) => x.instagram.toLowerCase() === h.value.toLowerCase() && x.hostCode === code);
+      if (!row) return json({ error: 'No application matches that handle and code' }, 404);
+      return json({ host: publicHost(row) });
+    }
+
+    // Public counters and the activity ticker. City only -- never a name, a
+    // handle or an email, however many rows are behind it.
+    if (path === '/api/ami/stats' && request.method === 'GET') {
+      const hosts = await readList(env, AMI_KEY);
+      const now = Date.now();
+      const since = (ms) => hosts.filter((a) => now - Date.parse(a.createdAt) < ms).length;
+      const cities = {};
+      hosts.forEach((a) => { const c = a.city.trim(); if (c) cities[c] = (cities[c] || 0) + 1; });
+      const top = Object.entries(cities).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([city, n]) => ({ city, n }));
+      const feed = hosts.slice(0, 14).map((a) => ({
+        at: a.updatedAt || a.createdAt,
+        city: a.city.slice(0, 18),
+        line: a.status === 'paid' ? 'host was paid out'
+          : a.status === 'live' ? 'host circle went live'
+          : a.status === 'codes_sent' ? 'invite codes issued'
+          : a.status === 'approved' ? 'host was approved'
+          : a.status === 'reviewing' ? 'application in review'
+          : 'host joined the waitlist',
+      }));
+      return json({
+        totals: {
+          hosts: hosts.length,
+          waiting: hosts.filter((a) => a.status === 'applied' || a.status === 'reviewing').length,
+          live: hosts.filter((a) => a.status === 'live' || a.status === 'paid').length,
+          lastHour: since(3600 * 1000),
+          amis: hosts.reduce((a, x) => a + (x.joined || 0), 0),
+          cities: Object.keys(cities).length,
+        },
+        top, feed,
+      });
+    }
+
+    if (path === '/api/ami/hosts' && request.method === 'GET') {
+      const denied = await guard(request, env);
+      if (denied) return denied;
+      const hosts = await readList(env, AMI_KEY);
+      const counts = {};
+      AMI_STATUSES.forEach((k) => { counts[k] = hosts.filter((a) => a.status === k).length; });
+      return json({ counts, hosts });
+    }
+
+    if (path === '/api/ami/hosts/status' && request.method === 'POST') {
+      const denied = await guard(request, env);
+      if (denied) return denied;
+      const text = await request.text();
+      if (text.length > 4096) return json({ error: 'Request too large' }, 413);
+      let body; try { body = JSON.parse(text); } catch { return json({ error: 'Invalid JSON' }, 400); }
+      const status = String((body && body.status) || '');
+      if (!AMI_STATUSES.includes(status)) return json({ error: 'Unknown status' }, 400);
+      const hosts = await readList(env, AMI_KEY);
+      const row = hosts.find((x) => x.id === String((body && body.id) || ''));
+      if (!row) return json({ error: 'Not found' }, 404);
+      const now = new Date().toISOString();
+      row.status = status;
+      row.updatedAt = now;
+      if (Number.isFinite(Number(body.joined))) row.joined = Math.max(0, Math.round(Number(body.joined)));
+      if (Number.isFinite(Number(body.amount))) row.amount = Math.max(0, Math.round(Number(body.amount)));
+      if (Array.isArray(body.codes)) row.codes = body.codes.map((c) => String(c).trim().toUpperCase().slice(0, 16)).filter(Boolean).slice(0, 40);
+      row.history = (row.history || []).concat([{ status, at: now }]);
+      await env.FLIGHTS.put(AMI_KEY, JSON.stringify(hosts));
+      return json({ ok: true, host: publicHost(row) });
+    }
+
     // A chapter sends work in. Open, rate-limited, and the row starts its life
     // at "submitted" — every later move is an admin decision.
     if (path === '/api/bounty/submit' && request.method === 'POST') {
@@ -1401,7 +1545,7 @@ export default {
       return json({ ok: true });
     }
 
-    if (path === '/api/flights' || path === '/api/auth' || path === '/api/clans' || path === '/api/clans/internal' || path === '/api/clans/internal/approve' || path === '/api/clans/internal/payout' || path === '/api/clans/internal/continuation' || path === '/api/clans/seed' || path === '/api/clans/internal/claimcode' || path === '/api/account/login' || path === '/api/account/logout' || path === '/api/account/claim' || path === '/api/account/ambassador' || path === '/api/account/me' || path === '/api/bounty/pitch' || path === '/api/bounty/events' || path === '/api/bounty/submit' || path === '/api/bounty/track' || path === '/api/bounty/submissions' || path === '/api/bounty/submissions/status' || path === '/api/bounty/file' || lookup || join || clanId || mediaReq || notesReq || del) {
+    if (path === '/api/flights' || path === '/api/auth' || path === '/api/clans' || path === '/api/clans/internal' || path === '/api/clans/internal/approve' || path === '/api/clans/internal/payout' || path === '/api/clans/internal/continuation' || path === '/api/clans/seed' || path === '/api/clans/internal/claimcode' || path === '/api/account/login' || path === '/api/account/logout' || path === '/api/account/claim' || path === '/api/account/ambassador' || path === '/api/account/me' || path === '/api/bounty/pitch' || path === '/api/bounty/events' || path === '/api/bounty/submit' || path === '/api/bounty/track' || path === '/api/bounty/submissions' || path === '/api/bounty/submissions/status' || path === '/api/bounty/file' || path === '/api/ami/apply' || path === '/api/ami/track' || path === '/api/ami/stats' || path === '/api/ami/hosts' || path === '/api/ami/hosts/status' || lookup || join || clanId || mediaReq || notesReq || del) {
       return json({ error: 'Method not allowed' }, 405);
     }
     return json({ error: 'Not found' }, 404);
