@@ -357,15 +357,17 @@ function parseAmiHost(body) {
   if (name.length < 2 || name.length > 60) return { error: 'Add your name' };
   const h = cleanHandle(body.instagram, 'Instagram', 30);
   if (h.error || h.value === NA) return { error: 'Add your Instagram handle so we can see who you are' };
+  // `city` is the school name on the campus programme; the field name is kept
+  // so stored rows and the stats grouping stay compatible.
   const city = String(body.city || '').trim().replace(/\s+/g, ' ');
-  if (city.length < 2 || city.length > 60) return { error: 'Which city are you bringing on?' };
+  if (city.length < 2 || city.length > 60) return { error: 'Which school are you bringing on?' };
   const email = String(body.email || '').trim();
   if (email && !EMAIL_RE.test(email)) return { error: 'That email does not look right' };
   if (email.length > 120) return { error: 'That email is too long' };
   const circle = Number(body.circle);
-  if (!Number.isFinite(circle) || circle < 1 || circle > 2000) return { error: 'Roughly how many people can you bring?' };
+  if (!Number.isFinite(circle) || circle < 1 || circle > 2000) return { error: 'Roughly how many friends can you bring?' };
   const pitch = String(body.pitch || '').trim().slice(0, 1200);
-  if (pitch.length < 20) return { error: 'Tell us a little about your circle \u2014 20 characters minimum' };
+  if (pitch.length < 20) return { error: 'Tell us a little about your people \u2014 20 characters minimum' };
   const scene = String(body.scene || '').trim().slice(0, 60);
   const referrer = cleanHandle(body.referrer, 'referrer', 30);
   return {
@@ -1340,7 +1342,7 @@ export default {
         at: a.updatedAt || a.createdAt,
         city: a.city.slice(0, 18),
         line: a.status === 'paid' ? 'host was paid out'
-          : a.status === 'live' ? 'host circle went live'
+          : a.status === 'live' ? 'host friends went live'
           : a.status === 'codes_sent' ? 'invite codes issued'
           : a.status === 'approved' ? 'host was approved'
           : a.status === 'reviewing' ? 'application in review'

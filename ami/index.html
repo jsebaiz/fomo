@@ -4,9 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>Ami · Host Program</title>
-<meta name="description" content="Bring your city onto Ami. Get paid per Ami who joins and goes live.">
+<title>Ami · Campus Program</title>
+<meta name="description" content="Bring your campus onto Ami. Get paid for every friend who joins and goes live.">
 <meta name="theme-color" content="#0A1018">
+<link rel="icon" href="/assets/ami/ami-icon.png" type="image/png">
+<link rel="apple-touch-icon" href="/assets/ami/ami-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,800;1,500;1,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -20,7 +22,7 @@
   --serif:'Playfair Display', Georgia, serif;
   --sans:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --mono:'JetBrains Mono', ui-monospace, Menlo, monospace;
-  --r:18px; --L:700;
+  --r:18px;
 }
 *{box-sizing:border-box;}
 [hidden]{display:none !important;}
@@ -52,21 +54,27 @@ section{padding:88px 0;}
 .sec-hd p{margin-top:14px;}
 
 /* ---------- the neon mark ---------- */
-.mark{overflow:visible;}
-.mark .tube{fill:none; stroke-linecap:round; stroke-linejoin:round;}
-.mark .halo{stroke:#9EC3FF; stroke-width:17; opacity:.30; filter:blur(7px);}
-.mark .mid {stroke:#E8F1FF; stroke-width:9.5; opacity:.9; filter:blur(1.6px);}
-.mark .core{stroke:#FFFFFF; stroke-width:4.4;}
+.mark{width:100%; height:auto;}
+.brand .chip img,.toast .ic img{width:78%; height:78%; object-fit:contain;}
 
 /* ---------- intro ---------- */
 #intro{position:fixed; inset:0; z-index:200; background:var(--ink); display:flex;
   flex-direction:column; align-items:center; justify-content:center; gap:26px;
   transition:opacity .75s ease, visibility .75s;}
 #intro.gone{opacity:0; visibility:hidden;}
-#intro .mark{width:168px; height:168px;}
-#intro .tube{stroke-dasharray:var(--L); stroke-dashoffset:var(--L); animation:draw 1.5s cubic-bezier(.65,0,.35,1) forwards;}
-#intro .mid{animation-delay:.07s;} #intro .core{animation-delay:.14s;}
-@keyframes draw{to{stroke-dashoffset:0;}}
+#intro .stage{position:relative; display:grid; place-items:center;}
+#intro .stage::before{content:''; position:absolute; width:300px; height:300px; border-radius:50%;
+  background:radial-gradient(circle, rgba(150,195,255,.30) 0%, rgba(150,195,255,0) 66%);
+  opacity:0; animation:bloom 1.9s ease .35s forwards;}
+#intro .mark{position:relative; width:188px; height:188px; opacity:0;
+  animation:ignite 1.65s steps(1,end) forwards;}
+/* a real neon tube stutters before it holds */
+@keyframes ignite{
+  0%{opacity:0;}      6%{opacity:1;}      10%{opacity:.08;}
+  16%{opacity:1;}     20%{opacity:.25;}   27%{opacity:1;}
+  32%{opacity:.5;}    40%{opacity:1;}     44%{opacity:.8;}
+  52%,100%{opacity:1;}}
+@keyframes bloom{from{opacity:0; transform:scale(.82);} to{opacity:1; transform:scale(1);}}
 #intro .tag{font-family:var(--mono); font-size:0.72rem; letter-spacing:0.32em; text-transform:uppercase;
   color:#7E93AC; opacity:0; animation:fadeUp .7s ease 1.25s forwards;}
 #intro .bar{width:150px; height:2px; background:rgba(255,255,255,.12); border-radius:2px; overflow:hidden;}
@@ -142,8 +150,8 @@ section{padding:88px 0;}
 .pulse.o{background:var(--orange);}
 @keyframes pulse{0%,100%{opacity:1; transform:scale(1);} 50%{opacity:.35; transform:scale(.7);}}
 .hero-cta{display:flex; gap:12px; flex-wrap:wrap; margin-top:30px;}
-.hero-mark{position:absolute; right:-70px; top:-60px; width:420px; height:420px; opacity:.1; z-index:1;}
-@media (max-width:980px){ .hero-mark{width:300px; height:300px; right:-90px;} }
+.hero-mark{position:absolute; right:-110px; top:-120px; width:440px; height:440px; opacity:.055; z-index:1;}
+@media (max-width:980px){ .hero-mark{width:300px; height:300px; right:-110px; top:-90px;} }
 
 /* terminal, straight out of the app's global-activity panel */
 .term{background:rgba(6,11,18,.72); border:1px solid rgba(255,255,255,.1); border-radius:var(--r);
@@ -383,12 +391,9 @@ footer{background:var(--ink); color:#8FA3B8; margin-top:0;}
 <noscript><style>.reveal{opacity:1; transform:none;} #intro{display:none;}</style></noscript>
 </head>
 <body>
-<svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute"><defs><path id="amiK" d="M100.0 85.63 L104.72 85.75 L109.42 86.09 L114.07 86.66 L118.68 87.46 L123.2 88.48 L127.63 89.72 L131.94 91.16 L136.12 92.8 L140.16 94.64 L144.02 96.66 L147.71 98.84 L151.2 101.19 L154.49 103.69 L157.55 106.31 L160.37 109.06 L162.96 111.9 L165.28 114.84 L167.35 117.85 L169.14 120.91 L170.66 124.01 L171.9 127.13 L172.85 130.25 L173.52 133.36 L173.9 136.43 L174.0 139.46 L173.81 142.42 L173.33 145.3 L172.58 148.07 L171.56 150.73 L170.28 153.25 L168.73 155.63 L166.94 157.84 L164.91 159.88 L162.66 161.73 L160.19 163.37 L157.52 164.8 L154.67 166.01 L151.64 166.99 L148.46 167.72 L145.14 168.21 L141.7 168.45 L138.15 168.42 L134.51 168.14 L130.81 167.59 L127.05 166.78 L123.26 165.7 L119.45 164.36 L115.65 162.77 L111.87 160.92 L108.14 158.82 L104.45 156.48 L100.85 153.9 L97.33 151.1 L93.93 148.09 L90.64 144.87 L87.5 141.46 L84.51 137.88 L81.68 134.13 L79.03 130.23 L76.57 126.2 L74.32 122.06 L72.27 117.82 L70.43 113.5 L68.82 109.11 L67.44 104.69 L66.3 100.24 L65.39 95.78 L64.72 91.33 L64.3 86.92 L64.11 82.57 L64.16 78.28 L64.45 74.08 L64.97 69.99 L65.71 66.03 L66.67 62.21 L67.85 58.55 L69.23 55.06 L70.8 51.77 L72.55 48.69 L74.48 45.82 L76.56 43.19 L78.79 40.8 L81.15 38.67 L83.62 36.8 L86.19 35.21 L88.85 33.89 L91.58 32.86 L94.36 32.13 L97.17 31.68 L100.0 31.53 L102.83 31.68 L105.64 32.13 L108.42 32.86 L111.15 33.89 L113.81 35.21 L116.38 36.8 L118.85 38.67 L121.21 40.8 L123.44 43.19 L125.52 45.82 L127.45 48.69 L129.2 51.77 L130.77 55.06 L132.15 58.55 L133.33 62.21 L134.29 66.03 L135.03 69.99 L135.55 74.08 L135.84 78.28 L135.89 82.57 L135.7 86.92 L135.28 91.33 L134.61 95.78 L133.7 100.24 L132.56 104.69 L131.18 109.11 L129.57 113.5 L127.73 117.82 L125.68 122.06 L123.43 126.2 L120.97 130.23 L118.32 134.13 L115.49 137.88 L112.5 141.46 L109.36 144.87 L106.07 148.09 L102.67 151.1 L99.15 153.9 L95.55 156.48 L91.86 158.82 L88.13 160.92 L84.35 162.77 L80.55 164.36 L76.74 165.7 L72.95 166.78 L69.19 167.59 L65.49 168.14 L61.85 168.42 L58.3 168.45 L54.86 168.21 L51.54 167.72 L48.36 166.99 L45.33 166.01 L42.48 164.8 L39.81 163.37 L37.34 161.73 L35.09 159.88 L33.06 157.84 L31.27 155.63 L29.72 153.25 L28.44 150.73 L27.42 148.07 L26.67 145.3 L26.19 142.42 L26.0 139.46 L26.1 136.43 L26.48 133.36 L27.15 130.25 L28.1 127.13 L29.34 124.01 L30.86 120.91 L32.65 117.85 L34.72 114.84 L37.04 111.9 L39.63 109.06 L42.45 106.31 L45.51 103.69 L48.8 101.19 L52.29 98.84 L55.98 96.66 L59.84 94.64 L63.88 92.8 L68.06 91.16 L72.37 89.72 L76.8 88.48 L81.32 87.46 L85.93 86.66 L90.58 86.09 L95.28 85.75 L100.0 85.63 Z"/></defs></svg>
 
 <div id="intro">
-  <svg class="mark" viewBox="0 0 200 200" aria-hidden="true">
-    <use class="tube halo" href="#amiK"/><use class="tube mid" href="#amiK"/><use class="tube core" href="#amiK"/>
-  </svg>
+  <div class="stage"><img class="mark" src="/assets/ami/ami-mark.png" alt="" width="341" height="341"></div>
   <div class="tag">the spatial network</div>
   <div class="bar"><i></i></div>
   <button type="button" id="skip">skip</button>
@@ -397,16 +402,14 @@ footer{background:var(--ink); color:#8FA3B8; margin-top:0;}
 <nav class="nav">
   <div class="nav-in">
     <a class="brand" href="#top">
-      <span class="chip"><svg class="mark" viewBox="0 0 200 200" aria-hidden="true">
-        <use class="tube halo" href="#amiK"/><use class="tube mid" href="#amiK"/><use class="tube core" href="#amiK"/>
-      </svg></span>
-      <b>Ami</b><span>Host&nbsp;Program</span>
+      <span class="chip"><img src="/assets/ami/ami-mark.png" alt="" width="341" height="341"></span>
+      <b>Ami</b><span>Campus&nbsp;Program</span>
     </a>
     <div class="sp"></div>
     <div class="links">
       <a href="#how">How it works</a>
       <a href="#screens">The screens</a>
-      <a href="#refer">Refer a host</a>
+      <a href="#refer">Refer a friend</a>
       <a href="#payouts">Payouts</a>
       <a href="#faq">FAQ</a>
     </div>
@@ -415,14 +418,12 @@ footer{background:var(--ink); color:#8FA3B8; margin-top:0;}
 </nav>
 
 <header class="hero" id="top">
-  <svg class="mark hero-mark" viewBox="0 0 200 200" aria-hidden="true">
-    <use class="tube halo" href="#amiK"/><use class="tube core" href="#amiK"/>
-  </svg>
+  <img class="mark hero-mark" src="/assets/ami/ami-mark.png" alt="" width="341" height="341">
   <div class="hero-in">
     <div>
       <span class="badge"><i class="pulse"></i>By invitation only</span>
-      <h1 style="margin-top:22px">Put your city<br>on the map.<br><em>Get paid.</em></h1>
-      <p>Ami is a live heatmap of your city and your people. Hosts are the ones who bring the people. You get invite codes, you bring your circle, and you earn <b style="color:#fff">$8 for every Ami who joins and goes live</b>.</p>
+      <h1 style="margin-top:22px">Put your campus<br>on the map.<br><em>Get paid.</em></h1>
+      <p>Ami is a live heatmap of your campus and everyone on it. You already know where your friends end up on a Friday &mdash; this is that, as a map. You get invite codes, you bring your people, and you earn <b style="color:#fff">$8 for every friend who joins and goes live</b>.</p>
       <div class="hero-cta">
         <a class="btn btn-dark btn-lg" href="#apply">Apply to host</a>
         <a class="btn btn-outline-light btn-lg" href="#how">See how it works</a>
@@ -433,7 +434,7 @@ footer{background:var(--ink); color:#8FA3B8; margin-top:0;}
       <div class="term-body" id="term-body"></div>
       <div class="term-stats">
         <div><b id="s-hosts">—</b><span>Hosts</span></div>
-        <div><b id="s-cities">—</b><span>Cities</span></div>
+        <div><b id="s-cities">&mdash;</b><span>Campuses</span></div>
         <div><b id="s-waiting">—</b><span>Waiting</span></div>
       </div>
     </div>
@@ -442,9 +443,9 @@ footer{background:var(--ink); color:#8FA3B8; margin-top:0;}
 
 <section class="wrap reveal" id="what">
   <div class="sec-hd">
-    <span class="kicker">What you are selling</span>
-    <h2>It is not an app download.<br>It is <em class="it">a room filling up.</em></h2>
-    <p>Ami only works when the people you actually know are on it. That is the whole job. Three things happen the moment your circle lands.</p>
+    <span class="kicker">What you&rsquo;re actually sharing</span>
+    <h2>It is not another app.<br>It is <em class="it">your Friday, mapped.</em></h2>
+    <p>Ami only works when the people you actually know are on it. That is the whole job &mdash; and on a campus, that is the easiest job there is. Three things happen the moment your friends land.</p>
   </div>
   <div class="three">
     <article class="card">
@@ -457,54 +458,54 @@ footer{background:var(--ink); color:#8FA3B8; margin-top:0;}
         <div class="pin sm" style="left:70%; top:68%">EV<i></i></div>
         <div class="venue" style="left:46%; top:62%">● Snapped venue</div>
       </div>
-      <div class="cap"><h3>See who&rsquo;s out.</h3><p>Your people show up as live dots on a real map. No feed, no posting, no catching up on anything.</p></div>
+      <div class="cap"><h3>See who&rsquo;s out.</h3><p>Your friends show up as live dots on a real map of campus. No feed, no posting, no stories to catch up on.</p></div>
     </article>
     <article class="card">
       <div class="art"><div class="mapbg"></div>
-        <div class="toast" style="left:8%; top:16%"><span class="ic"><svg class="mark" viewBox="0 0 200 200" aria-hidden="true"><use class="tube mid" href="#amiK"/><use class="tube core" href="#amiK"/></svg></span>
-          <span><b>You have 12 Amis at Sheep Meadow</b><span>Tap to see who&rsquo;s here and your mutuals.</span></span></div>
+        <div class="toast" style="left:8%; top:16%"><span class="ic"><img src="/assets/ami/ami-mark.png" alt="" width="341" height="341"></span>
+          <span><b>You have 12 Amis at the Quad</b><span>Tap to see who&rsquo;s here and your mutuals.</span></span></div>
         <div class="pin" style="left:30%; top:62%">AM<i></i></div>
         <div class="pin sm" style="left:52%; top:72%">JL<i></i></div>
         <div class="pin sm" style="left:66%; top:58%">KT<i></i></div>
         <div class="heat" style="left:28%; top:58%; width:120px; height:70px; filter:blur(20px); opacity:.4"></div>
       </div>
-      <div class="cap"><h3>Know where to go.</h3><p>The map tells you where the night already is, so nobody spends an hour deciding in a group chat.</p></div>
+      <div class="cap"><h3>Know where to go.</h3><p>The map shows where the night already is, so the group chat stops arguing about it at 10pm.</p></div>
     </article>
     <article class="card">
       <div class="art"><div class="mapbg"></div>
-        <div class="toast" style="left:9%; top:12%; max-width:88%"><span class="ic"><svg class="mark" viewBox="0 0 200 200" aria-hidden="true"><use class="tube mid" href="#amiK"/><use class="tube core" href="#amiK"/></svg></span>
+        <div class="toast" style="left:9%; top:12%; max-width:88%"><span class="ic"><img src="/assets/ami/ami-mark.png" alt="" width="341" height="341"></span>
           <span><b>Amelia is 170 ft away ✨</b><span>You&rsquo;re being intro&rsquo;ed by Evelyn K. 5 mutual friends.</span></span></div>
         <div class="pin" style="left:24%; top:60%">EV<i></i></div>
         <div class="pin" style="left:62%; top:66%">AM<i></i></div>
         <div class="venue" style="left:30%; top:84%; background:var(--ink); box-shadow:none">Nearby serendipity</div>
       </div>
-      <div class="cap"><h3>Meet friends of friends.</h3><p>Ami introduces people who already share five mutuals. That is the part your circle will talk about.</p></div>
+      <div class="cap"><h3>Meet friends of friends.</h3><p>Ami only introduces people who already share five mutuals. At a school your size, that is most of your year.</p></div>
     </article>
   </div>
 </section>
 
 <section class="wrap reveal" id="calc">
   <div class="sec-hd">
-    <span class="kicker">Your circle. Your payout.</span>
+    <span class="kicker">Your friends. Your payout.</span>
     <h2>Every Ami you bring on<br>is <em class="it">eight dollars.</em></h2>
-    <p>Paid per person who joins on your code and goes live once. Drag it and see what your circle is worth.</p>
+    <p>Paid per person who joins on your code and goes live once. Drag it and see what your group chat is worth.</p>
   </div>
   <div class="calc">
     <div class="calc-l">
-      <div class="sl-top"><b id="c-n">60</b><span>people you can bring</span></div>
-      <input type="range" id="c-range" min="10" max="400" step="5" value="60" aria-label="People you can bring">
+      <div class="sl-top"><b id="c-n">60</b><span>friends you can bring</span></div>
+      <input type="range" id="c-range" min="10" max="400" step="5" value="60" aria-label="Friends you can bring">
       <div class="sl-ends"><span>10</span><span>400</span></div>
       <div class="calc-note">
-        <p>An Ami counts once they <b style="color:var(--text)">join on your code</b> and <b style="color:var(--text)">go live once</b> &mdash; share location a single time so they appear on the map. Nothing else is asked of them.</p>
+        <p>A friend counts once they <b style="color:var(--text)">join on your code</b> and <b style="color:var(--text)">go live once</b> &mdash; share location a single time so they show up on the map. Nothing else is asked of them, and it costs them nothing.</p>
       </div>
     </div>
     <div class="calc-r">
       <div class="calc-out" id="c-out">$480</div>
       <div class="sub">Your payout</div>
       <div class="split">
-        <div><span>Base &mdash; <span id="c-n2">60</span> Amis &times; $8</span><b id="c-base">$480</b></div>
-        <div><span>Founding host bonus</span><b id="c-bonus">$250</b></div>
-        <div style="padding-top:9px; border-top:1px solid rgba(255,255,255,.12)"><span>If you are first in your city</span><b id="c-total">$730</b></div>
+        <div><span>Base &mdash; <span id="c-n2">60</span> friends &times; $8</span><b id="c-base">$480</b></div>
+        <div><span>First-on-campus bonus</span><b id="c-bonus">$250</b></div>
+        <div style="padding-top:9px; border-top:1px solid rgba(255,255,255,.12)"><span>If you are first at your school</span><b id="c-total">$730</b></div>
       </div>
     </div>
   </div>
@@ -513,13 +514,13 @@ footer{background:var(--ink); color:#8FA3B8; margin-top:0;}
 <section class="wrap reveal">
   <div class="early">
     <span class="kicker" style="color:var(--neon)">Being early pays</span>
-    <h2 style="margin-top:14px">The first host in a city<br>sets the room.</h2>
-    <p>Ami opens one city at a time, and the first circle in defines who the next thousand people are connected to. Founding hosts get a flat bonus on top of their per-Ami rate, their codes jump the waitlist, and they get a say in which venues get snapped first.</p>
+    <h2 style="margin-top:14px">The first host at a school<br>sets the whole year.</h2>
+    <p>Ami opens one campus at a time, and whoever is first decides who the next few hundred people are connected to. First hosts get a flat bonus on top of their per-friend rate, their codes skip the waitlist, and they pick which spots around campus get snapped first.</p>
     <div class="row">
-      <div><b>$250</b><span>Founding host bonus</span></div>
+      <div><b>$250</b><span>First-on-campus bonus</span></div>
       <div><b>40</b><span>Invite codes to start</span></div>
       <div><b>0</b><span>Deposit, ever</span></div>
-      <div><b id="e-cities">—</b><span>Cities already claimed</span></div>
+      <div><b id="e-cities">&mdash;</b><span>Campuses already claimed</span></div>
     </div>
   </div>
 </section>
@@ -528,21 +529,21 @@ footer{background:var(--ink); color:#8FA3B8; margin-top:0;}
   <div class="sec-hd">
     <span class="kicker">Here&rsquo;s the whole thing</span>
     <h2>Four steps. <em class="it">That is it.</em></h2>
-    <p>No deposit, no quota, no minimum. You can start with ten people and add more whenever you want.</p>
+    <p>No deposit, no quota, no minimum. Start with your group chat and add more whenever you feel like it.</p>
   </div>
   <div class="steps">
-    <div class="step"><em>Step 01</em><h3>Apply to host</h3><p>Two minutes. Your handle, your city, and an honest sentence about who your circle actually is.</p></div>
+    <div class="step"><em>Step 01</em><h3>Apply to host</h3><p>Two minutes. Your handle, your school, and an honest sentence about who your people actually are.</p></div>
     <div class="step"><em>Step 02</em><h3>Get your codes</h3><p>We send a batch of invite codes tied to you. Every person who uses one is counted to your name automatically.</p></div>
-    <div class="step"><em>Step 03</em><h3>Bring your circle</h3><p>Send codes to the people you would actually text on a Friday. They join, they go live once, they are on the map.</p></div>
-    <div class="step"><em>Step 04</em><h3>Get paid</h3><p>We match every code to its Ami, confirm who went live, and pay you in a single transfer. Track it below.</p></div>
+    <div class="step"><em>Step 03</em><h3>Bring your people</h3><p>Send codes to the people you would actually text on a Friday &mdash; your group chat, your floor, your house, your team.</p></div>
+    <div class="step"><em>Step 04</em><h3>Get paid</h3><p>We match every code, confirm who went live, and send one payment. Venmo, Zelle or bank &mdash; your call. Track it below.</p></div>
   </div>
 </section>
 
 <section class="wrap reveal" id="screens">
   <div class="sec-hd">
     <span class="kicker">Follow the actual screens</span>
-    <h2>What your people see<br>when they land.</h2>
-    <p>Worth knowing before you send a single code, so you can tell them what it is in one sentence.</p>
+    <h2>What your friends see<br>when they open it.</h2>
+    <p>Worth seeing before you send a single code, so you can explain it in one text.</p>
   </div>
   <div class="tabs" id="tabs"></div>
   <div class="screen" id="screen"></div>
@@ -550,28 +551,28 @@ footer{background:var(--ink); color:#8FA3B8; margin-top:0;}
 
 <section class="wrap reveal" id="refer">
   <div class="sec-hd">
-    <span class="kicker">Know another host?</span>
-    <h2>Send us someone<br>who owns a room.</h2>
-    <p>Paid on top of your own earnings, and it never comes out of theirs. We pay when their circle goes live, on the size of the circle they actually bring.</p>
+    <span class="kicker">Refer a friend</span>
+    <h2>Know someone<br>at another school?</h2>
+    <p>Paid on top of your own earnings, and it never comes out of theirs. We pay once their people go live, on how many they actually bring.</p>
   </div>
   <div class="tiers">
-    <div class="tier"><em>Under 40 Amis</em><b>$75</b><span>They brought a table.</span></div>
-    <div class="tier"><em>40 &ndash; 100 Amis</em><b>$150</b><span>They brought a room.</span></div>
-    <div class="tier best"><em>Over 100 Amis</em><b>$300</b><span>They brought a scene.</span></div>
+    <div class="tier"><em>Under 40 friends</em><b>$75</b><span>They brought the group chat.</span></div>
+    <div class="tier"><em>40 &ndash; 100 friends</em><b>$150</b><span>They brought the house.</span></div>
+    <div class="tier best"><em>Over 100 friends</em><b>$300</b><span>They brought the year.</span></div>
   </div>
 </section>
 
 <section class="wrap reveal" id="apply">
   <div class="sec-hd">
     <span class="kicker">The onboarding portal</span>
-    <h2>Apply to host <em class="it">your city.</em></h2>
-    <p>Three screens. We read every one of these by hand, usually inside a day.</p>
+    <h2>Apply to host <em class="it">your campus.</em></h2>
+    <p>Three screens, about two minutes. We read every one of these by hand, usually inside a day.</p>
   </div>
   <div class="panel">
     <div class="panel-bd">
       <div class="wiz" id="wiz">
         <div class="on"><i>1</i><em>You</em><s></s></div>
-        <div><i>2</i><em>Your circle</em><s></s></div>
+        <div><i>2</i><em>Your people</em><s></s></div>
         <div><i>3</i><em>Review</em></div>
       </div>
 
@@ -581,11 +582,11 @@ footer{background:var(--ink); color:#8FA3B8; margin-top:0;}
           <div><label for="a-ig">Instagram <span class="hint">&mdash; how we check you&rsquo;re real</span></label><input type="text" id="a-ig" placeholder="@yourhandle" autocomplete="off" spellcheck="false"></div>
         </div>
         <div class="two">
-          <div><label for="a-city">City you&rsquo;re bringing on</label><input type="text" id="a-city" placeholder="New York" autocomplete="address-level2"></div>
+          <div><label for="a-city">Your school</label><input type="text" id="a-city" placeholder="Arizona State University" autocomplete="organization"></div>
           <div><label for="a-email">Email <span class="hint">&mdash; optional, for the payout</span></label><input type="email" id="a-email" placeholder="you@email.com" autocomplete="email"></div>
         </div>
         <div>
-          <label>Where does your circle actually overlap? <span class="hint">&mdash; pick the closest one</span></label>
+          <label>Where do your people overlap? <span class="hint">&mdash; pick the closest one</span></label>
           <div class="scene" id="a-scene"></div>
         </div>
         <div class="frow"><button type="button" class="btn btn-pri" data-next="2">Continue</button></div>
@@ -593,15 +594,15 @@ footer{background:var(--ink); color:#8FA3B8; margin-top:0;}
 
       <div class="f" id="st2" hidden>
         <div>
-          <label for="a-circle">Roughly how many people can you bring? <span class="hint">&mdash; people you&rsquo;d actually text, not followers</span></label>
+          <label for="a-circle">Roughly how many friends can you bring? <span class="hint">&mdash; people you&rsquo;d actually text, not followers</span></label>
           <input type="number" id="a-circle" min="1" max="2000" placeholder="60">
         </div>
         <div>
           <label for="a-pitch">Tell us about them <span class="hint">&mdash; who they are, where you all end up on a Friday</span></label>
-          <textarea id="a-pitch" placeholder="Mostly the Lower East Side crowd — a dinner group of about 20 that turns into 60 on a good weekend. We're at Casa Cipriani or Bar Oliver most Fridays."></textarea>
+          <textarea id="a-pitch" placeholder="My house plus the two next door — about 25 of us most nights, closer to 80 on a game weekend. We all end up on Mill Ave or at someone's darty."></textarea>
         </div>
         <div>
-          <label for="a-ref">Referred by a host? <span class="hint">&mdash; their handle, optional</span></label>
+          <label for="a-ref">Someone refer you? <span class="hint">&mdash; their handle, optional</span></label>
           <input type="text" id="a-ref" placeholder="@theirhandle" autocomplete="off" spellcheck="false">
         </div>
         <div class="frow">
@@ -612,7 +613,7 @@ footer{background:var(--ink); color:#8FA3B8; margin-top:0;}
 
       <div class="f" id="st3" hidden>
         <div class="track-row" id="a-review"></div>
-        <p style="font-size:0.88rem">Applying puts you on the host waitlist. We will never post as you, message your followers, or share your list with anyone.</p>
+        <p style="font-size:0.88rem">Applying puts you on the campus waitlist. We will never post as you, message your followers, or share your list with anyone.</p>
         <div class="frow">
           <button type="button" class="btn btn-ghost" data-next="2">Back</button>
           <button type="button" class="btn btn-pri btn-lg" id="a-send">Send my application</button>
@@ -636,7 +637,7 @@ footer{background:var(--ink); color:#8FA3B8; margin-top:0;}
   <div class="sec-hd">
     <span class="kicker">Payouts</span>
     <h2>Where your money is,<br>at any moment.</h2>
-    <p>Your handle and your host code pull up everything: where your application sits, the codes issued to you, how many went live, and what you are owed.</p>
+    <p>Your handle and your host code pull up everything: where your application sits, the codes issued to you, how many friends went live, and what you are owed.</p>
   </div>
   <div class="panel">
     <div class="panel-hd">
@@ -662,13 +663,13 @@ footer{background:var(--ink); color:#8FA3B8; margin-top:0;}
   <div class="three" style="margin-top:18px">
     <article class="card"><div class="cap">
       <h3 style="font-size:1.05rem">When it lands</h3>
-      <p>We count your Amis at the end of each month and pay within seven days of the count. One transfer, not a drip.</p></div></article>
+      <p>We count at the end of each month and pay within seven days. One payment, not a drip, and never a gift card.</p></div></article>
     <article class="card"><div class="cap">
       <h3 style="font-size:1.05rem">How it lands</h3>
-      <p>Bank transfer or whatever you used to get paid before. We ask for those details once you are approved &mdash; never on this page.</p></div></article>
+      <p>Venmo, Zelle or bank transfer &mdash; whichever you already use. We ask for that once you are approved, never on this page.</p></div></article>
     <article class="card"><div class="cap">
       <h3 style="font-size:1.05rem">Past $600</h3>
-      <p>Over $600 in a calendar year we need a W-9 before sending more. US law, not our rule.</p></div></article>
+      <p>Over $600 in a calendar year we need a W-9 before sending more. US tax law, not our rule. It does not affect your financial aid.</p></div></article>
   </div>
 </section>
 
@@ -682,8 +683,8 @@ footer{background:var(--ink); color:#8FA3B8; margin-top:0;}
 
 <section class="wrap reveal" style="padding-bottom:96px">
   <div class="early" style="text-align:center">
-    <h2 style="margin:0 auto">Be the first circle<br>in your city.</h2>
-    <p style="margin:18px auto 0">Ami is invite-only and opens one city at a time. The host who gets there first decides who the room is.</p>
+    <h2 style="margin:0 auto">Be the first<br>at your school.</h2>
+    <p style="margin:18px auto 0">Ami is invite-only and opens one campus at a time. Whoever gets there first decides who the room is.</p>
     <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:28px; position:relative">
       <a class="btn btn-dark btn-lg" href="#apply">Apply to host</a>
       <a class="btn btn-outline-light btn-lg" href="#faq">Read the FAQ</a>
@@ -695,14 +696,13 @@ footer{background:var(--ink); color:#8FA3B8; margin-top:0;}
   <div class="foot">
     <div>
       <a class="brand" href="#top" style="color:#fff">
-        <span class="chip" style="background:rgba(255,255,255,.08)"><svg class="mark" viewBox="0 0 200 200" aria-hidden="true">
-          <use class="tube mid" href="#amiK"/><use class="tube core" href="#amiK"/></svg></span>
-        <b style="color:#fff">Ami</b><span>Host&nbsp;Program</span>
+        <span class="chip" style="background:rgba(255,255,255,.08)"><img src="/assets/ami/ami-mark.png" alt="" width="341" height="341"></span>
+        <b style="color:#fff">Ami</b><span>Campus&nbsp;Program</span>
       </a>
-      <p style="margin-top:16px; color:#64798F; font-size:0.82rem; max-width:30ch">Ami is invite-only. This page is the host programme, run by Jesse Baizer.</p>
+      <p style="margin-top:16px; color:#64798F; font-size:0.82rem; max-width:30ch">Ami is invite-only. This page is the campus host programme, run by Jesse Baizer.</p>
     </div>
     <div class="cols">
-      <div><b>Programme</b><a href="#how">How it works</a><a href="#calc">Payout calculator</a><a href="#refer">Refer a host</a><a href="#apply">Apply</a></div>
+      <div><b>Programme</b><a href="#how">How it works</a><a href="#calc">Payout calculator</a><a href="#refer">Refer a friend</a><a href="#apply">Apply</a></div>
       <div><b>Support</b><a href="#payouts">Check status</a><a href="#faq">FAQ</a><a href="#screens">The screens</a></div>
       <div><b>Elsewhere</b><a href="/">Portfolio</a><a href="/bounty/">fomo / bounty</a><a href="/fomo/clans/">Greek Village</a></div>
     </div>
@@ -718,8 +718,8 @@ const usd = (n) => '$' + Math.round(n).toLocaleString('en-US');
    THE TWO NUMBERS THAT ARE THE BUSINESS. Change them here and the page,
    the calculator and the review screen all follow.
    ======================================================================== */
-const PER_AMI = 8;        // paid per Ami who joins on your code and goes live
-const FOUNDING = 250;     // flat bonus for the first host in a city
+const PER_AMI = 8;        // paid per friend who joins on your code and goes live
+const FOUNDING = 250;     // flat bonus for the first host on a campus
 /* ===================================================================== */
 
 /* ---- intro ---- */
@@ -770,7 +770,7 @@ const MAP = `<div class="mapbg"></div>
   <div class="heat" style="left:58%; top:58%; width:86px; height:86px; filter:blur(20px); opacity:.3"></div>`;
 
 const SCREENS = [
-  { tab: 'The map', kicker: 'Screen 01', title: 'A live heatmap of your city.',
+  { tab: 'The map', kicker: 'Screen 01', title: 'A live heatmap of your campus.',
     copy: 'The first thing anyone sees. Not a feed &mdash; a map of where the people they know actually are, right now.',
     steps: ['<b>Dots are people</b>, not posts. A green ring means live.',
             '<b>Orange is heat</b> &mdash; somewhere filling up in real time.',
@@ -785,7 +785,7 @@ const SCREENS = [
       <div class="venue" style="left:40%; top:52%">● Snapped venue</div>
       <div class="sheet"><div class="grab"></div>
         <div style="display:flex; align-items:center; gap:9px">
-          <h4 style="flex:1">New York</h4><i class="pulse"></i>
+          <h4 style="flex:1">Your campus</h4><i class="pulse"></i>
         </div>
         <div class="nums" style="display:flex; gap:16px; margin-top:12px">
           <span><b>15</b> Live</span><span><b>36</b> Friends</span><span><b>459</b> Amis</span>
@@ -797,19 +797,19 @@ const SCREENS = [
       </div>` },
 
   { tab: 'A venue', kicker: 'Screen 02', title: 'See who&rsquo;s out. Know where to go.',
-    copy: 'Tap any heat and you get the roster &mdash; friends, Amis, and the count of everyone else there.',
+    copy: 'Tap any heat and you get the roster &mdash; friends, friends of friends, and the count of everyone else there.',
     steps: ['<b>Friends</b> are people you already follow back.',
             '<b>Amis</b> are friends of friends with real mutuals.',
             'One tap gets you directions and who to look for.'],
     html: `${MAP}
       <div class="toast" style="left:6%; top:7%; max-width:88%">
-        <span class="ic"><svg class="mark" viewBox="0 0 200 200"><use class="tube mid" href="#amiK"/><use class="tube core" href="#amiK"/></svg></span>
-        <span><b>You have 12 Amis at Sheep Meadow</b><span>Tap to see who&rsquo;s here and your mutuals.</span></span></div>
+        <span class="ic"><img src="/assets/ami/ami-mark.png" alt="" width="341" height="341"></span>
+        <span><b>You have 12 Amis at the Quad</b><span>Tap to see who&rsquo;s here and your mutuals.</span></span></div>
       <div class="venue" style="left:30%; top:30%">● Snapped venue</div>
       <div class="pin" style="left:42%; top:38%">AM<i></i></div>
       <div class="sheet"><div class="grab"></div>
-        <div style="font-family:var(--mono); font-size:0.56rem; letter-spacing:.14em; text-transform:uppercase; color:var(--faint)">Park</div>
-        <h4>Sheep Meadow</h4><div class="addr">1802 E 65th St</div>
+        <div style="font-family:var(--mono); font-size:0.56rem; letter-spacing:.14em; text-transform:uppercase; color:var(--faint)">On campus</div>
+        <h4>The Quad</h4><div class="addr">Open until 2 AM</div>
         <div class="who">Who&rsquo;s here</div>
         <div class="nums" style="display:flex; gap:14px"><span><b>8</b> Friends</span><span><b>12</b> Amis</span><span><b>28</b> People</span></div>
         <div class="faces">
@@ -820,18 +820,18 @@ const SCREENS = [
       </div>` },
 
   { tab: 'An invite', kicker: 'Screen 03', title: 'Rendezvous with friends &amp; friends of friends.',
-    copy: 'Any host can put a night on the map. It goes to your circle, and to the circles touching yours.',
+    copy: 'Anyone can put a night on the map. It goes to your friends, and to the people one step past them.',
     steps: ['The invite carries <b>a place, a time and a face</b>.',
             'People reply <b>in one tap</b> &mdash; in, or not.',
             'Everyone who says yes <b>shows on the map</b> that night.'],
     html: `${MAP}
       <div class="toast" style="left:6%; top:6%; max-width:88%">
-        <span class="ic"><svg class="mark" viewBox="0 0 200 200"><use class="tube mid" href="#amiK"/><use class="tube core" href="#amiK"/></svg></span>
-        <span><b>Consider this your invite</b><span>bday karaoke 🎤 · Saturday, Aug 29 · 10:00 PM</span></span></div>
+        <span class="ic"><img src="/assets/ami/ami-mark.png" alt="" width="341" height="341"></span>
+        <span><b>Consider this your invite</b><span>darty at the house ☀️ · Saturday · 2:00 PM</span></span></div>
       <div style="position:absolute; left:8%; right:8%; top:24%; border-radius:18px; overflow:hidden;
                   background:linear-gradient(170deg,#2A1E18,#120C09); box-shadow:0 18px 40px -16px rgba(0,0,0,.5); padding:20px 18px 18px">
-        <div style="font-family:var(--serif); font-style:italic; font-size:1.5rem; color:#F3E3CF; line-height:1.1">cheeky<br>bevy <em>fri?</em></div>
-        <div style="font-family:var(--mono); font-size:0.52rem; letter-spacing:.2em; color:var(--orange); margin-top:10px">BAR OLIVER · 1 OLIVER ST</div>
+        <div style="font-family:var(--serif); font-style:italic; font-size:1.5rem; color:#F3E3CF; line-height:1.1">darty<br>at ours <em>sat?</em></div>
+        <div style="font-family:var(--mono); font-size:0.52rem; letter-spacing:.2em; color:var(--orange); margin-top:10px">THE HOUSE · 114 COLLEGE AVE</div>
         <div style="display:flex; gap:5px; margin-top:14px">
           <span style="width:5px;height:5px;border-radius:50%;background:#fff"></span>
           <span style="width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.3)"></span>
@@ -839,8 +839,8 @@ const SCREENS = [
         </div>
       </div>
       <div class="sheet"><div class="grab"></div>
-        <h4>cheeky bevy fri?</h4>
-        <div class="addr">📍 1 Oliver St &nbsp;·&nbsp; Fri, Aug 22 · 8:00 PM</div>
+        <h4>darty at ours sat?</h4>
+        <div class="addr">📍 114 College Ave &nbsp;·&nbsp; Sat · 2:00 PM</div>
         <div class="who">Can you make it?</div>
         <div style="display:flex; gap:8px; margin-top:9px">
           <span class="chip" style="flex:1; text-align:center">Can&rsquo;t make it</span>
@@ -850,7 +850,7 @@ const SCREENS = [
       </div>` },
 
   { tab: 'Serendipity', kicker: 'Screen 04', title: 'Unlock real-time serendipity.',
-    copy: 'The part your circle will actually tell other people about. Ami surfaces someone 170 feet away you were always going to get along with.',
+    copy: 'The part your friends will actually tell other people about. Ami surfaces someone 170 feet away you were always going to get along with.',
     steps: ['Only fires on <b>real mutuals</b>, never cold strangers.',
             'An intro needs <b>someone who knows you both</b>.',
             'Audio chat opens <b>only if you both tap</b>.'],
@@ -864,8 +864,8 @@ const SCREENS = [
         <div style="font-family:var(--mono); font-size:0.8rem; color:#E8F0F8">170 ft</div>
       </div>
       <div class="toast" style="left:6%; right:6%; top:52%; max-width:none">
-        <span class="ic"><svg class="mark" viewBox="0 0 200 200"><use class="tube mid" href="#amiK"/><use class="tube core" href="#amiK"/></svg></span>
-        <span><b>Nearby Serendipity 💫</b><span>Casa Cipriani is lively right now. You have 5 potential connections there.</span></span></div>
+        <span class="ic"><img src="/assets/ami/ami-mark.png" alt="" width="341" height="341"></span>
+        <span><b>Nearby Serendipity 💫</b><span>The house on Jefferson is going right now. You have 5 potential connections there.</span></span></div>
       <div style="position:absolute; left:50%; top:68%; transform:translateX(-50%); width:54px; height:54px">
         <svg viewBox="0 0 60 60" style="width:100%;height:100%; filter:drop-shadow(0 6px 16px rgba(0,0,0,.45))">
           <path d="M30 6 L48 30 L38 30 L38 52 L22 52 L22 30 L12 30 Z" fill="#C6FF4A" stroke="#8FD117" stroke-width="2" stroke-linejoin="round"/></svg>
@@ -901,26 +901,32 @@ paintScreens();
 
 /* ---- FAQ ---- */
 const FAQ = [
-  ['Why does being first in a city matter?',
-   'Ami opens one city at a time and the first circle in becomes the room everyone else joins. Practically: your codes skip the waitlist, you get the <b>' + usd(FOUNDING) + ' founding bonus</b> on top of your per-Ami rate, and you get a say in which venues get snapped first.'],
-  ['Who actually gets paid — me, or the people I bring?',
-   'You. The people you bring get into an invite-only app for free; you get <b>' + usd(PER_AMI) + ' per Ami</b> who joins on your code and goes live. Nobody you invite is ever asked for money.'],
-  ['What counts as an Ami?',
-   'Someone who joins on <b>your code</b> and <b>goes live once</b> — shares location a single time so they appear on the map. If they install it and never open it again, it does not count. That is the only bar.'],
-  ['How many people do I need?',
-   'There is no minimum. Ten real people who actually go out beats two hundred followers who will not open it. Start with the group chat you already have and add more whenever.'],
-  ['Do I need to pay anything, or hold a deposit?',
-   'No. There is no deposit, no buy-in, and nothing to front. If anyone asks you for money to host, it is not us.'],
+  ['Why does being first at my school matter?',
+   'Ami opens one campus at a time and whoever is first becomes the room everyone else joins. Practically: your codes skip the waitlist, you get the <b>' + usd(FOUNDING) + ' first-on-campus bonus</b> on top of your per-friend rate, and you pick which spots around campus get snapped first.'],
+  ['Who gets paid &mdash; me, or my friends?',
+   'You. Your friends get into an invite-only app for free and are never asked for a cent. You get <b>' + usd(PER_AMI) + ' for every one of them</b> who joins on your code and goes live.'],
+  ['What counts?',
+   'Someone who joins on <b>your code</b> and <b>goes live once</b> &mdash; shares location a single time so they show up on the map. If they install it and never open it again, it does not count. That is the whole bar.'],
+  ['How many friends do I need?',
+   'There is no minimum. Twenty people who actually go out beats four hundred followers who will not open it. Start with the group chat you already text on a Friday.'],
+  ['Do I have to be in Greek life?',
+   'No. Some of the best hosts run a floor, a club, a team, or just a big friend group. What matters is that when you say you are going somewhere, people come.'],
+  ['Is this a job? Do I have to work shifts?',
+   'No shifts, no quota, no manager. You send codes to people you already talk to and you get paid for the ones who show up on the map. Stop whenever you want.'],
+  ['Do I have to pay anything?',
+   'No. There is no deposit, no buy-in, and nothing to front. If anyone ever asks you for money to host, it is not us.'],
   ['How do I get the invite codes?',
-   'Once you are approved we issue a batch tied to your name — 40 to start, more on request. Every code is matched to you automatically, so there is nothing to track by hand.'],
-  ['When do I get paid?',
-   'We count at the end of each month and pay within seven days of the count. One transfer. You can see the running number any time in <a href="#payouts" style="color:var(--orange)">Payouts</a>.'],
-  ['Does referring another host cost me anything?',
-   'No, and it does not come out of their earnings either. Referral money is paid by us on top, between $75 and $300 depending on how big a circle they actually bring.'],
-  ['What do you do with my people&rsquo;s information?',
-   'Nothing you would not expect. We never post as you, never message your followers, and never sell or share your list. Your circle&rsquo;s locations are only ever visible to people they have accepted.'],
-  ['What if my city is already claimed?',
-   'You can still host — the founding bonus goes to whoever was first, but the per-Ami rate is the same for everyone, forever. Big cities hold a lot of rooms.'],
+   'Once you are approved we issue a batch tied to your name &mdash; 40 to start, more whenever you run out. Every code is matched to you automatically, so there is nothing to track in a spreadsheet.'],
+  ['When and how do I get paid?',
+   'We count at the end of each month and pay within seven days. Venmo, Zelle or bank transfer, whichever you already use. You can watch the running number any time in <a href="#payouts" style="color:var(--orange)">Payouts</a>.'],
+  ['Does this mess with my financial aid or taxes?',
+   'Under <b>$600</b> in a calendar year there is nothing to file on our side. Over that we need a W-9 before sending more &mdash; that is US tax law, not our rule, and it does not affect your aid.'],
+  ['Does referring a friend cost me anything?',
+   'No, and it does not come out of their earnings either. Referral money is paid by us on top, between $75 and $300 depending on how many people they actually bring.'],
+  ['What do you do with my friends&rsquo; information?',
+   'Nothing you would not expect. We never post as you, never message your followers, and never sell or share your list. Your friends&rsquo; locations are only ever visible to people they have accepted.'],
+  ['Someone already claimed my school. Can I still host?',
+   'Yes. The first-on-campus bonus goes to whoever got there first, but the per-friend rate is identical for everyone, forever. A big school holds a lot of rooms.'],
 ];
 $('faq-list').innerHTML = FAQ.map(([q, a]) =>
   `<details><summary>${q}</summary><div class="a">${a}</div></details>`).join('');
@@ -949,7 +955,7 @@ async function loadStats() {
     const rows = feed.length
       ? feed.slice(0, 6).map((f, i) =>
           `<div style="animation-delay:${i * 60}ms"><span>${esc(ago(f.at))}</span><i>${esc(cityTag(f.city))}</i><b>${esc(f.line)}</b></div>`).join('')
-      : `<div><span>now</span><i>&mdash;</i><b>no cities claimed yet</b></div>
+      : `<div><span>now</span><i>&mdash;</i><b>no campuses claimed yet</b></div>
          <div style="animation-delay:70ms"><span>now</span><i>&mdash;</i><b>waiting for the first host</b></div>`;
     // a live terminal with little traffic should look like one, not like a
     // broken panel -- so the cursor sits under whatever is really there
@@ -964,7 +970,7 @@ loadStats();
 setInterval(loadStats, 45000);
 
 /* ---- the portal ---- */
-const SCENES = ['Nightlife', 'Dinners', 'A campus', 'An office', 'A gym or run club', 'Music', 'Something else'];
+const SCENES = ['Greek life', 'My dorm or floor', 'A club or org', 'A sports team', 'Nightlife', 'My major', 'Something else'];
 let scene = '';
 $('a-scene').innerHTML = SCENES.map((s) => `<button type="button" data-s="${esc(s)}">${esc(s)}</button>`).join('');
 $('a-scene').querySelectorAll('button').forEach((b) => b.addEventListener('click', () => {
@@ -1002,11 +1008,11 @@ function step(n) {
       <p style="font-size:0.92rem">${esc(v.pitch || 'No description yet.')}</p>
       <div style="display:flex; gap:26px; flex-wrap:wrap; padding-top:12px; border-top:1px solid var(--line)">
         <div><b style="font-family:var(--serif); font-size:1.5rem; display:block; line-height:1">${v.circle || 0}</b>
-          <span style="font-size:0.76rem; color:var(--muted)">people</span></div>
+          <span style="font-size:0.76rem; color:var(--muted)">friends</span></div>
         <div><b style="font-family:var(--serif); font-size:1.5rem; display:block; line-height:1">${usd(base)}</b>
           <span style="font-size:0.76rem; color:var(--muted)">at ${usd(PER_AMI)} each</span></div>
         <div><b style="font-family:var(--serif); font-size:1.5rem; display:block; line-height:1">${usd(base + FOUNDING)}</b>
-          <span style="font-size:0.76rem; color:var(--muted)">if first in ${esc(v.city || 'your city')}</span></div>
+          <span style="font-size:0.76rem; color:var(--muted)">if first at ${esc(v.city || 'your school')}</span></div>
       </div>`;
   }
   $('apply').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1019,11 +1025,11 @@ document.querySelectorAll('[data-next]').forEach((b) => b.addEventListener('clic
   if (n >= 2) {
     if (v.name.length < 2) return bail('a-name', 'Your name, please.');
     if (!/^@?[A-Za-z0-9._]{1,30}$/.test(v.instagram)) return bail('a-ig', 'That Instagram handle does not look right.');
-    if (v.city.length < 2) return bail('a-city', 'Which city are you bringing on?');
+    if (v.city.length < 2) return bail('a-city', 'Which school are you bringing on?');
   }
   if (n >= 3) {
-    if (!v.circle || v.circle < 1) return bail('a-circle', 'Roughly how many people can you bring?');
-    if (v.pitch.length < 20) return bail('a-pitch', 'A sentence or two about your circle, please.');
+    if (!v.circle || v.circle < 1) return bail('a-circle', 'Roughly how many friends can you bring?');
+    if (v.pitch.length < 20) return bail('a-pitch', 'A sentence or two about your people, please.');
   }
   step(n);
 }));
@@ -1064,7 +1070,7 @@ $('a-send').addEventListener('click', async () => {
 const FLOW = ['applied', 'reviewing', 'approved', 'codes_sent', 'live', 'paid'];
 const LABEL = {
   applied:'Applied', reviewing:'In review', approved:'Approved',
-  codes_sent:'Codes sent', live:'Circle live', paid:'Paid', declined:'Not this time',
+  codes_sent:'Codes sent', live:'Friends live', paid:'Paid', declined:'Not this time',
 };
 async function track(quiet) {
   const ig = $('t-ig').value.trim(), code = $('t-code').value.trim();
@@ -1098,7 +1104,7 @@ async function track(quiet) {
           `<span class="${!declined && i === n ? 'on' : ''}">${esc(LABEL[s])}</span>`).join('')}</div>
         <div style="display:flex; gap:26px; flex-wrap:wrap; padding-top:12px; border-top:1px solid var(--line)">
           <div><b style="font-family:var(--serif); font-size:1.6rem; display:block; line-height:1">${h.joined}</b>
-            <span style="font-size:0.76rem; color:var(--muted)">Amis live</span></div>
+            <span style="font-size:0.76rem; color:var(--muted)">Friends live</span></div>
           <div><b style="font-family:var(--serif); font-size:1.6rem; display:block; line-height:1">${usd(owed)}</b>
             <span style="font-size:0.76rem; color:var(--muted)">${h.status === 'paid' ? 'Paid out' : 'Earned so far'}</span></div>
           <div><b style="font-family:var(--serif); font-size:1.6rem; display:block; line-height:1">${(h.codes || []).length}</b>
