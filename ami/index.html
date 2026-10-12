@@ -187,9 +187,6 @@ section{padding:88px 0; scroll-margin-top:86px;}
 .hero h1{color:#fff;}
 .hero h1 em{font-style:italic; font-weight:500;}
 .hero p{color:#A8B6C6; margin-top:20px; font-size:var(--fs-1); max-width:46ch;}
-.badge{display:inline-flex; align-items:center; gap:9px; padding:7px 14px; border-radius:999px;
-  background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.14);
-  font-family:var(--mono); font-size:var(--fs-7); letter-spacing:var(--ls-1); text-transform:uppercase; color:#C7D4E2;}
 .pulse{width:7px; height:7px; border-radius:50%; background:var(--live); flex-shrink:0;
   animation:pulse 2s ease-in-out infinite;}
 .pulse.o{background:var(--orange);}
@@ -198,26 +195,46 @@ section{padding:88px 0; scroll-margin-top:86px;}
 .hero-mark{position:absolute; right:-110px; top:-120px; width:440px; height:440px; opacity:.055; z-index:1;}
 @media (max-width:980px){ .hero-mark{width:300px; height:300px; right:-110px; top:-90px;} }
 
-/* terminal, straight out of the app's global-activity panel */
-.term{background:rgba(6,11,18,.72); border:1px solid rgba(255,255,255,.1); border-radius:var(--r);
-  overflow:hidden; backdrop-filter:blur(8px); box-shadow:0 30px 70px -30px rgba(0,0,0,.8);}
-.term-hd{display:flex; align-items:center; gap:9px; padding:12px 16px; border-bottom:1px solid rgba(255,255,255,.08);}
-.term-hd span{font-family:var(--mono); font-size:var(--fs-7); letter-spacing:var(--ls-1); text-transform:uppercase; color:#8FA3B8;}
-.term-hd .sp{flex:1;}
-.term-body{padding:12px 16px 14px; font-family:var(--mono); font-size:var(--fs-6); line-height:1.9;
-  min-height:172px; max-height:172px; overflow:hidden;}
-.term-body div{display:grid; grid-template-columns:52px 46px 1fr; gap:10px; color:#64798F;
-  animation:tin .45s ease backwards;}
-@keyframes tin{from{opacity:0; transform:translateY(5px);}}
-.term-body b{color:#C9D7E6; font-weight:500;}
-.term-body .cur b{color:#C6FF4A; animation:blink 1.1s steps(1) infinite;}
-@keyframes blink{0%,49%{opacity:1;} 50%,100%{opacity:0;}}
-.term-body i{font-style:normal; color:var(--orange);}
-.term-stats{display:grid; grid-template-columns:repeat(3,1fr); border-top:1px solid rgba(255,255,255,.08);}
-.term-stats div{padding:13px 16px; border-right:1px solid rgba(255,255,255,.08);}
-.term-stats div:last-child{border-right:none;}
-.term-stats b{display:block; font-family:var(--serif); font-size:var(--num-2); color:#fff; line-height:1;}
-.term-stats span{font-family:var(--mono); font-size:var(--fs-8); letter-spacing:var(--ls-2); text-transform:uppercase; color:#7A8EA3;}
+/* the hero card: a Friday on Ami, drawn rather than fetched */
+/* the hero sets colour:#fff for its own copy; this is a light panel sitting
+   inside it, so it has to reset or its text disappears into the white */
+.tonight{background:var(--paper); border-radius:var(--r); overflow:hidden; color:var(--text);
+  box-shadow:0 40px 80px -34px rgba(0,0,0,.75), 0 0 0 1px rgba(255,255,255,.08);}
+.tonight-hd{display:flex; align-items:center; gap:9px; padding:13px 16px; background:#fff;
+  border-bottom:1px solid var(--line);}
+.tonight-hd span{font-family:var(--mono); font-size:var(--fs-7); letter-spacing:var(--ls-1);
+  text-transform:uppercase; color:var(--muted);}
+.tonight-hd .sp{flex:1;}
+.tonight-map{position:relative; height:268px; overflow:hidden; background:var(--map);}
+@media (max-width:980px){ .tonight-map{height:240px;} }
+.tonight .pin{box-shadow:0 4px 10px rgba(20,22,27,.22);}
+.drift{animation:drift 7s ease-in-out infinite;}
+.d2{animation-duration:8.5s; animation-delay:-1.2s;}
+.d3{animation-duration:6.4s; animation-delay:-2.6s;}
+.d4{animation-duration:9.2s; animation-delay:-3.9s;}
+.d5{animation-duration:7.8s; animation-delay:-5.1s;}
+.d6{animation-duration:8.1s; animation-delay:-0.6s;}
+@keyframes drift{0%,100%{transform:translate(0,0);} 50%{transform:translate(3px,-4px);}}
+.t-toasts{position:absolute; left:12px; right:12px; bottom:12px; height:62px;}
+.tonight .toast{position:absolute; inset:0; max-width:none; align-items:center;
+  opacity:0; transform:translateY(8px); transition:opacity .5s ease, transform .5s cubic-bezier(.2,.7,.3,1);}
+.tonight .toast.on{opacity:1; transform:none;}
+.tonight-ft{display:grid; grid-template-columns:repeat(3,1fr); background:#fff; border-top:1px solid var(--line);}
+.tonight-ft div{padding:13px 16px; border-right:1px solid var(--line);}
+.tonight-ft div:last-child{border-right:none;}
+.tonight-ft b{display:block; font-family:var(--serif); font-size:var(--num-2); line-height:var(--lh-1);}
+.tonight-ft span{font-family:var(--mono); font-size:var(--fs-8); letter-spacing:var(--ls-2);
+  text-transform:uppercase; color:var(--muted);}
+
+/* a quiet nudge to keep going */
+.cue{display:inline-flex; align-items:center; gap:11px; margin-top:34px; text-decoration:none;
+  font-family:var(--mono); font-size:var(--fs-7); letter-spacing:var(--ls-1); text-transform:uppercase;
+  color:#8FA3B8;}
+.cue:hover{color:#fff;}
+.cue .rail{position:relative; width:1px; height:34px; background:rgba(255,255,255,.18); overflow:hidden;}
+.cue .rail i{position:absolute; left:0; top:0; width:1px; height:12px; background:#fff;
+  animation:railrun 2.1s cubic-bezier(.6,0,.4,1) infinite;}
+@keyframes railrun{0%{transform:translateY(-14px); opacity:0;} 25%{opacity:1;} 100%{transform:translateY(36px); opacity:0;}}
 
 /* ---------- what ami is ---------- */
 .three{display:grid; grid-template-columns:repeat(3,1fr); gap:18px; align-items:start;}
@@ -251,7 +268,7 @@ section{padding:88px 0; scroll-margin-top:86px;}
   padding:9px 12px; box-shadow:0 10px 26px -8px rgba(0,0,0,.26); max-width:84%;}
 .toast .ic{width:26px; height:26px; border-radius:8px; background:var(--ink); display:grid; place-items:center; flex-shrink:0;}
 .toast .ic .mark{width:19px; height:19px;} .toast .ic .core{stroke-width:8;} .toast .ic .mid{stroke-width:14;} .toast .ic .halo{opacity:0;}
-.toast b{display:block; font-size:var(--fs-5); font-weight:600; line-height:var(--lh-2);}
+.toast b{display:block; font-size:var(--fs-5); font-weight:600; line-height:var(--lh-2); color:var(--text);}
 .toast span{display:block; font-size:var(--fs-7); color:var(--muted); line-height:var(--lh-2);}
 
 /* ---------- calculator ---------- */
@@ -551,21 +568,45 @@ footer{background:var(--ink); color:#8FA3B8; margin-top:0;}
   <img class="mark hero-mark" src="/assets/ami/ami-mark.png" alt="" width="341" height="341">
   <div class="hero-in">
     <div>
-      <span class="badge"><i class="pulse"></i>By invitation only</span>
-      <h1 style="margin-top:22px">Put your campus<br>on the map.<br><em>Get paid.</em></h1>
+      <h1>Put your campus<br>on the map.<br><em>Get paid.</em></h1>
       <p>Ami is a live heatmap of your campus and everyone on it. You already know where your friends end up on a Friday &mdash; this is that, as a map. You get invite codes, you bring your people, and you earn <b style="color:#fff">$8 for every friend who joins and goes live</b>.</p>
       <div class="hero-cta">
         <a class="btn btn-dark btn-lg" href="#apply">Apply to host</a>
         <a class="btn btn-outline-light btn-lg" href="#how">See how it works</a>
       </div>
+      <a class="cue" href="#what"><span class="rail"><i></i></span>Keep going</a>
     </div>
-    <div class="term" id="term">
-      <div class="term-hd"><i class="pulse"></i><span>Global activity</span><div class="sp"></div><span id="term-live">live</span></div>
-      <div class="term-body" id="term-body"></div>
-      <div class="term-stats">
-        <div><b id="s-hosts">—</b><span>Hosts</span></div>
-        <div><b id="s-cities">&mdash;</b><span>Campuses</span></div>
-        <div><b id="s-waiting">—</b><span>Waiting</span></div>
+    <div class="tonight">
+      <div class="tonight-hd">
+        <i class="pulse"></i><span>A Friday, mapped</span>
+        <div class="sp"></div><span>11:40 PM</span>
+      </div>
+      <div class="tonight-map">
+        <div class="mapbg"></div>
+        <span class="heat" style="left:46%; top:22%; width:150px; height:150px; filter:blur(26px); opacity:.42"></span>
+        <span class="heat" style="left:8%; top:52%; width:104px; height:104px; filter:blur(22px); opacity:.3"></span>
+        <span class="pin drift" style="left:13%; top:24%">VS<i></i></span>
+        <span class="pin sm drift d2" style="left:33%; top:46%">GR<i></i></span>
+        <span class="pin drift d3" style="left:56%; top:28%">LU<i></i></span>
+        <span class="pin sm drift d4" style="left:20%; top:56%">KT<i></i></span>
+        <span class="pin drift d5" style="left:68%; top:58%">AM<i></i></span>
+        <span class="pin sm drift d6" style="left:80%; top:44%">EV<i></i></span>
+        <span class="venue" style="left:44%; top:50%">&#9679; Snapped venue</span>
+        <div class="t-toasts" id="t-toasts">
+          <div class="toast on"><span class="ic"><img src="/assets/ami/ami-mark.png" alt=""></span>
+            <span><b>You have 12 Amis at the Quad</b><span>Tap to see who&rsquo;s here and your mutuals.</span></span></div>
+          <div class="toast"><span class="ic"><img src="/assets/ami/ami-mark.png" alt=""></span>
+            <span><b>Liam just got to Jefferson St.</b><span>He landed four minutes ago. Say something.</span></span></div>
+          <div class="toast"><span class="ic"><img src="/assets/ami/ami-mark.png" alt=""></span>
+            <span><b>Amelia is 170 ft away &#10024;</b><span>You&rsquo;re being intro&rsquo;ed by Evelyn K. 5 mutuals.</span></span></div>
+          <div class="toast"><span class="ic"><img src="/assets/ami/ami-mark.png" alt=""></span>
+            <span><b>The house on Jefferson is filling up</b><span>14 people in the last ten minutes.</span></span></div>
+        </div>
+      </div>
+      <div class="tonight-ft">
+        <div><b>$8</b><span>per friend</span></div>
+        <div><b>40</b><span>codes to start</span></div>
+        <div><b>$0</b><span>to begin</span></div>
       </div>
     </div>
   </div>
@@ -650,7 +691,7 @@ footer{background:var(--ink); color:#8FA3B8; margin-top:0;}
       <div><b>$250</b><span>First-on-campus bonus</span></div>
       <div><b>40</b><span>Invite codes to start</span></div>
       <div><b>0</b><span>Deposit, ever</span></div>
-      <div><b id="e-cities">&mdash;</b><span>Campuses already claimed</span></div>
+      <div><b>1</b><span>Founding host per campus</span></div>
     </div>
   </div>
 </section>
@@ -1152,43 +1193,18 @@ const FAQ = [
 $('faq-list').innerHTML = FAQ.map(([q, a]) =>
   `<details><summary>${q}</summary><div class="a">${a}</div></details>`).join('');
 
-/* ---- the live terminal, fed by real rows ---- */
-const ago = (iso) => {
-  const s = Math.max(0, (Date.now() - Date.parse(iso)) / 1000);
-  if (s < 60) return 'now';
-  if (s < 3600) return Math.floor(s / 60) + 'm ago';
-  if (s < 86400) return Math.floor(s / 3600) + 'h ago';
-  return Math.floor(s / 86400) + 'd ago';
-};
-const cityTag = (c) => (c || '').trim().split(/\s+/).map((w) => w[0] || '').join('').slice(0, 3).toUpperCase() || '—';
-
-async function loadStats() {
-  try {
-    const res = await fetch('/api/ami/stats', { cache: 'no-store' });
-    if (!res.ok) throw new Error();
-    const d = await res.json();
-    const t = d.totals || {};
-    $('s-hosts').textContent = (t.hosts || 0).toLocaleString('en-US');
-    $('s-cities').textContent = (t.cities || 0).toLocaleString('en-US');
-    $('s-waiting').textContent = (t.waiting || 0).toLocaleString('en-US');
-    $('e-cities').textContent = (t.cities || 0).toLocaleString('en-US');
-    const feed = d.feed || [];
-    const rows = feed.length
-      ? feed.slice(0, 6).map((f, i) =>
-          `<div style="animation-delay:${i * 60}ms"><span>${esc(ago(f.at))}</span><i>${esc(cityTag(f.city))}</i><b>${esc(f.line)}</b></div>`).join('')
-      : `<div><span>now</span><i>&mdash;</i><b>no campuses claimed yet</b></div>
-         <div style="animation-delay:70ms"><span>now</span><i>&mdash;</i><b>waiting for the first host</b></div>`;
-    // a live terminal with little traffic should look like one, not like a
-    // broken panel -- so the cursor sits under whatever is really there
-    $('term-body').innerHTML = rows + `<div class="cur"><span></span><i></i><b>_</b></div>`;
-    $('term-live').textContent = feed.length ? 'live' : 'listening';
-  } catch (e) {
-    $('term-body').innerHTML = `<div><span>now</span><i>&mdash;</i><b>activity feed unavailable</b></div>`;
-    $('term-live').textContent = 'offline';
-  }
-}
-loadStats();
-setInterval(loadStats, 45000);
+/* ---- the hero card cycles through four moments, on its own ---- */
+(function tonight() {
+  const toasts = [...document.querySelectorAll('#t-toasts .toast')];
+  if (toasts.length < 2) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  let i = 0;
+  setInterval(() => {
+    toasts[i].classList.remove('on');
+    i = (i + 1) % toasts.length;
+    toasts[i].classList.add('on');
+  }, 3400);
+})();
 
 /* ---- the portal ---- */
 const SCENES = ['Greek life', 'My dorm or floor', 'A club or org', 'A sports team', 'Nightlife', 'My major', 'Something else'];
@@ -1280,7 +1296,6 @@ $('a-send').addEventListener('click', async () => {
     try { localStorage.setItem('ami_host', JSON.stringify({ instagram: out.host.instagram, hostCode: out.hostCode })); } catch (e) {}
     $('t-ig').value = out.host.instagram;
     $('t-code').value = out.hostCode;
-    loadStats();
   } catch (err) {
     msg.className = 'msg err'; msg.textContent = err.message;
   }
