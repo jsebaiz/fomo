@@ -187,6 +187,9 @@ section{padding:88px 0; scroll-margin-top:86px;}
 .hero h1{color:#fff;}
 .hero h1 em{font-style:italic; font-weight:500;}
 .hero p{color:#A8B6C6; margin-top:20px; font-size:var(--fs-1); max-width:46ch;}
+.badge{display:inline-flex; align-items:center; gap:9px; padding:7px 14px; border-radius:999px;
+  background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.14);
+  font-family:var(--mono); font-size:var(--fs-7); letter-spacing:var(--ls-1); text-transform:uppercase; color:#C7D4E2;}
 .pulse{width:7px; height:7px; border-radius:50%; background:var(--live); flex-shrink:0;
   animation:pulse 2s ease-in-out infinite;}
 .pulse.o{background:var(--orange);}
@@ -568,7 +571,8 @@ footer{background:var(--ink); color:#8FA3B8; margin-top:0;}
   <img class="mark hero-mark" src="/assets/ami/ami-mark.png" alt="" width="341" height="341">
   <div class="hero-in">
     <div>
-      <h1>Put your campus<br>on the map.<br><em>Get paid.</em></h1>
+      <span class="badge"><i class="pulse"></i>By invitation only</span>
+      <h1 style="margin-top:22px">Put your campus<br>on the map.<br><em>Get paid.</em></h1>
       <p>Ami is a live heatmap of your campus and everyone on it. You already know where your friends end up on a Friday &mdash; this is that, as a map. You get invite codes, you bring your people, and you earn <b style="color:#fff">$8 for every friend who joins and goes live</b>.</p>
       <div class="hero-cta">
         <a class="btn btn-dark btn-lg" href="#apply">Apply to host</a>
