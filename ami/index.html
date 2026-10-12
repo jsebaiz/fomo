@@ -24,8 +24,8 @@
   --mono:'JetBrains Mono', ui-monospace, Menlo, monospace;
   --r:18px;
   /* ---- type scale. Every size on this page resolves to one of these. ---- */
-  --ds-1:clamp(2.75rem,6.6vw,5.25rem);  /* page title            */
-  --ds-2:clamp(2.05rem,4.3vw,3.15rem);  /* section title         */
+  --ds-1:clamp(2.6rem,6.4vw,5rem);      /* page title            */
+  --ds-2:clamp(2rem,4.2vw,3.1rem);      /* section title         */
   --ds-3:clamp(1.55rem,3vw,2.15rem);    /* sub-section title     */
   --ds-4:1.3125rem;                     /* card + panel heading  */
   --ds-5:1.0625rem;                     /* small heading         */
@@ -59,9 +59,15 @@ a{color:inherit;}
 .wrap{max-width:1120px; margin:0 auto; padding-left:32px; padding-right:32px;}
 @media (max-width:760px){ .wrap{padding-left:20px; padding-right:20px;} }
 
-h1,h2,h3,.disp{font-family:var(--serif); font-weight:700; letter-spacing:-0.015em; line-height:var(--lh-1); margin:0;}
-h1{font-size:clamp(2.6rem,6.4vw,5rem);}
-h2{font-size:clamp(2rem,4.2vw,3.1rem);}
+/* Chrome switches common ligatures off whenever letter-spacing is not
+   normal, which left Playfair's f ball-terminal crashing into the i dot in
+   words like "first". Measured: "fi" is 66px ligated vs 66.7px unligated at
+   100px; with tracking both read 63.7px, i.e. no substitution. Display type
+   keeps its natural fit and asks for the ligature explicitly. */
+h1,h2,h3,.disp{font-family:var(--serif); font-weight:700; letter-spacing:normal;
+  font-variant-ligatures:common-ligatures contextual; line-height:var(--lh-1); margin:0;}
+h1{font-size:var(--ds-1);}
+h2{font-size:var(--ds-2);}
 h3{font-size:var(--ds-4); line-height:1.2;}
 p{margin:0; color:var(--muted);}
 .kicker{font-family:var(--mono); font-size:var(--fs-7); letter-spacing:var(--ls-1); text-transform:uppercase; color:var(--orange);}
@@ -140,7 +146,7 @@ section{padding:88px 0; scroll-margin-top:86px;}
 /* the mark itself, at size. No container, no plate. */
 .brand .glyph{width:46px; height:46px; flex-shrink:0; object-fit:contain;}
 @media (max-width:760px){ .brand .glyph{width:38px; height:38px;} }
-.brand b{font-family:var(--serif); font-size:1.5rem; font-weight:700; letter-spacing:-0.015em; line-height:1;}
+.brand b{font-family:var(--serif); font-size:1.5rem; font-weight:700; letter-spacing:normal; line-height:1;}
 .brand .sub{font-family:var(--mono); font-size:var(--fs-7); letter-spacing:var(--ls-1); text-transform:uppercase; color:var(--faint); align-self:center; padding-top:2px;}
 .nav .sp{flex:1;}
 .nav .links{display:flex; gap:24px;}
@@ -312,7 +318,8 @@ input[type=range]::-moz-range-thumb{width:20px; height:20px; border-radius:50%; 
 .early .row div span{font-family:var(--mono); font-size:var(--fs-8); letter-spacing:var(--ls-1); text-transform:uppercase; color:#8FA3B8;}
 
 /* ---------- steps ---------- */
-.steps{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; align-items:start;}
+/* stretch, so a shorter card does not sit short of its neighbours */
+.steps{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; align-items:stretch;}
 @media (max-width:940px){ .steps{grid-template-columns:repeat(2,1fr);} }
 @media (max-width:560px){ .steps{grid-template-columns:1fr;} }
 .step{background:var(--surface); border:1px solid var(--line); border-radius:var(--r); padding:22px 20px 24px;}
