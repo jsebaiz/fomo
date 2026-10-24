@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Umpty — the daily guess-the-gap game</title>
+<meta name="description" content="Seven questions a day. How many times bigger, taller, faster, further? Estimate the gap, score out of 7,000, come back tomorrow.">
+<meta name="theme-color" content="#FAF8F3">
+<meta property="og:title" content="Umpty">
+<meta property="og:description" content="Seven questions a day. How many times bigger? Guess the gap.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2314140F'/%3E%3Ctext x='16' y='23' font-family='monospace' font-size='18' font-weight='700' fill='%23C3EC3A' text-anchor='middle'%3E%C3%97%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FAF8F3; --card:#FFFFFF; --ink:#14140F; --muted:#6E6B61; --faint:#9C988C;
+  --line:#E7E2D6; --line-soft:#F1EDE3;
+  --lime:#C3EC3A; --lime-deep:#8FBE07; --ink-deep:#1A1D2E;
+  --good:#1E9E63; --mid:#D99324; --miss:#CF4A35;
+  --sans:'Space Grotesk', ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --mono:ui-monospace, 'SF Mono', Menlo, monospace;
+  --r:16px; --r-sm:11px;
+  --fs-mono:0.6875rem; --fs-xs:0.8125rem; --fs-sm:0.875rem; --fs-md:0.9375rem;
+  --fs-base:1.0625rem; --fs-lg:1.1875rem;
+  --ls:0.14em;
+  --shadow:0 1px 2px rgba(20,20,15,.04), 0 8px 24px -12px rgba(20,20,15,.14);
+}
+*{box-sizing:border-box;}
+[hidden]{display:none !important;}
+html,body{height:100%;}
+html{-webkit-text-size-adjust:100%;}
+body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans);
+  font-size:var(--fs-base); line-height:1.5; -webkit-font-smoothing:antialiased;
+  overscroll-behavior-y:none;}
+button,input{font-family:inherit; font-size:inherit; color:inherit;}
+button{cursor:pointer;}
+svg{display:block;}
+:focus-visible{outline:2.5px solid var(--ink); outline-offset:2px; border-radius:4px;}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap;}
+
+/* ---------- shell ---------- */
+.app{min-height:100%; min-height:100dvh; display:flex; flex-direction:column;
+  max-width:520px; margin:0 auto; padding:0 18px env(safe-area-inset-bottom);}
+@media (min-width:560px){ .app{padding:0 24px;} }
+
+header{display:flex; align-items:center; gap:10px; padding:16px 0 12px;}
+.logo{display:flex; align-items:baseline; gap:2px; font-weight:700; font-size:1.3rem;
+  letter-spacing:-0.03em; text-decoration:none; color:var(--ink);}
+.logo i{font-style:normal; color:var(--lime-deep);}
+header .sp{flex:1;}
+.ico{width:36px; height:36px; border-radius:50%; border:1px solid var(--line);
+  background:var(--card); display:grid; place-items:center; color:var(--muted);}
+.ico:hover{border-color:var(--ink); color:var(--ink);}
+.ico svg{width:17px; height:17px;}
+
+main{flex:1; display:flex; flex-direction:column; padding-bottom:22px;}
+
+/* ---------- shared bits ---------- */
+.kicker{font-family:var(--mono); font-size:var(--fs-mono); letter-spacing:var(--ls);
+  text-transform:uppercase; color:var(--faint);}
+.btn{display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  width:100%; border:1.5px solid var(--ink); border-radius:var(--r-sm); padding:15px 20px;
+  font-weight:600; font-size:var(--fs-base); background:var(--ink); color:#fff;
+  transition:transform .08s ease, background .15s ease;}
+.btn:active{transform:translateY(1px);}
+.btn[disabled]{opacity:.35; cursor:default; transform:none;}
+.btn-lime{background:var(--lime); border-color:var(--ink); color:var(--ink);}
+.btn-ghost{background:transparent; color:var(--ink); border-color:var(--line);}
+.btn-ghost:hover{border-color:var(--ink);}
+.btn-sm{padding:11px 16px; font-size:var(--fs-sm); width:auto;}
+
+/* ---------- title card ---------- */
+.intro{flex:1; display:flex; flex-direction:column; justify-content:center; gap:22px; padding:8px 0 28px;}
+.intro h1{font-size:clamp(3.1rem,17vw,4.4rem); line-height:.88; letter-spacing:-0.055em;
+  font-weight:700; margin:0;}
+.intro h1 i{font-style:normal; color:var(--lime-deep);}
+.intro .tag{font-size:var(--fs-lg); color:var(--muted); max-width:22ch; margin:0;}
+.rules{display:grid; gap:10px; margin:0; padding:0; list-style:none;}
+.rules li{display:flex; gap:11px; align-items:flex-start; font-size:var(--fs-md); color:var(--muted);}
+.rules b{flex:0 0 22px; height:22px; border-radius:50%; background:var(--ink); color:var(--lime);
+  font-size:var(--fs-mono); font-weight:700; display:grid; place-items:center; margin-top:1px;}
+.rules span{color:var(--ink);}
+.intro .meta{font-family:var(--mono); font-size:var(--fs-mono); letter-spacing:var(--ls);
+  text-transform:uppercase; color:var(--faint); display:flex; gap:14px; flex-wrap:wrap;}
+
+/* ---------- progress pips ---------- */
+.pips{display:flex; gap:5px; padding:2px 0 16px;}
+.pips i{flex:1; height:4px; border-radius:2px; background:var(--line); transition:background .3s ease;}
+.pips i.done{background:var(--ink);}
+.pips i.now{background:var(--lime-deep);}
+
+/* ---------- question ---------- */
+.q-wrap{flex:1; display:flex; flex-direction:column;}
+.q-body{flex:1; display:flex; flex-direction:column; justify-content:center; padding-bottom:6px;}
+.q-head{display:flex; align-items:baseline; gap:10px; margin-bottom:14px;}
+.q-head .cat{font-family:var(--mono); font-size:var(--fs-mono); letter-spacing:var(--ls);
+  text-transform:uppercase; color:var(--lime-deep);}
+.q-head .n{margin-left:auto; font-family:var(--mono); font-size:var(--fs-mono);
+  letter-spacing:var(--ls); color:var(--faint);}
+.q-text{font-size:clamp(1.35rem,5.6vw,1.75rem); line-height:1.22; letter-spacing:-0.025em;
+  font-weight:600; margin:0 0 4px;}
+
+/* the two things being compared */
+.pair{display:grid; grid-template-columns:1fr auto 1fr; gap:10px; align-items:center;
+  margin:22px 0 10px;}
+.pair .side{background:var(--card); border:1px solid var(--line); border-radius:var(--r-sm);
+  padding:13px 14px; min-width:0;}
+.pair .side .lb{font-size:var(--fs-sm); font-weight:600; line-height:1.25;}
+.pair .side .vl{font-family:var(--mono); font-size:var(--fs-mono); color:var(--faint);
+  margin-top:5px; min-height:1em;}
+.pair .vs{font-family:var(--mono); font-size:var(--fs-xs); color:var(--faint); letter-spacing:.04em;}
+
+/* ---------- the dial ---------- */
+.dial{padding-top:20px;}
+.read{display:flex; align-items:baseline; justify-content:center; gap:3px;
+  font-weight:700; letter-spacing:-0.04em; line-height:1;
+  font-size:clamp(3.4rem,18vw,4.6rem); font-variant-numeric:tabular-nums;}
+.read small{font-size:.38em; font-weight:600; letter-spacing:-0.02em; color:var(--muted);}
+.read.pct small{color:var(--muted);}
+.hint{text-align:center; font-family:var(--mono); font-size:var(--fs-mono);
+  letter-spacing:var(--ls); text-transform:uppercase; color:var(--faint); margin-top:7px;}
+.slider{position:relative; margin:18px 0 6px; padding:14px 0;}
+.slider input{-webkit-appearance:none; appearance:none; width:100%; height:12px;
+  background:none; display:block; margin:0;}
+.slider input::-webkit-slider-runnable-track{height:12px; border-radius:6px;
+  background:linear-gradient(90deg, var(--lime) var(--p,0%), var(--line-soft) var(--p,0%));
+  border:1px solid var(--line);}
+.slider input::-webkit-slider-thumb{-webkit-appearance:none; width:40px; height:40px;
+  border-radius:50%; background:var(--ink); border:4px solid var(--bg);
+  box-shadow:0 2px 10px rgba(20,20,15,.28); margin-top:-15px;}
+.slider input::-moz-range-track{height:12px; border-radius:6px; background:var(--line-soft); border:1px solid var(--line);}
+.slider input::-moz-range-progress{height:12px; border-radius:6px; background:var(--lime);}
+.slider input::-moz-range-thumb{width:34px; height:34px; border-radius:50%; background:var(--ink);
+  border:4px solid var(--bg); box-shadow:0 2px 10px rgba(20,20,15,.28);}
+.ticks{display:flex; justify-content:space-between; font-family:var(--mono);
+  font-size:var(--fs-mono); color:var(--faint);}
+.nudge{display:flex; gap:8px; justify-content:center; margin:10px 0 2px;}
+.nudge button{width:46px; height:36px; border-radius:9px; border:1px solid var(--line);
+  background:var(--card); font-weight:700; color:var(--muted); font-size:var(--fs-sm);}
+.nudge button:hover{border-color:var(--ink); color:var(--ink);}
+
+/* ---------- reveal ---------- */
+.reveal{animation:rise .34s cubic-bezier(.2,.8,.3,1);}
+@keyframes rise{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;}}
+.verdict{display:flex; align-items:center; gap:10px; margin-bottom:14px;}
+.verdict .lbl{font-weight:700; font-size:var(--fs-lg); letter-spacing:-0.02em;}
+.verdict .pts{margin-left:auto; font-weight:700; font-variant-numeric:tabular-nums;
+  font-size:1.5rem; letter-spacing:-0.03em;}
+.verdict.good .lbl,.verdict.good .pts{color:var(--good);}
+.verdict.mid  .lbl,.verdict.mid  .pts{color:var(--mid);}
+.verdict.miss .lbl,.verdict.miss .pts{color:var(--miss);}
+
+.scale{position:relative; height:94px; margin:2px 0 18px;}
+.scale .axis{position:absolute; left:0; right:0; top:46px; height:2px; background:var(--line); border-radius:1px;}
+.scale .bridge{position:absolute; top:45px; height:4px; background:var(--lime-deep); opacity:.5; border-radius:2px;}
+/* each marker spans the full height; the dot is pinned to the axis and the
+   text hangs above it (your guess) or below it (the answer) */
+.scale .mk{position:absolute; top:0; bottom:0; width:108px; transform:translateX(-50%); text-align:center;}
+.scale .mk .dot{position:absolute; left:50%; top:47px; width:13px; height:13px;
+  margin:-6.5px 0 0 -6.5px; border-radius:50%; outline:3px solid var(--bg);}
+.scale .mk .txt{position:absolute; left:0; right:0;}
+.scale .mk.you .txt{top:0;}
+.scale .mk.act .txt{bottom:0;}
+.scale .cap{display:block; font-family:var(--mono); font-size:var(--fs-mono); letter-spacing:.07em;
+  text-transform:uppercase; color:var(--faint);}
+.scale .num{display:block; font-weight:700; font-size:var(--fs-sm); font-variant-numeric:tabular-nums;}
+.scale .mk.you .dot{background:var(--ink);}
+.scale .mk.you .num{color:var(--ink);}
+.scale .mk.act .dot{background:var(--lime); box-shadow:0 0 0 2px var(--ink);}
+.scale .mk.act .num{color:var(--lime-deep);}
+.work{background:var(--card); border:1px solid var(--line); border-radius:var(--r-sm);
+  padding:14px; display:grid; gap:9px; margin-bottom:12px;}
+.work div{display:flex; gap:12px; align-items:baseline; font-size:var(--fs-sm);}
+.work .k{color:var(--muted); min-width:0; flex:1;}
+.work .v{font-family:var(--mono); font-weight:500; font-variant-numeric:tabular-nums; white-space:nowrap;}
+.src{font-size:var(--fs-xs); color:var(--faint); line-height:1.45; margin:0 0 16px;}
+
+/* ---------- results ---------- */
+.done-wrap{flex:1; display:flex; flex-direction:column; justify-content:center; gap:18px; padding:14px 0;}
+.total{text-align:center;}
+.total .big{font-size:clamp(3.4rem,17vw,4.6rem); font-weight:700; letter-spacing:-0.05em;
+  line-height:.92; font-variant-numeric:tabular-nums;}
+.total .of{color:var(--faint); font-weight:600; font-size:.6em; letter-spacing:-0.02em;}
+.total .tier{display:inline-block; margin-top:10px; padding:6px 14px; border-radius:999px;
+  background:var(--lime); font-weight:600; font-size:var(--fs-sm);}
+.grid7{display:flex; gap:5px; justify-content:center; margin:4px 0;}
+.grid7 i{width:30px; height:30px; border-radius:7px; display:grid; place-items:center;
+  font-family:var(--mono); font-size:var(--fs-mono); font-weight:700; color:#fff;}
+.stats{display:grid; grid-template-columns:repeat(4,1fr); gap:8px; text-align:center;}
+.stats div b{display:block; font-size:1.35rem; font-weight:700; letter-spacing:-0.03em;
+  font-variant-numeric:tabular-nums;}
+.stats div span{font-family:var(--mono); font-size:var(--fs-mono); letter-spacing:.07em;
+  text-transform:uppercase; color:var(--faint);}
+.rows{display:grid; grid-template-columns:minmax(0,1fr); gap:7px;}
+.row{display:flex; align-items:center; gap:10px; min-width:0; font-size:var(--fs-sm);
+  padding:9px 12px; background:var(--card); border:1px solid var(--line); border-radius:9px;}
+.row .n{font-family:var(--mono); font-size:var(--fs-mono); color:var(--faint); width:14px;}
+.row .t{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.row .p{font-family:var(--mono); font-weight:600; font-variant-numeric:tabular-nums;}
+.next{text-align:center; font-family:var(--mono); font-size:var(--fs-mono);
+  letter-spacing:var(--ls); text-transform:uppercase; color:var(--faint);}
+.next b{color:var(--ink); font-variant-numeric:tabular-nums;}
+.cta-row{display:grid; gap:9px;}
+
+/* ---------- sheet ---------- */
+.scrim{position:fixed; inset:0; z-index:50; background:rgba(20,20,15,.42);
+  display:flex; align-items:flex-end; justify-content:center; animation:fade .2s ease;}
+@media (min-width:560px){ .scrim{align-items:center;} }
+@keyframes fade{from{opacity:0;}}
+.sheet{background:var(--bg); width:100%; max-width:520px; border-radius:20px 20px 0 0;
+  padding:20px 20px calc(24px + env(safe-area-inset-bottom)); max-height:88vh; overflow-y:auto;
+  animation:up .28s cubic-bezier(.2,.8,.3,1);}
+@media (min-width:560px){ .sheet{border-radius:20px; margin:0 18px;} }
+@keyframes up{from{transform:translateY(18px); opacity:0;}}
+.sheet h2{font-size:1.4rem; letter-spacing:-0.03em; margin:0 0 4px;}
+.sheet p{color:var(--muted); font-size:var(--fs-md); margin:0 0 16px;}
+.sheet .x{position:absolute;}
+.sheet-hd{display:flex; align-items:center; gap:10px; margin-bottom:14px;}
+.sheet-hd .sp{flex:1;}
+.dist{display:grid; gap:5px; margin-bottom:18px;}
+.dist div{display:flex; align-items:center; gap:9px; font-family:var(--mono); font-size:var(--fs-mono);}
+.dist .bar{height:20px; background:var(--line); border-radius:4px; min-width:3px;
+  display:grid; place-items:center; color:var(--ink); font-weight:700; padding:0 6px;}
+.dist .bar.on{background:var(--lime);}
+.dist .lb{color:var(--faint); width:52px; text-align:right;}
+.toast{position:fixed; left:50%; bottom:28px; transform:translateX(-50%) translateY(10px);
+  background:var(--ink); color:#fff; padding:11px 18px; border-radius:999px; font-size:var(--fs-sm);
+  font-weight:600; opacity:0; pointer-events:none; transition:all .25s ease; z-index:60;}
+.toast.on{opacity:1; transform:translateX(-50%);}
+
+@media (prefers-reduced-motion:reduce){ *{animation:none !important; transition:none !important;} }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <a class="logo" href="./" aria-label="Umpty home">Umpty<i>×</i></a>
+    <div class="sp"></div>
+    <button type="button" class="ico" id="btn-stats" aria-label="Your stats" title="Stats">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+        <path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+    </button>
+    <button type="button" class="ico" id="btn-help" aria-label="How to play" title="How to play">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+        <path d="M9.1 9a3 3 0 1 1 4.5 2.6c-.9.5-1.6 1.3-1.6 2.4"/><path d="M12 18h.01"/></svg>
+    </button>
+  </header>
+
+  <main id="main">
+
+    <!-- intro -->
+    <section class="intro" id="view-intro">
+      <div>
+        <h1>Umpty<i>×</i></h1>
+        <p class="tag" id="intro-tag">Seven questions a day. How many times bigger?</p>
+      </div>
+      <ul class="rules">
+        <li><b>1</b><span>We name two things. You guess the gap between them.</span></li>
+        <li><b>2</b><span>Closer guess, more points. 1,000 a question, 7,000 a day.</span></li>
+        <li><b>3</b><span>Everyone gets the same seven. New set at midnight UTC.</span></li>
+      </ul>
+      <div class="cta-row">
+        <button type="button" class="btn btn-lime" id="btn-play">Play today’s seven</button>
+        <button type="button" class="btn btn-ghost" id="btn-practice">Practice, unlimited</button>
+      </div>
+      <div class="meta" id="intro-meta"></div>
+    </section>
+
+    <!-- play -->
+    <section class="q-wrap" id="view-play" hidden>
+      <div class="pips" id="pips" aria-hidden="true"></div>
+      <div class="q-body">
+      <div class="q-head">
+        <span class="cat" id="q-cat"></span>
+        <span class="n" id="q-n"></span>
+      </div>
+      <h2 class="q-text" id="q-text"></h2>
+
+      <div class="pair" id="q-pair">
+        <div class="side"><div class="lb" id="pair-a"></div><div class="vl" id="pair-av"></div></div>
+        <div class="vs" id="pair-vs">vs</div>
+        <div class="side"><div class="lb" id="pair-b"></div><div class="vl" id="pair-bv"></div></div>
+      </div>
+
+      <!-- the dial -->
+      <div class="dial" id="dial">
+        <div class="read" id="read"><span id="read-v">1.0</span><small id="read-u">×</small></div>
+        <div class="hint" id="read-hint">drag to estimate</div>
+        <div class="slider">
+          <input type="range" id="slider" min="0" max="1000" step="1" value="0"
+                 aria-label="Your estimate" aria-describedby="read">
+        </div>
+        <div class="ticks" id="ticks"></div>
+        <div class="nudge">
+          <button type="button" id="nudge-down" aria-label="Lower">−</button>
+          <button type="button" id="nudge-up" aria-label="Higher">+</button>
+        </div>
+        <div style="margin-top:14px"><button type="button" class="btn" id="btn-lock">Lock it in</button></div>
+      </div>
+
+      <!-- reveal -->
+      <div class="reveal" id="reveal" hidden>
+        <div class="verdict" id="verdict">
+          <span class="lbl" id="v-lbl"></span>
+          <span class="pts" id="v-pts"></span>
+        </div>
+        <div class="scale" id="scale">
+          <div class="axis"></div>
+          <div class="bridge" id="sc-bridge"></div>
+          <div class="mk you" id="sc-you"><span class="txt"><span class="cap">your guess</span><span class="num" id="sc-you-n"></span></span><i class="dot"></i></div>
+          <div class="mk act" id="sc-act"><i class="dot"></i><span class="txt"><span class="num" id="sc-act-n"></span><span class="cap">actual</span></span></div>
+        </div>
+        <div class="work" id="work"></div>
+        <p class="src" id="src"></p>
+        <button type="button" class="btn btn-lime" id="btn-next">Next</button>
+      </div>
+      </div>
+    </section>
+
+    <!-- results -->
+    <section class="done-wrap" id="view-done" hidden>
+      <div class="total">
+        <div class="kicker" id="done-kicker"></div>
+        <div class="big"><span id="done-score">0</span><span class="of">/7,000</span></div>
+        <div class="tier" id="done-tier"></div>
+      </div>
+      <div class="grid7" id="done-grid"></div>
+      <div class="stats" id="done-stats"></div>
+      <div class="rows" id="done-rows"></div>
+      <div class="next" id="done-next"></div>
+      <div class="cta-row">
+        <button type="button" class="btn btn-lime" id="btn-share">Share result</button>
+        <button type="button" class="btn btn-ghost" id="btn-practice2">Keep playing, unlimited</button>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="questions.js"></script>
+<script>
+/* ============================================================================
+   Umpty — a daily estimation game.
+   No build step, no framework, no network. The whole game is this file plus
+   questions.js, which is the point: it has to open and be playable instantly.
+   ========================================================================== */
+(function () {
+'use strict';
+
+const BANK = window.UMPTY_BANK || [];
+const $ = (id) => document.getElementById(id);
+const PER_DAY = 7;
+const MAX_Q = 1000;
+const MAX_DAY = PER_DAY * MAX_Q;
+const STORE = 'umpty_v1';
+/* Day 1 was 2026-01-01 UTC. Puzzle number is stable for everyone on Earth
+   because it is derived from the UTC date, never the local one. */
+const EPOCH = Date.UTC(2026, 0, 1);
+
+/* ---------------------------------------------------------------- helpers */
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const dayIndex = (t) => {
+  const d = new Date(t === undefined ? Date.now() : t);
+  return Math.floor((Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()) - EPOCH) / 86400000);
+};
+const comma = (n) => n.toLocaleString('en-US');
+
+/* deterministic PRNG so a given day is the same set for everybody */
+function mulberry32(seed) {
+  let a = seed >>> 0;
+  return function () {
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function shuffled(n, seed) {
+  const a = Array.from({ length: n }, (_, i) => i);
+  const rnd = mulberry32(seed);
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(rnd() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+/* Walk the whole bank before repeating: reshuffle once per full cycle. */
+function pickDay(day) {
+  const slots = Math.floor(BANK.length / PER_DAY);
+  if (slots < 1) return BANK.slice(0, PER_DAY);
+  const cycle = Math.floor(day / slots);
+  const slot = ((day % slots) + slots) % slots;
+  const order = shuffled(BANK.length, 0x9E3779B9 ^ cycle);
+  return order.slice(slot * PER_DAY, slot * PER_DAY + PER_DAY).map((i) => BANK[i]);
+}
+function pickRandom(n) {
+  const order = shuffled(BANK.length, (Math.random() * 1e9) | 0);
+  return order.slice(0, n).map((i) => BANK[i]);
+}
+
+const answerOf = (q) => q.type === 'percent' ? (q.a.value / q.b.value) * 100 : q.a.value / q.b.value;
+
+/* ---------------------------------------------------------------- scoring
+   ratio   : log error, because being 2x out should cost the same whether the
+             answer is 3 or 300. Four times out scores zero.
+   percent : absolute error in percentage points, 20 points out scores zero. */
+function scoreGuess(type, guess, actual) {
+  let e;
+  if (type === 'percent') {
+    e = Math.abs(guess - actual) / 20;
+  } else {
+    const r = Math.max(guess / actual, actual / guess);
+    e = Math.log(r) / Math.log(4);
+  }
+  return Math.max(0, Math.round(MAX_Q * (1 - Math.pow(clamp(e, 0, 1), 1.35))));
+}
+const band = (s) => s >= 900 ? 0 : s >= 700 ? 1 : s >= 400 ? 2 : 3;
+const VERDICT = [
+  { lbl: 'Nailed it', cls: 'good' },
+  { lbl: 'Close', cls: 'good' },
+  { lbl: 'In the area', cls: 'mid' },
+  { lbl: 'Way off', cls: 'miss' },
+];
+const SQUARE = ['🟩', '🟨', '🟧', '⬜'];
+const TIERS = [
+  [6300, 'Uncanny'], [5250, 'Sharp'], [4200, 'Good hunch'],
+  [2800, 'Ballpark'], [1400, 'Wild stab'], [0, 'Rough day'],
+];
+const tierOf = (t) => (TIERS.find(([m]) => t >= m) || TIERS[TIERS.length - 1])[1];
+
+/* ------------------------------------------------------- slider <-> value */
+const toValue = (type, pos) => type === 'percent' ? pos / 10 : Math.pow(10, (pos / 1000) * 3);
+const toPos = (type, v) => type === 'percent' ? v * 10 : (Math.log10(clamp(v, 1, 1000)) / 3) * 1000;
+const axisPos = (type, v) => type === 'percent'
+  ? clamp(v / 100, 0, 1)
+  : clamp(Math.log10(clamp(v, 1, 1000)) / 3, 0, 1);
+
+function fmtValue(type, v) {
+  if (type === 'percent') return (Math.round(v * 10) / 10).toFixed(1);
+  if (v >= 100) return comma(Math.round(v));
+  return v.toFixed(1);
+}
+function fmtFigure(n) {
+  if (n >= 1e9) return (n / 1e9).toPrecision(3).replace(/\.?0+$/, '') + ' billion';
+  if (n >= 1e6) return (n / 1e6).toPrecision(3).replace(/\.?0+$/, '') + ' million';
+  if (n >= 1000) return comma(Math.round(n));
+  if (Number.isInteger(n)) return String(n);
+  return String(Math.round(n * 100) / 100);
+}
+
+/* ------------------------------------------------------------------ store */
+function load() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(STORE) || '{}');
+    return Object.assign({ days: {}, streak: 0, best: 0, played: 0, sum: 0, last: null, dist: [0, 0, 0, 0, 0] }, raw);
+  } catch (e) {
+    return { days: {}, streak: 0, best: 0, played: 0, sum: 0, last: null, dist: [0, 0, 0, 0, 0] };
+  }
+}
+function save(s) { try { localStorage.setItem(STORE, JSON.stringify(s)); } catch (e) {} }
+let S = load();
+
+/* ------------------------------------------------------------------ state */
+let mode = 'daily';        // 'daily' | 'practice'
+let qs = [];               // the seven
+let idx = 0;
+let results = [];          // { score, guess, actual }
+let locked = false;
+let today = dayIndex();
+
+/* -------------------------------------------------------------------- view */
+const views = { intro: $('view-intro'), play: $('view-play'), done: $('view-done') };
+function show(name) {
+  Object.entries(views).forEach(([k, el]) => { el.hidden = k !== name; });
+  window.scrollTo(0, 0);
+}
+function toast(msg) {
+  const t = $('toast');
+  t.textContent = msg; t.classList.add('on');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => t.classList.remove('on'), 2000);
+}
+
+/* ------------------------------------------------------------------ intro */
+function paintIntro() {
+  const rec = S.days[today];
+  const bits = [`Puzzle #${today}`];
+  if (S.streak > 0) bits.push(`${S.streak} day streak`);
+  if (S.played > 0) bits.push(`${S.played} played`);
+  $('intro-meta').textContent = bits.join(' · ');
+  $('btn-play').textContent = rec && rec.done ? 'See today’s result' : 'Play today’s seven';
+  $('intro-tag').textContent = rec && rec.done
+    ? 'You’ve done today’s seven. Come back after midnight UTC.'
+    : 'Seven questions a day. How many times bigger?';
+}
+
+/* ------------------------------------------------------------------- play */
+function startDaily() {
+  const rec = S.days[today];
+  if (rec && rec.done) { results = rec.results || []; mode = 'daily'; paintDone(); return show('done'); }
+  mode = 'daily'; qs = pickDay(today); idx = 0; results = [];
+  show('play'); paintQ();
+}
+function startPractice() {
+  mode = 'practice'; qs = pickRandom(PER_DAY); idx = 0; results = [];
+  show('play'); paintQ();
+}
+
+function paintPips() {
+  $('pips').innerHTML = qs.map((_, i) =>
+    `<i class="${i < idx ? 'done' : i === idx ? 'now' : ''}"></i>`).join('');
+}
+
+function paintQ() {
+  const q = qs[idx];
+  locked = false;
+  paintPips();
+  $('q-cat').textContent = mode === 'practice' ? 'Practice · ' + q.cat : q.cat;
+  $('q-n').textContent = `${idx + 1} / ${PER_DAY}`;
+  $('q-text').textContent = q.q;
+  $('pair-a').textContent = q.a.label;
+  $('pair-b').textContent = q.b.label;
+  $('pair-av').textContent = '';
+  $('pair-bv').textContent = '';
+  $('pair-vs').textContent = q.type === 'percent' ? 'of' : 'vs';
+
+  $('dial').hidden = false;
+  $('reveal').hidden = true;
+
+  const startPos = q.type === 'percent' ? 500 : 0;
+  const sl = $('slider');
+  sl.value = startPos;
+  $('read-u').textContent = q.type === 'percent' ? '%' : '×';
+  $('read').classList.toggle('pct', q.type === 'percent');
+  $('read-hint').textContent = q.type === 'percent' ? 'drag to estimate the share' : 'drag to estimate the multiple';
+  $('ticks').innerHTML = q.type === 'percent'
+    ? '<span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span>'
+    : '<span>1×</span><span>10×</span><span>100×</span><span>1000×</span>';
+  paintRead();
+}
+
+function paintRead() {
+  const q = qs[idx];
+  const pos = +$('slider').value;
+  const v = toValue(q.type, pos);
+  $('read-v').textContent = fmtValue(q.type, v);
+  $('slider').style.setProperty('--p', (pos / 1000 * 100) + '%');
+}
+
+function lockIn() {
+  if (locked) return;
+  locked = true;
+  const q = qs[idx];
+  const guess = toValue(q.type, +$('slider').value);
+  const actual = answerOf(q);
+  const sc = scoreGuess(q.type, guess, actual);
+  results[idx] = { score: sc, guess, actual, id: q.id };
+
+  const b = band(sc);
+  const vd = $('verdict');
+  vd.className = 'verdict ' + VERDICT[b].cls;
+  $('v-lbl').textContent = VERDICT[b].lbl;
+
+  // the two figures that make the answer, revealed with the answer
+  $('pair-av').textContent = fmtFigure(q.a.value) + ' ' + q.a.unit;
+  $('pair-bv').textContent = fmtFigure(q.b.value) + ' ' + q.b.unit;
+
+  // markers on a log axis, so the visual distance matches the scoring
+  const py = axisPos(q.type, guess), pa = axisPos(q.type, actual);
+  const L = (p) => (7 + p * 86) + '%';
+  $('sc-you').style.left = L(py);
+  $('sc-act').style.left = L(pa);
+  $('sc-you-n').textContent = fmtValue(q.type, guess) + (q.type === 'percent' ? '%' : '×');
+  $('sc-act-n').textContent = fmtValue(q.type, actual) + (q.type === 'percent' ? '%' : '×');
+  const lo = Math.min(py, pa), hi = Math.max(py, pa);
+  $('sc-bridge').style.left = L(lo);
+  $('sc-bridge').style.width = ((hi - lo) * 86) + '%';
+
+  $('work').innerHTML =
+    `<div><span class="k">${esc(q.a.label)}</span><span class="v">${esc(fmtFigure(q.a.value))} ${esc(q.a.unit)}</span></div>` +
+    `<div><span class="k">${esc(q.b.label)}</span><span class="v">${esc(fmtFigure(q.b.value))} ${esc(q.b.unit)}</span></div>` +
+    `<div><span class="k">${q.type === 'percent' ? 'Share' : 'Which makes it'}</span><span class="v">${esc(fmtValue(q.type, actual))}${q.type === 'percent' ? '%' : '×'}</span></div>`;
+  $('src').textContent = q.src;
+
+  $('dial').hidden = true;
+  $('reveal').hidden = false;
+  $('btn-next').textContent = idx === PER_DAY - 1 ? 'See your score' : 'Next question';
+  countUp($('v-pts'), sc);
+  paintPips();
+}
+
+function countUp(el, to) {
+  const t0 = performance.now(), dur = 520;
+  (function step(t) {
+    const k = clamp((t - t0) / dur, 0, 1);
+    const eased = 1 - Math.pow(1 - k, 3);
+    el.textContent = '+' + comma(Math.round(to * eased));
+    if (k < 1) requestAnimationFrame(step);
+  })(t0);
+}
+
+function next() {
+  if (idx < PER_DAY - 1) { idx++; paintQ(); window.scrollTo(0, 0); return; }
+  finish();
+}
+
+/* ----------------------------------------------------------------- finish */
+function finish() {
+  const total = results.reduce((a, r) => a + r.score, 0);
+  if (mode === 'daily' && !(S.days[today] && S.days[today].done)) {
+    S.days[today] = { done: true, total, results };
+    S.streak = S.last === today - 1 ? S.streak + 1 : 1;
+    S.last = today;
+    S.played += 1;
+    S.sum += total;
+    S.best = Math.max(S.best, total);
+    const b = clamp(Math.floor(total / 1400), 0, 4);
+    S.dist[b] = (S.dist[b] || 0) + 1;
+    save(S);
+  }
+  paintDone();
+  show('done');
+}
+
+function paintDone() {
+  const total = results.reduce((a, r) => a + r.score, 0);
+  $('done-kicker').textContent = mode === 'practice' ? 'Practice round' : `Umpty #${today}`;
+  $('done-tier').textContent = tierOf(total);
+  $('done-grid').innerHTML = results.map((r) => {
+    const b = band(r.score);
+    const bg = ['var(--good)', '#7FBF4A', 'var(--mid)', 'var(--line)'][b];
+    const fg = b === 3 ? 'var(--faint)' : '#fff';
+    return `<i style="background:${bg}; color:${fg}">${b === 3 ? '·' : Math.round(r.score / 100)}</i>`;
+  }).join('');
+  $('done-rows').innerHTML = results.map((r, i) => {
+    const q = qs[i] || BANK.find((x) => x.id === r.id) || { q: '' };
+    return `<div class="row"><span class="n">${i + 1}</span><span class="t">${esc(q.q)}</span>` +
+           `<span class="p">${comma(r.score)}</span></div>`;
+  }).join('');
+  $('done-stats').innerHTML = mode === 'practice'
+    ? [['Score', comma(total)], ['Best q', comma(Math.max(...results.map((r) => r.score)))],
+       ['Avg', comma(Math.round(total / PER_DAY))], ['Mode', 'Free']]
+        .map(([k, v]) => `<div><b>${v}</b><span>${k}</span></div>`).join('')
+    : [['Streak', S.streak], ['Best', comma(S.best)],
+       ['Played', S.played], ['Avg', comma(Math.round(S.sum / Math.max(1, S.played)))]]
+        .map(([k, v]) => `<div><b>${v}</b><span>${k}</span></div>`).join('');
+  countUp2($('done-score'), total);
+  $('btn-share').hidden = mode === 'practice';
+  tickClock();
+}
+function countUp2(el, to) {
+  const t0 = performance.now(), dur = 900;
+  (function step(t) {
+    const k = clamp((t - t0) / dur, 0, 1);
+    el.textContent = comma(Math.round(to * (1 - Math.pow(1 - k, 3))));
+    if (k < 1) requestAnimationFrame(step);
+  })(t0);
+}
+
+function tickClock() {
+  const el = $('done-next');
+  if (mode === 'practice') { el.textContent = ''; return; }
+  const upd = () => {
+    const now = new Date();
+    const nxt = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1);
+    let s = Math.max(0, Math.floor((nxt - now.getTime()) / 1000));
+    const h = String(Math.floor(s / 3600)).padStart(2, '0');
+    const m = String(Math.floor(s % 3600 / 60)).padStart(2, '0');
+    const ss = String(s % 60).padStart(2, '0');
+    el.innerHTML = `Next seven in <b>${h}:${m}:${ss}</b>`;
+  };
+  upd();
+  clearInterval(tickClock._i);
+  tickClock._i = setInterval(upd, 1000);
+}
+
+/* ------------------------------------------------------------------ share */
+function shareText() {
+  const total = results.reduce((a, r) => a + r.score, 0);
+  const grid = results.map((r) => SQUARE[band(r.score)]).join('');
+  return `Umpty #${today}  ${comma(total)}/7,000\n${grid}\njessebaizer.com/game`;
+}
+async function doShare() {
+  const text = shareText();
+  try {
+    if (navigator.share && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) {
+      await navigator.share({ text });
+      return;
+    }
+  } catch (e) { if (e && e.name === 'AbortError') return; }
+  try {
+    await navigator.clipboard.writeText(text);
+    toast('Result copied');
+  } catch (e) {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); toast('Result copied'); }
+    catch (e2) { toast('Copy failed'); }
+    ta.remove();
+  }
+}
+
+/* ------------------------------------------------------------------ sheet */
+function sheet(html) {
+  const wrap = document.createElement('div');
+  wrap.className = 'scrim';
+  wrap.innerHTML = `<div class="sheet" role="dialog" aria-modal="true">${html}</div>`;
+  const close = () => wrap.remove();
+  wrap.addEventListener('mousedown', (e) => { if (e.target === wrap) close(); });
+  wrap.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', close));
+  document.addEventListener('keydown', function esc(e) {
+    if (e.key === 'Escape') { close(); document.removeEventListener('keydown', esc); }
+  });
+  document.body.appendChild(wrap);
+  return wrap;
+}
+const X = '<button type="button" class="ico" data-close aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>';
+
+function openHelp() {
+  sheet(`<div class="sheet-hd"><h2>How to play</h2><div class="sp"></div>${X}</div>
+    <p>Umpty gives you two things and asks how far apart they are. You will not know the answer. That is the game &mdash; you are meant to reason your way to roughly right.</p>
+    <ul class="rules" style="margin-bottom:18px">
+      <li><b>1</b><span>Drag the dial to your estimate. The scale is logarithmic, so 1&times; to 1000&times; all fits.</span></li>
+      <li><b>2</b><span>Lock it in. You see the real figures, where you landed, and your points.</span></li>
+      <li><b>3</b><span>Scoring is on how far out you are, not how close in raw numbers. Four times out scores zero.</span></li>
+      <li><b>4</b><span>Seven questions, 1,000 points each. Everyone on Earth gets the same seven, and a new set lands at midnight UTC.</span></li>
+    </ul>
+    <p style="font-size:var(--fs-xs)">Every answer is worked out from two sourced figures, shown to you on the reveal. Practice mode is unlimited and never touches your streak.</p>`);
+}
+
+function openStats() {
+  const avg = S.played ? Math.round(S.sum / S.played) : 0;
+  const max = Math.max(1, ...S.dist);
+  const labels = ['0–1.4k', '1.4–2.8k', '2.8–4.2k', '4.2–5.6k', '5.6–7k'];
+  const myB = S.days[today] && S.days[today].done ? clamp(Math.floor(S.days[today].total / 1400), 0, 4) : -1;
+  sheet(`<div class="sheet-hd"><h2>Your stats</h2><div class="sp"></div>${X}</div>
+    <div class="stats" style="margin-bottom:20px">
+      <div><b>${S.played}</b><span>Played</span></div>
+      <div><b>${S.streak}</b><span>Streak</span></div>
+      <div><b>${comma(S.best)}</b><span>Best</span></div>
+      <div><b>${comma(avg)}</b><span>Average</span></div>
+    </div>
+    <div class="kicker" style="margin-bottom:9px">Score distribution</div>
+    <div class="dist">${S.dist.map((n, i) =>
+      `<div><span class="lb">${labels[i]}</span><span class="bar ${i === myB ? 'on' : ''}" style="width:${Math.max(3, n / max * 100)}%">${n || ''}</span></div>`).join('')}</div>
+    <p style="font-size:var(--fs-xs)">Progress is saved in this browser only. Clearing site data resets it, and a different browser starts fresh.</p>`);
+}
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+/* ------------------------------------------------------------------- wire */
+$('slider').addEventListener('input', paintRead);
+$('btn-lock').addEventListener('click', lockIn);
+$('btn-next').addEventListener('click', next);
+$('btn-play').addEventListener('click', startDaily);
+$('btn-practice').addEventListener('click', startPractice);
+$('btn-practice2').addEventListener('click', startPractice);
+$('btn-share').addEventListener('click', doShare);
+$('btn-help').addEventListener('click', openHelp);
+$('btn-stats').addEventListener('click', openStats);
+const step = (d) => {
+  const sl = $('slider');
+  sl.value = clamp(+sl.value + d, 0, 1000);
+  paintRead();
+};
+$('nudge-up').addEventListener('click', () => step(8));
+$('nudge-down').addEventListener('click', () => step(-8));
+document.addEventListener('keydown', (e) => {
+  if (document.querySelector('.scrim')) return;
+  if (views.play.hidden) {
+    if (e.key === 'Enter' && !views.intro.hidden) { e.preventDefault(); startDaily(); }
+    return;
+  }
+  if (e.key === 'Enter') { e.preventDefault(); locked ? next() : lockIn(); }
+  if (!locked && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
+    e.preventDefault(); step(e.key === 'ArrowRight' ? 8 : -8);
+  }
+});
+
+/* ------------------------------------------------------------------- boot */
+paintIntro();
+if (!BANK.length) {
+  $('intro-tag').textContent = 'Question bank failed to load.';
+  $('btn-play').disabled = true; $('btn-practice').disabled = true;
+}
+/* if the day rolls over while the tab is open, pick it up */
+setInterval(() => {
+  const d = dayIndex();
+  if (d !== today) { today = d; results = []; paintIntro(); if (!views.done.hidden) show('intro'); }
+}, 30000);
+
+window.__umpty = { scoreGuess, answerOf, pickDay, dayIndex, toValue, toPos, BANK, tierOf, band };
+})();
+</script>
+</body>
+</html>
