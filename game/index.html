@@ -4,19 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Gappy · the daily leap</title>
-<meta name="description" content="Seven gaps a day. Two things, one chasm — guess how far apart they really are, build the bridge, make the leap. Same seven for everyone, new set at midnight UTC.">
-<meta name="theme-color" content="#120B20">
+<meta name="description" content="Seven gaps a day. Two things, one chasm — guess how far apart they really are, build the bridge, make the leap. Travel far enough and the world changes around you. Same seven for everyone, new set at midnight UTC.">
+<meta name="theme-color" content="#06141A">
 <meta property="og:title" content="Gappy · the daily leap">
 <meta property="og:description" content="Seven gaps a day. How far apart are they really?">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' shape-rendering='crispEdges'%3E%3Crect width='16' height='16' fill='%23120B20'/%3E%3Crect x='1' y='9' width='4' height='6' fill='%234A2E68'/%3E%3Crect x='11' y='7' width='4' height='8' fill='%234A2E68'/%3E%3Crect x='2' y='6' width='2' height='2' fill='%23FF4D9D'/%3E%3Crect x='5' y='8' width='2' height='1' fill='%23FFC94D'/%3E%3Crect x='8' y='8' width='2' height='1' fill='%23FFC94D'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' shape-rendering='crispEdges'%3E%3Crect width='16' height='16' fill='%2306141A'/%3E%3Crect x='4' y='2' width='8' height='6' fill='%2315151F'/%3E%3Crect x='5' y='4' width='2' height='2' fill='%23fff'/%3E%3Crect x='9' y='4' width='2' height='2' fill='%23fff'/%3E%3Crect x='7' y='6' width='2' height='2' fill='%23F5A623'/%3E%3Crect x='3' y='8' width='10' height='6' fill='%2315151F'/%3E%3Crect x='5' y='8' width='6' height='5' fill='%23F8F8FB'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&family=VT323&display=swap" rel="stylesheet">
 <style>
 :root{
-  /* teal night over sandstone */
+  /* the five sky stops and the three rock tones are swapped out per region */
   --sky-1:#07171C; --sky-2:#0E2F38; --sky-3:#2A5A5C; --sky-4:#B4763C; --sky-5:#E8A64C;
-  --rock-far:#2A4A4E; --rock-mid:#3A2A22; --rock-near:#241812; --rock-lip:#C98A47;
+  --rock-lip:#C98A47; --rock-mid:#3A2A22; --rock-near:#241812;
   --ink:#06141A; --panel:#0C2129; --panel-2:#113039; --line:#1E4B55; --line-hi:#2E6E78;
   --text:#F2F7F5; --dim:#8FB3B0; --faint:#5C8A88;
   --pink:#19E59B; --pink-dk:#0E8F62;
@@ -24,7 +24,6 @@
   --disp:'Press Start 2P', monospace;
   --ui:'Silkscreen', monospace;
   --body:'VT323', monospace;
-  --px:4px;
 }
 *{box-sizing:border-box;}
 [hidden]{display:none !important;}
@@ -35,7 +34,7 @@ body{margin:0; background:var(--ink); color:var(--text); font-family:var(--ui);
 button,input{font-family:var(--ui); font-size:inherit; color:inherit;}
 button{cursor:pointer; border:0; background:none;}
 svg{display:block; shape-rendering:crispEdges;}
-::selection{background:var(--pink); color:#fff;}
+::selection{background:var(--pink); color:#06141A;}
 :focus-visible{outline:3px solid var(--cyan); outline-offset:2px;}
 .sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0);}
 
@@ -50,8 +49,8 @@ svg{display:block; shape-rendering:crispEdges;}
   box-shadow:0 5px 0 0 var(--ink); transition:transform .06s steps(2), box-shadow .06s steps(2);}
 .btn:active{transform:translateY(5px); box-shadow:0 0 0 0 var(--ink);}
 .btn:disabled{opacity:.4; cursor:default; transform:none; box-shadow:0 5px 0 0 var(--ink);}
-.btn-go{background:var(--pink); color:#2A0A1A; border-color:#2A0A1A; box-shadow:0 5px 0 0 #2A0A1A;}
-.btn-go:active{box-shadow:0 0 0 0 #2A0A1A;}
+.btn-go{background:var(--pink); color:#04291B; border-color:#04291B; box-shadow:0 5px 0 0 #04291B;}
+.btn-go:active{box-shadow:0 0 0 0 #04291B;}
 .btn-gold{background:var(--gold); color:#2A1E05; border-color:#2A1E05; box-shadow:0 5px 0 0 #2A1E05;}
 .btn-gold:active{box-shadow:0 0 0 0 #2A1E05;}
 .btn-ghost{background:rgba(255,255,255,.05); border-color:var(--line);
@@ -65,25 +64,32 @@ svg{display:block; shape-rendering:crispEdges;}
 .p{font-family:var(--body); font-size:19px; line-height:1.3; color:var(--dim);}
 .p b{color:var(--text); font-weight:400;}
 
-/* ====================================================== the canyon ======= */
+/* ====================================================== the world =======
+   The scene is the page. A full-bleed sky, two parallax ridgelines and one
+   full-viewport canvas that holds the canyon, the bird and the leap. */
 #scene{position:fixed; inset:0; z-index:0; overflow:hidden; background:linear-gradient(
-  180deg, var(--sky-1) 0%, var(--sky-2) 38%, var(--sky-3) 62%, var(--sky-4) 80%, var(--sky-5) 100%);
+  180deg, var(--sky-1) 0%, var(--sky-2) 30%, var(--sky-3) 54%, var(--sky-4) 68%, var(--sky-5) 76%);
   transition:background 1.1s steps(6);}
-#scene .band{position:absolute; left:0; right:0; bottom:0;}
-#scene .stars{position:absolute; inset:0 0 40% 0;}
-#scene .sun{position:absolute; left:50%; bottom:28%; width:120px; height:120px; margin-left:-60px;
-  background:var(--sky-5); opacity:.5;}
-#scene .far{bottom:46%; height:20%;}
-#scene .mid{bottom:36%; height:18%;}
-/* the playable canyon IS the page background, not a panel inside it */
-#stage{position:absolute; left:0; right:0; bottom:0; height:40vh; width:100%; display:block;}
-@media (max-width:420px){ #stage{height:36vh;} }
-@media (max-height:720px){ #stage{height:28vh;} }
-#scene .band{display:block; width:100%; height:100%;}
+#scene .stars{position:absolute; left:0; right:0; top:0; height:58%;}
+/* low sun, off the centre column so it never sits behind a panel */
+#scene .sun{position:absolute; left:16%; top:21%; width:62px; height:62px; border-radius:50%;
+  background:var(--sky-5); opacity:.26; transition:background 1.1s steps(6);}
+#scene .band{position:absolute; left:0; right:0; display:block; width:100%;}
+#scene .far{bottom:26%; height:24%;}
+#scene .mid{bottom:26%; height:16%;}
+#stage{position:absolute; left:0; top:0; width:100%; height:100%; display:block;}
 #grain{position:fixed; inset:0; z-index:1; pointer-events:none; opacity:.055;
   background-image:repeating-linear-gradient(0deg, #000 0 1px, transparent 1px 3px);}
 #vig{position:fixed; inset:0; z-index:1; pointer-events:none;
-  background:radial-gradient(130% 95% at 50% 42%, transparent 48%, rgba(10,5,18,.72) 100%);}
+  background:radial-gradient(142% 112% at 50% 46%, transparent 56%, rgba(2,10,14,.6) 100%);}
+/* keeps UI text legible over a bright sky — kept light, because the bird flies
+   up through this band on a good leap and must not go grey doing it */
+#haze{position:fixed; left:0; right:0; top:0; height:60%; z-index:1; pointer-events:none;
+  background:linear-gradient(180deg, rgba(4,14,20,.42) 0%, rgba(4,14,20,.2) 56%, rgba(4,14,20,0) 100%);
+  transition:opacity .25s steps(3);}
+/* in play the text all sits on panels or carries its own shadow, so the haze
+   lifts — otherwise it washes the bird grey at the top of a big leap */
+body.playing #haze{opacity:0;}
 
 /* ====================================================== layout =========== */
 .app{position:relative; z-index:2; min-height:100dvh; display:flex; flex-direction:column;
@@ -95,29 +101,37 @@ svg{display:block; shape-rendering:crispEdges;}
 .brand{display:flex; align-items:center; gap:9px; text-decoration:none; color:var(--text);}
 .brand .mk{width:30px; height:30px; flex:0 0 30px;}
 .brand b{font-family:var(--disp); font-size:12px; letter-spacing:0;
-  color:#F6E3C4; text-shadow:0 2px 0 #6E4722;}
+  color:#F6E3C4; text-shadow:0 2px 0 #4A3016;}
 .top .sp{flex:1;}
-.chip{display:inline-flex; align-items:center; gap:5px; padding:5px 7px; white-space:nowrap; flex:0 0 auto; background:rgba(18,11,32,.72);
-  border:2px solid var(--line); font-size:9px; letter-spacing:.06em; text-transform:uppercase; color:var(--dim);}
+.chip{display:inline-flex; align-items:center; gap:5px; padding:5px 7px; white-space:nowrap; flex:0 0 auto;
+  background:rgba(6,20,26,.72); border:2px solid var(--line); font-size:9px; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--dim);}
 .chip b{color:var(--gold); font-weight:700;}
 .chip.fire b{color:var(--amber);}
-.icb{width:30px; height:30px; flex:0 0 30px; display:grid; place-items:center;
-  background:rgba(18,11,32,.72); border:2px solid var(--line); color:var(--dim);}
+.icb{position:relative; width:30px; height:30px; flex:0 0 30px; display:grid; place-items:center;
+  background:rgba(6,20,26,.72); border:2px solid var(--line); color:var(--dim);}
 .icb:hover{border-color:var(--line-hi); color:var(--text);}
 .icb svg{width:16px; height:16px;}
 .icb.off{color:var(--faint);}
+.icb.kitb{border-color:var(--line-hi); color:var(--cyan);}
+.icb.new{border-color:var(--gold); color:var(--gold);}
+.icb.new::after{content:''; position:absolute; top:-4px; right:-4px; width:8px; height:8px;
+  background:var(--gold); border:2px solid var(--ink); animation:blink 1s steps(2) infinite;}
+@media (max-width:430px){
+  .icb{width:27px; height:27px; flex:0 0 27px;}
+  .icb svg{width:14px; height:14px;}
+  .top{gap:5px;}
+}
+@media (max-width:470px){ #chip-sparks{display:none;} }
+@media (max-width:350px){ .brand b{display:none;} }
 
 main{flex:1; display:flex; flex-direction:column; min-height:0;}
 .rope{height:7px; margin:2px 0 10px; background-image:
   linear-gradient(90deg, var(--rock-lip) 0 5px, transparent 5px 10px);
   background-size:10px 3px; background-repeat:repeat-x; background-position:0 2px; opacity:.5;}
-/* four icons, two chips and a wordmark do not fit a small phone; the sparks
-   count is the one that can wait for the stats sheet */
-@media (max-width:430px){ #chip-sparks{display:none;} }
-@media (max-width:340px){ .brand b{display:none;} }
 
 /* ====================================================== title screen ===== */
-.title{flex:1; display:flex; flex-direction:column; justify-content:center; gap:16px; padding:10px 0 16px;}
+.title{flex:1; display:flex; flex-direction:column; justify-content:center; gap:15px; padding:8px 0 16px;}
 .title-art{text-align:center; position:relative;}
 .title-art h1{font-family:var(--disp); font-size:clamp(30px,10.5vw,54px); line-height:1; margin:0;
   letter-spacing:0; color:#F6E3C4;
@@ -125,12 +139,12 @@ main{flex:1; display:flex; flex-direction:column; min-height:0;}
 .title-art h1 span{color:var(--mint); text-shadow:0 3px 0 #0E8F62, 0 6px 0 #075C3F, 0 9px 0 var(--ink);}
 .title-art .sub{font-family:var(--ui); font-size:11px; letter-spacing:.22em; text-transform:uppercase;
   color:var(--gold); margin-top:12px;}
-.title-art .day{font-family:var(--ui); font-size:10px; letter-spacing:.16em; text-transform:uppercase;
+.title-art .day{font-family:var(--ui); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
   color:var(--dim); margin-top:6px;}
-.title-art .hero{width:100%; max-width:380px; margin:14px auto 2px; display:block;}
+.title-art .hero{width:100%; max-width:390px; margin:12px auto 2px; display:block;}
 
 .modes{display:grid; grid-template-columns:1fr 1fr; gap:7px;}
-.mode{padding:11px 8px; border:3px solid var(--ink); background:rgba(35,20,57,.82); text-align:center;
+.mode{padding:11px 8px; border:3px solid var(--ink); background:rgba(12,33,41,.82); text-align:center;
   box-shadow:0 4px 0 0 var(--ink);}
 .mode b{display:block; font-family:var(--ui); font-weight:700; font-size:12px; letter-spacing:.1em;
   text-transform:uppercase;}
@@ -142,25 +156,39 @@ main{flex:1; display:flex; flex-direction:column; min-height:0;}
 .howto{display:grid; gap:8px;}
 .howto div{display:flex; gap:10px; align-items:flex-start; font-family:var(--body); font-size:18px;
   line-height:1.25; color:var(--dim);}
-.howto i{flex:0 0 20px; height:20px; background:var(--pink); color:#2A0A1A; font-family:var(--ui);
+.howto i{flex:0 0 20px; height:20px; background:var(--pink); color:#04291B; font-family:var(--ui);
   font-size:10px; font-weight:700; display:grid; place-items:center; font-style:normal; margin-top:2px;}
 .howto b{color:var(--text); font-weight:400;}
 
 /* ====================================================== play ============= */
-.play{flex:1; display:flex; flex-direction:column; min-height:0; padding-bottom:calc(40vh - 46px);}
-@media (max-width:420px){ .play{padding-bottom:calc(36vh - 40px);} }
-@media (max-height:720px){ .play{padding-bottom:calc(28vh - 34px);} .qcard{padding:10px 11px 11px;} .verdict{margin:7px 0;} }
-.hud{display:flex; align-items:center; gap:8px; padding:2px 0 9px;}
-.hud .lbl{font-size:10px;}
+/* the lower third of the screen belongs to the canyon — nothing sits in it */
+.play{flex:1; display:flex; flex-direction:column; min-height:0; padding-bottom:37vh;}
+/* on a short screen the dial moves up instead of the canyon shrinking away */
+@media (max-height:700px){ .play{padding-bottom:30vh;} }
+@media (max-height:620px){ .play{padding-bottom:22vh;} }
+.play.leaping{pointer-events:none;}
+.play.leaping .hud, .play.leaping .qcard, .play.leaping .trail{opacity:0;}
+.play .hud, .play .qcard, .play .trail{transition:opacity .2s steps(2);}
+
+.hud{display:flex; align-items:center; gap:8px; padding:2px 0 7px;}
 .hud .sp{flex:1;}
+.hud #h-run{white-space:nowrap; flex:0 0 auto;}
+.rgn{display:inline-flex; align-items:center; gap:6px; padding:4px 7px; background:rgba(6,20,26,.74);
+  border:2px solid var(--line-hi); font-family:var(--ui); font-weight:700; font-size:9px;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--cyan); white-space:nowrap;
+  max-width:46%; overflow:hidden; text-overflow:ellipsis;}
+.rgn i{width:7px; height:7px; flex:0 0 7px; background:var(--cyan); font-style:normal;}
 .pips{display:flex; gap:3px;}
-.pips i{width:13px; height:13px; border:2px solid var(--line); background:rgba(18,11,32,.6);}
-.pips i.g{background:var(--mint); border-color:var(--mint);}
-.pips i.y{background:var(--gold); border-color:var(--gold);}
-.pips i.o{background:var(--amber); border-color:var(--amber);}
-.pips i.r{background:var(--red); border-color:var(--red);}
+.pips i{width:13px; height:13px; border:2px solid var(--line); background:rgba(6,20,26,.6);}
 .pips i.now{border-color:var(--cyan); animation:blink 1s steps(2) infinite;}
-@keyframes blink{50%{background:var(--cyan);}}
+@keyframes blink{50%{opacity:.25;}}
+
+/* distance to the next region */
+.trail{display:flex; align-items:center; gap:8px; margin:0 0 9px;}
+.trail .bar{flex:1; height:7px; border:2px solid var(--line); background:rgba(6,20,26,.6); position:relative;}
+.trail .bar i{position:absolute; left:0; top:0; bottom:0; background:var(--cyan);
+  transition:width .5s steps(8); display:block;}
+.trail span{font-family:var(--ui); font-size:9px; letter-spacing:.1em; color:var(--faint); white-space:nowrap;}
 
 .qcard{padding:13px 13px 14px; margin-bottom:10px;}
 .qcard .cat{display:flex; align-items:center; gap:7px; margin-bottom:8px;}
@@ -168,19 +196,17 @@ main{flex:1; display:flex; flex-direction:column; min-height:0;}
 .qcard h2{font-family:var(--body); font-size:clamp(23px,6.4vw,30px); line-height:1.08; margin:0;
   color:var(--text); font-weight:400; letter-spacing:.01em;}
 
-/* labels that sit on the cliff tops, out in the scene */
+/* labels painted onto the rock faces, down in the scene */
 .cliffnotes{position:fixed; left:0; right:0; z-index:3; pointer-events:none;
   max-width:560px; margin:0 auto; padding:0 14px;}
 @media (min-width:600px){ .cliffnotes{padding:0 20px;} }
-.cn{position:absolute; max-width:40%; padding:5px 7px; background:rgba(6,20,26,.86);
-  border:2px solid var(--line-hi); border-bottom:3px solid var(--rock-lip);}
+.cn{position:absolute; max-width:43%; padding:6px 8px; background:rgba(4,14,19,.9);
+  border:2px solid var(--line-hi); border-top:3px solid var(--rock-lip);}
 .cn b{display:block; font-family:var(--ui); font-weight:700; font-size:9px; letter-spacing:.05em;
-  line-height:1.25; color:var(--text);}
+  line-height:1.3; color:var(--text);}
 .cn em{display:block; font-style:normal; font-family:var(--ui); font-size:9px; color:var(--gold); margin-top:3px;}
 .cn.a{left:14px;} .cn.b{right:14px; text-align:right;}
 @media (min-width:600px){ .cn.a{left:20px;} .cn.b{right:20px;} }
-.axis{display:flex; justify-content:space-between; font-family:var(--ui); font-size:9px;
-  letter-spacing:.08em; color:var(--faint); padding:4px 1px 0;}
 
 /* the dial */
 .dial{margin-top:auto; padding-top:8px;}
@@ -193,10 +219,10 @@ main{flex:1; display:flex; flex-direction:column; min-height:0;}
 .track{position:relative; margin:11px 0 3px; padding:12px 0;}
 .track input{-webkit-appearance:none; appearance:none; width:100%; height:16px; background:none; display:block; margin:0;}
 .track input::-webkit-slider-runnable-track{height:16px; border:3px solid var(--ink);
-  background:linear-gradient(90deg, var(--pink) var(--p,0%), rgba(18,11,32,.72) var(--p,0%));}
+  background:linear-gradient(90deg, var(--pink) var(--p,0%), rgba(6,20,26,.72) var(--p,0%));}
 .track input::-webkit-slider-thumb{-webkit-appearance:none; width:26px; height:34px; margin-top:-12px;
   background:var(--gold); border:3px solid var(--ink); box-shadow:inset 0 -5px 0 0 rgba(0,0,0,.22);}
-.track input::-moz-range-track{height:16px; border:3px solid var(--ink); background:rgba(18,11,32,.72);}
+.track input::-moz-range-track{height:16px; border:3px solid var(--ink); background:rgba(6,20,26,.72);}
 .track input::-moz-range-progress{height:16px; background:var(--pink);}
 .track input::-moz-range-thumb{width:22px; height:30px; border-radius:0; background:var(--gold); border:3px solid var(--ink);}
 .steppers{display:flex; gap:7px; justify-content:center; margin:9px 0 11px;}
@@ -205,6 +231,17 @@ main{flex:1; display:flex; flex-direction:column; min-height:0;}
 .steppers button:hover{color:var(--text);}
 .steppers button:active{transform:translateY(4px); box-shadow:none;}
 
+@media (max-height:700px){
+  .readout .v{font-size:clamp(26px,8.4vw,36px);}
+  .readout .hint{margin-top:6px;}
+  .track{margin:8px 0 2px; padding:9px 0;}
+  .steppers{margin:7px 0 8px;}
+  .steppers button{height:30px;}
+  .btn{padding:12px 16px;}
+  .qcard{padding:10px 11px 11px; margin-bottom:8px;}
+  .qcard h2{font-size:clamp(20px,5.8vw,25px);}
+}
+
 /* ====================================================== reveal =========== */
 .reveal{animation:pop .22s steps(3);}
 @keyframes pop{from{transform:translateY(8px); opacity:0;}}
@@ -212,10 +249,6 @@ main{flex:1; display:flex; flex-direction:column; min-height:0;}
   border:3px solid var(--ink);}
 .verdict .vl{font-family:var(--disp); font-size:13px; letter-spacing:0;}
 .verdict .vp{margin-left:auto; font-family:var(--disp); font-size:17px;}
-.verdict.b0{background:var(--mint); color:#06301E;} .verdict.b0 .vp{color:#06301E;}
-.verdict.b1{background:var(--gold); color:#2E2205;} .verdict.b1 .vp{color:#2E2205;}
-.verdict.b2{background:var(--amber); color:#331B05;} .verdict.b2 .vp{color:#331B05;}
-.verdict.b3{background:var(--red);  color:#330A10;} .verdict.b3 .vp{color:#330A10;}
 
 .ledger{padding:11px 12px; display:grid; gap:7px; margin-bottom:9px;}
 .ledger div{display:flex; gap:10px; align-items:baseline; font-family:var(--ui); font-size:11px;}
@@ -225,26 +258,27 @@ main{flex:1; display:flex; flex-direction:column; min-height:0;}
 .cite{font-family:var(--body); font-size:16px; line-height:1.3; color:var(--faint); margin:0 0 11px;}
 
 /* ====================================================== results ========== */
-.done{flex:1; display:flex; flex-direction:column; justify-content:center; gap:13px; padding:8px 0 10px;}
+.done{flex:1; display:flex; flex-direction:column; justify-content:center; gap:12px; padding:8px 0 10px;}
 .bigscore{text-align:center;}
 .bigscore .n{font-family:var(--disp); font-size:clamp(34px,12vw,58px); line-height:1; color:var(--gold);
-  text-shadow:0 5px 0 var(--ink), 3px 0 rgba(255,158,77,.5);}
+  text-shadow:0 5px 0 var(--ink);}
 .bigscore .of{font-family:var(--disp); font-size:.4em; color:var(--faint); display:inline-block; margin-left:4px;}
 .rank{display:inline-flex; align-items:center; gap:8px; margin-top:11px; padding:7px 13px;
-  border:3px solid var(--ink); background:var(--pink); color:#2A0A1A;
+  border:3px solid var(--ink); background:var(--pink); color:#04291B;
   font-family:var(--disp); font-size:11px; box-shadow:0 4px 0 0 var(--ink);}
-.rank .rs{width:16px; height:16px;}
 
 .log{padding:11px 12px;}
 .log .lbl{margin-bottom:9px; display:block;}
 .log .r{display:flex; align-items:center; gap:7px; margin-bottom:5px;}
 .log .r:last-child{margin-bottom:0;}
 .log .r .i{font-family:var(--ui); font-size:9px; color:var(--faint); width:10px;}
-.log .r .bar{flex:1; height:12px; background:rgba(18,11,32,.6); border:2px solid var(--line); position:relative;}
+.log .r .bar{flex:1; height:12px; background:rgba(6,20,26,.6); border:2px solid var(--line);
+  position:relative; overflow:hidden;}
 .log .r .bar i{position:absolute; left:0; top:0; bottom:0; display:block;
   animation:grow .5s steps(8) backwards;}
 @keyframes grow{from{width:0 !important;}}
-.log .r .s{font-family:var(--ui); font-size:10px; width:34px; text-align:right; color:var(--dim);}
+.log .r .s{font-family:var(--ui); font-size:9px; width:62px; text-align:right; color:var(--dim);
+  letter-spacing:.06em;}
 
 .spread{padding:11px 12px;}
 .spread .cols{display:flex; align-items:flex-end; gap:4px; height:62px; margin:8px 0 5px;}
@@ -257,14 +291,15 @@ main{flex:1; display:flex; flex-direction:column; min-height:0;}
 
 .earn{display:flex; align-items:center; gap:10px; padding:10px 12px;}
 .earn .sp{flex:1;}
-.earn b{font-family:var(--disp); font-size:14px; color:var(--gold);}
+.earn b{font-family:var(--disp); font-size:14px; color:var(--gold); white-space:nowrap; flex:0 0 auto;}
+.earn .lbl{min-width:0; letter-spacing:.1em;}
 .clock{text-align:center; font-family:var(--ui); font-size:10px; letter-spacing:.14em;
   text-transform:uppercase; color:var(--faint);}
 .clock b{color:var(--cyan);}
 .stack{display:grid; gap:8px;}
 
 /* ====================================================== sheets =========== */
-.scrim{position:fixed; inset:0; z-index:60; background:rgba(8,4,16,.82); display:flex;
+.scrim{position:fixed; inset:0; z-index:60; background:rgba(2,8,12,.84); display:flex;
   align-items:flex-end; justify-content:center; animation:fin .15s steps(2);}
 @media (min-width:600px){ .scrim{align-items:center;} }
 @keyframes fin{from{opacity:0;}}
@@ -275,25 +310,66 @@ main{flex:1; display:flex; flex-direction:column; min-height:0;}
 .sheet-hd h3{font-family:var(--disp); font-size:14px; margin:0;}
 .sheet-hd .sp{flex:1;}
 .kv{display:grid; grid-template-columns:repeat(2,1fr); gap:7px; margin-bottom:14px;}
-.kv div{padding:9px 10px; border:2px solid var(--line); background:rgba(18,11,32,.4);}
+.kv div{padding:9px 10px; border:2px solid var(--line); background:rgba(6,20,26,.4);}
 .kv b{display:block; font-family:var(--disp); font-size:15px; color:var(--gold);}
 .kv span{display:block; font-family:var(--ui); font-size:9px; letter-spacing:.12em;
   text-transform:uppercase; color:var(--faint); margin-top:5px;}
 .trophies{display:grid; grid-template-columns:repeat(auto-fill,minmax(88px,1fr)); gap:7px;}
-.tr{padding:9px 6px; text-align:center; border:2px solid var(--line); background:rgba(18,11,32,.4);}
+.tr{padding:9px 6px; text-align:center; border:2px solid var(--line); background:rgba(6,20,26,.4);}
 .tr svg{width:30px; height:30px; margin:0 auto 6px; opacity:.22; filter:grayscale(1);}
 .tr b{display:block; font-family:var(--ui); font-size:9px; letter-spacing:.06em; color:var(--faint); line-height:1.3;}
 .tr small{display:block; font-family:var(--body); font-size:14px; color:var(--faint); margin-top:3px; line-height:1.15;}
-.tr.got{border-color:var(--gold); background:rgba(255,201,77,.1);}
+.tr.got{border-color:var(--gold); background:rgba(245,197,66,.1);}
 .tr.got svg{opacity:1; filter:none;}
 .tr.got b{color:var(--gold);}
 .tr.got small{color:var(--dim);}
 
+/* --- wardrobe --- */
+.kitprev{display:flex; align-items:center; gap:14px; padding:12px; margin-bottom:14px;
+  border:3px solid var(--line-hi); background:rgba(6,20,26,.5);}
+.kitprev .pen{flex:0 0 auto; padding:6px 10px; background:rgba(245,197,66,.07);
+  border-bottom:3px solid var(--rock-lip);}
+.kitprev .pen svg{width:96px; height:108px;}
+.kitprev b{display:block; font-family:var(--disp); font-size:11px; color:var(--cyan); line-height:1.5;}
+.kitprev span{display:block; font-family:var(--ui); font-size:9px; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--faint); margin-top:7px;}
+.kitprev em{display:block; font-style:normal; font-family:var(--body); font-size:17px;
+  color:var(--dim); margin-top:7px; line-height:1.2;}
+.slot{margin-bottom:13px;}
+.slot > .lbl{display:block; margin-bottom:7px;}
+.kitgrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(84px,1fr)); gap:7px;}
+.kit{display:block; width:100%; padding:8px 5px 7px; text-align:center;
+  border:2px solid var(--line); background:rgba(6,20,26,.4);}
+.kit svg{width:48px; height:54px; margin:0 auto 5px;}
+.kit .kx{height:54px; display:grid; place-items:center; margin-bottom:5px;
+  font-family:var(--disp); font-size:14px; color:var(--faint);}
+.kit b{display:block; font-family:var(--ui); font-size:9px; letter-spacing:.04em;
+  line-height:1.3; color:var(--text);}
+.kit small{display:block; font-family:var(--body); font-size:14px; line-height:1.15;
+  color:var(--faint); margin-top:3px;}
+.kit.on{border-color:var(--cyan); background:rgba(95,217,232,.12);}
+.kit.on b{color:var(--cyan);}
+.kit.lock{cursor:default;}
+.kit.lock b{color:var(--faint);}
+.kit.lock small{color:var(--amber);}
+
 .toast{position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(8px); z-index:70;
   background:var(--gold); color:#2A1E05; border:3px solid var(--ink); box-shadow:0 4px 0 0 var(--ink);
   padding:10px 16px; font-family:var(--ui); font-weight:700; font-size:12px; letter-spacing:.08em;
-  text-transform:uppercase; opacity:0; pointer-events:none; transition:all .16s steps(3);}
+  text-transform:uppercase; opacity:0; pointer-events:none; transition:all .16s steps(3);
+  max-width:calc(100% - 32px); text-align:center;}
 .toast.on{opacity:1; transform:translateX(-50%);}
+
+/* the big region card that slides over the scene when you cross a line */
+.gate{position:fixed; left:0; right:0; top:30%; z-index:66; pointer-events:none; text-align:center;
+  animation:gatein 2.2s steps(14) forwards;}
+.gate span{display:inline-block; padding:10px 20px; background:rgba(4,14,19,.92);
+  border:3px solid var(--cyan); border-bottom-width:6px;
+  font-family:var(--ui); font-size:10px; letter-spacing:.24em; text-transform:uppercase; color:var(--cyan);}
+.gate b{display:block; margin-top:9px; font-family:var(--disp); font-size:clamp(14px,5.4vw,22px);
+  color:#F6E3C4; text-shadow:0 3px 0 var(--ink);}
+@keyframes gatein{0%{opacity:0; transform:translateY(14px);} 12%{opacity:1; transform:none;}
+  76%{opacity:1;} 100%{opacity:0;}}
 
 .pf{position:fixed; z-index:65; pointer-events:none; font-family:var(--disp); font-size:15px;
   color:var(--gold); text-shadow:0 3px 0 var(--ink); animation:fly 1s steps(10) forwards;}
@@ -310,22 +386,27 @@ main{flex:1; display:flex; flex-direction:column; min-height:0;}
   <canvas class="band mid" id="band-mid" aria-hidden="true"></canvas>
   <canvas id="stage" aria-hidden="true"></canvas>
 </div>
-<div id="grain"></div><div id="vig"></div>
+<div id="haze"></div><div id="grain"></div><div id="vig"></div>
 
 <div class="app">
   <div class="top">
     <a class="brand" href="./" aria-label="Gappy home">
       <svg class="mk" viewBox="0 0 16 16" aria-hidden="true">
-        <rect x="1" y="9" width="4" height="7" fill="#5A3579"/><rect x="11" y="7" width="4" height="9" fill="#5A3579"/>
-        <rect x="1" y="9" width="4" height="1" fill="#8A5BB0"/><rect x="11" y="7" width="4" height="1" fill="#8A5BB0"/>
-        <rect x="2" y="6" width="2" height="3" fill="#FF4D9D"/><rect x="2" y="5" width="3" height="1" fill="#FF4D9D"/>
-        <rect x="5" y="8" width="2" height="1" fill="#FFC94D"/><rect x="8" y="8" width="2" height="1" fill="#FFC94D"/>
+        <rect x="4" y="2" width="8" height="6" fill="#15151F"/>
+        <rect x="5" y="4" width="2" height="2" fill="#F8F8FB"/><rect x="9" y="4" width="2" height="2" fill="#F8F8FB"/>
+        <rect x="7" y="6" width="2" height="2" fill="#F5A623"/>
+        <rect x="3" y="8" width="10" height="6" fill="#15151F"/>
+        <rect x="5" y="8" width="6" height="5" fill="#F8F8FB"/>
+        <rect x="4" y="14" width="2" height="1" fill="#F5A623"/><rect x="10" y="14" width="2" height="1" fill="#F5A623"/>
       </svg>
       <b>GAPPY</b>
     </a>
     <div class="sp"></div>
-    <span class="chip fire" id="chip-streak" hidden>🔥<b id="chip-streak-n">0</b></span>
-    <span class="chip" id="chip-sparks">✦<b id="chip-sparks-n">0</b></span>
+    <span class="chip fire" id="chip-streak" hidden>&#128293;<b id="chip-streak-n">0</b></span>
+    <span class="chip" id="chip-sparks">&#10022;<b id="chip-sparks-n">0</b></span>
+    <button type="button" class="icb kitb" id="b-kit" aria-label="Wardrobe" title="Wardrobe">
+      <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><rect x="6" y="1" width="4" height="2"/><rect x="4" y="3" width="8" height="3"/><rect x="2" y="6" width="12" height="2"/><rect x="4" y="8" width="8" height="6"/></svg>
+    </button>
     <button type="button" class="icb" id="b-sound" aria-label="Sound on or off" title="Sound">
       <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M2 6h2l3-3v10L4 10H2z"/><rect id="wv1" x="9" y="6" width="1.5" height="4"/><rect id="wv2" x="12" y="4" width="1.5" height="8"/></svg>
     </button>
@@ -347,7 +428,7 @@ main{flex:1; display:flex; flex-direction:column; min-height:0;}
         <h1>GAPP<span>Y</span></h1>
         <div class="sub">The daily leap</div>
         <div class="day" id="t-day"></div>
-        <svg class="hero" id="t-hero" viewBox="0 0 190 54" aria-hidden="true"></svg>
+        <svg class="hero" id="t-hero" viewBox="0 0 190 62" aria-hidden="true"></svg>
       </div>
       <div class="rope"></div>
       <div class="modes">
@@ -358,12 +439,12 @@ main{flex:1; display:flex; flex-direction:column; min-height:0;}
         <span class="lbl" style="display:block; margin-bottom:9px">How it works</span>
         <div class="howto">
           <div><i>1</i><span>Two things sit on opposite cliffs. <b>Guess how wide the gap is.</b></span></div>
-          <div><i>2</i><span>Slide to build your bridge, then leap. <b>Closer bridge, more points.</b></span></div>
-          <div><i>3</i><span>Seven gaps, <b>1,000 points each.</b> Same seven for everyone, every day.</span></div>
+          <div><i>2</i><span>Slide to build your bridge, then leap. <b>Dead on is 100, then 75, 50, 25.</b></span></div>
+          <div><i>3</i><span>Every point is a metre. <b>Every 400 m is a new region</b> — and new kit.</span></div>
         </div>
       </div>
       <div class="stack">
-        <button type="button" class="btn btn-go" id="b-play">▲ Take the leap ▲</button>
+        <button type="button" class="btn btn-go" id="b-play">&#9650; Take the leap &#9650;</button>
       </div>
     </section>
 
@@ -374,10 +455,14 @@ main{flex:1; display:flex; flex-direction:column; min-height:0;}
         <div class="cn b"><b id="tag-b"></b><em id="fb"></em></div>
       </div>
       <div class="hud">
-        <span class="lbl" id="h-mode">Daily</span>
+        <span class="rgn" id="h-region"><i></i><span id="h-region-n"></span></span>
         <div class="sp"></div>
         <span class="lbl" id="h-run">0 pts</span>
         <div class="pips" id="pips" aria-hidden="true"></div>
+      </div>
+      <div class="trail">
+        <div class="bar"><i id="trail-i" style="width:0%"></i></div>
+        <span id="trail-t"></span>
       </div>
 
       <div class="box qcard">
@@ -386,10 +471,9 @@ main{flex:1; display:flex; flex-direction:column; min-height:0;}
         <h2 id="q-text"></h2>
       </div>
 
-
       <div class="dial" id="dial">
         <div class="readout">
-          <div class="v"><span id="r-v">1.0</span><span class="u" id="r-u">×</span></div>
+          <div class="v"><span id="r-v">1.0</span><span class="u" id="r-u">&times;</span></div>
           <div class="hint" id="r-hint">drag to build your bridge</div>
         </div>
         <div class="track">
@@ -406,7 +490,7 @@ main{flex:1; display:flex; flex-direction:column; min-height:0;}
         <div class="verdict" id="verdict"><span class="vl" id="v-l"></span><span class="vp" id="v-p"></span></div>
         <div class="box ledger" id="ledger"></div>
         <p class="cite" id="cite"></p>
-        <button type="button" class="btn btn-go" id="b-next">Next gap ▶</button>
+        <button type="button" class="btn btn-go" id="b-next">Next gap &#9654;</button>
       </div>
     </section>
 
@@ -414,16 +498,17 @@ main{flex:1; display:flex; flex-direction:column; min-height:0;}
     <section class="done" id="v-done" hidden>
       <div class="bigscore">
         <span class="lbl" id="d-kick"></span>
-        <div class="n" style="margin-top:8px"><span id="d-score">0</span><span class="of">/7000</span></div>
+        <div class="n" style="margin-top:8px"><span id="d-score">0</span><span class="of" id="d-of">/700</span></div>
         <div><span class="rank" id="d-rank"></span></div>
       </div>
       <div class="box log" id="d-log"></div>
+      <div class="box earn" id="d-trav"></div>
       <div class="box spread" id="d-spread"></div>
       <div class="box earn" id="d-earn"></div>
       <div class="clock" id="d-clock"></div>
       <div class="stack">
         <button type="button" class="btn btn-go" id="b-share">Share your leap</button>
-        <button type="button" class="btn btn-ghost" id="b-endless2">Endless mode ▶</button>
+        <button type="button" class="btn btn-ghost" id="b-endless2">Endless mode &#9654;</button>
       </div>
     </section>
   </main>
@@ -436,81 +521,101 @@ main{flex:1; display:flex; flex-direction:column; min-height:0;}
 /* ============================================================================
    Gappy — the daily leap.
    Two things on opposite cliffs. Guess how wide the gap is, build the bridge,
-   jump. Seven a day, same seven for everyone, new set at midnight UTC.
+   jump. Seven a day, same seven for everyone, new set at midnight UTC. Every
+   point you score is a metre travelled, and every 400 metres the world around
+   the bird changes.
    ========================================================================== */
 (function () {
 'use strict';
 
-const BANK = window.GAPPY_BANK || [];
-const $ = (id) => document.getElementById(id);
-const PER_DAY = 7, MAX_Q = 1000, STORE = 'gappy_v1';
-const EPOCH = Date.UTC(2026, 0, 1);
-const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
-const comma = (n) => Math.round(n).toLocaleString('en-US');
-const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+var BANK = window.GAPPY_BANK || [];
+var $ = function (id) { return document.getElementById(id); };
+var PER_DAY = 7, MAX_Q = 100, MAX_DAY = 700, REGION_LEN = 400, STORE = 'gappy_v1';
+var EPOCH = Date.UTC(2026, 0, 1);
+var clamp = function (v, a, b) { return Math.min(b, Math.max(a, v)); };
+var comma = function (n) { return Math.round(n).toLocaleString('en-US'); };
+var esc = function (s) { return String(s).replace(/[&<>"']/g, function (c) {
+  return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]; }); };
 
 /* ------------------------------------------------------------ determinism */
-const dayIndex = (t) => {
-  const d = new Date(t === undefined ? Date.now() : t);
+function dayIndex(t) {
+  var d = new Date(t === undefined ? Date.now() : t);
   return Math.floor((Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()) - EPOCH) / 86400000);
-};
+}
 function mulberry32(seed) {
-  let a = seed >>> 0;
+  var a = seed >>> 0;
   return function () {
     a |= 0; a = (a + 0x6D2B79F5) | 0;
-    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    var t = Math.imul(a ^ (a >>> 15), 1 | a);
     t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
 }
 function shuffled(n, seed) {
-  const a = Array.from({ length: n }, (_, i) => i), rnd = mulberry32(seed);
-  for (let i = a.length - 1; i > 0; i--) { const j = (rnd() * (i + 1)) | 0; [a[i], a[j]] = [a[j], a[i]]; }
+  var a = [], rnd = mulberry32(seed), i, j, tmp;
+  for (i = 0; i < n; i++) a.push(i);
+  for (i = a.length - 1; i > 0; i--) { j = (rnd() * (i + 1)) | 0; tmp = a[i]; a[i] = a[j]; a[j] = tmp; }
   return a;
 }
 function pickDay(day) {
-  const slots = Math.floor(BANK.length / PER_DAY);
+  var slots = Math.floor(BANK.length / PER_DAY);
   if (slots < 1) return BANK.slice(0, PER_DAY);
-  const cycle = Math.floor(day / slots), slot = ((day % slots) + slots) % slots;
-  return shuffled(BANK.length, 0x9E3779B9 ^ cycle).slice(slot * PER_DAY, slot * PER_DAY + PER_DAY).map((i) => BANK[i]);
+  var cycle = Math.floor(day / slots), slot = ((day % slots) + slots) % slots;
+  return shuffled(BANK.length, 0x9E3779B9 ^ cycle)
+    .slice(slot * PER_DAY, slot * PER_DAY + PER_DAY)
+    .map(function (i) { return BANK[i]; });
 }
-const pickRandom = (n) => shuffled(BANK.length, (Math.random() * 1e9) | 0).slice(0, n).map((i) => BANK[i]);
-const answerOf = (q) => q.type === 'percent' ? (q.a.value / q.b.value) * 100 : q.a.value / q.b.value;
+function pickRandom(n) {
+  return shuffled(BANK.length, (Math.random() * 1e9) | 0).slice(0, n).map(function (i) { return BANK[i]; });
+}
+function answerOf(q) { return q.type === 'percent' ? (q.a.value / q.b.value) * 100 : q.a.value / q.b.value; }
 
-/* --------------------------------------------------------------- scoring */
+/* --------------------------------------------------------------- scoring
+   Five bands, nothing in between: land it exactly and it is 100, and each
+   step out drops you a quarter. Seven gaps a day makes 700. */
 function scoreGuess(type, guess, actual) {
-  const e = type === 'percent'
-    ? Math.abs(guess - actual) / 20
-    : Math.log(Math.max(guess / actual, actual / guess)) / Math.log(4);
-  return Math.max(0, Math.round(MAX_Q * (1 - Math.pow(clamp(e, 0, 1), 1.35))));
+  var e = type === 'percent'
+    ? Math.abs(guess - actual)                       // percentage points out
+    : Math.max(guess / actual, actual / guess);      // times out
+  var cuts = type === 'percent' ? [0.5, 3, 8, 18] : [1.02, 1.25, 1.75, 3];
+  if (e <= cuts[0]) return 100;
+  if (e <= cuts[1]) return 75;
+  if (e <= cuts[2]) return 50;
+  if (e <= cuts[3]) return 25;
+  return 0;
 }
-/* Seven tiers rather than four. Each one has its own name, its own colour
-   and its own leap: the rarer the guess, the longer the hang time and the
-   higher the arc, so a bullseye is something you watch rather than read. */
-const TIERS = [
-  { min:1000, n:'THE GAPPY',      c:'#19E59B', sq:'🟩', dur:1850, apex:1.00, slow:true  },
-  { min:950,  n:'DEAD RECKONING', c:'#5FD9E8', sq:'🟩', dur:1500, apex:0.84, slow:false },
-  { min:850,  n:'HAIRLINE',       c:'#8FE870', sq:'🟩', dur:1250, apex:0.70, slow:false },
-  { min:700,  n:'CLEAN CROSSING', c:'#F5C542', sq:'🟨', dur:1020, apex:0.56, slow:false },
-  { min:450,  n:'SCRAMBLED OVER', c:'#E89B3C', sq:'🟧', dur:820,  apex:0.40, slow:false },
-  { min:150,  n:'CLIPPED THE EDGE',c:'#E8734A',sq:'🟧', dur:640,  apex:0.26, slow:false },
-  { min:0,    n:'INTO THE VOID',  c:'#E8604A', sq:'⬛', dur:470,  apex:0.14, slow:false },
+/* One word each. Rarer landings hang in the air longer and arc higher. */
+var TIERS = [
+  { min:100, n:'PINPOINT', d:'dead on the flag',     c:'#19E59B', sq:'\u{1F7E9}', dur:1700, apex:1.00, slow:true,  m:1.0 },
+  { min:75,  n:'CLEAN',    d:'over with room spare', c:'#5FD9E8', sq:'\u{1F7E6}', dur:1450, apex:0.76, slow:false, m:1.0 },
+  { min:50,  n:'SCRAPED',  d:'caught the far lip',   c:'#F5C542', sq:'\u{1F7E8}', dur:1080, apex:0.54, slow:false, m:1.0 },
+  { min:25,  n:'SHORT',    d:'planks ran out',       c:'#E89B3C', sq:'\u{1F7E7}', dur:760,  apex:0.34, slow:false, m:1.0 },
+  { min:0,   n:'VOID',     d:'straight down',        c:'#E8604A', sq:'⬛',    dur:460,  apex:0.13, slow:false, m:1.0 },
 ];
-const tierOf = (s) => TIERS.find((t) => s >= t.min) || TIERS[TIERS.length - 1];
-const tierIx = (s) => TIERS.indexOf(tierOf(s));
-const band = (s) => s >= 900 ? 0 : s >= 700 ? 1 : s >= 400 ? 2 : 3;   // kept for the pips
-const RANKS = [
-  [6500, 'CANYON KING'], [5600, 'BRIDGE MASTER'], [4600, 'SURE FOOTED'],
-  [3400, 'STEADY HAND'], [2200, 'WOBBLY'], [1000, 'LOOSE GRAVEL'], [0, 'SPLAT'],
+function tierOf(s) {
+  for (var i = 0; i < TIERS.length; i++) if (s >= TIERS[i].min) return TIERS[i];
+  return TIERS[TIERS.length - 1];
+}
+function tierIx(s) { return TIERS.indexOf(tierOf(s)); }
+function band(s) { return s >= 100 ? 0 : s >= 75 ? 1 : s >= 50 ? 2 : 3; }
+var RANKS = [
+  [700, 'FLAWLESS'], [625, 'ICE COLD'], [500, 'SURE FOOTED'],
+  [375, 'STEADY'], [250, 'WOBBLY'], [125, 'SLIPPERY'], [0, 'SPLAT'],
 ];
-const rankOf = (t) => (RANKS.find(([m]) => t >= m) || RANKS[RANKS.length - 1])[1];
+function rankOf(t) {
+  for (var i = 0; i < RANKS.length; i++) if (t >= RANKS[i][0]) return RANKS[i][1];
+  return RANKS[RANKS.length - 1][1];
+}
 
 /* ----------------------------------------------------------- dial mapping */
-const toValue = (type, pos) => type === 'percent' ? pos / 10 : Math.pow(10, (pos / 1000) * 3);
-const toPos = (type, v) => type === 'percent' ? v * 10 : (Math.log10(clamp(v, 1, 1000)) / 3) * 1000;
-const frac = (type, v) => type === 'percent' ? clamp(v / 100, 0, 1) : clamp(Math.log10(clamp(v, 1, 1000)) / 3, 0, 1);
-const fmtV = (type, v) => type === 'percent' ? (Math.round(v * 10) / 10).toFixed(1)
-  : v >= 100 ? comma(v) : v.toFixed(1);
+function toValue(type, pos) { return type === 'percent' ? pos / 10 : Math.pow(10, (pos / 1000) * 3); }
+function toPos(type, v) { return type === 'percent' ? v * 10 : (Math.log10(clamp(v, 1, 1000)) / 3) * 1000; }
+function frac(type, v) {
+  return type === 'percent' ? clamp(v / 100, 0, 1) : clamp(Math.log10(clamp(v, 1, 1000)) / 3, 0, 1);
+}
+function fmtV(type, v) {
+  return type === 'percent' ? (Math.round(v * 10) / 10).toFixed(1) : v >= 100 ? comma(v) : v.toFixed(1);
+}
 function fmtFig(n) {
   if (n >= 1e9) return (n / 1e9).toPrecision(3).replace(/\.?0+$/, '') + 'bn';
   if (n >= 1e6) return (n / 1e6).toPrecision(3).replace(/\.?0+$/, '') + 'm';
@@ -519,30 +624,64 @@ function fmtFig(n) {
 }
 
 /* ------------------------------------------------------------------ store */
-const BLANK = { days:{}, streak:0, best:0, played:0, sum:0, last:null, dist:[0,0,0,0,0,0,0],
-                sparks:0, cats:[], trophies:[], sound:true, perfects:0 };
+var BLANK = { days:{}, streak:0, bestStreak:0, best:0, played:0, sum:0, last:null,
+              dist:[0,0,0,0,0,0,0], sparks:0, cats:[], trophies:[], sound:true,
+              perfects:0, metres:0, regions:1, kit:[], worn:{}, newKit:false, v:2 };
 function load() {
-  try { return Object.assign({}, BLANK, JSON.parse(localStorage.getItem(STORE) || '{}')); }
-  catch (e) { return Object.assign({}, BLANK); }
+  var p = {};
+  try { p = JSON.parse(localStorage.getItem(STORE) || '{}') || {}; } catch (e) { p = {}; }
+  var s = {};
+  Object.keys(BLANK).forEach(function (k) { s[k] = BLANK[k]; });
+  Object.keys(p).forEach(function (k) { s[k] = p[k]; });
+  // arrays and objects get their own copies, so a stale save can never alias BLANK
+  s.dist = (Array.isArray(p.dist) && p.dist.length === 7) ? p.dist.slice() : [0,0,0,0,0,0,0];
+  s.cats = Array.isArray(p.cats) ? p.cats.slice() : [];
+  s.trophies = Array.isArray(p.trophies) ? p.trophies.slice() : [];
+  s.kit = Array.isArray(p.kit) ? p.kit.slice() : [];
+  s.worn = (p.worn && typeof p.worn === 'object') ? Object.assign({}, p.worn) : {};
+  s.days = (p.days && typeof p.days === 'object') ? p.days : {};
+  s.metres = Math.max(0, +s.metres || 0);
+  s.bestStreak = Math.max(+s.bestStreak || 0, +s.streak || 0);
+  s.regions = Math.max(1, +s.regions || 1);
+  s.perfects = Math.max(0, +s.perfects || 0);
+
+  /* Scores used to run 0–1000 a gap and 0–7000 a day; they now run 0–100 and
+     0–700. That is exactly ten to one, so every stored score divides cleanly
+     and the seven dist buckets land in the same places. Metres are seeded from
+     the points already earned, which is what metres are. */
+  if (+p.v !== 2) {               // p, not s — s already carries BLANK's v
+    s.best = Math.round((+s.best || 0) / 10);
+    s.sum = Math.round((+s.sum || 0) / 10);
+    if (!s.metres) s.metres = s.sum;
+    Object.keys(s.days).forEach(function (k) {
+      var rec = s.days[k]; if (!rec) return;
+      rec.total = Math.round((+rec.total || 0) / 10);
+      if (Array.isArray(rec.results)) {
+        rec.results.forEach(function (r) { if (r) r.score = Math.round((+r.score || 0) / 10); });
+      }
+    });
+    s.v = 2;                      // regions are reconciled at boot, once
+  }                               // REGIONS itself has been assigned
+  return s;
 }
-const save = () => { try { localStorage.setItem(STORE, JSON.stringify(S)); } catch (e) {} };
-let S = load();
+function save() { try { localStorage.setItem(STORE, JSON.stringify(S)); } catch (e) {} }
+var S = load();
 
 /* ------------------------------------------------------------------ sound
    A handful of square-wave blips. No files, nothing to download, and it only
    ever starts after a real tap because that is how WebAudio works. */
-const SFX = (() => {
-  let ctx = null;
-  const on = () => S.sound !== false;
-  const ac = () => {
-    if (!ctx) { const C = window.AudioContext || window.webkitAudioContext; if (C) ctx = new C(); }
+var SFX = (function () {
+  var ctx = null;
+  function on() { return S.sound !== false; }
+  function ac() {
+    if (!ctx) { var C = window.AudioContext || window.webkitAudioContext; if (C) ctx = new C(); }
     if (ctx && ctx.state === 'suspended') ctx.resume();
     return ctx;
-  };
+  }
   function blip(freq, dur, type, vol, slideTo) {
     if (!on()) return;
-    const c = ac(); if (!c) return;
-    const o = c.createOscillator(), g = c.createGain();
+    var c = ac(); if (!c) return;
+    var o = c.createOscillator(), g = c.createGain();
     o.type = type || 'square'; o.frequency.setValueAtTime(freq, c.currentTime);
     if (slideTo) o.frequency.linearRampToValueAtTime(slideTo, c.currentTime + dur);
     g.gain.setValueAtTime(0.0001, c.currentTime);
@@ -551,320 +690,574 @@ const SFX = (() => {
     o.connect(g); g.connect(c.destination); o.start(); o.stop(c.currentTime + dur + 0.02);
   }
   return {
-    tick: () => blip(520, 0.02, 'square', 0.018),
-    leap: () => blip(260, 0.26, 'square', 0.05, 760),
-    land: (b) => {
-      const f = [660, 560, 420, 180][b];
+    tick: function () { blip(520, 0.02, 'square', 0.018); },
+    leap: function () { blip(260, 0.26, 'square', 0.05, 760); },
+    land: function (b) {
+      var f = [660, 560, 420, 180][b] || 420;
       blip(f, 0.1, 'square', 0.07);
-      setTimeout(() => blip(b === 3 ? 120 : f * 1.5, 0.16, b === 3 ? 'sawtooth' : 'square', 0.055), 95);
+      setTimeout(function () {
+        blip(b === 3 ? 120 : f * 1.5, 0.16, b === 3 ? 'sawtooth' : 'square', 0.055);
+      }, 95);
     },
-    win: () => [523, 659, 784, 1046].forEach((f, i) => setTimeout(() => blip(f, 0.16, 'square', 0.06), i * 95)),
-    pip: () => blip(880, 0.05, 'square', 0.04),
-    unlock: () => [784, 988, 1318].forEach((f, i) => setTimeout(() => blip(f, 0.2, 'triangle', 0.08), i * 120)),
+    win: function () {
+      [523, 659, 784, 1046].forEach(function (f, i) {
+        setTimeout(function () { blip(f, 0.16, 'square', 0.06); }, i * 95);
+      });
+    },
+    pip: function () { blip(880, 0.05, 'square', 0.04); },
+    unlock: function () {
+      [784, 988, 1318].forEach(function (f, i) {
+        setTimeout(function () { blip(f, 0.2, 'triangle', 0.08); }, i * 120);
+      });
+    },
+    gate: function () {
+      [392, 523, 659, 880, 1046].forEach(function (f, i) {
+        setTimeout(function () { blip(f, 0.22, 'triangle', 0.07); }, i * 110);
+      });
+    },
   };
 })();
 
-/* ---------------------------------------------------------------- biomes */
-const BIOMES = {
-  Earth:    ['#07171C','#0E2F38','#2A5A5C','#B4763C','#E8A64C'],
-  Space:    ['#03060F','#070D22','#101A38','#1D2A52','#30406E'],
-  Nature:   ['#04150F','#0A2A1E','#154632','#3E7A4A','#7CB45C'],
-  Body:     ['#16090E','#2E1220','#55243A','#9A4A52','#D4826A'],
-  Built:    ['#060F18','#0D1F30','#17324A','#2E5272','#5C86A6'],
-  Transport:['#07131A','#0F2838','#1B4356','#306C7E','#62A0AE'],
-  Sport:    ['#0C130A','#192A14','#2B4A20','#4E7A2E','#8CB44A'],
-  Distance: ['#050D18','#0B1C30','#143050','#28527A','#5086AE'],
-  Time:     ['#160F06','#30200C','#523618','#8A5C24','#D29A46'],
-  Scale:    ['#0A0C16','#141A30','#22304E','#3A4E76','#6880A8'],
-  Everyday: ['#07171C','#0E2F38','#2A5A5C','#B4763C','#E8A64C'],
-};
-function setBiome(cat) {
-  const b = BIOMES[cat] || BIOMES.Earth, r = document.documentElement.style;
-  b.forEach((c, i) => r.setProperty('--sky-' + (i + 1), c));
+/* ---------------------------------------------------------------- regions
+   Not tied to the question, tied to the distance. Every 400 metres the sky
+   and the rock change under the bird, and the last one holds forever. */
+var REGIONS = [
+  { n:'DUSK CANYON',     t:'where everybody starts',
+    sky:['#07171C','#0E2F38','#2A5A5C','#B4763C','#E8A64C'], lip:'#C98A47', mid:'#3A2A22', near:'#241812' },
+  { n:'FROSTBITE FLATS', t:'the air starts to bite',
+    sky:['#04111F','#0A2338','#17415C','#4E7E96','#A8CEDC'], lip:'#D4E9F2', mid:'#2A4356', near:'#17293A' },
+  { n:'AURORA SHELF',    t:'green light, no sun',
+    sky:['#030B16','#06202B','#0C4A40','#1C7A5A','#5FD9A0'], lip:'#8FE8C4', mid:'#143A33', near:'#0A2320' },
+  { n:'THE GLASS SEA',   t:'frozen all the way down',
+    sky:['#060814','#101A34','#243C66','#4A6EA8','#A2BAE0'], lip:'#C8DAF2', mid:'#2A3A5C', near:'#18223A' },
+  { n:'EMBERFALL',       t:'something is burning below',
+    sky:['#140407','#300A10','#5E1A16','#A8431E','#E8872C'], lip:'#F0A848', mid:'#4A1E14', near:'#2A0F0A' },
+  { n:'THE HUSH',        t:'no wind, no echo',
+    sky:['#020308','#06081A','#0C1030','#161C48','#2A3270'], lip:'#6A74B8', mid:'#141838', near:'#0A0C20' },
+  { n:'SALTSPIRE',       t:'white dust on everything',
+    sky:['#0A1012','#16282A','#2E4C48','#7C8E72','#D6CFA4'], lip:'#E4DCB0', mid:'#3A4238', near:'#222821' },
+  { n:'THE MONOLITH',    t:'somebody built these',
+    sky:['#0C0A12','#1A1626','#302844','#52426E','#8A72A8'], lip:'#B898D8', mid:'#2A2238', near:'#181424' },
+  { n:'LANTERN DEEP',    t:'lights in the chasm',
+    sky:['#120A04','#2A1808','#4E2E0E','#8A5A1C','#E0A63C'], lip:'#F0C068', mid:'#3A2610', near:'#20150A' },
+  { n:'THE FAR SIDE',    t:'nobody has mapped it',
+    sky:['#06120F','#0A2A22','#10483A','#2E8068','#7CE0B4'], lip:'#A8F0D0', mid:'#15382E', near:'#0C221C' },
+];
+function regionIxAt(m) { return clamp(Math.floor(m / REGION_LEN), 0, REGIONS.length - 1); }
+function regionIx() { return regionIxAt(S.metres); }
+function regionNow() { return REGIONS[regionIx()]; }
+function setRegion() {
+  var R = regionNow(), r = document.documentElement.style;
+  R.sky.forEach(function (c, i) { r.setProperty('--sky-' + (i + 1), c); });
+  r.setProperty('--rock-lip', R.lip);
+  r.setProperty('--rock-mid', R.mid);
+  r.setProperty('--rock-near', R.near);
   drawBands();
 }
 
 /* ------------------------------------------------------- pixel scenery */
-const PXS = 4;   // one "pixel" is this many device-independent px
+var PXS = 4;   // one scenery "pixel" is this many device-independent px
 function mesa(cv, color, seed, heightFrac, roughness) {
   if (!cv) return;
-  const w = cv.clientWidth, h = cv.clientHeight;
+  var w = cv.clientWidth, h = cv.clientHeight;
   if (!w || !h) return;
-  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  var dpr = Math.min(2, window.devicePixelRatio || 1);
   cv.width = Math.max(1, Math.round(w * dpr)); cv.height = Math.max(1, Math.round(h * dpr));
-  const x = cv.getContext('2d'); x.setTransform(dpr, 0, 0, dpr, 0, 0);
+  var x = cv.getContext('2d'); if (!x) return;
+  x.setTransform(dpr, 0, 0, dpr, 0, 0);
   x.clearRect(0, 0, w, h);
   x.fillStyle = color;
-  const rnd = mulberry32(seed);
-  const cols = Math.ceil(w / PXS);
-  let y = h * (1 - heightFrac);
-  for (let c = 0; c < cols; c++) {
+  var rnd = mulberry32(seed), cols = Math.ceil(w / PXS), y = h * (1 - heightFrac), c, yy;
+  for (c = 0; c < cols; c++) {
     // plateaus: hold a level for a stretch, then step
     if (rnd() < roughness) y += (rnd() < 0.5 ? -1 : 1) * PXS * (1 + ((rnd() * 3) | 0));
     y = clamp(y, h * 0.06, h - PXS);
-    const yy = Math.round(y / PXS) * PXS;
+    yy = Math.round(y / PXS) * PXS;
     x.fillRect(c * PXS, yy, PXS, h - yy);
   }
 }
 function drawBands() {
-  const cs = getComputedStyle(document.documentElement);
-  const pick = (n) => cs.getPropertyValue('--sky-' + n).trim();
-  mesa($('band-far'), shade(pick(3), -0.34), 11, 0.70, 0.17);
-  mesa($('band-mid'), shade(pick(2), -0.22), 29, 0.78, 0.24);
+  var cs = getComputedStyle(document.documentElement);
+  var pick = function (n) { return cs.getPropertyValue('--sky-' + n).trim(); };
+  mesa($('band-far'), shade(pick(3), -0.36), 11, 0.70, 0.17);
+  mesa($('band-mid'), shade(pick(2), -0.20), 29, 0.80, 0.24);
 }
 function shade(hex, amt) {
-  const m = /^#?([0-9a-f]{6})$/i.exec(hex || '');
-  if (!m) return '#241536';
-  const n = parseInt(m[1], 16);
-  const f = (v) => clamp(Math.round(v + (amt < 0 ? v * amt : (255 - v) * amt)), 0, 255);
-  return '#' + [f(n >> 16), f((n >> 8) & 255), f(n & 255)].map((v) => v.toString(16).padStart(2, '0')).join('');
+  var m = /^#?([0-9a-f]{6})$/i.exec(hex || '');
+  if (!m) return '#1A2E34';
+  var n = parseInt(m[1], 16);
+  var f = function (v) { return clamp(Math.round(v + (amt < 0 ? v * amt : (255 - v) * amt)), 0, 255); };
+  return '#' + [f(n >> 16), f((n >> 8) & 255), f(n & 255)]
+    .map(function (v) { return v.toString(16).padStart(2, '0'); }).join('');
 }
 function starfield() {
-  const el = $('stars'), rnd = mulberry32(7);
-  let html = '';
-  for (let i = 0; i < 70; i++) {
-    const s = rnd() < 0.18 ? 3 : 2;
-    html += `<i style="position:absolute;left:${(rnd()*100).toFixed(2)}%;top:${(rnd()*100).toFixed(2)}%;
-      width:${s}px;height:${s}px;background:#fff;opacity:${(0.18+rnd()*0.5).toFixed(2)}"></i>`;
+  var el = $('stars'); if (!el) return;
+  var rnd = mulberry32(7), html = '', i, s;
+  for (i = 0; i < 80; i++) {
+    s = rnd() < 0.18 ? 3 : 2;
+    html += '<i style="position:absolute;left:' + (rnd() * 100).toFixed(2) + '%;top:' +
+      (rnd() * 100).toFixed(2) + '%;width:' + s + 'px;height:' + s + 'px;background:#fff;opacity:' +
+      (0.16 + rnd() * 0.5).toFixed(2) + '"></i>';
   }
   el.innerHTML = html;
 }
 
-/* ------------------------------------------------------------- sprites */
-const PAL = { c:'#C9A227', s:'#E8B28A', d:'#2A1E18', j:'#FF4D9D', b:'#3A2A1A', f:'#4DE8E8', w:'#F7ECFF' };
-const HERO = [
-  '...ccccc...','..ccccccc..','.ccccccccc.','...sssss...','...dsssd...','...sssss...',
-  '..jjjjjjj..','.jjjjjjjjj.','sjjjjjjjjjs','.jjjjjjjjj.','..jj...jj..','..jj...jj..',
-  '..bb...bb..','.bbb...bbb.',
+/* ------------------------------------------------------------- sprites
+   Every sprite is a string map on one shared 16-wide grid: '.' is clear and
+   any other character is a palette key. Wardrobe pieces are drawn on that
+   same grid over the bird, offset by their own row. */
+var PAL = {
+  k:'#15151F', w:'#F8F8FB', o:'#F5A623', d:'#C47C10', h:'#FFFFFF', e:'#15151F',
+  r:'#E8604A', c:'#5FD9E8', g:'#19E59B', y:'#F5C542', p:'#C06CE8', b:'#3B6FD4', n:'#15151F',
+  s:'#9AA3B8',
+};
+/* a small, round, extremely pleased-with-itself penguin */
+var HERO = [
+  '....kkkkkkkk....',
+  '...kkkkkkkkkk...',
+  '...kkkkkkkkkk...',
+  '...kkkkkkkkkk...',
+  '...kkhhkkhhkk...',
+  '...kkhekkehkk...',
+  '....kkkookkk....',
+  '....kkkddkkk....',
+  '..kkkwwwwwwkkk..',
+  '.kkkwwwwwwwwkkk.',
+  '.kkwwwwwwwwwwkk.',
+  '.kkwwwwwwwwwwkk.',
+  '.kkwwwwwwwwwwkk.',
+  '..kwwwwwwwwwwk..',
+  '..kkwwwwwwwwkk..',
+  '...kkkkkkkkkk...',
+  '....oo....oo....',
+  '...oooo..oooo...',
 ];
-const HERO_JUMP = [
-  '...ccccc...','..ccccccc..','.ccccccccc.','...sssss...','...dsssd...','...sssss...',
-  's.jjjjjjj.s','sjjjjjjjjjs','.jjjjjjjjj.','..jjjjjjj..','..bb...bb..','...bb.bb...',
-  '...........','...........',
+var HERO_JUMP = [
+  '....kkkkkkkk....',
+  '...kkkkkkkkkk...',
+  '...kkkkkkkkkk...',
+  '...kkkkkkkkkk...',
+  '...kkhhkkhhkk...',
+  '...kkhekkehkk...',
+  '....kkkookkk....',
+  '....kkkddkkk....',
+  'k.kkkwwwwwwkkk.k',
+  'kkkkwwwwwwwwkkkk',
+  '.kkkwwwwwwwwkkk.',
+  '.kkwwwwwwwwwwkk.',
+  '.kkwwwwwwwwwwkk.',
+  '..kwwwwwwwwwwk..',
+  '..kkwwwwwwwwkk..',
+  '...kkkkkkkkkk...',
+  '..oo........oo..',
+  '................',
 ];
-const FLAG = [
-  '.f.........','.fffffff...','.ffffffff..','.fffffff...','.f.........','.f.........',
-  '.f.........','.f.........','.f.........','.f.........','.f.........','.f.........',
-  '.f.........','.f.........',
+var FLAG = [
+  '.c..............',
+  '.ccccccc........',
+  '.cccccccc.......',
+  '.ccccccccc......',
+  '.cccccccc.......',
+  '.ccccccc........',
+  '.c..............',
+  '.c..............',
+  '.c..............',
+  '.c..............',
+  '.c..............',
+  '.c..............',
+  '.c..............',
+  '.c..............',
+  '.c..............',
+  '.c..............',
 ];
-function sprite(x, map, px, py, s, flip) {
-  for (let r = 0; r < map.length; r++) for (let c = 0; c < map[r].length; c++) {
-    const k = map[r][c]; if (k === '.') continue;
+
+/* ------------------------------------------------------------- wardrobe
+   Three slots, eight pieces. Every piece is earned by doing a specific
+   thing, and the sheet states the condition whether you have it or not. */
+var SLOTS = [
+  { k:'hat',  n:'Head' },
+  { k:'face', n:'Eyes' },
+  { k:'neck', n:'Body' },
+];
+var WARDROBE = [
+  { id:'beanie', slot:'hat', n:'Bobble Beanie', d:'Play 5 days in a row', y:0,
+    t:function (s) { return s.bestStreak >= 5; }, art:[
+    '......wwww......',
+    '....rrrrrrrr....',
+    '...rrrrrrrrrr...',
+    '...wwwwwwwwww...'] },
+  { id:'cap', slot:'hat', n:'Explorer Cap', d:'Travel 2,000 m', y:0,
+    t:function (s) { return s.metres >= 2000; }, art:[
+    '....gggggggg....',
+    '...gggggggggg...',
+    '...gggggggggg...',
+    '.gggggggggggggg.'] },
+  { id:'crown', slot:'hat', n:'Ice Crown', d:'Play 15 days in a row', y:0,
+    t:function (s) { return s.bestStreak >= 15; }, art:[
+    '...y..y..y..y...',
+    '...yyyyyyyyyy...',
+    '...yyccyyccyy...'] },
+  { id:'goggles', slot:'face', n:'Snow Goggles', d:'Land one PINPOINT', y:3,
+    t:function (s) { return s.perfects >= 1; }, art:[
+    '..cccccccccccc..',
+    '..ccwwccccwwcc..',
+    '..cccccccccccc..'] },
+  { id:'shades', slot:'face', n:'Glacier Shades', d:'Land 10 PINPOINTs', y:4,
+    t:function (s) { return s.perfects >= 10; }, art:[
+    '..ssssssssssss..',
+    '..nnnnnnnnnnnn..',
+    '...nnnn..nnnn...'] },
+  { id:'scarf', slot:'neck', n:'Striped Scarf', d:'Finish 10 dailies', y:8,
+    t:function (s) { return s.played >= 10; }, art:[
+    '..rrrrrrrrrrrr..',
+    '..rwrwrwrwrwrw..',
+    '.....rr.........',
+    '.....rr.........'] },
+  { id:'bowtie', slot:'neck', n:'Dapper Bowtie', d:'Score 600+ in one day', y:8,
+    t:function (s) { return s.best >= 600; }, art:[
+    '....pp....pp....',
+    '....pppppppp....',
+    '....pp....pp....'] },
+  { id:'cape', slot:'neck', n:'Drift Cape', d:'Reach 6 regions', y:8,
+    t:function (s) { return s.regions >= 6; }, art:[
+    '..bb........bb..',
+    '.bbb........bbb.',
+    '.bbb........bbb.',
+    '.bb..........bb.',
+    '.bb..........bb.'] },
+];
+function ownsIt(id) { return (S.kit || []).indexOf(id) !== -1; }
+function itemById(id) {
+  for (var i = 0; i < WARDROBE.length; i++) if (WARDROBE[i].id === id) return WARDROBE[i];
+  return null;
+}
+function equipped() {
+  var out = [];
+  SLOTS.forEach(function (sl) {
+    var it = itemById((S.worn || {})[sl.k]);
+    if (it && ownsIt(it.id)) out.push(it);
+  });
+  return out;
+}
+
+function sprite(x, map, px, py, s) {
+  for (var r = 0; r < map.length; r++) for (var c = 0; c < map[r].length; c++) {
+    var k = map[r][c]; if (k === '.') continue;
     x.fillStyle = PAL[k] || '#fff';
-    const cc = flip ? (map[r].length - 1 - c) : c;
-    x.fillRect(px + cc * s, py + r * s, s, s);
+    x.fillRect(px + c * s, py + r * s, s, s);
   }
+}
+/* the bird, plus whatever it is wearing */
+function drawHero(x, map, px, py, s) {
+  sprite(x, map, px, py, s);
+  equipped().forEach(function (it) { sprite(x, it.art, px, py + it.y * s, s); });
+}
+/* the same maps as SVG, for the title art and the wardrobe sheet */
+function rects(map, P, ox, oy, flat, op) {
+  var g = '', r, c, k;
+  for (r = 0; r < map.length; r++) for (c = 0; c < map[r].length; c++) {
+    k = map[r][c]; if (k === '.') continue;
+    g += '<rect x="' + (ox + c * P) + '" y="' + (oy + r * P) + '" width="' + P + '" height="' + P +
+      '" fill="' + (flat || PAL[k] || '#fff') + '"' + (op ? ' opacity="' + op + '"' : '') + '/>';
+  }
+  return g;
+}
+function svgHero(P, worn, dim, kitOp) {
+  var W = HERO[0].length * P, H = HERO.length * P;
+  var g = rects(HERO, P, 0, 0, dim ? '#22383F' : null, null);
+  (worn || []).forEach(function (it) { g += rects(it.art, P, 0, it.y * P, null, kitOp); });
+  return '<svg viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H +
+    '" aria-hidden="true">' + g + '</svg>';
 }
 
 /* ----------------------------------------------------------- the canyon
-   Drawn straight onto the page background. The UI floats above it, so the
-   leap happens out in the world rather than inside a little window. */
-let anim = null, stageState = null;
+   One full-viewport canvas. The sky, the ridgelines and the chasm are the
+   page background; the UI floats on top of them and gets out of the way
+   while the bird is in the air. */
+var anim = null, stageState = null, cliffF = 0.74;
+/* Where the cliff line sits. Measured from where the dial actually ends, so
+   the bird always has room to stand on the lip however short the screen is,
+   and held steady for the whole question so the ground cannot move mid-leap. */
+function pxFor(h) { return h < 580 ? 3 : h < 660 ? 4 : 5; }
+function measureCliff() {
+  if (V.play.hidden) { cliffF = 0.74; return; }
+  var d = $('dial'); if (!d || d.hidden) return;        // mid-leap: keep it
+  var r = d.getBoundingClientRect(), h = $('stage').clientHeight || 800;
+  if (!r.height) return;
+  cliffF = clamp((r.bottom + HERO.length * pxFor(h) + 14) / h, 0.62, 0.9);
+}
 function stageGeom() {
-  const cv = $('stage');
-  if (!cv) return { w:0, h:0 };
-  const w = cv.clientWidth, h2 = cv.clientHeight;
-  const P = 5;
-  const gy = Math.round(h2 * 0.46 / P) * P;              // cliff-top line
-  const pad = Math.max(26, Math.min(70, w * 0.09));
-  const L = Math.round(pad / P) * P;
-  const R = Math.round((w - pad) / P) * P;
-  return { cv, w, h: h2, P, gy, L, R, xOf: (f) => Math.round((L + clamp(f,0,1) * (R - L)) / P) * P };
+  var cv = $('stage');
+  if (!cv) return { w:0, h:0, P:5, gy:0, L:0, R:0, xOf:function () { return 0; } };
+  var w = cv.clientWidth, h = cv.clientHeight;
+  var P = pxFor(h || 800);
+  var gy = Math.round(h * cliffF / P) * P;               // the cliff-top line
+  var pad = Math.max(26, Math.min(74, w * 0.09));
+  var L = Math.round(pad / P) * P;
+  var R = Math.round((w - pad) / P) * P;
+  return { cv:cv, w:w, h:h, P:P, gy:gy, L:L, R:R,
+    xOf: function (f) { return Math.round((L + clamp(f, 0, 1) * (R - L)) / P) * P; } };
 }
 function drawStage(o) {
-  const g = stageGeom(); if (!g.w || !g.h) return;
+  var g = stageGeom(); if (!g.w || !g.h) return;
   stageState = o;
-  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  var dpr = Math.min(2, window.devicePixelRatio || 1);
   g.cv.width = Math.round(g.w * dpr); g.cv.height = Math.round(g.h * dpr);
-  const x = g.cv.getContext('2d'); x.setTransform(dpr, 0, 0, dpr, 0, 0);
+  var x = g.cv.getContext('2d'); if (!x) return;
+  x.setTransform(dpr, 0, 0, dpr, 0, 0);
   x.clearRect(0, 0, g.w, g.h);
-  const cs = getComputedStyle(document.documentElement);
-  const lip  = cs.getPropertyValue('--rock-lip').trim() || '#C98A47';
-  const body = cs.getPropertyValue('--rock-mid').trim() || '#3A2A22';
-  const deep = cs.getPropertyValue('--rock-near').trim() || '#241812';
-  const P = g.P;
+  var cs = getComputedStyle(document.documentElement);
+  var lip  = cs.getPropertyValue('--rock-lip').trim() || '#C98A47';
+  var body = cs.getPropertyValue('--rock-mid').trim() || '#3A2A22';
+  var deep = cs.getPropertyValue('--rock-near').trim() || '#241812';
+  var P = g.P, yy, i;
 
   // the void: dark, with strata fading into it
-  x.fillStyle = 'rgba(4,10,14,.92)';
+  x.fillStyle = 'rgba(3,9,13,.93)';
   x.fillRect(0, g.gy, g.w, g.h - g.gy);
   x.fillStyle = 'rgba(255,255,255,.028)';
-  for (let yy = g.gy + P * 2; yy < g.h; yy += P * 5) x.fillRect(0, yy, g.w, P);
+  for (yy = g.gy + P * 2; yy < g.h; yy += P * 5) x.fillRect(0, yy, g.w, P);
 
-  const cliff = (x0, x1) => {
+  function cliff(x0, x1) {
     if (x1 <= x0) return;
     x.fillStyle = body; x.fillRect(x0, g.gy, x1 - x0, g.h - g.gy);
     x.fillStyle = lip;  x.fillRect(x0, g.gy, x1 - x0, P);
     x.fillStyle = deep;
-    for (let yy = g.gy + P * 3; yy < g.h; yy += P * 4) x.fillRect(x0, yy, x1 - x0, P);
-    // crumbling edge pixels so the lip is not a ruler-straight line
-    const rnd = mulberry32(Math.round(x0) * 31 + 7);
-    for (let i = 0; i < 7; i++) {
-      const px = x0 + Math.round(rnd() * (x1 - x0) / P) * P;
+    for (var y2 = g.gy + P * 3; y2 < g.h; y2 += P * 4) x.fillRect(x0, y2, x1 - x0, P);
+    // crumbling edge pixels, so the lip is not a ruler-straight line
+    var rnd = mulberry32(Math.round(x0) * 31 + 7);
+    for (var j = 0; j < 8; j++) {
+      var px = x0 + Math.round(rnd() * (x1 - x0) / P) * P;
       x.fillStyle = lip; x.fillRect(px, g.gy - P, P, P);
     }
-  };
+  }
   cliff(0, g.L);                                   // the side you start on
+  var fx = g.xOf(o.actualF);
   if (o.showFar) {
-    const fx = g.xOf(o.actualF);
     cliff(fx, g.w);
     sprite(x, FLAG, fx + P * 3, g.gy - FLAG.length * P, P);
   }
 
+  // on the title and results screens the canyon is pure scenery: no bird, no
+  // bridge, no mist, so it never competes with the art on top of it
+  if (o.idle) { cliff(g.R + P * 6, g.w); return; }
+
   // the bridge you built: planks out over the void
-  const bx = g.xOf(o.guessF);
-  const plank = o.tierColour || '#2E6E78';
-  for (let px = g.L; px < bx; px += P * 2) {
-    x.fillStyle = plank; x.fillRect(px, g.gy - P, P, P);
-    x.fillStyle = 'rgba(0,0,0,.35)'; x.fillRect(px, g.gy, P, P);
+  var bx = g.xOf(o.guessF);
+  var plank = o.tierColour || lip;
+  for (var pxx = g.L; pxx < bx; pxx += P * 2) {
+    x.fillStyle = plank; x.fillRect(pxx, g.gy - P, P, P);
+    x.fillStyle = 'rgba(0,0,0,.35)'; x.fillRect(pxx, g.gy, P, P);
   }
   if (bx > g.L) { x.fillStyle = plank; x.fillRect(bx - P, g.gy - P * 3, P, P * 3); }
 
-  // fog hiding the far side until you commit
+  // mist hiding the far side until you commit — soft at the top, solid below
   if (!o.showFar) {
-    const fogX = bx + P * 2;
-    const grd = x.createLinearGradient(fogX, 0, Math.min(g.w, fogX + 150), 0);
-    const c1 = cs.getPropertyValue('--sky-2').trim() || '#0E2F38';
-    grd.addColorStop(0, 'rgba(0,0,0,0)'); grd.addColorStop(0.35, c1 + 'd9'); grd.addColorStop(1, c1);
-    x.fillStyle = grd; x.fillRect(fogX, 0, g.w - fogX, g.h);
+    var fogX = bx + P * 2;
+    var c1 = cs.getPropertyValue('--sky-2').trim() || '#0E2F38';
+    var grd = x.createLinearGradient(fogX, 0, Math.min(g.w, fogX + 180), 0);
+    grd.addColorStop(0, 'rgba(0,0,0,0)'); grd.addColorStop(0.4, c1 + 'd0'); grd.addColorStop(1, c1);
+    var top = Math.max(0, g.gy - P * 36), slices = 8, sh = (g.h - top) / slices;
+    for (i = 0; i < slices; i++) {
+      x.globalAlpha = 0.14 + (i / (slices - 1)) * 0.86;
+      x.fillStyle = grd;
+      x.fillRect(fogX, top + sh * i, g.w - fogX, sh + 1);
+    }
+    x.globalAlpha = 1;
     x.fillStyle = cs.getPropertyValue('--faint').trim() || '#5C8A88';
-    for (let i = 0; i < 24; i++) {
-      const rnd = mulberry32(i * 97);
-      x.fillRect(fogX + 20 + Math.round(rnd() * (g.w - fogX - 30) / P) * P,
-                 Math.round(rnd() * g.h / P) * P, P, P);
+    for (i = 0; i < 26; i++) {
+      var rnd2 = mulberry32(i * 97);
+      x.fillRect(fogX + 18 + Math.round(rnd2() * Math.max(1, g.w - fogX - 28) / P) * P,
+                 top + Math.round(rnd2() * (g.h - top) / P) * P, P, P);
     }
   }
 
-  // the climber
-  const hx = o.heroF === undefined ? g.L - HERO[0].length * P - P * 2 : g.xOf(o.heroF);
-  const hy = g.gy - HERO.length * P - (o.hop || 0) + (o.fall || 0);
-  sprite(x, o.jumping ? HERO_JUMP : HERO, hx, hy, P);
+  // the bird
+  var heroH = HERO.length * P;
+  var hx = o.heroF === undefined ? g.L - HERO[0].length * P - P * 2 : g.xOf(o.heroF);
+  var hy = g.gy - heroH - (o.hop || 0) + (o.fall || 0);
+  drawHero(x, o.jumping ? HERO_JUMP : HERO, hx, hy, P);
   // a dust puff on take-off and on landing
   if (o.dust) {
-    x.fillStyle = 'rgba(201,138,71,.55)';
-    for (let i = 0; i < 5; i++) x.fillRect(hx - P * 2 + i * P * 2, g.gy - P, P, P);
+    x.fillStyle = 'rgba(255,255,255,.4)';
+    for (i = 0; i < 5; i++) x.fillRect(hx - P * 2 + i * P * 2, g.gy - P, P, P);
   }
 }
 
-/* The leap. Rarer guesses hang in the air longer and arc higher — a Gappy is
-   a slow soar, a void is a short stumble. */
+/* The leap. Rarer landings hang in the air longer and arc higher — a
+   PINPOINT is a slow soar across the whole screen, a VOID is a stumble. */
 function animateLeap(guessF, actualF, score, done) {
   cancelAnimationFrame(anim);
-  const T = tierOf(score), landed = score >= 700;
-  const g = stageGeom();
-  // never arc higher than the sky above the cliff, or the climber leaves frame
-  const headroom = Math.max(24, g.gy - HERO.length * g.P - 8);
-  const apexPx = headroom * T.apex;
-  const endF = landed ? actualF : Math.min(guessF, actualF * 0.9);
-  const t0 = performance.now(), dur = T.dur;
+  var T = tierOf(score), landed = score >= 50;
+  var g = stageGeom();
+  // never arc past the top of the frame, and keep a margin so the bird does
+  // not peak behind the top bar on the biggest leaps
+  var headroom = Math.max(30, g.gy - HERO.length * g.P - Math.round(g.h * 0.07));
+  var apexPx = headroom * T.apex;
+  var endF = landed ? actualF : Math.min(guessF, actualF * 0.9);
+  var t0 = performance.now(), dur = T.dur;
   (function step(t) {
-    let k = clamp((t - t0) / dur, 0, 1);
-    // a Gappy gets a beat of slow motion at the top of the arc
-    const e = T.slow
+    var k = clamp((t - t0) / dur, 0, 1);
+    // the best landings get a beat of slow motion at the top of the arc
+    var e = T.slow
       ? (k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2)
       : 1 - Math.pow(1 - k, 2);
-    const f = e * endF;
-    const hop = Math.sin(e * Math.PI) * apexPx;
-    const fall = (!landed && k > 0.6) ? Math.pow((k - 0.6) / 0.4, 2) * (g.h - g.gy - 28) : 0;
-    drawStage({ guessF, actualF, showFar: true, heroF: f, hop, fall,
-                jumping: k < 0.97 || !landed, tierColour: T.c,
+    var f = e * endF;
+    var hop = Math.sin(e * Math.PI) * apexPx;
+    var fall = (!landed && k > 0.6) ? Math.pow((k - 0.6) / 0.4, 2) * (g.h - g.gy - 24) : 0;
+    drawStage({ guessF:guessF, actualF:actualF, showFar:true, heroF:f, hop:hop, fall:fall,
+                jumping: k < 0.97 || !landed, tierColour:T.c,
                 dust: k < 0.1 || (landed && k > 0.94) });
     if (k < 1) anim = requestAnimationFrame(step); else if (done) done();
   })(t0);
 }
 
 /* ------------------------------------------------------------- trophies */
-const TROPHY = [
-  { id:'first',   n:'FIRST LEAP',   d:'Finish one daily',           t:(s)=>s.played>=1 },
-  { id:'perfect', n:'BULLSEYE',     d:'1,000 on one gap',           t:(s)=>s.perfects>=1 },
-  { id:'triple',  n:'HAT TRICK',    d:'Three 1,000s in a day',      t:(s,d)=>d&&d.filter(r=>r.score===1000).length>=3 },
-  { id:'k5',      n:'SURE FOOTED',  d:'Score 5,000+',               t:(s)=>s.best>=5000 },
-  { id:'k6',      n:'CANYON KING',  d:'Score 6,000+',               t:(s)=>s.best>=6000 },
-  { id:'clean',   n:'NO FALLS',     d:'All seven over 700',         t:(s,d)=>d&&d.length===7&&d.every(r=>r.score>=700) },
-  { id:'week',    n:'SEVEN DAYS',   d:'A 7 day streak',             t:(s)=>s.streak>=7 },
-  { id:'fort',    n:'FORTNIGHT',    d:'A 14 day streak',            t:(s)=>s.streak>=14 },
-  { id:'ten',     n:'REGULAR',      d:'Play 10 dailies',            t:(s)=>s.played>=10 },
-  { id:'world',   n:'WELL TRAVELLED',d:'See all 11 regions',        t:(s)=>s.cats.length>=11 },
+var TROPHY = [
+  { id:'first',   n:'FIRST LEAP',    d:'Finish one daily',        t:function (s) { return s.played >= 1; } },
+  { id:'perfect', n:'PINPOINT',      d:'A perfect 100 on one gap', t:function (s) { return s.perfects >= 1; } },
+  { id:'triple',  n:'HAT TRICK',     d:'Three 100s in a day',
+    t:function (s, d) { return !!d && d.filter(function (r) { return r.score === 100; }).length >= 3; } },
+  { id:'k5',      n:'SURE FOOTED',   d:'Score 500+ in a day',     t:function (s) { return s.best >= 500; } },
+  { id:'k6',      n:'CANYON KING',   d:'Score 650+ in a day',     t:function (s) { return s.best >= 650; } },
+  { id:'clean',   n:'NO FALLS',      d:'All seven SCRAPED or better',
+    t:function (s, d) { return !!d && d.length === 7 && d.every(function (r) { return r.score >= 50; }); } },
+  { id:'week',    n:'SEVEN DAYS',    d:'A 7 day streak',          t:function (s) { return s.bestStreak >= 7; } },
+  { id:'fort',    n:'FORTNIGHT',     d:'A 14 day streak',         t:function (s) { return s.bestStreak >= 14; } },
+  { id:'ten',     n:'REGULAR',       d:'Play 10 dailies',         t:function (s) { return s.played >= 10; } },
+  { id:'far',     n:'WELL TRAVELLED', d:'Reach 5 regions',        t:function (s) { return s.regions >= 5; } },
+  { id:'haul',    n:'LONG HAUL',     d:'Travel 5,000 m',          t:function (s) { return s.metres >= 5000; } },
+  { id:'end',     n:'THE FAR SIDE',  d:'Reach the last region',   t:function (s) { return s.regions >= REGIONS.length; } },
 ];
 function checkTrophies(dayResults) {
-  const got = [];
-  TROPHY.forEach((tr) => {
+  var got = [];
+  TROPHY.forEach(function (tr) {
     if (S.trophies.indexOf(tr.id) === -1 && tr.t(S, dayResults)) { S.trophies.push(tr.id); got.push(tr); }
   });
-  if (got.length) { save(); SFX.unlock(); toast('Unlocked: ' + got[0].n); }
+  if (got.length) { save(); SFX.unlock(); toast('Trophy: ' + got[0].n); }
   return got;
 }
+/* wardrobe unlocks, checked on the same beats */
+function checkKit() {
+  var got = [];
+  WARDROBE.forEach(function (w) {
+    if (!ownsIt(w.id) && w.t(S)) {
+      S.kit.push(w.id);
+      if (!(S.worn || {})[w.slot]) { S.worn = S.worn || {}; S.worn[w.slot] = w.id; }
+      got.push(w);
+    }
+  });
+  if (got.length) { S.newKit = true; save(); kitBadge(); SFX.unlock(); toast('New kit: ' + got[0].n); }
+  return got;
+}
+function kitBadge() { $('b-kit').classList.toggle('new', !!S.newKit); }
 
 /* ---------------------------------------------------------------- state */
-let mode = 'daily', qs = [], idx = 0, results = [], locked = false, today = dayIndex();
-const V = { title:$('v-title'), play:$('v-play'), done:$('v-done') };
-function show(n) { Object.keys(V).forEach((k) => { V[k].hidden = k !== n; });
-  $('cliffnotes').hidden = n !== 'play'; window.scrollTo(0, 0); if (n === 'play') placeNotes(); }
+var mode = 'daily', qs = [], idx = 0, results = [], locked = false, flying = false, today = dayIndex();
+var V = { title:$('v-title'), play:$('v-play'), done:$('v-done') };
+function show(n) {
+  Object.keys(V).forEach(function (k) { V[k].hidden = k !== n; });
+  $('cliffnotes').hidden = n !== 'play';
+  document.body.classList.toggle('playing', n === 'play');
+  window.scrollTo(0, 0);
+  if (n === 'play') { measureCliff(); placeNotes(); }
+  else { cliffF = 0.74; drawStage({ idle:true, guessF:0, actualF:0 }); }
+}
 function toast(m) {
-  const t = $('toast'); t.textContent = m; t.classList.add('on');
-  clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('on'), 2200);
+  var t = $('toast'); t.textContent = m; t.classList.add('on');
+  clearTimeout(toast._t); toast._t = setTimeout(function () { t.classList.remove('on'); }, 2200);
 }
 function pointsFly(el, n) {
-  const r = el.getBoundingClientRect(), d = document.createElement('div');
+  var r = el.getBoundingClientRect(), d = document.createElement('div');
   d.className = 'pf'; d.textContent = '+' + comma(n);
   d.style.left = (r.left + r.width / 2 - 22) + 'px'; d.style.top = (r.top - 6) + 'px';
-  document.body.appendChild(d); setTimeout(() => d.remove(), 1000);
+  document.body.appendChild(d); setTimeout(function () { d.remove(); }, 1000);
 }
-
+/* the region card that sweeps the screen when you cross a 400 m line */
+function gateCard(R, ix) {
+  var d = document.createElement('div');
+  d.className = 'gate';
+  d.innerHTML = '<span>Region ' + (ix + 1) + ' of ' + REGIONS.length +
+    '<b>' + esc(R.n) + '</b></span>';
+  document.body.appendChild(d);
+  setTimeout(function () { d.remove(); }, 2700);
+}
+/* the cliff notes live on the rock faces, below the lip and clear of the UI */
 function placeNotes() {
   if (V.play.hidden) return;
-  const cn = $('cliffnotes');
-  cn.style.top = Math.round($('stage').getBoundingClientRect().top + 6) + 'px';
+  var g = stageGeom(), st = $('stage');
+  if (!st || !g.h) return;
+  $('cliffnotes').style.top = Math.round(st.getBoundingClientRect().top + g.gy + 9) + 'px';
 }
 
 /* ---------------------------------------------------------------- title */
 function paintTitle() {
-  const rec = S.days[today];
-  $('t-day').textContent = 'Canyon #' + today + (rec && rec.done ? ' · cleared' : '');
+  var rec = S.days[today], R = regionNow();
+  $('t-day').textContent = 'Canyon #' + today + ' · ' + R.n + ' · ' + comma(S.metres) + ' m' +
+    (rec && rec.done ? ' · cleared' : '');
   $('m-daily-s').textContent = rec && rec.done ? 'done for today' : '7 gaps · one try';
   $('b-play').textContent = mode === 'endless' ? '▲ Endless run ▲'
     : (rec && rec.done ? '▲ See your crossing ▲' : '▲ Take the leap ▲');
   $('chip-sparks-n').textContent = comma(S.sparks);
   $('chip-streak').hidden = !(S.streak > 0);
   $('chip-streak-n').textContent = S.streak;
-  // a little canyon vignette under the title
-  const g = [];
-  const P = 3, W = 190, H = 54, gy = 36;
-  g.push(`<rect x="0" y="${gy}" width="46" height="${H-gy}" fill="#2C1942"/>`);
-  g.push(`<rect x="0" y="${gy}" width="46" height="3" fill="#5A3579"/>`);
-  g.push(`<rect x="132" y="${gy-6}" width="58" height="${H-gy+6}" fill="#2C1942"/>`);
-  g.push(`<rect x="132" y="${gy-6}" width="58" height="3" fill="#5A3579"/>`);
-  for (let x = 50; x < 130; x += 6) g.push(`<rect x="${x}" y="${gy-3}" width="3" height="3" fill="#8A5BB0" opacity=".6"/>`);
-  HERO.forEach((row, r) => { for (let c = 0; c < row.length; c++) { const k = row[c];
-    if (k !== '.') g.push(`<rect x="${14+c*P}" y="${gy-HERO.length*P+r*P}" width="${P}" height="${P}" fill="${PAL[k]}"/>`); } });
-  FLAG.forEach((row, r) => { for (let c = 0; c < row.length; c++) { const k = row[c];
-    if (k !== '.') g.push(`<rect x="${140+c*P}" y="${gy-6-FLAG.length*P+r*P}" width="${P}" height="${P}" fill="${PAL[k]}"/>`); } });
+
+  // a little canyon vignette under the wordmark, in this region's colours
+  var cs = getComputedStyle(document.documentElement);
+  var lip = cs.getPropertyValue('--rock-lip').trim() || '#C98A47';
+  var rock = cs.getPropertyValue('--rock-mid').trim() || '#3A2A22';
+  var P = 2, H = 62, gy = 46, g = [], x;
+  g.push('<rect x="0" y="' + gy + '" width="54" height="' + (H - gy) + '" fill="' + rock + '"/>');
+  g.push('<rect x="0" y="' + gy + '" width="54" height="3" fill="' + lip + '"/>');
+  g.push('<rect x="134" y="' + (gy - 10) + '" width="56" height="' + (H - gy + 10) + '" fill="' + rock + '"/>');
+  g.push('<rect x="134" y="' + (gy - 10) + '" width="56" height="3" fill="' + lip + '"/>');
+  for (x = 58; x < 132; x += 6) {
+    g.push('<rect x="' + x + '" y="' + (gy - 3) + '" width="3" height="3" fill="' + lip + '" opacity=".55"/>');
+  }
+  g.push(rects(HERO, P, 16, gy - HERO.length * P, null, null));
+  equipped().forEach(function (it) {
+    g.push(rects(it.art, P, 16, gy - HERO.length * P + it.y * P, null, null));
+  });
+  g.push(rects(FLAG, P, 142, gy - 10 - FLAG.length * P, null, null));
   $('t-hero').innerHTML = g.join('');
 }
 
 /* ----------------------------------------------------------------- play */
 function startDaily() {
-  const rec = S.days[today];
-  if (rec && rec.done) { mode = 'daily'; results = rec.results || []; qs = pickDay(today); paintDone(); return show('done'); }
+  var rec = S.days[today];
+  if (rec && rec.done) {
+    mode = 'daily'; results = rec.results || []; qs = pickDay(today);
+    paintDone(); return show('done');
+  }
   mode = 'daily'; qs = pickDay(today); idx = 0; results = []; show('play'); paintQ();
 }
-function startEndless() { mode = 'endless'; qs = pickRandom(PER_DAY); idx = 0; results = []; show('play'); paintQ(); }
-
+function startEndless() {
+  mode = 'endless'; qs = pickRandom(PER_DAY); idx = 0; results = []; show('play'); paintQ();
+}
 function paintPips() {
-  $('pips').innerHTML = qs.map((_, i) => {
-    const r = results[i];
-    if (!r) return `<i class="${i === idx ? 'now' : ''}"></i>`;
-    const c = tierOf(r.score).c;
-    return `<i style="background:${c};border-color:${c}"></i>`;
+  $('pips').innerHTML = qs.map(function (_, i) {
+    var r = results[i];
+    if (!r) return '<i class="' + (i === idx ? 'now' : '') + '"></i>';
+    var c = tierOf(r.score).c;
+    return '<i style="background:' + c + ';border-color:' + c + '"></i>';
   }).join('');
 }
+function paintTrail() {
+  var ix = regionIx(), R = REGIONS[ix], last = ix === REGIONS.length - 1;
+  var into = last ? REGION_LEN : S.metres % REGION_LEN;
+  $('h-region-n').textContent = R.n;
+  $('trail-i').style.width = (into / REGION_LEN * 100).toFixed(1) + '%';
+  $('trail-t').textContent = last
+    ? comma(S.metres) + ' m · the end of the map'
+    : comma(REGION_LEN - into) + ' m to ' + REGIONS[ix + 1].n;
+}
 function paintQ() {
-  const q = qs[idx]; locked = false;
-  setBiome(q.cat);
-  paintPips();
-  $('h-mode').textContent = mode === 'endless' ? 'Endless' : 'Daily';
-  $('h-run').textContent = comma(results.reduce((a, r) => a + (r ? r.score : 0), 0)) + ' pts';
+  var q = qs[idx]; locked = false; flying = false;
+  cancelAnimationFrame(anim);
+  paintPips(); paintTrail();
+  $('h-run').textContent = comma(results.reduce(function (a, r) { return a + (r ? r.score : 0); }, 0)) + ' pts';
   $('q-cat').textContent = q.cat;
-  $('q-n').textContent = (idx + 1) + ' of ' + PER_DAY;
+  $('q-n').textContent = (mode === 'endless' ? 'Endless · ' : '') + (idx + 1) + ' / ' + PER_DAY;
   $('q-text').textContent = q.q;
   $('tag-a').textContent = q.a.label; $('tag-b').textContent = q.b.label;
   $('fa').textContent = ''; $('fb').textContent = '';
@@ -873,189 +1266,314 @@ function paintQ() {
   $('r-hint').textContent = q.type === 'percent' ? 'drag to set the share' : 'drag to build your bridge';
   $('slider').value = q.type === 'percent' ? 500 : 0;
   $('dial').hidden = false; $('reveal').hidden = true;
+  V.play.classList.remove('leaping');
+  measureCliff();
   paintRead(true);
+  requestAnimationFrame(function () { measureCliff(); placeNotes(); paintRead(true); });
 }
-let lastTick = 0;
+var lastTick = 0;
 function paintRead(silent) {
-  const q = qs[idx], pos = +$('slider').value, v = toValue(q.type, pos);
+  var q = qs[idx]; if (!q) return;
+  var pos = +$('slider').value, v = toValue(q.type, pos);
   $('r-v').textContent = fmtV(q.type, v);
   $('slider').style.setProperty('--p', (pos / 10) + '%');
-  const f = frac(q.type, v);
-  drawStage({ guessF: f, actualF: 0, showFar: false });
+  drawStage({ guessF: frac(q.type, v), actualF: 0, showFar: false });
   if (!silent && performance.now() - lastTick > 45) { lastTick = performance.now(); SFX.tick(); }
 }
 function lockIn() {
-  if (locked) return; locked = true;
-  const q = qs[idx], guess = toValue(q.type, +$('slider').value), actual = answerOf(q);
-  const sc = scoreGuess(q.type, guess, actual);
-  results[idx] = { score: sc, guess, actual, id: q.id };
-  if (sc === 1000) S.perfects = (S.perfects || 0) + 1;
-  if (S.cats.indexOf(q.cat) === -1) { S.cats.push(q.cat); }
-  const b = band(sc);
-  const gf = frac(q.type, guess), af = frac(q.type, actual);
+  if (locked || flying) return; locked = true; flying = true;
+  var q = qs[idx];
+  var guess = toValue(q.type, +$('slider').value), actual = answerOf(q);
+  var sc = scoreGuess(q.type, guess, actual);
+  results[idx] = { score:sc, guess:guess, actual:actual, id:q.id };
+  if (sc === MAX_Q) S.perfects = (S.perfects || 0) + 1;
+  if (S.cats.indexOf(q.cat) === -1) S.cats.push(q.cat);
+
+  // every point is a metre, and metres are what move you between regions
+  var wasIx = regionIx();
+  S.metres = (S.metres || 0) + sc;
+  var nowIx = regionIx();
+  if (nowIx > wasIx) S.regions = Math.max(S.regions || 1, nowIx + 1);
+  save();
+
   $('fa').textContent = fmtFig(q.a.value) + ' ' + q.a.unit;
   $('fb').textContent = fmtFig(q.b.value) + ' ' + q.b.unit;
+  $('dial').hidden = true;
+  V.play.classList.add('leaping');            // the UI steps aside for the leap
   SFX.leap();
-  animateLeap(gf, af, sc, () => SFX.land(Math.min(3, tierIx(sc) > 3 ? 3 : tierIx(sc) > 1 ? 1 : 0)));
-
-  const T = tierOf(sc);
-  const vd = $('verdict'); vd.className = 'verdict';
-  vd.style.background = T.c; vd.style.color = '#06141A';
-  $('v-l').textContent = T.n; $('v-p').textContent = '+' + comma(sc);
-  $('v-p').style.color = '#06141A';
+  animateLeap(frac(q.type, guess), frac(q.type, actual), sc, function () {
+    SFX.land(band(sc));
+    function land() {
+      flying = false;
+      V.play.classList.remove('leaping');
+      checkKit();
+      paintReveal(q, guess, actual, sc);
+    }
+    if (nowIx > wasIx) {
+      // crossing a region line gets its own beat: the sky turns over the
+      // bird, the card names the new place, and only then does the reveal
+      setRegion();
+      // setRegion swaps the rock vars too, so the canyon has to be repainted
+      // or the bird lands on the old region's rock under the new sky
+      if (stageState) drawStage(stageState);
+      paintTrail(); gateCard(REGIONS[nowIx], nowIx); SFX.gate();
+      setTimeout(land, 1200);
+    } else {
+      paintTrail(); land();
+    }
+  });
+}
+function paintReveal(q, guess, actual, sc) {
+  var T = tierOf(sc), vd = $('verdict');
+  vd.style.background = T.c; vd.style.color = '#04121A'; vd.style.borderColor = '#04121A';
+  $('v-l').textContent = T.n;
+  $('v-p').textContent = '+' + comma(sc);
+  $('v-p').style.color = '#04121A';
   $('ledger').innerHTML =
-    `<div><span class="k">${esc(q.a.label)}</span><span class="v">${esc(fmtFig(q.a.value))} ${esc(q.a.unit)}</span></div>` +
-    `<div><span class="k">${esc(q.b.label)}</span><span class="v">${esc(fmtFig(q.b.value))} ${esc(q.b.unit)}</span></div>` +
-    `<div><span class="k">You said</span><span class="v">${esc(fmtV(q.type, guess))}${q.type==='percent'?'%':'×'}</span></div>` +
-    `<div class="hl"><span class="k">The gap</span><span class="v">${esc(fmtV(q.type, actual))}${q.type==='percent'?'%':'×'}</span></div>`;
+    '<div><span class="k">' + esc(q.a.label) + '</span><span class="v">' +
+      esc(fmtFig(q.a.value)) + ' ' + esc(q.a.unit) + '</span></div>' +
+    '<div><span class="k">' + esc(q.b.label) + '</span><span class="v">' +
+      esc(fmtFig(q.b.value)) + ' ' + esc(q.b.unit) + '</span></div>' +
+    '<div><span class="k">You said</span><span class="v">' +
+      esc(fmtV(q.type, guess)) + (q.type === 'percent' ? '%' : '×') + '</span></div>' +
+    '<div class="hl"><span class="k">The gap</span><span class="v">' +
+      esc(fmtV(q.type, actual)) + (q.type === 'percent' ? '%' : '×') + '</span></div>' +
+    '<div><span class="k">' + esc(T.n) + ' — ' + esc(T.d) + '</span><span class="v">+' +
+      comma(sc) + ' m</span></div>';
   $('cite').textContent = q.src;
-  $('dial').hidden = true; $('reveal').hidden = false; $('cliffnotes').hidden = true;
+  $('reveal').hidden = false;
+  $('cliffnotes').hidden = false;
   $('b-next').textContent = idx === PER_DAY - 1 ? 'See your crossing ▶' : 'Next gap ▶';
   paintPips();
-  $('h-run').textContent = comma(results.reduce((a, r) => a + (r ? r.score : 0), 0)) + ' pts';
+  $('h-run').textContent = comma(results.reduce(function (a, r) { return a + (r ? r.score : 0); }, 0)) + ' pts';
   pointsFly($('v-p'), sc);
-  save();
 }
-function next() { if (idx < PER_DAY - 1) { idx++; SFX.pip(); paintQ(); } else finish(); }
+function next() {
+  if (flying) return;                            // no skipping out of the air
+  if (idx < PER_DAY - 1) { idx++; SFX.pip(); paintQ(); } else finish();
+}
 
 /* --------------------------------------------------------------- finish */
 function finish() {
-  const total = results.reduce((a, r) => a + r.score, 0);
+  var total = results.reduce(function (a, r) { return a + r.score; }, 0);
   if (mode === 'daily' && !(S.days[today] && S.days[today].done)) {
-    S.days[today] = { done: true, total, results };
+    S.days[today] = { done:true, total:total, results:results };
     S.streak = S.last === today - 1 ? S.streak + 1 : 1;
+    S.bestStreak = Math.max(S.bestStreak || 0, S.streak);
     S.last = today; S.played += 1; S.sum += total;
     S.best = Math.max(S.best, total);
-    S.sparks = (S.sparks || 0) + Math.round(total / 10);
-    S.dist[clamp(Math.floor(total / 1000), 0, 6)] += 1;
+    S.sparks = (S.sparks || 0) + Math.round(total / 2);
+    S.dist[clamp(Math.floor(total / 100), 0, 6)] += 1;
     save();
   }
   checkTrophies(results);
+  checkKit();
   SFX.win();
   paintDone(); show('done');
 }
 function paintDone() {
-  const total = results.reduce((a, r) => a + r.score, 0);
+  var total = results.reduce(function (a, r) { return a + r.score; }, 0);
   $('d-kick').textContent = mode === 'endless' ? 'Endless run' : 'Canyon #' + today;
+  $('d-of').textContent = '/' + MAX_DAY;
   $('d-rank').textContent = rankOf(total);
-  $('d-log').innerHTML = '<span class="lbl">Leap log — longer = closer</span>' + results.map((r, i) => {
-    const col = tierOf(r.score).c;
-    return `<div class="r"><span class="i">${i+1}</span><span class="bar">` +
-      `<i style="width:${Math.max(2, r.score/10)}%;background:${col};animation-delay:${i*70}ms"></i></span>` +
-      `<span class="s">${comma(r.score)}</span></div>`;
-  }).join('');
+  $('d-log').innerHTML = '<span class="lbl">Leap log — longer is closer</span>' +
+    results.map(function (r, i) {
+      var T = tierOf(r.score);
+      return '<div class="r"><span class="i">' + (i + 1) + '</span><span class="bar">' +
+        '<i style="width:' + Math.max(3, r.score) + '%;background:' + T.c +
+        ';animation-delay:' + (i * 70) + 'ms"></i></span>' +
+        '<span class="s">' + esc(T.n) + '</span></div>';
+    }).join('');
+  var ix = regionIx(), last = ix === REGIONS.length - 1;
+  $('d-trav').innerHTML = '<span class="lbl">' + esc(regionNow().n) + ' &middot; region ' +
+    (ix + 1) + '/' + REGIONS.length + '</span><div class="sp" style="flex:1"></div><b>' +
+    comma(S.metres) + ' m</b>';
   // your own spread, not an invented global one
-  const d = S.dist, mx = Math.max(1, ...d), myB = clamp(Math.floor(total / 1000), 0, 6);
-  $('d-spread').innerHTML = '<span class="lbl">Your scores so far</span>' +
-    `<div class="cols">${d.map((n, i) => `<div class="${i===myB&&mode!=='endless'?'me':''}" style="height:${Math.max(4, n/mx*100)}%">` +
-      `${i===myB&&mode!=='endless'?'<em>you</em>':''}</div>`).join('')}</div>` +
-    `<div class="xs">${['0k','1k','2k','3k','4k','5k','6k'].map((l)=>`<span>${l}</span>`).join('')}</div>`;
-  const got = S.trophies.length;
+  var d = S.dist, mx = Math.max.apply(null, [1].concat(d));
+  var myB = clamp(Math.floor(total / 100), 0, 6);
+  $('d-spread').innerHTML = '<span class="lbl">Your daily scores so far</span>' +
+    '<div class="cols">' + d.map(function (n, i) {
+      var me = i === myB && mode !== 'endless';
+      return '<div class="' + (me ? 'me' : '') + '" style="height:' +
+        Math.max(4, n / mx * 100) + '%">' + (me ? '<em>you</em>' : '') + '</div>';
+    }).join('') + '</div>' +
+    '<div class="xs">' + ['0','100','200','300','400','500','600+'].map(function (l) {
+      return '<span>' + l + '</span>';
+    }).join('') + '</div>';
   $('d-earn').innerHTML = mode === 'endless'
-    ? `<span class="lbl">Practice run — nothing banked</span>`
-    : `<span class="lbl">Sparks earned</span><div class="sp" style="flex:1"></div><b>+${comma(Math.round(total/10))}</b>`;
+    ? '<span class="lbl">Practice run &middot; metres still count</span>'
+    : '<span class="lbl">Sparks earned</span><div class="sp" style="flex:1"></div><b>+' +
+      comma(Math.round(total / 2)) + '</b>';
   $('d-score').textContent = '0';
   countUp($('d-score'), total, 900);
   $('b-share').hidden = mode === 'endless';
   $('chip-sparks-n').textContent = comma(S.sparks);
   $('chip-streak').hidden = !(S.streak > 0);
   $('chip-streak-n').textContent = S.streak;
+  if (last) { /* nothing more to climb towards; the card above says so */ }
   clock();
 }
 function countUp(el, to, dur) {
-  const t0 = performance.now();
+  var t0 = performance.now();
   (function step(t) {
-    const k = clamp((t - t0) / dur, 0, 1);
+    var k = clamp((t - t0) / dur, 0, 1);
     el.textContent = comma(to * (1 - Math.pow(1 - k, 3)));
     if (k < 1) requestAnimationFrame(step);
   })(t0);
 }
 function clock() {
-  const el = $('d-clock');
+  var el = $('d-clock');
   if (mode === 'endless') { el.textContent = ''; return; }
-  const upd = () => {
-    const n = new Date();
-    let s = Math.max(0, Math.floor((Date.UTC(n.getUTCFullYear(), n.getUTCMonth(), n.getUTCDate() + 1) - n.getTime()) / 1000));
-    const p = (v) => String(v).padStart(2, '0');
-    el.innerHTML = 'Next canyon in <b>' + p(s/3600|0) + ':' + p(s%3600/60|0) + ':' + p(s%60) + '</b>';
-  };
+  function upd() {
+    var n = new Date();
+    var s = Math.max(0, Math.floor(
+      (Date.UTC(n.getUTCFullYear(), n.getUTCMonth(), n.getUTCDate() + 1) - n.getTime()) / 1000));
+    var p = function (v) { return String(Math.floor(v)).padStart(2, '0'); };
+    el.innerHTML = 'Next canyon in <b>' + p(s / 3600) + ':' + p(s % 3600 / 60) + ':' + p(s % 60) + '</b>';
+  }
   upd(); clearInterval(clock._i); clock._i = setInterval(upd, 1000);
 }
 
 /* ---------------------------------------------------------------- share */
-async function share() {
-  const total = results.reduce((a, r) => a + r.score, 0);
-  const text = `Gappy · canyon #${today}\n${comma(total)}/7000 · ${rankOf(total)}\n` +
-    results.map((r) => tierOf(r.score).sq).join('') + '\njessebaizer.com/game';
-  try {
-    if (navigator.share && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) { await navigator.share({ text }); return; }
-  } catch (e) { if (e && e.name === 'AbortError') return; }
-  try { await navigator.clipboard.writeText(text); toast('Copied'); }
-  catch (e) {
-    const ta = document.createElement('textarea'); ta.value = text;
-    ta.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(ta); ta.select();
-    try { document.execCommand('copy'); toast('Copied'); } catch (e2) { toast('Copy failed'); }
+function share() {
+  var total = results.reduce(function (a, r) { return a + r.score; }, 0);
+  var text = 'Gappy · canyon #' + today + '\n' + comma(total) + '/' + MAX_DAY + ' · ' +
+    rankOf(total) + '\n' + results.map(function (r) { return tierOf(r.score).sq; }).join('') +
+    '\n' + regionNow().n + ' · ' + comma(S.metres) + ' m\njessebaizer.com/game';
+  function copy() {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text).then(function () { toast('Copied'); }, fallback);
+    }
+    return fallback();
+  }
+  function fallback() {
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.cssText = 'position:fixed;opacity:0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); toast('Copied'); } catch (e) { toast('Copy failed'); }
     ta.remove();
   }
+  if (navigator.share && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) {
+    navigator.share({ text:text }).catch(function (e) {
+      if (!e || e.name !== 'AbortError') copy();
+    });
+    return;
+  }
+  copy();
 }
 
 /* --------------------------------------------------------------- sheets */
-const XBTN = '<button type="button" class="icb" data-close aria-label="Close"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M3 4h2v2H3zM5 6h2v2H5zM7 8h2v2H7zM9 6h2v2H9zM11 4h2v2h-2zM3 10h2v2H3zM5 8h2v2H5zM9 10h2v2H9zM11 10h2v2h-2z"/></svg></button>';
-function sheet(html) {
-  const w = document.createElement('div'); w.className = 'scrim';
-  w.innerHTML = `<div class="sheet" role="dialog" aria-modal="true">${html}</div>`;
-  const close = () => w.remove();
-  w.addEventListener('mousedown', (e) => { if (e.target === w) close(); });
-  w.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', close));
-  document.addEventListener('keydown', function k(e) { if (e.key === 'Escape') { close(); document.removeEventListener('keydown', k); } });
+var XBTN = '<button type="button" class="icb" data-close aria-label="Close">' +
+  '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M3 4h2v2H3zM5 6h2v2H5zM7 8h2v2H7zM9 6h2v2H9z' +
+  'M11 4h2v2h-2zM3 10h2v2H3zM5 8h2v2H5zM9 10h2v2H9zM11 10h2v2h-2z"/></svg></button>';
+function sheet(html, scrollTop) {
+  var w = document.createElement('div');
+  w.className = 'scrim';
+  w.innerHTML = '<div class="sheet" role="dialog" aria-modal="true">' + html + '</div>';
+  function close() { w.remove(); }
+  w.addEventListener('mousedown', function (e) { if (e.target === w) close(); });
+  w.querySelectorAll('[data-close]').forEach(function (b) { b.addEventListener('click', close); });
+  document.addEventListener('keydown', function k(e) {
+    if (e.key === 'Escape') { close(); document.removeEventListener('keydown', k); }
+  });
   document.body.appendChild(w);
+  if (scrollTop) w.querySelector('.sheet').scrollTop = scrollTop;
+  return w;
 }
 function helpSheet() {
-  sheet(`<div class="sheet-hd"><h3>HOW TO PLAY</h3><div class="sp"></div>${XBTN}</div>
-  <div class="howto" style="margin-bottom:14px">
-    <div><i>1</i><span>Two things stand on opposite cliffs. You are told what they are, <b>not how far apart.</b></span></div>
-    <div><i>2</i><span>Slide to build your bridge. The canyon is <b>logarithmic</b> — 1× to 1000× fits on one screen.</span></div>
-    <div><i>3</i><span>Leap. The fog clears, the far cliff appears, and you see whether you made it.</span></div>
-    <div><i>4</i><span>Scoring is on how far out you are, not raw numbers. <b>Four times out and you fall.</b></span></div>
-    <div><i>5</i><span>Seven gaps, 1,000 each. Everyone gets the same seven. New canyon at <b>midnight UTC.</b></span></div>
-  </div>
-  <p class="p">Every gap is worked out from two sourced figures, both shown on the reveal — so you leave knowing two real numbers, not just a score. Endless mode never touches your streak.</p>`);
+  sheet('<div class="sheet-hd"><h3>HOW TO PLAY</h3><div class="sp"></div>' + XBTN + '</div>' +
+  '<div class="howto" style="margin-bottom:14px">' +
+    '<div><i>1</i><span>Two things stand on opposite cliffs. You are told what they are, <b>not how far apart.</b></span></div>' +
+    '<div><i>2</i><span>Slide to build your bridge. The canyon is <b>logarithmic</b> — 1&times; to 1000&times; fits on one screen.</span></div>' +
+    '<div><i>3</i><span>Leap. The mist clears, the far cliff appears, and you see whether you made it.</span></div>' +
+    '<div><i>4</i><span>Dead on is <b>100</b>. A step out is <b>75</b>, then <b>50</b>, then <b>25</b>. Badly out is <b>0</b> and you fall.</span></div>' +
+    '<div><i>5</i><span>Seven gaps, <b>700 a day.</b> Everyone gets the same seven. New canyon at <b>midnight UTC.</b></span></div>' +
+    '<div><i>6</i><span>Every point is a metre. <b>Every 400 m you cross into a new region</b>, and kit unlocks along the way.</span></div>' +
+  '</div>' +
+  '<p class="p">Every gap is worked out from two sourced figures, both shown on the reveal — so you leave knowing two real numbers, not just a score. Endless mode never touches your streak, but the metres still count.</p>');
 }
 function statsSheet() {
-  const avg = S.played ? Math.round(S.sum / S.played) : 0;
-  sheet(`<div class="sheet-hd"><h3>YOUR RECORD</h3><div class="sp"></div>${XBTN}</div>
-  <div class="kv">
-    <div><b>${S.played}</b><span>Canyons cleared</span></div>
-    <div><b>${S.streak}</b><span>Day streak</span></div>
-    <div><b>${comma(S.best)}</b><span>Best crossing</span></div>
-    <div><b>${comma(avg)}</b><span>Average</span></div>
-    <div><b>${comma(S.sparks)}</b><span>Sparks</span></div>
-    <div><b>${S.perfects||0}</b><span>Bullseyes</span></div>
-  </div>
-  <p class="p">Kept in this browser only. Clear your site data and it goes, and another browser starts fresh.</p>`);
+  var avg = S.played ? Math.round(S.sum / S.played) : 0;
+  sheet('<div class="sheet-hd"><h3>YOUR RECORD</h3><div class="sp"></div>' + XBTN + '</div>' +
+  '<div class="kv">' +
+    '<div><b>' + S.played + '</b><span>Canyons cleared</span></div>' +
+    '<div><b>' + S.streak + '</b><span>Day streak</span></div>' +
+    '<div><b>' + (S.bestStreak || 0) + '</b><span>Best streak</span></div>' +
+    '<div><b>' + comma(S.best) + '</b><span>Best day</span></div>' +
+    '<div><b>' + comma(avg) + '</b><span>Average day</span></div>' +
+    '<div><b>' + (S.perfects || 0) + '</b><span>Pinpoints</span></div>' +
+    '<div><b>' + comma(S.metres) + '</b><span>Metres travelled</span></div>' +
+    '<div><b>' + (S.regions || 1) + '/' + REGIONS.length + '</b><span>Regions reached</span></div>' +
+  '</div>' +
+  '<p class="p"><b>' + esc(regionNow().n) + '</b> — ' + esc(regionNow().t) + '. ' +
+  'Kept in this browser only. Clear your site data and it goes, and another browser starts fresh.</p>');
 }
 function trophySheet() {
-  sheet(`<div class="sheet-hd"><h3>TROPHIES ${S.trophies.length}/${TROPHY.length}</h3><div class="sp"></div>${XBTN}</div>
-  <div class="trophies">${TROPHY.map((t) => {
-    const got = S.trophies.indexOf(t.id) !== -1;
-    return `<div class="tr ${got?'got':''}"><svg viewBox="0 0 16 16" fill="${got?'#FFC94D':'#7B63A0'}">
-      <path d="M4 2h8v3a4 4 0 0 1-8 0zM2 3h2v2a2 2 0 0 1-2-2zm10 0h2a2 2 0 0 1-2 2zM7 9h2v3H7zM5 12h6v2H5z"/></svg>
-      <b>${esc(t.n)}</b><small>${esc(t.d)}</small></div>`;
-  }).join('')}</div>`);
+  sheet('<div class="sheet-hd"><h3>TROPHIES ' + S.trophies.length + '/' + TROPHY.length +
+  '</h3><div class="sp"></div>' + XBTN + '</div>' +
+  '<div class="trophies">' + TROPHY.map(function (t) {
+    var got = S.trophies.indexOf(t.id) !== -1;
+    return '<div class="tr ' + (got ? 'got' : '') + '"><svg viewBox="0 0 16 16" fill="' +
+      (got ? '#F5C542' : '#5C8A88') + '"><path d="M4 2h8v3a4 4 0 0 1-8 0zM2 3h2v2a2 2 0 0 1-2-2zm10 0h2a2 2 0 0 1-2 2zM7 9h2v3H7zM5 12h6v2H5z"/></svg>' +
+      '<b>' + esc(t.n) + '</b><small>' + esc(t.d) + '</small></div>';
+  }).join('') + '</div>');
+}
+/* --- the wardrobe --- */
+function kitSheet(scrollTop) {
+  if (S.newKit) { S.newKit = false; save(); kitBadge(); }
+  var rows = SLOTS.map(function (sl) {
+    var items = WARDROBE.filter(function (w) { return w.slot === sl.k; });
+    var none = !(S.worn || {})[sl.k];
+    return '<div class="slot"><span class="lbl">' + sl.n + '</span><div class="kitgrid">' +
+      '<button type="button" class="kit ' + (none ? 'on' : '') + '" data-slot="' + sl.k +
+        '" data-id=""><div class="kx">&mdash;</div><b>None</b><small>&nbsp;</small></button>' +
+      items.map(function (it) {
+        var got = ownsIt(it.id), on = (S.worn || {})[sl.k] === it.id;
+        return '<button type="button" class="kit ' + (got ? '' : 'lock') + ' ' + (on ? 'on' : '') +
+          '" data-slot="' + sl.k + '" data-id="' + it.id + '"' + (got ? '' : ' disabled') + '>' +
+          svgHero(3, [it], !got, got ? null : '0.45') +
+          '<b>' + esc(it.n) + '</b><small>' + (got ? 'Owned' : esc(it.d)) + '</small></button>';
+      }).join('') +
+      '</div></div>';
+  }).join('');
+  var w = sheet('<div class="sheet-hd"><h3>WARDROBE ' + (S.kit || []).length + '/' + WARDROBE.length +
+    '</h3><div class="sp"></div>' + XBTN + '</div>' +
+    '<div class="kitprev"><div class="pen">' + svgHero(6, equipped(), false, null) + '</div>' +
+    '<div><b>' + esc(regionNow().n) + '</b>' +
+    '<span>' + comma(S.metres) + ' m travelled</span>' +
+    '<em>' + esc(regionNow().t) + '</em></div></div>' +
+    rows +
+    '<p class="p" style="margin-top:12px">Kit unlocks from what you actually do — hold a streak, travel far, land a PINPOINT. Locked pieces still show what they cost.</p>', scrollTop);
+  w.querySelectorAll('.kit').forEach(function (b) {
+    b.addEventListener('click', function () {
+      if (b.disabled) return;
+      var sl = b.getAttribute('data-slot'), id = b.getAttribute('data-id');
+      S.worn = S.worn || {};
+      if (!id || S.worn[sl] === id) delete S.worn[sl]; else S.worn[sl] = id;
+      save(); SFX.pip();
+      var keep = w.querySelector('.sheet').scrollTop;
+      w.remove(); kitSheet(keep);
+      paintTitle();
+      if (!V.play.hidden && stageState) drawStage(stageState);
+    });
+  });
 }
 
 /* ----------------------------------------------------------------- wire */
-$('slider').addEventListener('input', () => paintRead(false));
+$('slider').addEventListener('input', function () { paintRead(false); });
 $('b-lock').addEventListener('click', lockIn);
 $('b-next').addEventListener('click', next);
-$('b-play').addEventListener('click', () => { SFX.pip(); mode === 'endless' ? startEndless() : startDaily(); });
-$('b-endless2').addEventListener('click', () => { mode = 'endless'; startEndless(); });
+$('b-play').addEventListener('click', function () {
+  SFX.pip(); if (mode === 'endless') startEndless(); else startDaily();
+});
+$('b-endless2').addEventListener('click', function () { mode = 'endless'; markMode(); startEndless(); });
 $('b-share').addEventListener('click', share);
 $('b-help').addEventListener('click', helpSheet);
 $('b-stats').addEventListener('click', statsSheet);
 $('b-trophy').addEventListener('click', trophySheet);
-$('m-daily').addEventListener('click', () => { mode='daily'; markMode(); paintTitle(); });
-$('m-endless').addEventListener('click', () => { mode='endless'; markMode(); paintTitle(); });
+$('b-kit').addEventListener('click', function () { kitSheet(0); });
+$('m-daily').addEventListener('click', function () { mode = 'daily'; markMode(); paintTitle(); });
+$('m-endless').addEventListener('click', function () { mode = 'endless'; markMode(); paintTitle(); });
 function markMode() {
   $('m-daily').classList.toggle('on', mode === 'daily');
   $('m-endless').classList.toggle('on', mode === 'endless');
@@ -1065,32 +1583,70 @@ function soundIcon() {
   $('wv1').style.display = S.sound === false ? 'none' : '';
   $('wv2').style.display = S.sound === false ? 'none' : '';
 }
-$('b-sound').addEventListener('click', () => { S.sound = S.sound === false; save(); soundIcon(); if (S.sound) SFX.pip(); });
-const nudge = (d) => { const s = $('slider'); s.value = clamp(+s.value + d, 0, 1000); paintRead(false); };
-$('s-up').addEventListener('click', () => nudge(8));
-$('s-dn').addEventListener('click', () => nudge(-8));
-document.addEventListener('keydown', (e) => {
+$('b-sound').addEventListener('click', function () {
+  S.sound = S.sound === false; save(); soundIcon(); if (S.sound) SFX.pip();
+});
+function nudge(d) {
+  if (locked || flying) return;
+  var s = $('slider'); s.value = clamp(+s.value + d, 0, 1000); paintRead(false);
+}
+$('s-up').addEventListener('click', function () { nudge(8); });
+$('s-dn').addEventListener('click', function () { nudge(-8); });
+document.addEventListener('keydown', function (e) {
   if (document.querySelector('.scrim')) return;
-  if (!V.title.hidden && e.key === 'Enter') { e.preventDefault(); return $('b-play').click(); }
+  if (!V.title.hidden && e.key === 'Enter') { e.preventDefault(); $('b-play').click(); return; }
   if (V.play.hidden) return;
-  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); locked ? next() : lockIn(); }
+  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); if (locked) next(); else lockIn(); }
   else if (e.key === 'ArrowLeft') { e.preventDefault(); nudge(-8); }
   else if (e.key === 'ArrowRight') { e.preventDefault(); nudge(8); }
 });
-let rt; window.addEventListener('resize', () => {
-  clearTimeout(rt); rt = setTimeout(() => { drawBands(); if (!V.play.hidden) { placeNotes(); paintRead(true); } }, 140);
+var rt;
+window.addEventListener('resize', function () {
+  clearTimeout(rt);
+  rt = setTimeout(function () {
+    drawBands();
+    if (!V.play.hidden) { measureCliff(); placeNotes();
+      if (locked && stageState) drawStage(stageState); else paintRead(true); }
+    else drawStage({ idle:true, guessF:0, actualF:0 });
+  }, 140);
 });
 
 /* ------------------------------------------------------------------ boot */
-starfield(); drawBands(); markMode(); soundIcon(); paintTitle();
+// regions depend on REGIONS, which only exists down here, so the store's
+// region count is reconciled now rather than inside load()
+S.regions = Math.max(S.regions || 1, regionIx() + 1);
+starfield();
+setRegion();
+markMode(); soundIcon();
+checkKit();                 // hand over anything already earned, first load
+kitBadge(); paintTitle();
 if (!BANK.length) { $('b-play').disabled = true; toast('Question bank failed to load'); }
-requestAnimationFrame(() => { drawBands(); drawStage({ guessF:0, actualF:0, showFar:false }); });
-setInterval(() => {
-  const d = dayIndex();
-  if (d !== today) { today = d; results = []; paintTitle(); if (!V.done.hidden) show('title'); }
+requestAnimationFrame(function () {
+  drawBands();
+  drawStage({ idle:true, guessF:0, actualF:0 });
+});
+function relayout() {
+  drawBands();
+  if (!V.play.hidden) {
+    measureCliff(); placeNotes();
+    if (locked && stageState) drawStage(stageState); else paintRead(true);
+  } else { drawStage({ idle:true, guessF:0, actualF:0 }); }
+}
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(relayout).catch(function () {});
+setTimeout(relayout, 1200);
+
+setInterval(function () {
+  var d = dayIndex();
+  if (d !== today) {
+    today = d; results = []; paintTitle();
+    if (!V.done.hidden) show('title');
+  }
 }, 30000);
 
-window.__gappy = { scoreGuess, answerOf, pickDay, dayIndex, toValue, toPos, BANK, rankOf, band, TROPHY };
+window.__gappy = { scoreGuess:scoreGuess, answerOf:answerOf, pickDay:pickDay, dayIndex:dayIndex,
+  toValue:toValue, toPos:toPos, BANK:BANK, rankOf:rankOf, band:band, TROPHY:TROPHY,
+  REGIONS:REGIONS, WARDROBE:WARDROBE, regionIx:regionIx, TIERS:TIERS,
+  state:function () { return S; } };
 })();
 </script>
 </body>
