@@ -1,5 +1,5 @@
 /* ============================================================================
-   Umpty — the question bank.
+   Gappy — the question bank.
 
    Every answer here is DERIVED from two cited figures rather than asserted, so
    the reveal can show its working: "8,849 m / 828 m = 10.7x". If a figure is
@@ -16,7 +16,7 @@
    moves week to week (prices, populations to the person, user counts) is
    deliberately excluded.
    ========================================================================== */
-window.UMPTY_BANK = [
+window.GAPPY_BANK = [
 
   /* ---------------------------------------------------------------- earth */
   { id:'everest-burj', type:'ratio', cat:'Earth',
