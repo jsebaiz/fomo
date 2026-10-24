@@ -14,13 +14,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&family=VT323&display=swap" rel="stylesheet">
 <style>
 :root{
-  /* canyon at dusk */
-  --sky-1:#160C2C; --sky-2:#3B1A58; --sky-3:#8E2F63; --sky-4:#D9583F; --sky-5:#F59E3D;
-  --rock-far:#43275F; --rock-mid:#2C1942; --rock-near:#1B0F2B; --rock-lip:#5A3579;
-  --ink:#120B20; --panel:#231439; --panel-2:#2E1A47; --line:#4A2E68; --line-hi:#6B4291;
-  --text:#F7ECFF; --dim:#A98CC4; --faint:#7B63A0;
-  --pink:#FF4D9D; --pink-dk:#B62E6C;
-  --cyan:#4DE8E8; --mint:#54E8A0; --gold:#FFC94D; --red:#FF5C6B; --amber:#FF9E4D;
+  /* teal night over sandstone */
+  --sky-1:#07171C; --sky-2:#0E2F38; --sky-3:#2A5A5C; --sky-4:#B4763C; --sky-5:#E8A64C;
+  --rock-far:#2A4A4E; --rock-mid:#3A2A22; --rock-near:#241812; --rock-lip:#C98A47;
+  --ink:#06141A; --panel:#0C2129; --panel-2:#113039; --line:#1E4B55; --line-hi:#2E6E78;
+  --text:#F2F7F5; --dim:#8FB3B0; --faint:#5C8A88;
+  --pink:#19E59B; --pink-dk:#0E8F62;
+  --cyan:#5FD9E8; --mint:#19E59B; --gold:#F5C542; --red:#E8604A; --amber:#E89B3C;
   --disp:'Press Start 2P', monospace;
   --ui:'Silkscreen', monospace;
   --body:'VT323', monospace;
@@ -41,7 +41,7 @@ svg{display:block; shape-rendering:crispEdges;}
 
 /* ====================================================== pixel chrome ===== */
 /* hard-edged box with a chunky offset shadow — no blur anywhere */
-.box{background:var(--panel); border:3px solid var(--line); box-shadow:0 4px 0 0 var(--ink);}
+.box{background:rgba(12,33,41,.93); border:3px solid var(--line); box-shadow:0 4px 0 0 rgba(6,20,26,.85);}
 .box-hi{border-color:var(--line-hi);}
 
 .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; width:100%;
@@ -73,10 +73,13 @@ svg{display:block; shape-rendering:crispEdges;}
 #scene .stars{position:absolute; inset:0 0 40% 0;}
 #scene .sun{position:absolute; left:50%; bottom:28%; width:120px; height:120px; margin-left:-60px;
   background:var(--sky-5); opacity:.5;}
-#scene .far   {bottom:30%; height:22%;}
-#scene .mid   {bottom:18%; height:20%;}
-#scene .near  {bottom:0;   height:22%;}
-#scene canvas{display:block; width:100%; height:100%;}
+#scene .far{bottom:46%; height:20%;}
+#scene .mid{bottom:36%; height:18%;}
+/* the playable canyon IS the page background, not a panel inside it */
+#stage{position:absolute; left:0; right:0; bottom:0; height:40vh; width:100%; display:block;}
+@media (max-width:420px){ #stage{height:36vh;} }
+@media (max-height:720px){ #stage{height:28vh;} }
+#scene .band{display:block; width:100%; height:100%;}
 #grain{position:fixed; inset:0; z-index:1; pointer-events:none; opacity:.055;
   background-image:repeating-linear-gradient(0deg, #000 0 1px, transparent 1px 3px);}
 #vig{position:fixed; inset:0; z-index:1; pointer-events:none;
@@ -91,8 +94,8 @@ svg{display:block; shape-rendering:crispEdges;}
 .top{display:flex; align-items:center; gap:6px; padding:12px 0 10px;}
 .brand{display:flex; align-items:center; gap:9px; text-decoration:none; color:var(--text);}
 .brand .mk{width:30px; height:30px; flex:0 0 30px;}
-.brand b{font-family:var(--disp); font-size:12px; letter-spacing:0; position:relative;
-  text-shadow:1.5px 0 var(--cyan), -1.5px 0 var(--pink);}
+.brand b{font-family:var(--disp); font-size:12px; letter-spacing:0;
+  color:#F6E3C4; text-shadow:0 2px 0 #6E4722;}
 .top .sp{flex:1;}
 .chip{display:inline-flex; align-items:center; gap:5px; padding:5px 7px; white-space:nowrap; flex:0 0 auto; background:rgba(18,11,32,.72);
   border:2px solid var(--line); font-size:9px; letter-spacing:.06em; text-transform:uppercase; color:var(--dim);}
@@ -105,6 +108,9 @@ svg{display:block; shape-rendering:crispEdges;}
 .icb.off{color:var(--faint);}
 
 main{flex:1; display:flex; flex-direction:column; min-height:0;}
+.rope{height:7px; margin:2px 0 10px; background-image:
+  linear-gradient(90deg, var(--rock-lip) 0 5px, transparent 5px 10px);
+  background-size:10px 3px; background-repeat:repeat-x; background-position:0 2px; opacity:.5;}
 /* four icons, two chips and a wordmark do not fit a small phone; the sparks
    count is the one that can wait for the stats sheet */
 @media (max-width:430px){ #chip-sparks{display:none;} }
@@ -114,10 +120,9 @@ main{flex:1; display:flex; flex-direction:column; min-height:0;}
 .title{flex:1; display:flex; flex-direction:column; justify-content:center; gap:16px; padding:10px 0 16px;}
 .title-art{text-align:center; position:relative;}
 .title-art h1{font-family:var(--disp); font-size:clamp(30px,10.5vw,54px); line-height:1; margin:0;
-  letter-spacing:0; color:var(--text);
-  text-shadow:3px 0 var(--cyan), -3px 0 var(--pink), 0 5px 0 var(--ink);
-  animation:jitter 5s steps(1) infinite;}
-@keyframes jitter{0%,96%{transform:translate(0,0);} 97%{transform:translate(-2px,0);} 98%{transform:translate(2px,1px);} 99%{transform:translate(-1px,-1px);}}
+  letter-spacing:0; color:#F6E3C4;
+  text-shadow:0 3px 0 var(--rock-lip), 0 6px 0 #6E4722, 0 9px 0 var(--ink), 4px 9px 0 var(--ink);}
+.title-art h1 span{color:var(--mint); text-shadow:0 3px 0 #0E8F62, 0 6px 0 #075C3F, 0 9px 0 var(--ink);}
 .title-art .sub{font-family:var(--ui); font-size:11px; letter-spacing:.22em; text-transform:uppercase;
   color:var(--gold); margin-top:12px;}
 .title-art .day{font-family:var(--ui); font-size:10px; letter-spacing:.16em; text-transform:uppercase;
@@ -142,7 +147,9 @@ main{flex:1; display:flex; flex-direction:column; min-height:0;}
 .howto b{color:var(--text); font-weight:400;}
 
 /* ====================================================== play ============= */
-.play{flex:1; display:flex; flex-direction:column; min-height:0;}
+.play{flex:1; display:flex; flex-direction:column; min-height:0; padding-bottom:calc(40vh - 46px);}
+@media (max-width:420px){ .play{padding-bottom:calc(36vh - 40px);} }
+@media (max-height:720px){ .play{padding-bottom:calc(28vh - 34px);} .qcard{padding:10px 11px 11px;} .verdict{margin:7px 0;} }
 .hud{display:flex; align-items:center; gap:8px; padding:2px 0 9px;}
 .hud .lbl{font-size:10px;}
 .hud .sp{flex:1;}
@@ -161,26 +168,22 @@ main{flex:1; display:flex; flex-direction:column; min-height:0;}
 .qcard h2{font-family:var(--body); font-size:clamp(23px,6.4vw,30px); line-height:1.08; margin:0;
   color:var(--text); font-weight:400; letter-spacing:.01em;}
 
-/* the gap itself */
-.gap-wrap{position:relative; margin:2px 0 6px;}
-.gap{position:relative; height:158px; border:3px solid var(--line); background:#0A0612; overflow:hidden;}
-@media (max-width:380px){ .gap{height:140px;} }
-.gap canvas{position:absolute; inset:0; width:100%; height:100%;}
-.gap .tagA,.gap .tagB{position:absolute; top:7px; max-width:44%; padding:4px 6px;
-  background:rgba(14,8,24,.86); border:2px solid var(--line-hi); font-family:var(--ui);
-  font-size:10px; line-height:1.25; letter-spacing:.04em;}
-.gap .tagA{left:7px;} .gap .tagB{right:7px; text-align:right;}
-.gap .tagA em,.gap .tagB em{display:block; font-style:normal; color:var(--gold); font-size:9px; margin-top:3px;}
-.gap .fog{position:absolute; top:0; bottom:0; right:0; background:linear-gradient(90deg,
-  rgba(18,11,32,0) 0%, rgba(18,11,32,.82) 26%, rgba(18,11,32,.96) 100%);
-  transition:left .18s steps(4), opacity .5s steps(4);}
-.gap .fog span{position:absolute; left:14px; top:50%; margin-top:-7px; font-family:var(--ui);
-  font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--faint); white-space:nowrap;}
+/* labels that sit on the cliff tops, out in the scene */
+.cliffnotes{position:fixed; left:0; right:0; z-index:3; pointer-events:none;
+  max-width:560px; margin:0 auto; padding:0 14px;}
+@media (min-width:600px){ .cliffnotes{padding:0 20px;} }
+.cn{position:absolute; max-width:40%; padding:5px 7px; background:rgba(6,20,26,.86);
+  border:2px solid var(--line-hi); border-bottom:3px solid var(--rock-lip);}
+.cn b{display:block; font-family:var(--ui); font-weight:700; font-size:9px; letter-spacing:.05em;
+  line-height:1.25; color:var(--text);}
+.cn em{display:block; font-style:normal; font-family:var(--ui); font-size:9px; color:var(--gold); margin-top:3px;}
+.cn.a{left:14px;} .cn.b{right:14px; text-align:right;}
+@media (min-width:600px){ .cn.a{left:20px;} .cn.b{right:20px;} }
 .axis{display:flex; justify-content:space-between; font-family:var(--ui); font-size:9px;
-  letter-spacing:.08em; color:var(--faint); padding:5px 1px 0;}
+  letter-spacing:.08em; color:var(--faint); padding:4px 1px 0;}
 
 /* the dial */
-.dial{margin-top:auto; padding-top:10px;}
+.dial{margin-top:auto; padding-top:8px;}
 .readout{text-align:center; position:relative;}
 .readout .v{font-family:var(--disp); font-size:clamp(30px,10vw,46px); line-height:1; color:var(--gold);
   text-shadow:0 4px 0 var(--ink); letter-spacing:0;}
@@ -218,7 +221,7 @@ main{flex:1; display:flex; flex-direction:column; min-height:0;}
 .ledger div{display:flex; gap:10px; align-items:baseline; font-family:var(--ui); font-size:11px;}
 .ledger .k{color:var(--dim); flex:1; min-width:0;}
 .ledger .v{color:var(--text); white-space:nowrap; letter-spacing:.06em;}
-.ledger .hl .v{color:var(--gold); font-weight:700;}
+.ledger .hl .v{color:var(--gold); font-weight:700; letter-spacing:.1em;}
 .cite{font-family:var(--body); font-size:16px; line-height:1.3; color:var(--faint); margin:0 0 11px;}
 
 /* ====================================================== results ========== */
@@ -303,9 +306,9 @@ main{flex:1; display:flex; flex-direction:column; min-height:0;}
 <div id="scene">
   <div class="stars" id="stars"></div>
   <div class="sun" id="sun"></div>
-  <canvas class="band far"  id="band-far"  aria-hidden="true"></canvas>
-  <canvas class="band mid"  id="band-mid"  aria-hidden="true"></canvas>
-  <canvas class="band near" id="band-near" aria-hidden="true"></canvas>
+  <canvas class="band far" id="band-far" aria-hidden="true"></canvas>
+  <canvas class="band mid" id="band-mid" aria-hidden="true"></canvas>
+  <canvas id="stage" aria-hidden="true"></canvas>
 </div>
 <div id="grain"></div><div id="vig"></div>
 
@@ -341,11 +344,12 @@ main{flex:1; display:flex; flex-direction:column; min-height:0;}
     <!-- ============================================ title ============== -->
     <section class="title" id="v-title">
       <div class="title-art">
-        <h1>GAPPY</h1>
+        <h1>GAPP<span>Y</span></h1>
         <div class="sub">The daily leap</div>
         <div class="day" id="t-day"></div>
         <svg class="hero" id="t-hero" viewBox="0 0 190 54" aria-hidden="true"></svg>
       </div>
+      <div class="rope"></div>
       <div class="modes">
         <button type="button" class="mode on" id="m-daily"><b>Daily</b><span id="m-daily-s">7 gaps · one try</span></button>
         <button type="button" class="mode" id="m-endless"><b>Endless</b><span>practice · no streak</span></button>
@@ -365,6 +369,10 @@ main{flex:1; display:flex; flex-direction:column; min-height:0;}
 
     <!-- ============================================ play =============== -->
     <section class="play" id="v-play" hidden>
+      <div class="cliffnotes" id="cliffnotes" hidden>
+        <div class="cn a"><b id="tag-a"></b><em id="fa"></em></div>
+        <div class="cn b"><b id="tag-b"></b><em id="fb"></em></div>
+      </div>
       <div class="hud">
         <span class="lbl" id="h-mode">Daily</span>
         <div class="sp"></div>
@@ -378,15 +386,6 @@ main{flex:1; display:flex; flex-direction:column; min-height:0;}
         <h2 id="q-text"></h2>
       </div>
 
-      <div class="gap-wrap">
-        <div class="gap" id="gap">
-          <canvas id="gap-canvas" aria-hidden="true"></canvas>
-          <div class="tagA" id="tag-a"></div>
-          <div class="tagB" id="tag-b"></div>
-          <div class="fog" id="fog"><span id="fog-t">how far?</span></div>
-        </div>
-        <div class="axis" id="gap-axis"></div>
-      </div>
 
       <div class="dial" id="dial">
         <div class="readout">
@@ -485,12 +484,21 @@ function scoreGuess(type, guess, actual) {
     : Math.log(Math.max(guess / actual, actual / guess)) / Math.log(4);
   return Math.max(0, Math.round(MAX_Q * (1 - Math.pow(clamp(e, 0, 1), 1.35))));
 }
-const band = (s) => s >= 900 ? 0 : s >= 700 ? 1 : s >= 400 ? 2 : 3;
-const VERDICT = [
-  { l: 'STUCK THE LANDING', s: 'g' }, { l: 'SAFE CROSSING', s: 'y' },
-  { l: 'GRAZED THE EDGE', s: 'o' },  { l: 'INTO THE CHASM', s: 'r' },
+/* Seven tiers rather than four. Each one has its own name, its own colour
+   and its own leap: the rarer the guess, the longer the hang time and the
+   higher the arc, so a bullseye is something you watch rather than read. */
+const TIERS = [
+  { min:1000, n:'THE GAPPY',      c:'#19E59B', sq:'🟩', dur:1850, apex:1.00, slow:true  },
+  { min:950,  n:'DEAD RECKONING', c:'#5FD9E8', sq:'🟩', dur:1500, apex:0.84, slow:false },
+  { min:850,  n:'HAIRLINE',       c:'#8FE870', sq:'🟩', dur:1250, apex:0.70, slow:false },
+  { min:700,  n:'CLEAN CROSSING', c:'#F5C542', sq:'🟨', dur:1020, apex:0.56, slow:false },
+  { min:450,  n:'SCRAMBLED OVER', c:'#E89B3C', sq:'🟧', dur:820,  apex:0.40, slow:false },
+  { min:150,  n:'CLIPPED THE EDGE',c:'#E8734A',sq:'🟧', dur:640,  apex:0.26, slow:false },
+  { min:0,    n:'INTO THE VOID',  c:'#E8604A', sq:'⬛', dur:470,  apex:0.14, slow:false },
 ];
-const SQUARE = ['🟩', '🟨', '🟧', '⬛'];
+const tierOf = (s) => TIERS.find((t) => s >= t.min) || TIERS[TIERS.length - 1];
+const tierIx = (s) => TIERS.indexOf(tierOf(s));
+const band = (s) => s >= 900 ? 0 : s >= 700 ? 1 : s >= 400 ? 2 : 3;   // kept for the pips
 const RANKS = [
   [6500, 'CANYON KING'], [5600, 'BRIDGE MASTER'], [4600, 'SURE FOOTED'],
   [3400, 'STEADY HAND'], [2200, 'WOBBLY'], [1000, 'LOOSE GRAVEL'], [0, 'SPLAT'],
@@ -558,17 +566,17 @@ const SFX = (() => {
 
 /* ---------------------------------------------------------------- biomes */
 const BIOMES = {
-  Earth:    ['#160C2C','#3B1A58','#8E2F63','#D9583F','#F59E3D'],
-  Space:    ['#04030E','#0B0A24','#19123E','#271858','#3A2676'],
-  Nature:   ['#05160F','#0C2A1C','#19422F','#2D6A3D','#5E9F49'],
-  Body:     ['#1A0A12','#36122A','#5C1E42','#96345C','#D1587A'],
-  Built:    ['#0A0F1F','#14203B','#213356','#395177','#5D7A9F'],
-  Transport:['#0D1323','#192943','#29415F','#3D637F','#6D9AAF'],
-  Sport:    ['#13150A','#292F10','#475319','#6D7F27','#9BAF3F'],
-  Distance: ['#090E1D','#152137','#253953','#3B5973','#5D859F'],
-  Time:     ['#1B1107','#39230F','#5D3913','#89591D','#BF8933'],
-  Scale:    ['#0C091A','#1B1333','#2F214D','#49316F','#694995'],
-  Everyday: ['#160C2C','#3B1A58','#8E2F63','#D9583F','#F59E3D'],
+  Earth:    ['#07171C','#0E2F38','#2A5A5C','#B4763C','#E8A64C'],
+  Space:    ['#03060F','#070D22','#101A38','#1D2A52','#30406E'],
+  Nature:   ['#04150F','#0A2A1E','#154632','#3E7A4A','#7CB45C'],
+  Body:     ['#16090E','#2E1220','#55243A','#9A4A52','#D4826A'],
+  Built:    ['#060F18','#0D1F30','#17324A','#2E5272','#5C86A6'],
+  Transport:['#07131A','#0F2838','#1B4356','#306C7E','#62A0AE'],
+  Sport:    ['#0C130A','#192A14','#2B4A20','#4E7A2E','#8CB44A'],
+  Distance: ['#050D18','#0B1C30','#143050','#28527A','#5086AE'],
+  Time:     ['#160F06','#30200C','#523618','#8A5C24','#D29A46'],
+  Scale:    ['#0A0C16','#141A30','#22304E','#3A4E76','#6880A8'],
+  Everyday: ['#07171C','#0E2F38','#2A5A5C','#B4763C','#E8A64C'],
 };
 function setBiome(cat) {
   const b = BIOMES[cat] || BIOMES.Earth, r = document.documentElement.style;
@@ -579,6 +587,7 @@ function setBiome(cat) {
 /* ------------------------------------------------------- pixel scenery */
 const PXS = 4;   // one "pixel" is this many device-independent px
 function mesa(cv, color, seed, heightFrac, roughness) {
+  if (!cv) return;
   const w = cv.clientWidth, h = cv.clientHeight;
   if (!w || !h) return;
   const dpr = Math.min(2, window.devicePixelRatio || 1);
@@ -600,9 +609,8 @@ function mesa(cv, color, seed, heightFrac, roughness) {
 function drawBands() {
   const cs = getComputedStyle(document.documentElement);
   const pick = (n) => cs.getPropertyValue('--sky-' + n).trim();
-  mesa($('band-far'),  shade(pick(2), -0.30), 11, 0.70, 0.17);
-  mesa($('band-mid'),  shade(pick(2), -0.52), 29, 0.78, 0.24);
-  mesa($('band-near'), shade(pick(1), -0.28), 47, 0.86, 0.30);
+  mesa($('band-far'), shade(pick(3), -0.34), 11, 0.70, 0.17);
+  mesa($('band-mid'), shade(pick(2), -0.22), 29, 0.78, 0.24);
 }
 function shade(hex, amt) {
   const m = /^#?([0-9a-f]{6})$/i.exec(hex || '');
@@ -648,60 +656,118 @@ function sprite(x, map, px, py, s, flip) {
   }
 }
 
-/* ------------------------------------------------------------- the gap */
-let anim = null;
-function drawGap(opts) {
-  const cv = $('gap-canvas'), w = cv.clientWidth, h = cv.clientHeight;
-  if (!w || !h) return;
+/* ----------------------------------------------------------- the canyon
+   Drawn straight onto the page background. The UI floats above it, so the
+   leap happens out in the world rather than inside a little window. */
+let anim = null, stageState = null;
+function stageGeom() {
+  const cv = $('stage');
+  if (!cv) return { w:0, h:0 };
+  const w = cv.clientWidth, h2 = cv.clientHeight;
+  const P = 5;
+  const gy = Math.round(h2 * 0.46 / P) * P;              // cliff-top line
+  const pad = Math.max(26, Math.min(70, w * 0.09));
+  const L = Math.round(pad / P) * P;
+  const R = Math.round((w - pad) / P) * P;
+  return { cv, w, h: h2, P, gy, L, R, xOf: (f) => Math.round((L + clamp(f,0,1) * (R - L)) / P) * P };
+}
+function drawStage(o) {
+  const g = stageGeom(); if (!g.w || !g.h) return;
+  stageState = o;
   const dpr = Math.min(2, window.devicePixelRatio || 1);
-  cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
-  const x = cv.getContext('2d'); x.setTransform(dpr, 0, 0, dpr, 0, 0);
-  x.clearRect(0, 0, w, h);
-  // cliffs are lit, the chasm is not — that contrast is the whole read
+  g.cv.width = Math.round(g.w * dpr); g.cv.height = Math.round(g.h * dpr);
+  const x = g.cv.getContext('2d'); x.setTransform(dpr, 0, 0, dpr, 0, 0);
+  x.clearRect(0, 0, g.w, g.h);
   const cs = getComputedStyle(document.documentElement);
-  const rockTop = shade(cs.getPropertyValue('--sky-3').trim(), 0.34);
-  const rockBody = shade(cs.getPropertyValue('--sky-2').trim(), -0.10);
-  const P = 4;
-  const gy = Math.round(h * 0.62 / P) * P;        // cliff-top line
-  const L = Math.round(w * 0.16 / P) * P;         // left cliff edge
-  const xOf = (f) => Math.round((L + f * (w * 0.78 - L)) / P) * P;
+  const lip  = cs.getPropertyValue('--rock-lip').trim() || '#C98A47';
+  const body = cs.getPropertyValue('--rock-mid').trim() || '#3A2A22';
+  const deep = cs.getPropertyValue('--rock-near').trim() || '#241812';
+  const P = g.P;
+
+  // the void: dark, with strata fading into it
+  x.fillStyle = 'rgba(4,10,14,.92)';
+  x.fillRect(0, g.gy, g.w, g.h - g.gy);
+  x.fillStyle = 'rgba(255,255,255,.028)';
+  for (let yy = g.gy + P * 2; yy < g.h; yy += P * 5) x.fillRect(0, yy, g.w, P);
 
   const cliff = (x0, x1) => {
-    x.fillStyle = rockBody; x.fillRect(x0, gy, x1 - x0, h - gy);
-    x.fillStyle = rockTop;  x.fillRect(x0, gy, x1 - x0, P);
-    x.fillStyle = 'rgba(0,0,0,.26)';
-    for (let yy = gy + P * 2; yy < h; yy += P * 3) x.fillRect(x0, yy, x1 - x0, P);
+    if (x1 <= x0) return;
+    x.fillStyle = body; x.fillRect(x0, g.gy, x1 - x0, g.h - g.gy);
+    x.fillStyle = lip;  x.fillRect(x0, g.gy, x1 - x0, P);
+    x.fillStyle = deep;
+    for (let yy = g.gy + P * 3; yy < g.h; yy += P * 4) x.fillRect(x0, yy, x1 - x0, P);
+    // crumbling edge pixels so the lip is not a ruler-straight line
+    const rnd = mulberry32(Math.round(x0) * 31 + 7);
+    for (let i = 0; i < 7; i++) {
+      const px = x0 + Math.round(rnd() * (x1 - x0) / P) * P;
+      x.fillStyle = lip; x.fillRect(px, g.gy - P, P, P);
+    }
   };
-  cliff(0, L);                                     // the near side, always there
-  if (opts.showFar) { const fx = xOf(opts.actualF); cliff(fx, w); 
-    sprite(x, FLAG, fx + P * 4, gy - FLAG.length * P, P); }
+  cliff(0, g.L);                                   // the side you start on
+  if (o.showFar) {
+    const fx = g.xOf(o.actualF);
+    cliff(fx, g.w);
+    sprite(x, FLAG, fx + P * 3, g.gy - FLAG.length * P, P);
+  }
 
-  // the bridge you built
-  const bx = xOf(opts.guessF);
-  x.fillStyle = opts.landed === undefined ? '#8A5BB0' : (opts.landed ? '#54E8A0' : '#FF5C6B');
-  if (opts.landed === undefined) x.fillStyle = '#8A5BB0';
-  for (let px = L; px < bx; px += P * 2) x.fillRect(px, gy - P, P, P);
-  if (bx > L) { x.fillRect(bx - P, gy - P * 2, P, P * 2); }
+  // the bridge you built: planks out over the void
+  const bx = g.xOf(o.guessF);
+  const plank = o.tierColour || '#2E6E78';
+  for (let px = g.L; px < bx; px += P * 2) {
+    x.fillStyle = plank; x.fillRect(px, g.gy - P, P, P);
+    x.fillStyle = 'rgba(0,0,0,.35)'; x.fillRect(px, g.gy, P, P);
+  }
+  if (bx > g.L) { x.fillStyle = plank; x.fillRect(bx - P, g.gy - P * 3, P, P * 3); }
 
-  // the hero. If the verdict says they fell, they fall — the picture is not
-  // allowed to disagree with the score.
-  const hx = opts.heroF === undefined ? L - HERO[0].length * P - P : xOf(opts.heroF);
-  const hy = gy - HERO.length * P - (opts.hop || 0) + (opts.fall || 0);
-  sprite(x, opts.jumping ? HERO_JUMP : HERO, hx, hy, P);
+  // fog hiding the far side until you commit
+  if (!o.showFar) {
+    const fogX = bx + P * 2;
+    const grd = x.createLinearGradient(fogX, 0, Math.min(g.w, fogX + 150), 0);
+    const c1 = cs.getPropertyValue('--sky-2').trim() || '#0E2F38';
+    grd.addColorStop(0, 'rgba(0,0,0,0)'); grd.addColorStop(0.35, c1 + 'd9'); grd.addColorStop(1, c1);
+    x.fillStyle = grd; x.fillRect(fogX, 0, g.w - fogX, g.h);
+    x.fillStyle = cs.getPropertyValue('--faint').trim() || '#5C8A88';
+    for (let i = 0; i < 24; i++) {
+      const rnd = mulberry32(i * 97);
+      x.fillRect(fogX + 20 + Math.round(rnd() * (g.w - fogX - 30) / P) * P,
+                 Math.round(rnd() * g.h / P) * P, P, P);
+    }
+  }
+
+  // the climber
+  const hx = o.heroF === undefined ? g.L - HERO[0].length * P - P * 2 : g.xOf(o.heroF);
+  const hy = g.gy - HERO.length * P - (o.hop || 0) + (o.fall || 0);
+  sprite(x, o.jumping ? HERO_JUMP : HERO, hx, hy, P);
+  // a dust puff on take-off and on landing
+  if (o.dust) {
+    x.fillStyle = 'rgba(201,138,71,.55)';
+    for (let i = 0; i < 5; i++) x.fillRect(hx - P * 2 + i * P * 2, g.gy - P, P, P);
+  }
 }
-function animateLeap(guessF, actualF, b, done) {
+
+/* The leap. Rarer guesses hang in the air longer and arc higher — a Gappy is
+   a slow soar, a void is a short stumble. */
+function animateLeap(guessF, actualF, score, done) {
   cancelAnimationFrame(anim);
-  const t0 = performance.now(), dur = 640;
-  const landed = b <= 1;
-  const endF = landed ? actualF : Math.min(guessF, actualF * 0.92);
+  const T = tierOf(score), landed = score >= 700;
+  const g = stageGeom();
+  // never arc higher than the sky above the cliff, or the climber leaves frame
+  const headroom = Math.max(24, g.gy - HERO.length * g.P - 8);
+  const apexPx = headroom * T.apex;
+  const endF = landed ? actualF : Math.min(guessF, actualF * 0.9);
+  const t0 = performance.now(), dur = T.dur;
   (function step(t) {
-    const k = clamp((t - t0) / dur, 0, 1);
-    const e = 1 - Math.pow(1 - k, 2);
+    let k = clamp((t - t0) / dur, 0, 1);
+    // a Gappy gets a beat of slow motion at the top of the arc
+    const e = T.slow
+      ? (k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2)
+      : 1 - Math.pow(1 - k, 2);
     const f = e * endF;
-    const hop = Math.sin(e * Math.PI) * 26;
-    // a clean crossing lands on the lip; anything worse drops into the gap
-    const fall = (!landed && k > 0.55) ? Math.pow((k - 0.55) / 0.45, 2) * 44 : 0;
-    drawGap({ guessF, actualF, showFar: true, landed, heroF: f, hop, fall, jumping: k < 1 || !landed });
+    const hop = Math.sin(e * Math.PI) * apexPx;
+    const fall = (!landed && k > 0.6) ? Math.pow((k - 0.6) / 0.4, 2) * (g.h - g.gy - 28) : 0;
+    drawStage({ guessF, actualF, showFar: true, heroF: f, hop, fall,
+                jumping: k < 0.97 || !landed, tierColour: T.c,
+                dust: k < 0.1 || (landed && k > 0.94) });
     if (k < 1) anim = requestAnimationFrame(step); else if (done) done();
   })(t0);
 }
@@ -731,7 +797,8 @@ function checkTrophies(dayResults) {
 /* ---------------------------------------------------------------- state */
 let mode = 'daily', qs = [], idx = 0, results = [], locked = false, today = dayIndex();
 const V = { title:$('v-title'), play:$('v-play'), done:$('v-done') };
-function show(n) { Object.keys(V).forEach((k) => { V[k].hidden = k !== n; }); window.scrollTo(0, 0); }
+function show(n) { Object.keys(V).forEach((k) => { V[k].hidden = k !== n; });
+  $('cliffnotes').hidden = n !== 'play'; window.scrollTo(0, 0); if (n === 'play') placeNotes(); }
 function toast(m) {
   const t = $('toast'); t.textContent = m; t.classList.add('on');
   clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('on'), 2200);
@@ -741,6 +808,12 @@ function pointsFly(el, n) {
   d.className = 'pf'; d.textContent = '+' + comma(n);
   d.style.left = (r.left + r.width / 2 - 22) + 'px'; d.style.top = (r.top - 6) + 'px';
   document.body.appendChild(d); setTimeout(() => d.remove(), 1000);
+}
+
+function placeNotes() {
+  if (V.play.hidden) return;
+  const cn = $('cliffnotes');
+  cn.style.top = Math.round($('stage').getBoundingClientRect().top + 6) + 'px';
 }
 
 /* ---------------------------------------------------------------- title */
@@ -779,8 +852,9 @@ function startEndless() { mode = 'endless'; qs = pickRandom(PER_DAY); idx = 0; r
 function paintPips() {
   $('pips').innerHTML = qs.map((_, i) => {
     const r = results[i];
-    const c = r ? ['g','y','o','r'][band(r.score)] : (i === idx ? 'now' : '');
-    return `<i class="${c}"></i>`;
+    if (!r) return `<i class="${i === idx ? 'now' : ''}"></i>`;
+    const c = tierOf(r.score).c;
+    return `<i style="background:${c};border-color:${c}"></i>`;
   }).join('');
 }
 function paintQ() {
@@ -792,13 +866,9 @@ function paintQ() {
   $('q-cat').textContent = q.cat;
   $('q-n').textContent = (idx + 1) + ' of ' + PER_DAY;
   $('q-text').textContent = q.q;
-  $('tag-a').innerHTML = esc(q.a.label) + '<em id="fa"></em>';
-  $('tag-b').innerHTML = esc(q.b.label) + '<em id="fb"></em>';
-  $('fog').style.left = '18%'; $('fog').style.opacity = '1';
-  $('fog-t').textContent = q.type === 'percent' ? 'how much?' : 'how far?';
-  $('gap-axis').innerHTML = q.type === 'percent'
-    ? '<span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span>'
-    : '<span>1×</span><span>10×</span><span>100×</span><span>1000×</span>';
+  $('tag-a').textContent = q.a.label; $('tag-b').textContent = q.b.label;
+  $('fa').textContent = ''; $('fb').textContent = '';
+  $('cliffnotes').hidden = false; placeNotes();
   $('r-u').textContent = q.type === 'percent' ? '%' : '×';
   $('r-hint').textContent = q.type === 'percent' ? 'drag to set the share' : 'drag to build your bridge';
   $('slider').value = q.type === 'percent' ? 500 : 0;
@@ -811,8 +881,7 @@ function paintRead(silent) {
   $('r-v').textContent = fmtV(q.type, v);
   $('slider').style.setProperty('--p', (pos / 10) + '%');
   const f = frac(q.type, v);
-  $('fog').style.left = (18 + f * 76) + '%';
-  drawGap({ guessF: f, actualF: 0, showFar: false });
+  drawStage({ guessF: f, actualF: 0, showFar: false });
   if (!silent && performance.now() - lastTick > 45) { lastTick = performance.now(); SFX.tick(); }
 }
 function lockIn() {
@@ -824,21 +893,23 @@ function lockIn() {
   if (S.cats.indexOf(q.cat) === -1) { S.cats.push(q.cat); }
   const b = band(sc);
   const gf = frac(q.type, guess), af = frac(q.type, actual);
-  $('fog').style.opacity = '0';
   $('fa').textContent = fmtFig(q.a.value) + ' ' + q.a.unit;
   $('fb').textContent = fmtFig(q.b.value) + ' ' + q.b.unit;
   SFX.leap();
-  animateLeap(gf, af, b, () => SFX.land(b));
+  animateLeap(gf, af, sc, () => SFX.land(Math.min(3, tierIx(sc) > 3 ? 3 : tierIx(sc) > 1 ? 1 : 0)));
 
-  const vd = $('verdict'); vd.className = 'verdict b' + b;
-  $('v-l').textContent = VERDICT[b].l; $('v-p').textContent = '+' + comma(sc);
+  const T = tierOf(sc);
+  const vd = $('verdict'); vd.className = 'verdict';
+  vd.style.background = T.c; vd.style.color = '#06141A';
+  $('v-l').textContent = T.n; $('v-p').textContent = '+' + comma(sc);
+  $('v-p').style.color = '#06141A';
   $('ledger').innerHTML =
     `<div><span class="k">${esc(q.a.label)}</span><span class="v">${esc(fmtFig(q.a.value))} ${esc(q.a.unit)}</span></div>` +
     `<div><span class="k">${esc(q.b.label)}</span><span class="v">${esc(fmtFig(q.b.value))} ${esc(q.b.unit)}</span></div>` +
     `<div><span class="k">You said</span><span class="v">${esc(fmtV(q.type, guess))}${q.type==='percent'?'%':'×'}</span></div>` +
     `<div class="hl"><span class="k">The gap</span><span class="v">${esc(fmtV(q.type, actual))}${q.type==='percent'?'%':'×'}</span></div>`;
   $('cite').textContent = q.src;
-  $('dial').hidden = true; $('reveal').hidden = false;
+  $('dial').hidden = true; $('reveal').hidden = false; $('cliffnotes').hidden = true;
   $('b-next').textContent = idx === PER_DAY - 1 ? 'See your crossing ▶' : 'Next gap ▶';
   paintPips();
   $('h-run').textContent = comma(results.reduce((a, r) => a + (r ? r.score : 0), 0)) + ' pts';
@@ -868,7 +939,7 @@ function paintDone() {
   $('d-kick').textContent = mode === 'endless' ? 'Endless run' : 'Canyon #' + today;
   $('d-rank').textContent = rankOf(total);
   $('d-log').innerHTML = '<span class="lbl">Leap log — longer = closer</span>' + results.map((r, i) => {
-    const b = band(r.score), col = ['#54E8A0','#FFC94D','#FF9E4D','#FF5C6B'][b];
+    const col = tierOf(r.score).c;
     return `<div class="r"><span class="i">${i+1}</span><span class="bar">` +
       `<i style="width:${Math.max(2, r.score/10)}%;background:${col};animation-delay:${i*70}ms"></i></span>` +
       `<span class="s">${comma(r.score)}</span></div>`;
@@ -915,7 +986,7 @@ function clock() {
 async function share() {
   const total = results.reduce((a, r) => a + r.score, 0);
   const text = `Gappy · canyon #${today}\n${comma(total)}/7000 · ${rankOf(total)}\n` +
-    results.map((r) => SQUARE[band(r.score)]).join('') + '\njessebaizer.com/game';
+    results.map((r) => tierOf(r.score).sq).join('') + '\njessebaizer.com/game';
   try {
     if (navigator.share && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) { await navigator.share({ text }); return; }
   } catch (e) { if (e && e.name === 'AbortError') return; }
@@ -1007,12 +1078,13 @@ document.addEventListener('keydown', (e) => {
   else if (e.key === 'ArrowRight') { e.preventDefault(); nudge(8); }
 });
 let rt; window.addEventListener('resize', () => {
-  clearTimeout(rt); rt = setTimeout(() => { drawBands(); if (!V.play.hidden) paintRead(true); }, 140);
+  clearTimeout(rt); rt = setTimeout(() => { drawBands(); if (!V.play.hidden) { placeNotes(); paintRead(true); } }, 140);
 });
 
 /* ------------------------------------------------------------------ boot */
 starfield(); drawBands(); markMode(); soundIcon(); paintTitle();
 if (!BANK.length) { $('b-play').disabled = true; toast('Question bank failed to load'); }
+requestAnimationFrame(() => { drawBands(); drawStage({ guessF:0, actualF:0, showFar:false }); });
 setInterval(() => {
   const d = dayIndex();
   if (d !== today) { today = d; results = []; paintTitle(); if (!V.done.hidden) show('title'); }
