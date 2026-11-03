@@ -4,367 +4,224 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>Campus content portal · fomo</title>
+<title>Campus leaderboard · fomo</title>
 <link rel="icon" href="/fomo-favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#08080F; --surface:#0F0F17; --surface-2:#15151F; --surface-3:#1B1B26;
-  --border:rgba(255,255,255,0.08); --border-2:rgba(255,255,255,0.16);
-  --white:#FFFFFF; --text:#E8E8F0; --text-dim:#9B9BAD; --text-faint:#6A6A7C;
-  --blue:#516AF6; --blue-hi:#6A80F8; --blue-dim:#8E9CF7;
-  --red:#F2555A; --green:#2ED47A; --gold:#E0B25C; --cyan:#23B5D3;
-  --radius:14px; --radius-lg:18px;
+  --bg:#07070D; --surface:#101019; --surface-2:#191924; --surface-3:#22222F;
+  --border:rgba(255,255,255,0.07); --border-2:rgba(255,255,255,0.15);
+  --white:#FFFFFF; --text:#ECECF4; --text-dim:#9A9AAE; --text-faint:#67677A;
+  --violet:#7C5CFF; --violet-hi:#9179FF; --violet-dim:#B3A5FF; --violet-soft:rgba(124,92,255,.14);
+  --green:#2ED47A; --red:#F2555A;
+  --gold:#FFC53D; --silver:#C9CEDC; --bronze:#DE8B4F;
+  --r:16px; --r-lg:24px;
 }
 *{box-sizing:border-box;}
 [hidden]{display:none !important;}
 html,body{margin:0;}
-body{background:var(--bg); color:var(--text); font-family:'Schibsted Grotesk','Inter',-apple-system,sans-serif; line-height:1.5; min-height:100vh; -webkit-font-smoothing:antialiased;}
+body{background:var(--bg); color:var(--text); font-family:'Schibsted Grotesk','Inter',-apple-system,sans-serif; line-height:1.45; min-height:100vh; -webkit-font-smoothing:antialiased;}
 button,input,select{font-family:inherit;}
 a{color:inherit; text-decoration:none;}
 svg{display:block;}
 .num{font-variant-numeric:tabular-nums;}
 @media (prefers-reduced-motion:reduce){ *{animation:none !important; transition:none !important;} }
 
-/* ---------- topbar ---------- */
-.topbar{border-bottom:1px solid var(--border); position:sticky; top:0; z-index:20; background:rgba(8,8,15,.86); backdrop-filter:blur(14px);}
-.topbar-in{max-width:1180px; margin:0 auto; padding:13px 40px; display:flex; align-items:center; gap:12px;}
-@media (max-width:760px){ .topbar-in{padding:11px 20px;} }
-.brand{display:flex; align-items:center; gap:9px; font-size:1.08rem; font-weight:800; color:var(--white); letter-spacing:-0.02em;}
-.brand svg{width:23px; height:23px; flex-shrink:0;}
+.wrap{max-width:720px; margin:0 auto; padding:0 20px 56px;}
+
+/* ---------- top ---------- */
+.top{display:flex; align-items:center; gap:10px; padding:20px 0 26px;}
+.brand{display:flex; align-items:center; gap:8px; font-size:1.05rem; font-weight:800; color:var(--white); letter-spacing:-0.02em;}
+.brand svg{width:22px; height:22px;}
 .brand .slash{color:var(--text-faint); font-weight:600;}
-.spacer{flex:1;}
-.tag{display:inline-flex; align-items:center; gap:6px; padding:5px 10px; border-radius:7px; font-size:0.66rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; white-space:nowrap;}
-.tag.master{background:rgba(81,106,246,.15); color:var(--blue-dim);}
-.tag.seed{background:rgba(224,178,92,.14); color:var(--gold);}
-@media (max-width:860px){ .tag.seed{display:none;} }
-.nav-btn{border:1px solid var(--border); background:var(--surface); color:var(--text); border-radius:10px; padding:8px 14px; font-size:0.84rem; font-weight:600; cursor:pointer; white-space:nowrap; transition:background .15s ease, border-color .15s ease, color .15s ease;}
-.nav-btn:hover{background:var(--surface-2); border-color:var(--border-2);}
-.nav-btn.on{background:var(--blue); border-color:var(--blue); color:#fff;}
-.nav-btn.on:hover{background:var(--blue-hi);}
+.sp{flex:1;}
+.gbtn{border:1px solid var(--border); background:var(--surface); color:var(--text-dim); border-radius:12px; padding:9px 15px; font-size:0.85rem; font-weight:700; cursor:pointer; transition:.15s;}
+.gbtn:hover{background:var(--surface-2); color:var(--white);}
+.gbtn.on{background:var(--violet); border-color:var(--violet); color:#fff;}
 
-/* ---------- layout ---------- */
-.wrap{max-width:1180px; margin:0 auto; padding:34px 40px 24px;}
-@media (max-width:760px){ .wrap{padding:26px 20px 20px;} }
+h1{font-size:clamp(2rem,7vw,2.6rem); font-weight:800; letter-spacing:-0.04em; line-height:1.05; margin:0 0 8px; color:var(--white);}
+.sub{font-size:0.95rem; color:var(--text-faint); margin:0 0 22px;}
+.sub .seed{color:var(--gold); font-weight:600;}
 
-.hero{display:flex; align-items:flex-end; justify-content:space-between; gap:28px; flex-wrap:wrap; margin-bottom:28px;}
-.eyebrow{font-size:0.78rem; font-weight:700; color:var(--blue-dim); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:12px;}
-h1{font-size:clamp(2.1rem,4.6vw,3.1rem); font-weight:800; letter-spacing:-0.04em; line-height:1.03; margin:0 0 14px; color:var(--white);}
-.lede{font-size:1.02rem; color:var(--text-dim); margin:0; max-width:46ch; font-weight:500;}
-
-/* window picker */
-.range{display:flex; gap:3px; background:var(--surface); border:1px solid var(--border); border-radius:11px; padding:4px;}
-.range button{background:none; border:none; color:var(--text-faint); font-weight:600; font-size:0.84rem; padding:8px 14px; border-radius:8px; cursor:pointer; transition:background .15s ease, color .15s ease;}
-.range button:hover{color:var(--text);}
-.range button.active{background:var(--blue); color:#fff;}
-.range-note{font-size:0.76rem; color:var(--text-faint); margin:8px 2px 0; text-align:right;}
-
-/* ---------- banner ---------- */
-.banner{background:rgba(224,178,92,.06); border:1px solid rgba(224,178,92,.24); border-radius:var(--radius); padding:14px 18px; font-size:0.86rem; color:var(--text-dim); line-height:1.55; margin-bottom:20px;}
-.banner b{color:var(--gold); font-weight:800;}
-.banner code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:0.82rem; color:var(--text);}
-
-/* ---------- network strip ---------- */
-.strip{display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-bottom:26px;}
-@media (max-width:1000px){ .strip{grid-template-columns:repeat(3,1fr);} }
-@media (max-width:620px){ .strip{grid-template-columns:repeat(2,1fr); gap:10px;} }
-.stat{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:18px 20px; transition:border-color .15s ease, transform .15s ease;}
-.stat:hover{border-color:var(--border-2); transform:translateY(-2px);}
-.stat .v{font-size:1.72rem; font-weight:800; color:var(--white); letter-spacing:-0.035em; line-height:1;}
-.stat .v.green{color:var(--green);} .stat .v.blue{color:var(--blue-dim);} .stat .v.gold{color:var(--gold);} .stat .v.red{color:var(--red);}
-.stat .k{font-size:0.78rem; color:var(--text-faint); margin-top:9px; line-height:1.35;}
-.stat .d{font-size:0.74rem; margin-top:5px; font-weight:700;}
-.d.up{color:var(--green);} .d.down{color:var(--red);} .d.flat{color:var(--text-faint);}
-
-/* ---------- section heads ---------- */
-.sec-head{display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap; margin:0 0 16px;}
-.sec-title{font-size:1.28rem; font-weight:800; color:var(--white); letter-spacing:-0.025em; margin:0;}
-.sec-sub{font-size:0.84rem; color:var(--text-faint); margin:5px 0 0; max-width:62ch;}
-
-/* ---------- spotlight ---------- */
-.spot{display:grid; grid-template-columns:1.55fr 1fr; gap:14px; margin-bottom:34px;}
-@media (max-width:980px){ .spot{grid-template-columns:1fr;} }
-.win{position:relative; background:var(--surface); border:1px solid var(--border-2); border-radius:var(--radius-lg); padding:26px 28px; overflow:hidden;}
-@media (max-width:560px){ .win{padding:22px 20px;} }
-.win::before{content:''; position:absolute; inset:0; background:radial-gradient(130% 100% at 0% 0%, var(--tint,rgba(81,106,246,.14)) 0%, transparent 62%); pointer-events:none;}
-.win > *{position:relative;}
-.win-top{display:flex; align-items:center; gap:16px; margin-bottom:22px;}
-.win-id{flex:1; min-width:0;}
-.win-id .h{font-size:1.5rem; font-weight:800; color:var(--white); letter-spacing:-0.03em; line-height:1.1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
-.win-id .s{font-size:0.88rem; color:var(--text-faint); margin-top:4px;}
-.win-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; padding-top:20px; border-top:1px solid var(--border);}
-@media (max-width:460px){ .win-grid{grid-template-columns:1fr 1fr;} }
-.win-grid .v{font-size:1.5rem; font-weight:800; color:var(--white); letter-spacing:-0.035em; line-height:1;}
-.win-grid .k{font-size:0.74rem; color:var(--text-faint); margin-top:7px;}
-.win-owner{display:flex; align-items:center; gap:10px; margin-top:18px; padding-top:16px; border-top:1px solid var(--border); font-size:0.9rem; flex-wrap:wrap;}
-.win-owner .lbl{font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.09em; color:var(--text-faint);}
-.win-owner a{color:var(--blue-dim); font-weight:700;}
-.win-owner a:hover{text-decoration:underline;}
-.win-owner .who{display:inline; font-size:0.85rem; color:var(--text-dim); margin:0;}
-.win-owner .none{color:var(--text-faint); font-style:italic; font-size:0.86rem;}
-.crown{display:inline-flex; align-items:center; gap:7px; padding:5px 11px; border-radius:7px; background:rgba(224,178,92,.15); color:var(--gold); font-size:0.64rem; font-weight:800; letter-spacing:0.09em; text-transform:uppercase; margin-bottom:16px;}
-.crown svg{width:12px; height:12px;}
-
-.runners{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; display:flex; flex-direction:column;}
-.runners-head{padding:17px 22px; border-bottom:1px solid var(--border); font-size:0.98rem; font-weight:800; color:var(--white); letter-spacing:-0.02em;}
-.runner{display:flex; align-items:center; gap:13px; padding:14px 22px; border-bottom:1px solid var(--border); flex:1;}
-.runner:last-child{border-bottom:none;}
-.runner .pos{width:20px; font-size:0.82rem; font-weight:700; color:var(--text-faint); flex-shrink:0;}
-.runner .nm{flex:1; min-width:0;}
-.runner .nm b{display:block; font-size:0.94rem; font-weight:700; color:var(--white); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
-.runner .nm span{font-size:0.76rem; color:var(--text-faint);}
-.runner .vw{text-align:right; flex-shrink:0;}
-.runner .vw b{display:block; font-size:0.96rem; font-weight:700; color:var(--blue-dim);}
-.runner .vw span{font-size:0.7rem; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.06em;}
-
-/* ---------- crest ---------- */
-.crest{border-radius:13px; display:flex; align-items:center; justify-content:center; flex-shrink:0; width:46px; height:46px;}
-.crest svg{width:66%; height:66%;}
-.crest.lg{width:62px; height:62px; border-radius:17px;}
-.crest.sm{width:34px; height:34px; border-radius:10px;}
-
-/* ---------- board ---------- */
-.controls{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:14px;}
-.search{position:relative; flex:1; min-width:200px; max-width:290px;}
-.search input{width:100%; background:var(--surface); border:1px solid var(--border); border-radius:11px; padding:11px 13px 11px 36px; color:var(--text); font-size:0.88rem; outline:none; transition:border-color .15s ease;}
-.search input:focus{border-color:var(--blue);}
-.search input::placeholder{color:var(--text-faint);}
-.search svg{position:absolute; left:13px; top:50%; transform:translateY(-50%); width:14px; height:14px; color:var(--text-faint);}
-.tabs{display:flex; gap:3px; background:var(--surface); border:1px solid var(--border); border-radius:11px; padding:4px; overflow-x:auto;}
-.tabs button{background:none; border:none; color:var(--text-faint); font-weight:600; font-size:0.84rem; padding:8px 14px; border-radius:8px; cursor:pointer; white-space:nowrap; transition:background .15s ease, color .15s ease;}
+/* ---------- tabs ---------- */
+.tabs{display:flex; gap:4px; background:var(--surface); border-radius:14px; padding:5px; margin-bottom:18px;}
+.tabs button{flex:1; background:none; border:none; color:var(--text-faint); font-weight:700; font-size:0.88rem; padding:11px 8px; border-radius:10px; cursor:pointer; transition:.15s;}
 .tabs button:hover{color:var(--text);}
-.tabs button.active{background:var(--blue); color:#fff;}
+.tabs button.active{background:var(--violet); color:#fff;}
 
-.board{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden;}
-.thead{display:flex; align-items:center; gap:16px; padding:12px 24px; border-bottom:1px solid var(--border); background:var(--surface-2); font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.09em; color:var(--text-faint);}
-@media (max-width:900px){ .thead{display:none;} }
-.row{display:flex; align-items:center; gap:16px; padding:15px 24px; border-bottom:1px solid var(--border); cursor:pointer; transition:background .12s ease;}
-.row:hover{background:var(--surface-2);}
-.row.open{background:var(--surface-2);}
-.board .acct:last-child .row{border-bottom:none;}
-.board .acct.exp:last-child .row{border-bottom:1px solid var(--border);}
-@media (max-width:760px){ .row{padding:14px 18px; gap:12px;} .thead{padding:12px 18px;} }
+/* ---------- pills ---------- */
+.pills{display:flex; gap:10px; margin-bottom:26px;}
+.pill{flex:1; background:var(--surface); border-radius:var(--r); padding:15px 16px; min-width:0;}
+.pill .v{font-size:1.45rem; font-weight:800; color:var(--white); letter-spacing:-0.03em; line-height:1;}
+.pill .v.violet{color:var(--violet-dim);} .pill .v.green{color:var(--green);}
+.pill .k{font-size:0.74rem; color:var(--text-faint); margin-top:7px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+@media (max-width:460px){ .pill{padding:13px 12px;} .pill .v{font-size:1.2rem;} .pill .k{font-size:0.68rem;} }
 
-.c-rank{width:26px; flex-shrink:0; font-size:0.84rem; font-weight:700; color:var(--text-faint);}
-.row.top1 .c-rank{color:var(--gold);}
-.row.top2 .c-rank, .row.top3 .c-rank{color:var(--blue-dim);}
-.c-name{flex:1; min-width:0; display:flex; align-items:center; gap:13px;}
-.c-name .t{min-width:0;}
-.c-name .h{font-weight:700; font-size:1.0rem; color:var(--white); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
-.c-name .s{font-size:0.8rem; color:var(--text-faint); margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
-.c-mgr{width:150px; flex-shrink:0;}
-@media (max-width:1100px){ .c-mgr{display:none;} }
-.c-mgr a{font-size:0.85rem; font-weight:600; color:var(--blue-dim); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;}
-.c-mgr a:hover{text-decoration:underline;}
-.c-mgr .none{font-size:0.8rem; color:var(--text-faint); font-style:italic;}
-.c-mgr .who{font-size:0.72rem; color:var(--text-faint); margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
-.c-posts{width:62px; flex-shrink:0; text-align:right;}
-.c-views{width:104px; flex-shrink:0; text-align:right;}
-.c-total{width:76px; flex-shrink:0; text-align:right;}
-@media (max-width:900px){ .c-total{display:none;} }
-.c-last{width:124px; flex-shrink:0; text-align:right;}
+/* ---------- leader card ---------- */
+.lead{position:relative; border-radius:var(--r-lg); padding:24px; margin-bottom:26px; overflow:hidden;
+  background:linear-gradient(135deg, #7C5CFF 0%, #6246E0 42%, #3A2E7A 100%); border:1px solid rgba(255,255,255,.14);}
+.lead::after{content:''; position:absolute; inset:0; background:radial-gradient(120% 90% at 100% 0%, var(--tint,transparent) 0%, transparent 60%); pointer-events:none; opacity:.75;}
+.lead > *{position:relative; z-index:1;}
+.lead-tag{display:inline-flex; align-items:center; gap:6px; background:rgba(0,0,0,.26); color:#FFE9A8; font-size:0.66rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; padding:6px 11px; border-radius:8px; margin-bottom:18px;}
+.lead-tag svg{width:12px; height:12px;}
+.lead-row{display:flex; align-items:center; gap:15px;}
+.lead-id{flex:1; min-width:0;}
+.lead-id .h{font-size:1.4rem; font-weight:800; color:var(--white); letter-spacing:-0.03em; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.lead-id .s{font-size:0.86rem; color:rgba(255,255,255,.72); margin-top:3px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.lead-big{text-align:right; flex-shrink:0;}
+.lead-big b{display:block; font-size:1.7rem; font-weight:800; color:var(--white); letter-spacing:-0.035em; line-height:1;}
+.lead-big span{font-size:0.72rem; color:rgba(255,255,255,.6); text-transform:uppercase; letter-spacing:0.08em;}
+@media (max-width:430px){ .lead-big b{font-size:1.35rem;} }
+.lead-foot{display:flex; align-items:center; gap:8px; margin-top:18px; padding-top:15px; border-top:1px solid rgba(255,255,255,.16); font-size:0.85rem; color:rgba(255,255,255,.62); flex-wrap:wrap;}
+.lead-foot a{color:#fff; font-weight:700;}
+.lead-foot a:hover{text-decoration:underline;}
+.lead-foot em{font-style:italic;}
 
-/* Under ~680px the columns leave the page name no room, so the numbers move to
-   a second line indented under the handle. */
-.c-mobile{display:none;}
-@media (max-width:680px){
-  .row{flex-wrap:wrap; row-gap:10px;}
-  .c-posts, .c-views, .c-last{display:none;}
-  .chev{order:1;}
-  .c-mobile{order:2; display:flex; align-items:center; gap:8px; flex:1 0 100%; padding-left:38px; font-size:0.83rem; color:var(--text-faint);}
-  .c-mobile span{white-space:nowrap;}
-  .c-mobile b{color:var(--white); font-weight:700;}
-  .c-mobile .blue{color:var(--blue-dim);}
-  .c-mobile .up{color:var(--green);} .c-mobile .down{color:var(--red);}
-  .c-mobile i{width:1px; height:11px; background:var(--border-2); display:block;}
-}
-.cell-v{font-size:0.98rem; font-weight:700; color:var(--white);}
-.cell-v.dim{color:var(--text-faint); font-weight:600;}
-.cell-v.blue{color:var(--blue-dim);}
-.cell-s{font-size:0.72rem; color:var(--text-faint); margin-top:3px;}
-.cell-s.up{color:var(--green);} .cell-s.down{color:var(--red);}
-.dot{display:inline-block; width:7px; height:7px; border-radius:50%; margin-right:7px; vertical-align:1px;}
-.dot.fresh{background:var(--green); box-shadow:0 0 0 3px rgba(46,212,122,.14);}
-.dot.ok{background:var(--gold); box-shadow:0 0 0 3px rgba(224,178,92,.14);}
-.dot.cold{background:var(--red); box-shadow:0 0 0 3px rgba(242,85,90,.14);}
-.chev{width:14px; height:14px; color:var(--text-faint); flex-shrink:0; transition:transform .2s ease;}
-.row.open .chev{transform:rotate(180deg); color:var(--blue-dim);}
+/* ---------- list ---------- */
+.list-top{display:flex; align-items:center; gap:10px; margin-bottom:12px;}
+.list-top h2{font-size:1.1rem; font-weight:800; color:var(--white); letter-spacing:-0.02em; margin:0; flex:1;}
+.mini{display:flex; gap:3px; background:var(--surface); border-radius:11px; padding:4px;}
+.mini button{background:none; border:none; color:var(--text-faint); font-weight:700; font-size:0.78rem; padding:7px 11px; border-radius:8px; cursor:pointer; white-space:nowrap;}
+.mini button:hover{color:var(--text);}
+.mini button.active{background:var(--surface-3); color:var(--white);}
 
-/* ---------- expanded detail ---------- */
-.detail{border-bottom:1px solid var(--border); background:var(--bg); padding:24px; display:grid; grid-template-columns:1.25fr 1fr; gap:22px;}
-@media (max-width:860px){ .detail{grid-template-columns:1fr; padding:20px 18px;} }
-.panel{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:18px 20px;}
-.panel h4{margin:0 0 15px; font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.09em; color:var(--text-faint);}
+.find{width:100%; background:var(--surface); border:1px solid transparent; border-radius:13px; padding:12px 15px; color:var(--text); font-size:0.9rem; outline:none; margin-bottom:12px; transition:.15s;}
+.find:focus{border-color:var(--violet);}
+.find::placeholder{color:var(--text-faint);}
 
-/* weekly bars */
-.spark{display:flex; align-items:flex-end; gap:6px; height:92px;}
-.spark .wk{flex:1; display:flex; flex-direction:column; justify-content:flex-end; height:100%; gap:5px; cursor:default;}
-.spark .wk i{display:block; width:100%; border-radius:4px 4px 2px 2px; background:var(--surface-3); min-height:3px; transition:background .15s ease;}
-.spark .wk.has i{background:var(--blue);}
-.spark .wk.now i{background:var(--blue-hi);}
-.spark .wk:hover i{background:var(--blue-dim);}
-.spark-x{display:flex; gap:6px; margin-top:8px;}
-.spark-x span{flex:1; text-align:center; font-size:0.64rem; color:var(--text-faint);}
-.spark-cap{font-size:0.74rem; color:var(--text-faint); margin-top:12px; line-height:1.5;}
-.spark-cap b{color:var(--text); font-weight:700;}
+.board{display:flex; flex-direction:column; gap:8px;}
+.card{background:var(--surface); border-radius:var(--r); overflow:hidden; transition:background .14s ease;}
+.card.open{background:var(--surface-2);}
+.row{position:relative; display:flex; align-items:center; gap:13px; padding:14px 16px; cursor:pointer;}
+.row::before{content:''; position:absolute; left:0; top:0; bottom:0; width:var(--fill,0%);
+  background:linear-gradient(90deg, var(--violet-soft), transparent); pointer-events:none;}
+.row > *{position:relative;}
+.card:hover .row{background:rgba(255,255,255,.025);}
 
-.facts{display:grid; grid-template-columns:repeat(2,1fr); gap:12px 18px; margin-top:4px;}
-.facts div .fv{font-size:1.02rem; font-weight:700; color:var(--white);}
-.facts div .fk{font-size:0.73rem; color:var(--text-faint); margin-top:3px;}
+.medal{width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-size:0.8rem; font-weight:800; color:var(--text-faint); background:var(--surface-3); flex-shrink:0;}
+.medal.g1{background:linear-gradient(145deg,#FFD873,#E8A61C); color:#3A2600;}
+.medal.g2{background:linear-gradient(145deg,#E4E8F2,#A9B0C2); color:#2B2F3A;}
+.medal.g3{background:linear-gradient(145deg,#F0A96A,#C06F2E); color:#3A1F00;}
 
-.plist{display:flex; flex-direction:column; gap:1px;}
-.prow{display:flex; align-items:center; gap:11px; padding:9px 0; border-bottom:1px solid var(--border);}
-.prow:last-child{border-bottom:none;}
-.prow .pt{font-size:0.6rem; font-weight:800; letter-spacing:0.07em; text-transform:uppercase; padding:3px 6px; border-radius:5px; flex-shrink:0;}
-.pt.reel{background:rgba(81,106,246,.16); color:var(--blue-dim);}
-.pt.post{background:rgba(255,255,255,.06); color:var(--text-faint);}
-.prow .pd{flex:1; font-size:0.84rem; color:var(--text-dim); min-width:0;}
-.prow .pv{font-size:0.88rem; font-weight:700; color:var(--white); flex-shrink:0;}
-.prow .pv.best{color:var(--green);}
+.who{flex:1; min-width:0;}
+.who .h{font-size:1rem; font-weight:700; color:var(--white); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.who .s{display:flex; align-items:center; gap:7px; font-size:0.78rem; color:var(--text-faint); margin-top:3px;}
+.who .s .nm{overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.flame{display:inline-flex; align-items:center; gap:3px; color:var(--gold); font-weight:700; flex-shrink:0;}
+.flame svg{width:11px; height:11px;}
+.quiet{color:var(--red); font-weight:700; flex-shrink:0;}
 
-.actions{display:flex; gap:8px; flex-wrap:wrap; margin-top:16px;}
-.actions a, .actions button{font-size:0.8rem; font-weight:600; color:var(--text-dim); border:1px solid var(--border); background:none; border-radius:9px; padding:8px 13px; cursor:pointer; transition:color .12s ease, border-color .12s ease;}
-.actions a:hover, .actions button:hover{color:var(--white); border-color:var(--border-2);}
+.big{text-align:right; flex-shrink:0;}
+.big b{display:block; font-size:1.05rem; font-weight:800; color:var(--white); letter-spacing:-0.02em; line-height:1.15;}
+.big b.off{color:var(--text-faint);}
+.big span{font-size:0.74rem; font-weight:700;}
+.big span.up{color:var(--green);} .big span.down{color:var(--red);} .big span.flat{color:var(--text-faint);}
+.chev{width:15px; height:15px; color:var(--text-faint); flex-shrink:0; transition:transform .2s ease;}
+.card.open .chev{transform:rotate(180deg); color:var(--violet-dim);}
 
-/* admin inputs */
-.adm{display:grid; grid-template-columns:1fr 1fr; gap:9px; margin-top:4px;}
-@media (max-width:560px){ .adm{grid-template-columns:1fr;} }
-.adm label{display:block; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-faint); font-weight:700; margin-bottom:6px;}
-.adm input, .adm select{width:100%; background:var(--bg); border:1px solid var(--border); border-radius:9px; padding:10px 12px; color:var(--text); font-size:0.87rem; outline:none;}
-.adm input:focus, .adm select:focus{border-color:var(--blue);}
-.adm .full{grid-column:1/-1;}
-.save{display:inline-flex; align-items:center; gap:7px; background:var(--blue); color:#fff; border:none; border-radius:9px; padding:10px 16px; font-size:0.85rem; font-weight:700; cursor:pointer;}
-.save:hover{background:var(--blue-hi);}
-.save.done{background:var(--green); color:#062B18;}
+/* ---------- expanded ---------- */
+.open-body{padding:4px 16px 18px;}
+.facts{display:flex; gap:10px; margin-bottom:16px;}
+.fact{flex:1; background:var(--bg); border-radius:13px; padding:12px 13px; min-width:0;}
+.fact b{display:block; font-size:1.05rem; font-weight:800; color:var(--white); letter-spacing:-0.02em;}
+.fact span{display:block; font-size:0.7rem; color:var(--text-faint); margin-top:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
 
-.empty{padding:56px 20px; text-align:center; color:var(--text-faint); font-size:0.92rem; line-height:1.6;}
+.lbl{font-size:0.66rem; font-weight:800; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-faint); margin:0 0 11px;}
+.bars{display:flex; align-items:flex-end; gap:5px; height:64px;}
+.bars .b{flex:1; display:flex; align-items:flex-end; height:100%;}
+.bars .b i{display:block; width:100%; min-height:3px; border-radius:4px; background:var(--surface-3);}
+.bars .b.has i{background:var(--violet);}
+.bars .b.now i{background:var(--violet-hi);}
+.bars-x{display:flex; gap:5px; margin-top:7px;}
+.bars-x span{flex:1; text-align:center; font-size:0.62rem; color:var(--text-faint);}
+
+.ups{margin-top:18px;}
+.up-row{display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid var(--border); font-size:0.85rem;}
+.up-row:last-child{border-bottom:none;}
+.up-row .t{font-size:0.58rem; font-weight:800; letter-spacing:0.07em; text-transform:uppercase; padding:3px 6px; border-radius:5px; background:var(--surface-3); color:var(--text-faint); flex-shrink:0;}
+.up-row .t.reel{background:var(--violet-soft); color:var(--violet-dim);}
+.up-row .d{flex:1; color:var(--text-dim); min-width:0;}
+.up-row .v{font-weight:800; color:var(--white); flex-shrink:0;}
+.up-row .v.best{color:var(--green);}
+
+.owner{margin-top:18px; padding-top:15px; border-top:1px solid var(--border); display:flex; align-items:center; gap:9px; font-size:0.87rem; color:var(--text-faint); flex-wrap:wrap;}
+.owner a{color:var(--violet-dim); font-weight:700;}
+.owner a:hover{text-decoration:underline;}
+.owner .go{margin-left:auto; border:1px solid var(--border); border-radius:10px; padding:7px 12px; font-size:0.78rem; font-weight:700; color:var(--text-dim);}
+.owner .go:hover{color:var(--white); border-color:var(--border-2);}
+
+.edit{margin-top:16px; padding-top:15px; border-top:1px solid var(--border);}
+.edit .grid{display:grid; grid-template-columns:1fr 1fr; gap:9px;}
+@media (max-width:520px){ .edit .grid{grid-template-columns:1fr;} }
+.edit input, .edit select{width:100%; background:var(--bg); border:1px solid var(--border); border-radius:11px; padding:11px 13px; color:var(--text); font-size:0.87rem; outline:none;}
+.edit input:focus, .edit select:focus{border-color:var(--violet);}
+.edit .go{margin-top:9px; background:var(--violet); color:#fff; border:none; border-radius:11px; padding:11px 18px; font-size:0.85rem; font-weight:800; cursor:pointer;}
+.edit .go:hover{background:var(--violet-hi);}
+.edit .go.done{background:var(--green); color:#062B18;}
+
+.none{padding:48px 16px; text-align:center; color:var(--text-faint); font-size:0.92rem;}
+.foot{text-align:center; font-size:0.78rem; color:var(--text-faint); margin-top:40px;}
+.foot a{color:var(--text-dim);} .foot a:hover{color:var(--white);}
 
 /* ---------- modal ---------- */
-.overlay{position:fixed; inset:0; background:rgba(4,6,16,0.74); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; z-index:40; padding:20px;}
-.modal{width:100%; max-width:620px; background:var(--surface-3); border:1px solid var(--border-2); border-radius:var(--radius); padding:26px; box-shadow:0 30px 70px rgba(0,0,0,0.5);}
-.modal h3{margin:0 0 6px; font-size:1.12rem; font-weight:800; color:var(--white); letter-spacing:-0.02em;}
-.modal p{margin:0 0 16px; font-size:0.87rem; color:var(--text-dim); line-height:1.55;}
-.modal textarea{width:100%; height:240px; background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:13px; color:var(--text); font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:0.78rem; line-height:1.5; outline:none; resize:vertical;}
-.modal textarea:focus{border-color:var(--blue);}
-.modal-actions{display:flex; gap:9px; margin-top:16px; flex-wrap:wrap;}
-.modal-actions button{padding:11px 18px; border-radius:10px; font-weight:700; font-size:0.87rem; cursor:pointer; border:1px solid var(--border); background:var(--surface); color:var(--text);}
-.modal-actions button:hover{background:var(--surface-2);}
-.modal-actions button.primary{background:var(--blue); border-color:var(--blue); color:#fff;}
-.modal-actions button.primary:hover{background:var(--blue-hi);}
-.modal-actions button.danger{color:var(--red); border-color:rgba(242,85,90,.3);}
-
-/* ---------- footer ---------- */
-.site-footer{border-top:1px solid var(--border); margin-top:70px;}
-.footer-inner{max-width:1180px; margin:0 auto; padding:46px 40px 26px; display:flex; justify-content:space-between; gap:40px; flex-wrap:wrap;}
-@media (max-width:760px){ .footer-inner{padding:38px 20px 22px;} }
-.footer-brand .fname{font-size:1.4rem; font-weight:800; color:var(--white); letter-spacing:-0.02em;}
-.footer-brand p{font-size:0.88rem; color:var(--text-faint); margin:7px 0 0; max-width:30ch; line-height:1.5;}
-.footer-cols{display:flex; gap:56px; flex-wrap:wrap;}
-.footer-col h4{font-size:0.66rem; text-transform:uppercase; letter-spacing:0.11em; color:var(--text-faint); margin:0 0 14px; font-weight:700;}
-.footer-col a{display:block; font-size:0.88rem; color:var(--text-dim); margin-bottom:11px; transition:color .12s ease;}
-.footer-col a:hover{color:var(--white);}
-.footer-bottom{max-width:1180px; margin:0 auto; padding:18px 40px 34px; border-top:1px solid var(--border); font-size:0.79rem; color:var(--text-faint);}
-@media (max-width:760px){ .footer-bottom{padding:18px 20px 30px;} }
+.ov{position:fixed; inset:0; background:rgba(5,5,12,.78); backdrop-filter:blur(5px); display:flex; align-items:center; justify-content:center; z-index:40; padding:18px;}
+.mod{width:100%; max-width:560px; background:var(--surface-2); border:1px solid var(--border-2); border-radius:var(--r-lg); padding:22px;}
+.mod h3{margin:0 0 6px; font-size:1.05rem; font-weight:800; color:var(--white);}
+.mod p{margin:0 0 14px; font-size:0.85rem; color:var(--text-dim); line-height:1.5;}
+.mod textarea{width:100%; height:200px; background:var(--bg); border:1px solid var(--border); border-radius:12px; padding:12px; color:var(--text); font-family:ui-monospace,Menlo,monospace; font-size:0.76rem; outline:none; resize:vertical;}
+.mod .acts{display:flex; gap:8px; margin-top:14px; flex-wrap:wrap;}
+.mod .acts button{padding:10px 16px; border-radius:11px; font-weight:700; font-size:0.85rem; cursor:pointer; border:1px solid var(--border); background:var(--surface); color:var(--text);}
+.mod .acts button.p{background:var(--violet); border-color:var(--violet); color:#fff;}
+.mod .acts button.d{color:var(--red); border-color:rgba(242,85,90,.3);}
 </style>
 </head>
 <body>
 
-<div class="topbar">
-  <div class="topbar-in">
-    <a class="brand" href="/fomocontent/">
-      <svg viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="26" fill="#12121C"/><g fill="#EAEDFF"><path d="M36.9747 24.3586C44.1067 24.3587 49.7941 27.9515 52.9484 33.5959C48.7626 38.0418 45.6617 43.7612 44.4679 50.0002C43.2743 56.2391 44.1865 61.9572 46.67 66.4026C41.3555 72.0468 34.2931 75.6408 27.1613 75.6409C18.432 75.6407 11.8659 70.2588 9.46204 62.3196H26.8478C27.4159 62.3193 28.0059 61.8593 28.1691 61.2932L34.6486 38.7043C34.8098 38.1381 34.4815 37.6782 33.9152 37.678H14.1788C19.6213 29.7404 28.2465 24.3588 36.9747 24.3586Z"/><path d="M72.3285 24.3586C85.0779 24.3586 93.2156 35.8374 90.5062 49.9993C87.7966 64.1596 75.2646 75.6409 62.515 75.6409C53.7856 75.6408 47.2196 70.2589 44.8158 62.3196H64.1537C64.7218 62.3194 65.3127 61.8594 65.476 61.2932L71.9545 38.7043C72.1157 38.138 71.7876 37.678 71.2211 37.678H49.5316C54.9741 29.7401 63.5999 24.3587 72.3285 24.3586Z"/></g></svg>
-      fomo <span class="slash">/content</span>
-    </a>
-    <div class="spacer"></div>
-    <span class="tag seed" id="seed-tag" hidden>Sample data</span>
-    <span class="tag master">Master view</span>
-    <button class="nav-btn" id="admin-btn">Admin</button>
-    <button class="nav-btn" id="export-btn" hidden>Export</button>
-  </div>
-</div>
-
 <div class="wrap">
 
-  <header class="hero">
-    <div>
-      <div class="eyebrow">fomo campus network</div>
-      <h1>Content portal.</h1>
-      <p class="lede">Every campus page, what it is posting, and how it is performing. One unlocked view across all of them.</p>
-    </div>
-    <div>
-      <div class="range" id="range" role="group" aria-label="Reporting window">
-        <button data-days="7" class="active">7 days</button>
-        <button data-days="14">14 days</button>
-        <button data-days="30">30 days</button>
-      </div>
-      <div class="range-note" id="range-note"></div>
-    </div>
-  </header>
-
-  <div class="banner" id="seed-banner" hidden>
-    <b>Sample numbers.</b> The twelve accounts and their school colors are real; the upload history is placeholder data so the portal has something to show. Replace <code>posts</code> in <code>/fomocontent/content-data.js</code> with real figures and set <code>SEED = false</code> to drop this notice.
+  <div class="top">
+    <a class="brand" href="/fomocontent/">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="26" fill="#171722"/><g fill="#EAEDFF"><path d="M36.9747 24.3586C44.1067 24.3587 49.7941 27.9515 52.9484 33.5959C48.7626 38.0418 45.6617 43.7612 44.4679 50.0002C43.2743 56.2391 44.1865 61.9572 46.67 66.4026C41.3555 72.0468 34.2931 75.6408 27.1613 75.6409C18.432 75.6407 11.8659 70.2588 9.46204 62.3196H26.8478C27.4159 62.3193 28.0059 61.8593 28.1691 61.2932L34.6486 38.7043C34.8098 38.1381 34.4815 37.6782 33.9152 37.678H14.1788C19.6213 29.7404 28.2465 24.3588 36.9747 24.3586Z"/><path d="M72.3285 24.3586C85.0779 24.3586 93.2156 35.8374 90.5062 49.9993C87.7966 64.1596 75.2646 75.6409 62.515 75.6409C53.7856 75.6408 47.2196 70.2589 44.8158 62.3196H64.1537C64.7218 62.3194 65.3127 61.8594 65.476 61.2932L71.9545 38.7043C72.1157 38.138 71.7876 37.678 71.2211 37.678H49.5316C54.9741 29.7401 63.5999 24.3587 72.3285 24.3586Z"/></g></svg>
+      fomo <span class="slash">/content</span>
+    </a>
+    <div class="sp"></div>
+    <button class="gbtn" id="admin-btn">Admin</button>
+    <button class="gbtn" id="export-btn" hidden>Export</button>
   </div>
 
-  <section class="strip" id="strip"></section>
+  <h1>Campus leaderboard</h1>
+  <p class="sub" id="sub"></p>
 
-  <div class="sec-head">
-    <div>
-      <h2 class="sec-title">Top page this week</h2>
-      <p class="sec-sub" id="spot-sub">Ranked by total views over the reporting window — cadence and performance together.</p>
-    </div>
-  </div>
-  <section class="spot" id="spot"></section>
-
-  <div class="sec-head">
-    <div>
-      <h2 class="sec-title">All campus pages</h2>
-      <p class="sec-sub">Select a row for the weekly trend, recent uploads and the page owner.</p>
-    </div>
+  <div class="tabs" id="tabs" role="group" aria-label="Period">
+    <button data-days="1">24h</button>
+    <button data-days="7" class="active">7d</button>
+    <button data-days="30">30d</button>
+    <button data-days="0">All</button>
   </div>
 
-  <div class="controls">
-    <div class="search">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-      <input type="search" id="q" placeholder="Search pages" autocomplete="off" spellcheck="false" aria-label="Search pages">
-    </div>
-    <div class="spacer"></div>
-    <div class="tabs" id="sort" role="group" aria-label="Sort pages">
-      <button data-k="views" class="active">Avg views</button>
-      <button data-k="reach">Reach</button>
+  <div class="pills" id="pills"></div>
+
+  <div id="lead"></div>
+
+  <div class="list-top">
+    <h2>All pages</h2>
+    <div class="mini" id="mini" role="group" aria-label="Sort">
+      <button data-k="views" class="active">Views</button>
       <button data-k="posts">Uploads</button>
-      <button data-k="total">All time</button>
-      <button data-k="last">Last upload</button>
+      <button data-k="last">Recent</button>
     </div>
   </div>
 
-  <section class="board" id="board"></section>
+  <input class="find" id="q" type="search" placeholder="Search" autocomplete="off" spellcheck="false" aria-label="Search pages">
+
+  <div class="board" id="board"></div>
+
+  <p class="foot"><a href="/fomo/clans/">Chapter leaderboard</a> · <a href="/fomo/prizes/">Prizes</a></p>
 
 </div>
-
-<footer class="site-footer">
-  <div class="footer-inner">
-    <div class="footer-brand">
-      <div class="fname">fomo</div>
-      <p>where traders become legends.</p>
-    </div>
-    <div class="footer-cols">
-      <div class="footer-col">
-        <h4>Campus</h4>
-        <a href="/fomo/clans/">Chapter leaderboard</a>
-        <a href="/fomo/prizes/">Prizes</a>
-        <a href="/fomo/dashboard/">Your dashboard</a>
-      </div>
-      <div class="footer-col">
-        <h4>Content</h4>
-        <a href="/fomocontent/">Master portal</a>
-        <a href="https://www.instagram.com/" target="_blank" rel="noopener">Instagram</a>
-      </div>
-    </div>
-  </div>
-  <div class="footer-bottom">Internal. Numbers refresh when the roster file does.</div>
-</footer>
 
 <script src="/fomo/greek-data.js"></script>
 <script src="/fomocontent/content-data.js"></script>
@@ -388,23 +245,15 @@ const comma = (n) => Math.round(n).toLocaleString('en-US');
 function ago(ms, now) {
   if (ms == null) return 'never';
   const d = now - ms;
-  if (d < 36e5) return Math.max(1, Math.round(d / 6e4)) + 'm ago';
-  if (d < DAY) return Math.round(d / 36e5) + 'h ago';
+  if (d < 36e5) return Math.max(1, Math.round(d / 6e4)) + 'm';
+  if (d < DAY) return Math.round(d / 36e5) + 'h';
   const days = Math.round(d / DAY);
-  if (days < 14) return days + 'd ago';
-  return Math.round(days / 7) + 'w ago';
+  return days < 14 ? days + 'd' : Math.round(days / 7) + 'w';
 }
 const dayLabel = (ms) => new Date(ms).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 
-// Green under a day, gold under three, red past that.
-function heat(ms, now) {
-  if (ms == null) return 'cold';
-  const d = now - ms;
-  return d < DAY ? 'fresh' : d < 3 * DAY ? 'ok' : 'cold';
-}
-
 function delta(cur, prev) {
-  if (!prev || !cur) return { txt: '—', cls: 'flat' };
+  if (!prev || !cur) return { txt: '', cls: 'flat' };
   const p = Math.round(((cur - prev) / prev) * 100);
   if (p === 0) return { txt: 'flat', cls: 'flat' };
   return { txt: (p > 0 ? '+' : '−') + Math.abs(p) + '%', cls: p > 0 ? 'up' : 'down' };
@@ -421,53 +270,42 @@ function mix(a, b, t) {
   const ch = (sh) => Math.round(((pa >> sh) & 255) * (1 - t) + ((pb >> sh) & 255) * t);
   return '#' + [ch(16), ch(8), ch(0)].map((v) => v.toString(16).padStart(2, '0')).join('');
 }
-
 const contrast = (x, y) => { const a = lum(x) + 0.05, b = lum(y) + 0.05; return a > b ? a / b : b / a; };
 
 // The real avatars are the fomo mark in a school's bright color on a deep field
-// of its dark one. Single-color schools get an auto-shaded partner from
-// greek-data, so every crest comes out of the same rule.
+// of its dark one. Sink the field first so a saturated school red stays red.
 function crestColors(acc) {
-  const pair = COLORS[acc.school] || GreekData.schoolColors(acc.school);
-  const [c1, c2] = pair;
+  const [c1, c2] = COLORS[acc.school] || GreekData.schoolColors(acc.school);
   let mark = lum(c1) >= lum(c2) ? c1 : c2;
   const dark = lum(c1) >= lum(c2) ? c2 : c1;
-  // Sink the field toward the page background first, so a saturated school red
-  // stays a school red. Lighten the mark only when near-black still isn't enough.
   let bg = mix(dark, '#05050B', 0.62);
   for (let i = 0; i < 3 && contrast(mark, bg) < 3; i++) bg = mix(bg, '#05050B', 0.4);
   for (let i = 0; i < 8 && contrast(mark, bg) < 3; i++) mark = mix(mark, '#FFFFFF', 0.12);
-  return { bg, mark, tint: mix(dark, '#05050B', 0.24) };
+  return { bg, mark, tint: mix(dark, '#1A1526', 0.55) };
 }
 
 const MARK = '<path d="M36.9747 24.3586C44.1067 24.3587 49.7941 27.9515 52.9484 33.5959C48.7626 38.0418 45.6617 43.7612 44.4679 50.0002C43.2743 56.2391 44.1865 61.9572 46.67 66.4026C41.3555 72.0468 34.2931 75.6408 27.1613 75.6409C18.432 75.6407 11.8659 70.2588 9.46204 62.3196H26.8478C27.4159 62.3193 28.0059 61.8593 28.1691 61.2932L34.6486 38.7043C34.8098 38.1381 34.4815 37.6782 33.9152 37.678H14.1788C19.6213 29.7404 28.2465 24.3588 36.9747 24.3586Z"/><path d="M72.3285 24.3586C85.0779 24.3586 93.2156 35.8374 90.5062 49.9993C87.7966 64.1596 75.2646 75.6409 62.515 75.6409C53.7856 75.6408 47.2196 70.2589 44.8158 62.3196H64.1537C64.7218 62.3194 65.3127 61.8594 65.476 61.2932L71.9545 38.7043C72.1157 38.138 71.7876 37.678 71.2211 37.678H49.5316C54.9741 29.7401 63.5999 24.3587 72.3285 24.3586Z"/>';
 
-const crest = (acc, cls) => {
+function crest(acc, px) {
   const c = crestColors(acc);
-  return `<span class="crest ${cls || ''}" style="background:${c.bg}" aria-hidden="true"><svg viewBox="0 0 100 100" fill="${c.mark}">${MARK}</svg></span>`;
-};
+  const r = Math.round(px * 0.34);
+  return `<span style="width:${px}px;height:${px}px;border-radius:${r}px;background:${c.bg};display:flex;align-items:center;justify-content:center;flex-shrink:0" aria-hidden="true"><svg viewBox="0 0 100 100" fill="${c.mark}" style="width:66%;height:66%">${MARK}</svg></span>`;
+}
 
 /* ------------------------------------------------------------- local edits */
 
 const LS_KEY = 'fomo.content.overrides.v1';
 let overrides = {};
 try { overrides = JSON.parse(localStorage.getItem(LS_KEY) || '{}') || {}; } catch (e) { overrides = {}; }
-function saveOverrides() {
-  try { localStorage.setItem(LS_KEY, JSON.stringify(overrides)); } catch (e) {}
-}
-function ov(h) {
-  if (!overrides[h]) overrides[h] = {};
-  return overrides[h];
-}
+const saveOverrides = () => { try { localStorage.setItem(LS_KEY, JSON.stringify(overrides)); } catch (e) {} };
+const ov = (h) => (overrides[h] = overrides[h] || {});
 
-// A merged account: the file's record plus anything logged from this browser.
 function merged(acc) {
   const o = overrides[acc.handle] || {};
   const extra = o.posts || [];
-  const posts = acc.posts.concat(extra).slice().sort((a, b) => Date.parse(a.at) - Date.parse(b.at));
   return {
     ...acc,
-    posts,
+    posts: acc.posts.concat(extra).sort((a, b) => Date.parse(a.at) - Date.parse(b.at)),
     manager: { name: (o.manager && o.manager.name) || acc.manager.name, ig: (o.manager && o.manager.ig) || acc.manager.ig },
     totalUploads: acc.totalUploads + extra.length,
   };
@@ -475,39 +313,49 @@ function merged(acc) {
 
 /* ----------------------------------------------------------------- metrics */
 
-// Everything on the page comes out of here. `days` is the reporting window;
-// the same length immediately before it is the comparison period.
+// Consecutive 24h buckets with an upload, counting back from now. Posting
+// yesterday but not yet today still keeps the run alive.
+function streak(posts, now) {
+  if (!posts.length) return 0;
+  const seen = new Set(posts.map((p) => Math.floor((now - Date.parse(p.at)) / DAY)));
+  let d = 0;
+  if (!seen.has(0)) { if (!seen.has(1)) return 0; d = 1; }
+  let s = 0;
+  while (seen.has(d)) { s++; d++; }
+  return s;
+}
+
+// `days` of 0 means all time: no comparison period, cadence over the real span.
 function metrics(acc, now, days) {
-  const span = days * DAY;
+  const all = days === 0;
+  const span = all ? Infinity : days * DAY;
   const at = (p) => Date.parse(p.at);
-  const cur = acc.posts.filter((p) => now - at(p) <= span);
-  const prev = acc.posts.filter((p) => { const d = now - at(p); return d > span && d <= 2 * span; });
+  const cur = all ? acc.posts : acc.posts.filter((p) => now - at(p) <= span);
+  const prev = all ? [] : acc.posts.filter((p) => { const d = now - at(p); return d > span && d <= 2 * span; });
   const sum = (a) => a.reduce((s, p) => s + p.views, 0);
   const avg = (a) => (a.length ? Math.round(sum(a) / a.length) : 0);
   const last = acc.posts.length ? at(acc.posts[acc.posts.length - 1]) : null;
+  const weeksSpan = all && acc.posts.length ? Math.max(1, (now - at(acc.posts[0])) / (7 * DAY)) : days / 7;
 
-  // Eight trailing 7-day buckets, oldest first, for the row's trend chart.
   const weeks = [];
   for (let i = 7; i >= 0; i--) {
     const hi = now - i * 7 * DAY, lo = hi - 7 * DAY;
-    const inWk = acc.posts.filter((p) => at(p) > lo && at(p) <= hi);
-    weeks.push({ posts: inWk.length, views: sum(inWk) });
+    const w = acc.posts.filter((p) => at(p) > lo && at(p) <= hi);
+    weeks.push({ posts: w.length, views: sum(w) });
   }
 
   return {
-    acc,
+    acc, weeks,
     uploads: cur.length,
     reach: sum(cur),
     avgViews: avg(cur),
     prevAvg: avg(prev),
-    prevReach: sum(prev),
-    prevUploads: prev.length,
-    cadence: cur.length / (days / 7),
+    cadence: cur.length / weeksSpan,
     best: cur.length ? cur.reduce((m, p) => (p.views > m.views ? p : m)) : null,
     last,
-    heat: heat(last, now),
-    weeks,
-    recent: acc.posts.slice(-6).reverse(),
+    cold: last == null || now - last > 3 * DAY,
+    streak: streak(acc.posts, now),
+    recent: acc.posts.slice(-5).reverse(),
   };
 }
 
@@ -521,182 +369,97 @@ const open = new Set();
 
 const SORTERS = {
   views: (a, b) => b.avgViews - a.avgViews,
-  reach: (a, b) => b.reach - a.reach,
   posts: (a, b) => b.uploads - a.uploads || b.avgViews - a.avgViews,
-  total: (a, b) => b.acc.totalUploads - a.acc.totalUploads,
   last: (a, b) => (b.last || 0) - (a.last || 0),
 };
-
-function compute() {
-  const now = Date.now();
-  return ACCOUNTS.map((a) => metrics(merged(a), now, WINDOW));
-}
+const periodWord = () => (WINDOW === 0 ? 'all time' : WINDOW === 1 ? 'today' : 'last ' + WINDOW + ' days');
+const compute = () => { const now = Date.now(); return ACCOUNTS.map((a) => metrics(merged(a), now, WINDOW)); };
 
 /* ------------------------------------------------------------------ render */
 
-function renderStrip(rows) {
+const FLAME = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c1 4-3 5-3 9a3 3 0 0 0 6 0c0-1-.4-2-.4-2 2 1.4 3.4 3.4 3.4 6a8 8 0 0 1-16 0C2 10 8 8 12 2z"/></svg>';
+
+function renderPills(rows) {
   const uploads = rows.reduce((s, r) => s + r.uploads, 0);
-  const prevUploads = rows.reduce((s, r) => s + r.prevUploads, 0);
   const reach = rows.reduce((s, r) => s + r.reach, 0);
-  const prevReach = rows.reduce((s, r) => s + r.prevReach, 0);
   const avg = uploads ? Math.round(reach / uploads) : 0;
-  const prevAvg = prevUploads ? Math.round(prevReach / prevUploads) : 0;
-  const lifetime = rows.reduce((s, r) => s + r.acc.totalUploads, 0);
-  const quiet = rows.filter((r) => r.heat === 'cold').length;
-
-  const dU = delta(uploads, prevUploads), dA = delta(avg, prevAvg), dR = delta(reach, prevReach);
-  const w = WINDOW + 'd';
-
-  $('strip').innerHTML = `
-    <div class="stat">
-      <div class="v">${rows.length}</div>
-      <div class="k">Campus pages</div>
-      <div class="d ${quiet ? 'down' : 'up'}">${quiet ? quiet + ' quiet over 72h' : 'all posting'}</div>
-    </div>
-    <div class="stat">
-      <div class="v blue">${comma(uploads)}</div>
-      <div class="k">Uploads · last ${w}</div>
-      <div class="d ${dU.cls}">${dU.txt} vs prior ${w}</div>
-    </div>
-    <div class="stat">
-      <div class="v ${dA.cls === 'up' ? 'green' : ''}">${fmt(avg)}</div>
-      <div class="k">Average views per upload</div>
-      <div class="d ${dA.cls}">${dA.txt} vs prior ${w}</div>
-    </div>
-    <div class="stat">
-      <div class="v">${fmt(reach)}</div>
-      <div class="k">Total views · last ${w}</div>
-      <div class="d ${dR.cls}">${dR.txt} vs prior ${w}</div>
-    </div>
-    <div class="stat">
-      <div class="v gold">${comma(lifetime)}</div>
-      <div class="k">Uploads all time</div>
-      <div class="d flat">across every page</div>
-    </div>`;
+  $('pills').innerHTML = `
+    <div class="pill"><div class="v">${comma(uploads)}</div><div class="k">Uploads</div></div>
+    <div class="pill"><div class="v violet">${fmt(avg)}</div><div class="k">Avg views</div></div>
+    <div class="pill"><div class="v green">${fmt(reach)}</div><div class="k">Total views</div></div>`;
 }
 
-function ownerLine(m, dim) {
-  if (m.ig) {
-    const h = m.ig.replace(/^@/, '');
-    return `<a href="https://www.instagram.com/${encodeURIComponent(h)}/" target="_blank" rel="noopener" onclick="event.stopPropagation()">@${esc(h)}</a>${m.name ? `<div class="who">${esc(m.name)}</div>` : ''}`;
-  }
-  return `<span class="none">${dim || 'No owner set'}</span>`;
+function ownerBit(m, fallback) {
+  if (!m.ig) return `<em>${fallback}</em>`;
+  const h = m.ig.replace(/^@/, '');
+  return `<a href="https://www.instagram.com/${encodeURIComponent(h)}/" target="_blank" rel="noopener" onclick="event.stopPropagation()">@${esc(h)}</a>${m.name ? ' · ' + esc(m.name) : ''}`;
 }
 
-function renderSpotlight(rows) {
-  const ranked = rows.filter((r) => r.uploads > 0).sort((a, b) => b.reach - a.reach);
-  if (!ranked.length) {
-    $('spot').innerHTML = `<div class="runners"><div class="empty">Nothing posted in the last ${WINDOW} days.</div></div>`;
-    return;
-  }
-  const win = ranked[0];
-  const c = crestColors(win.acc);
-  const dR = delta(win.reach, win.prevReach);
-  const w = WINDOW + ' days';
-
-  $('spot').innerHTML = `
-    <div class="win" style="--tint:${c.tint}">
-      <div class="crown">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 7l4.5 3.5L12 4l4.5 6.5L21 7l-1.8 11H4.8L3 7z"/></svg>
-        Top page · last ${w}
-      </div>
-      <div class="win-top">
-        ${crest(win.acc, 'lg')}
-        <div class="win-id">
-          <div class="h">@${esc(win.acc.handle)}</div>
-          <div class="s">${esc(win.acc.label)}</div>
+function renderLead(rows) {
+  const top = rows.filter((r) => r.uploads > 0).sort((a, b) => b.reach - a.reach)[0];
+  if (!top) { $('lead').innerHTML = ''; return; }
+  const c = crestColors(top.acc);
+  $('lead').innerHTML = `
+    <div class="lead" style="--tint:${c.tint}">
+      <div class="lead-tag">${FLAME} Top page · ${esc(periodWord())}</div>
+      <div class="lead-row">
+        ${crest(top.acc, 54)}
+        <div class="lead-id">
+          <div class="h">@${esc(top.acc.handle)}</div>
+          <div class="s">${esc(top.acc.short)} · ${top.uploads} upload${top.uploads === 1 ? '' : 's'}</div>
         </div>
+        <div class="lead-big"><b class="num">${fmt(top.reach)}</b><span>views</span></div>
       </div>
-      <div class="win-grid">
-        <div><div class="v">${fmt(win.reach)}</div><div class="k">Views this period <span class="${dR.cls === 'up' ? 'd up' : dR.cls === 'down' ? 'd down' : 'd flat'}">${dR.txt}</span></div></div>
-        <div><div class="v">${fmt(win.avgViews)}</div><div class="k">Average per upload</div></div>
-        <div><div class="v">${win.uploads}</div><div class="k">Uploads · ${win.cadence.toFixed(1)} a week</div></div>
-      </div>
-      <div class="win-owner">
-        <span class="lbl">Run by</span>
-        ${win.acc.manager.ig ? ownerLine(win.acc.manager) : '<span class="none">Not set — add it in admin mode</span>'}
-      </div>
-    </div>
-    <div class="runners">
-      <div class="runners-head">Runners-up</div>
-      ${ranked.slice(1, 4).map((r, i) => `
-        <div class="runner">
-          <div class="pos num">${i + 2}</div>
-          ${crest(r.acc, 'sm')}
-          <div class="nm"><b>@${esc(r.acc.handle)}</b><span>${esc(r.acc.short)} · ${r.uploads} uploads</span></div>
-          <div class="vw"><b class="num">${fmt(r.reach)}</b><span>views</span></div>
-        </div>`).join('')}
+      <div class="lead-foot">Run by ${ownerBit(top.acc.manager, 'owner not set')}</div>
     </div>`;
 }
 
-function sparkline(m) {
-  const max = Math.max(1, ...m.weeks.map((w) => w.views));
-  const bars = m.weeks.map((w, i) => `
-    <div class="wk ${w.views ? 'has' : ''} ${i === 7 ? 'now' : ''}" title="${w.posts} upload${w.posts === 1 ? '' : 's'} · ${comma(w.views)} views">
-      <i style="height:${Math.max(3, Math.round((w.views / max) * 86))}px"></i>
-    </div>`).join('');
-  const labels = m.weeks.map((w, i) => `<span>${i === 7 ? 'now' : 8 - i + 'w'}</span>`).join('');
-  const bestWk = m.weeks.reduce((b, w, i) => (w.views > m.weeks[b].views ? i : b), 0);
-  return `
-    <div class="spark">${bars}</div>
-    <div class="spark-x">${labels}</div>
-    <div class="spark-cap">Views per week over the last eight. Best week was <b>${bestWk === 7 ? 'this one' : 8 - bestWk + ' weeks ago'}</b> at <b>${comma(m.weeks[bestWk].views)}</b> across <b>${m.weeks[bestWk].posts}</b> upload${m.weeks[bestWk].posts === 1 ? '' : 's'}.</div>`;
-}
-
-function detail(m) {
+function body(m) {
   const a = m.acc;
-  const best = m.best;
-  return `
-  <div class="detail">
-    <div class="panel">
-      <h4>Weekly trend</h4>
-      ${sparkline(m)}
-      <div class="facts" style="margin-top:18px">
-        <div><div class="fv num">${fmt(a.lifetimeAvgViews)}</div><div class="fk">All-time average views</div></div>
-        <div><div class="fv num">${comma(a.totalUploads)}</div><div class="fk">Uploads all time</div></div>
-        <div><div class="fv num">${m.cadence.toFixed(1)}</div><div class="fk">Uploads a week · last ${WINDOW}d</div></div>
-        <div><div class="fv num">${best ? fmt(best.views) : '—'}</div><div class="fk">Best upload this period</div></div>
-      </div>
+  const max = Math.max(1, ...m.weeks.map((w) => w.views));
+  const bars = m.weeks.map((w, i) => `<div class="b ${w.views ? 'has' : ''} ${i === 7 ? 'now' : ''}" title="${w.posts} upload${w.posts === 1 ? '' : 's'} · ${comma(w.views)} views"><i style="height:${Math.max(3, Math.round((w.views / max) * 60))}px"></i></div>`).join('');
+  const topUp = m.recent.length ? Math.max(...m.recent.map((p) => p.views)) : 0;
+
+  return `<div class="open-body">
+    <div class="facts">
+      <div class="fact"><b class="num">${comma(a.totalUploads)}</b><span>Uploads all time</span></div>
+      <div class="fact"><b class="num">${fmt(a.lifetimeAvgViews)}</b><span>All-time avg</span></div>
+      <div class="fact"><b class="num">${m.cadence.toFixed(1)}</b><span>A week</span></div>
     </div>
 
-    <div class="panel">
-      <h4>Recent uploads</h4>
-      ${m.recent.length ? (() => {
-        const top = Math.max(...m.recent.map((p) => p.views));
-        return `<div class="plist">${m.recent.map((p) => `
-        <div class="prow">
-          <span class="pt ${p.type}">${p.type}</span>
-          <span class="pd">${esc(dayLabel(Date.parse(p.at)))} · ${esc(ago(Date.parse(p.at), Date.now()))}</span>
-          <span class="pv num ${m.recent.length > 1 && p.views === top ? 'best' : ''}">${fmt(p.views)}</span>
-        </div>`).join('')}</div>`;
-      })() : '<div class="empty" style="padding:24px 0">No uploads logged.</div>'}
-      <div class="actions">
-        <a href="https://www.instagram.com/${encodeURIComponent(a.handle)}/" target="_blank" rel="noopener" onclick="event.stopPropagation()">Open @${esc(a.handle)}</a>
-        ${a.manager.ig ? `<a href="https://www.instagram.com/${encodeURIComponent(a.manager.ig.replace(/^@/, ''))}/" target="_blank" rel="noopener" onclick="event.stopPropagation()">Message the owner</a>` : ''}
-      </div>
+    <p class="lbl">Views · last 8 weeks</p>
+    <div class="bars">${bars}</div>
+    <div class="bars-x">${m.weeks.map((w, i) => `<span>${i === 7 ? 'now' : 8 - i + 'w'}</span>`).join('')}</div>
+
+    <div class="ups">
+      <p class="lbl">Recent uploads</p>
+      ${m.recent.length ? m.recent.map((p) => `<div class="up-row">
+          <span class="t ${p.type}">${p.type}</span>
+          <span class="d">${esc(dayLabel(Date.parse(p.at)))}</span>
+          <span class="v num ${m.recent.length > 1 && p.views === topUp ? 'best' : ''}">${fmt(p.views)}</span>
+        </div>`).join('') : '<div class="none" style="padding:16px 0">Nothing logged.</div>'}
     </div>
 
-    <div class="panel" style="grid-column:1/-1">
-      <h4>Page owner${ADMIN ? ' · editing' : ''}</h4>
-      ${ADMIN ? `
-        <div class="adm" onclick="event.stopPropagation()">
-          <div><label for="n-${a.handle}">Name</label><input id="n-${a.handle}" data-f="name" data-h="${a.handle}" value="${esc(a.manager.name)}" placeholder="Who runs this page" autocomplete="off"></div>
-          <div><label for="i-${a.handle}">Their Instagram</label><input id="i-${a.handle}" data-f="ig" data-h="${a.handle}" value="${esc(a.manager.ig)}" placeholder="@handle" autocomplete="off" spellcheck="false"></div>
-          <div class="full"><button class="save" data-save="${a.handle}">Save owner</button></div>
-        </div>
-        <h4 style="margin-top:22px">Log an upload</h4>
-        <div class="adm" onclick="event.stopPropagation()">
-          <div><label for="d-${a.handle}">Posted</label><input id="d-${a.handle}" type="datetime-local" data-f="at" data-h="${a.handle}"></div>
-          <div><label for="v-${a.handle}">Views</label><input id="v-${a.handle}" type="number" min="0" step="1" data-f="views" data-h="${a.handle}" placeholder="12400"></div>
-          <div><label for="t-${a.handle}">Type</label><select id="t-${a.handle}" data-f="type" data-h="${a.handle}"><option value="reel">Reel</option><option value="post">Post</option></select></div>
-          <div style="display:flex;align-items:flex-end"><button class="save" data-add="${a.handle}">Add upload</button></div>
-        </div>`
-      : `<div style="font-size:0.92rem;color:var(--text-dim)">
-          ${a.manager.ig
-            ? `Run by ${a.manager.name ? `<b style="color:var(--white)">${esc(a.manager.name)}</b> · ` : ''}<a href="https://www.instagram.com/${encodeURIComponent(a.manager.ig.replace(/^@/, ''))}/" target="_blank" rel="noopener" style="color:var(--blue-dim);font-weight:600" onclick="event.stopPropagation()">@${esc(a.manager.ig.replace(/^@/, ''))}</a>`
-            : 'No owner on file. Turn on <b style="color:var(--white)">Admin</b> in the top bar to add who runs this page.'}
-        </div>`}
+    <div class="owner">
+      Run by ${ownerBit(a.manager, 'not set')}
+      <a class="go" href="https://www.instagram.com/${encodeURIComponent(a.handle)}/" target="_blank" rel="noopener" onclick="event.stopPropagation()">Open page</a>
     </div>
+
+    ${ADMIN ? `<div class="edit" onclick="event.stopPropagation()">
+      <p class="lbl">Owner</p>
+      <div class="grid">
+        <input data-f="name" data-h="${a.handle}" value="${esc(a.manager.name)}" placeholder="Name" autocomplete="off">
+        <input data-f="ig" data-h="${a.handle}" value="${esc(a.manager.ig)}" placeholder="@instagram" autocomplete="off" spellcheck="false">
+      </div>
+      <button class="go" data-save="${a.handle}">Save owner</button>
+      <p class="lbl" style="margin-top:18px">Log an upload</p>
+      <div class="grid">
+        <input type="datetime-local" data-f="at" data-h="${a.handle}">
+        <input type="number" min="0" step="1" data-f="views" data-h="${a.handle}" placeholder="Views">
+        <select data-f="type" data-h="${a.handle}"><option value="reel">Reel</option><option value="post">Post</option></select>
+      </div>
+      <button class="go" data-add="${a.handle}">Add upload</button>
+    </div>` : ''}
   </div>`;
 }
 
@@ -706,88 +469,64 @@ function renderBoard(rows) {
     .filter((r) => !q || r.acc.handle.includes(q) || r.acc.label.toLowerCase().includes(q) || r.acc.short.toLowerCase().includes(q))
     .sort(SORTERS[SORT]);
 
-  if (!list.length) {
-    $('board').innerHTML = `<div class="empty">No page matches “${esc(QUERY)}”.</div>`;
-    return;
-  }
+  if (!list.length) { $('board').innerHTML = `<div class="none">Nothing matches “${esc(QUERY)}”.</div>`; return; }
 
-  const head = `<div class="thead">
-      <div class="c-rank">#</div>
-      <div class="c-name">Page</div>
-      <div class="c-mgr">Owner</div>
-      <div class="c-posts">Uploads</div>
-      <div class="c-views">Avg views</div>
-      <div class="c-total">All time</div>
-      <div class="c-last">Last upload</div>
-      <div style="width:14px"></div>
-    </div>`;
+  // The violet underlay scales every row against the leader on the active sort.
+  const peak = Math.max(1, ...list.map((r) => (SORT === 'posts' ? r.uploads : r.avgViews)));
 
-  $('board').innerHTML = head + list.map((m, i) => {
+  $('board').innerHTML = list.map((m, i) => {
     const a = m.acc;
-    const dA = delta(m.avgViews, m.prevAvg);
-    const dU = m.uploads - m.prevUploads;
+    const d = delta(m.avgViews, m.prevAvg);
     const isOpen = open.has(a.handle);
-    return `<div class="acct ${isOpen ? 'exp' : ''}">
-      <div class="row ${isOpen ? 'open' : ''} ${i < 3 ? 'top' + (i + 1) : ''}" data-h="${a.handle}" role="button" tabindex="0" aria-expanded="${isOpen}">
-        <div class="c-rank num">${String(i + 1).padStart(2, '0')}</div>
-        <div class="c-name">
-          ${crest(a)}
-          <div class="t">
-            <div class="h">@${esc(a.handle)}</div>
-            <div class="s">${esc(a.label)}</div>
+    const val = SORT === 'posts' ? m.uploads : m.avgViews;
+    const headline = SORT === 'posts' ? String(m.uploads) : (m.avgViews ? fmt(m.avgViews) : '—');
+    const note = SORT === 'last' ? ago(m.last, Date.now()) : d.txt;
+    const noteCls = SORT === 'last' ? 'flat' : d.cls;
+
+    return `<div class="card ${isOpen ? 'open' : ''}">
+      <div class="row" data-h="${a.handle}" role="button" tabindex="0" aria-expanded="${isOpen}" style="--fill:${Math.round((val / peak) * 100)}%">
+        <div class="medal ${i < 3 ? 'g' + (i + 1) : ''} num">${i + 1}</div>
+        ${crest(a, 40)}
+        <div class="who">
+          <div class="h">@${esc(a.handle)}</div>
+          <div class="s">
+            <span class="nm">${esc(a.short)}</span>
+            ${m.streak >= 2 ? `<span class="flame">${FLAME}${m.streak}d</span>` : ''}
+            ${m.cold ? `<span class="quiet">quiet ${esc(ago(m.last, Date.now()))}</span>` : ''}
           </div>
         </div>
-        <div class="c-mgr">${ownerLine(a.manager, 'Not set')}</div>
-        <div class="c-posts">
-          <div class="cell-v num">${m.uploads}</div>
-          <div class="cell-s ${dU > 0 ? 'up' : dU < 0 ? 'down' : ''}">${dU === 0 ? 'same' : (dU > 0 ? '+' : '−') + Math.abs(dU)}</div>
-        </div>
-        <div class="c-views">
-          <div class="cell-v num ${m.avgViews ? 'blue' : 'dim'}">${m.avgViews ? fmt(m.avgViews) : '—'}</div>
-          <div class="cell-s ${dA.cls}">${dA.txt}</div>
-        </div>
-        <div class="c-total"><div class="cell-v num dim">${comma(a.totalUploads)}</div></div>
-        <div class="c-last">
-          <div class="cell-v"><span class="dot ${m.heat}"></span>${esc(ago(m.last, Date.now()))}</div>
-          <div class="cell-s">${m.last ? esc(dayLabel(m.last)) : ''}</div>
-        </div>
-        <div class="c-mobile">
-          <span><b class="${m.avgViews ? 'blue' : ''}">${m.avgViews ? fmt(m.avgViews) : '—'}</b> avg</span>
-          <span class="${dA.cls}">${dA.txt}</span>
-          <i></i>
-          <span><b>${m.uploads}</b> upload${m.uploads === 1 ? '' : 's'}</span>
-          <i></i>
-          <span><span class="dot ${m.heat}"></span>${esc(ago(m.last, Date.now()))}</span>
+        <div class="big">
+          <b class="num ${val ? '' : 'off'}">${headline}</b>
+          ${note ? `<span class="${noteCls}">${esc(note)}</span>` : ''}
         </div>
         <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
       </div>
-      ${isOpen ? detail(m) : ''}
+      ${isOpen ? body(m) : ''}
     </div>`;
   }).join('');
 }
 
 function render() {
   const rows = compute();
-  $('range-note').textContent = `Comparing against the ${WINDOW} days before.`;
-  renderStrip(rows);
-  renderSpotlight(rows);
+  $('sub').innerHTML = `${ACCOUNTS.length} pages · ranked by views, ${esc(periodWord())}${SEED ? ' · <span class="seed">sample data</span>' : ''}`;
+  renderPills(rows);
+  renderLead(rows);
   renderBoard(rows);
 }
 
 /* ------------------------------------------------------------- interaction */
 
-$('range').addEventListener('click', (e) => {
+$('tabs').addEventListener('click', (e) => {
   const b = e.target.closest('button[data-days]'); if (!b) return;
   WINDOW = Number(b.dataset.days);
-  [...$('range').children].forEach((x) => x.classList.toggle('active', x === b));
-  $('spot-sub').textContent = `Ranked by total views over the last ${WINDOW} days — cadence and performance together.`;
+  [...$('tabs').children].forEach((x) => x.classList.toggle('active', x === b));
   render();
 });
 
-$('sort').addEventListener('click', (e) => {
+$('mini').addEventListener('click', (e) => {
   const b = e.target.closest('button[data-k]'); if (!b) return;
   SORT = b.dataset.k;
-  [...$('sort').children].forEach((x) => x.classList.toggle('active', x === b));
+  [...$('mini').children].forEach((x) => x.classList.toggle('active', x === b));
   render();
 });
 
@@ -798,17 +537,12 @@ $('q').addEventListener('input', (e) => {
   qt = setTimeout(() => { QUERY = v; renderBoard(compute()); }, 120);
 });
 
-function toggleRow(h) {
-  if (open.has(h)) open.delete(h); else open.add(h);
-  renderBoard(compute());
-}
+const toggleRow = (h) => { open.has(h) ? open.delete(h) : open.add(h); renderBoard(compute()); };
 
 $('board').addEventListener('click', (e) => {
-  const save = e.target.closest('[data-save]');
-  if (save) { saveOwner(save.dataset.save, save); return; }
-  const add = e.target.closest('[data-add]');
-  if (add) { addUpload(add.dataset.add); return; }
-  if (e.target.closest('a') || e.target.closest('.adm')) return;
+  const save = e.target.closest('[data-save]'); if (save) return saveOwner(save.dataset.save, save);
+  const add = e.target.closest('[data-add]'); if (add) return addUpload(add.dataset.add);
+  if (e.target.closest('a') || e.target.closest('.edit')) return;
   const row = e.target.closest('.row[data-h]');
   if (row) toggleRow(row.dataset.h);
 });
@@ -820,13 +554,12 @@ $('board').addEventListener('keydown', (e) => {
   toggleRow(row.dataset.h);
 });
 
-/* --------------------------------------------------------------- admin mode */
+/* -------------------------------------------------------------- admin mode */
+
+const field = (h, f, tag) => (document.querySelector(`${tag || 'input'}[data-h="${h}"][data-f="${f}"]`) || {}).value;
 
 function saveOwner(h, btn) {
-  const name = (document.querySelector(`input[data-h="${h}"][data-f="name"]`) || {}).value || '';
-  const ig = (document.querySelector(`input[data-h="${h}"][data-f="ig"]`) || {}).value || '';
-  const o = ov(h);
-  o.manager = { name: name.trim(), ig: ig.trim().replace(/^@+/, '') };
+  ov(h).manager = { name: (field(h, 'name') || '').trim(), ig: (field(h, 'ig') || '').trim().replace(/^@+/, '') };
   saveOverrides();
   btn.classList.add('done');
   btn.textContent = 'Saved';
@@ -834,9 +567,9 @@ function saveOwner(h, btn) {
 }
 
 function addUpload(h) {
-  const at = (document.querySelector(`input[data-h="${h}"][data-f="at"]`) || {}).value;
-  const views = Number((document.querySelector(`input[data-h="${h}"][data-f="views"]`) || {}).value);
-  const type = (document.querySelector(`select[data-h="${h}"][data-f="type"]`) || {}).value || 'reel';
+  const at = field(h, 'at');
+  const views = Number(field(h, 'views'));
+  const type = field(h, 'type', 'select') || 'reel';
   if (!at || !(views >= 0)) { alert('Pick a date and enter the view count.'); return; }
   const o = ov(h);
   o.posts = o.posts || [];
@@ -849,31 +582,26 @@ function addUpload(h) {
 $('admin-btn').addEventListener('click', () => {
   ADMIN = !ADMIN;
   $('admin-btn').classList.toggle('on', ADMIN);
-  $('admin-btn').textContent = ADMIN ? 'Admin on' : 'Admin';
   $('export-btn').hidden = !ADMIN;
   render();
 });
 
-/* -------------------------------------------------------------- export edits */
+/* ------------------------------------------------------------ export edits */
 
-function closeModal() {
-  const o = document.querySelector('.overlay');
-  if (o) o.remove();
-}
+const closeModal = () => { const o = document.querySelector('.ov'); if (o) o.remove(); };
 
 $('export-btn').addEventListener('click', () => {
   const n = Object.keys(overrides).length;
-  const body = JSON.stringify(overrides, null, 2);
+  const text = JSON.stringify(overrides, null, 2);
   const el = document.createElement('div');
-  el.className = 'overlay';
-  el.innerHTML = `
-    <div class="modal" role="dialog" aria-modal="true" aria-label="Export local edits">
+  el.className = 'ov';
+  el.innerHTML = `<div class="mod" role="dialog" aria-modal="true" aria-label="Local edits">
       <h3>Local edits</h3>
-      <p>${n ? `Edits for <b style="color:var(--white)">${n}</b> page${n === 1 ? '' : 's'}, saved in this browser only. Paste them into <code style="font-family:ui-monospace,Menlo,monospace">/fomocontent/content-data.js</code> to make them permanent for everyone.` : 'Nothing edited in this browser yet. Owners and uploads you add in admin mode show up here.'}</p>
-      <textarea readonly spellcheck="false">${esc(body)}</textarea>
-      <div class="modal-actions">
-        <button class="primary" id="m-copy">Copy</button>
-        <button class="danger" id="m-clear">Clear local edits</button>
+      <p>${n ? `Edits for <b style="color:var(--white)">${n}</b> page${n === 1 ? '' : 's'}, saved in this browser only. Paste them into <code>/fomocontent/content-data.js</code> to make them permanent.` : 'Nothing edited yet. Owners and uploads you add in admin mode land here.'}</p>
+      <textarea readonly spellcheck="false">${esc(text)}</textarea>
+      <div class="acts">
+        <button class="p" id="m-copy">Copy</button>
+        <button class="d" id="m-clear">Clear</button>
         <div style="flex:1"></div>
         <button id="m-close">Close</button>
       </div>
@@ -883,12 +611,11 @@ $('export-btn').addEventListener('click', () => {
   el.addEventListener('click', (e) => { if (e.target === el) closeModal(); });
   $('m-close').addEventListener('click', closeModal);
   $('m-copy').addEventListener('click', async (e) => {
-    const ta = el.querySelector('textarea');
     let ok = false;
-    try { await navigator.clipboard.writeText(body); ok = true; }
+    try { await navigator.clipboard.writeText(text); ok = true; }
     catch (err) {
       // Clipboard API needs a secure context; fall back to selecting the text.
-      try { ta.select(); ta.setSelectionRange(0, 99999); ok = document.execCommand('copy'); } catch (e2) { ok = false; }
+      try { const ta = el.querySelector('textarea'); ta.select(); ta.setSelectionRange(0, 99999); ok = document.execCommand('copy'); } catch (e2) { ok = false; }
     }
     e.target.textContent = ok ? 'Copied' : 'Press ⌘C';
     setTimeout(() => { e.target.textContent = 'Copy'; }, 1800);
@@ -905,8 +632,6 @@ $('export-btn').addEventListener('click', () => {
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
 
 /* ------------------------------------------------------------------- start */
-
-if (SEED) { $('seed-tag').hidden = false; $('seed-banner').hidden = false; }
 
 // /fomocontent/#fomouva lands with that page already open.
 const deep = decodeURIComponent(location.hash.replace(/^#@?/, '')).toLowerCase();
